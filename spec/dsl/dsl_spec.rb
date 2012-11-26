@@ -1,0 +1,73 @@
+require File.dirname(__FILE__) + '/../spec_helper'
+
+describe "Eye::Dsl" do
+
+  it "fully empty config" do
+    conf = <<-E
+      Eye.application("bla") do        
+      end
+    E
+    Eye::Dsl.load(conf).should == {}
+  end
+
+  xit "should accept options to app" do
+    conf = <<-C
+      Eye.application("bla", :stdout => "bla") do
+      end
+    C
+    Eye::Dsl.load(conf).should == {"bla"=>nil}
+  end
+
+  it "should set param " do
+    conf = <<-E
+      Eye.application("bla") do        
+        start_timeout 10.seconds
+      end
+    E
+    Eye::Dsl.load(conf).should == {"bla"=>{:start_timeout => 10.seconds, :groups => {}}}
+  end
+
+  it "should set param, with self and =" do
+    conf = <<-E
+      Eye.application("bla") do        
+        self.start_timeout = 10.seconds
+      end
+    E
+    Eye::Dsl.load(conf).should == {"bla"=>{:start_timeout => 10.seconds, :groups => {}}}
+  end
+
+  it "another block syntax" do
+    conf = <<-E
+      Eye.application("bla"){ start_timeout 10.seconds }
+    E
+    Eye::Dsl.load(conf).should == {"bla"=>{:start_timeout => 10.seconds, :groups => {}}}
+  end
+
+  it "should raise on unknown option" do
+    conf = <<-E
+      Eye.application("bla") do        
+        pid_file "11"
+        hoho 10
+      end
+    E
+    expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+  end
+
+  it "hash should not be with defaults" do
+    conf = <<-E
+      Eye.application("bla") do
+        start_timeout 10.seconds
+
+        process("11") do
+          pid_file "1"
+        end
+      end
+    E
+    cfg = Eye::Dsl.load(conf)
+    cfg[:something].should == nil
+    cfg['bla'][:something].should == nil
+    cfg['bla'][:groups]['__default__'][:some].should == nil
+    cfg['bla'][:groups]['__default__'][:processes][:some].should == nil
+  end
+
+end

@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+$:.unshift File.expand_path(File.join(File.dirname(__FILE__), %w{.. lib}))
+require 'eye'
+
+$0 = "eye daemon"
+
+socket_path = Eye::Settings.socket_path  #ARGV[1] || "/tmp/eye_sock"
+iconfig = if ARGV[0]
+  File.expand_path(ARGV[0])
+end
+
+server = Eye::Server.new(socket_path)
+server.command('load', iconfig) if iconfig
+server.run!
+
+sleep

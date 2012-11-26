@@ -1,0 +1,76 @@
+#!/usr/bin/env ruby
+$:.unshift File.expand_path(File.join(File.dirname(__FILE__), %w{.. lib}))
+require 'eye'
+require 'thor'
+
+class Cli < Thor
+
+  desc "status", "show process statuses"
+  def status
+    cmd(:status)
+  end 
+  
+  desc "load", "load config (eye monitoring will start if needs)"
+  def load(conf)
+    if server_started?
+      cmd(:load, conf)
+    else
+      server_start(conf)
+    end
+  end
+  
+  desc "quit", "stop eye monitoring"
+  def quit
+    cmd(:quit)
+  end
+  
+  [:start, :stop, :restart, :remove, :unmonitor].each do |_cmd|
+    desc "#{_cmd} [TARGET]", "#{_cmd} app,group or process"
+    define_method(_cmd) do |str=""|
+      cmd(_cmd, str || "")
+    end
+  end
+
+private
+
+  def client
+    @client ||= Eye::Client.new(Eye::Settings.socket_path)
+  end
+  
+  def cmd(cmd, *args)
+    res = client.command(cmd, *args)
+    if res == :unknown_command
+      say "Unknown command", :red
+    elsif res == :nothing
+      say "No targets, bad pattern!", :red      
+    elsif cmd == :status
+      puts res    
+      puts
+    elsif cmd == :quit
+      say "monitoring stopped...", :yellow
+    else
+      say "command affected: #{res.inspect}"
+    end
+        
+    res
+    
+  rescue Errno::ECONNREFUSED, Errno::ENOENT
+    say "Eye monitoring not started", :red
+    nil
+  end
+  
+  def server_started?
+    cmd(:ping) == :pong
+  end
+  
+  def server_start(conf = nil)
+    Eye::Settings.ensure_eye_dir
+    exec_path = File.expand_path(File.join(File.dirname(__FILE__), 'server_eye'))
+    pid = Process.spawn(exec_path, conf, " >/dev/null")
+    Process.detach(pid)
+    File.open(Eye::Settings.pid_path, 'w'){|f| f.write(pid) }
+  end
+
+end
+
+Cli.start
