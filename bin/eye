@@ -7,10 +7,12 @@ class Cli < Thor
 
   desc "status", "show process statuses"
   def status
-    cmd(:status)
+    res = cmd(:status)
+    puts res if res && !res.empty?
+    puts
   end 
   
-  desc "load", "load config (eye monitoring will start if needs)"
+  desc "load CONF", "load config (eye monitoring will start if needs)"
   def load(conf)
     if server_started?
       cmd(:load, conf)
@@ -22,12 +24,20 @@ class Cli < Thor
   desc "quit", "stop eye monitoring"
   def quit
     cmd(:quit)
+    say "monitoring stopped...", :yellow
   end
   
   [:start, :stop, :restart, :remove, :unmonitor].each do |_cmd|
     desc "#{_cmd} [TARGET]", "#{_cmd} app,group or process"
     define_method(_cmd) do |str=""|
-      cmd(_cmd, str || "")
+      res = cmd(_cmd, str || "")
+      if res == :unknown_command
+        say "Unknown command", :red
+      elsif res == :nothing
+        say "No targets, bad pattern!", :red
+      else
+        say "command #{_cmd} affected to #{res.to_s}"  
+      end        
     end
   end
 
@@ -36,31 +46,26 @@ private
   def client
     @client ||= Eye::Client.new(Eye::Settings.socket_path)
   end
+
+  def _cmd(cmd, *args)
+    client.command(cmd, *args)
+  rescue Errno::ECONNREFUSED, Errno::ENOENT
+    :not_started
+  end
   
   def cmd(cmd, *args)
-    res = client.command(cmd, *args)
-    if res == :unknown_command
-      say "Unknown command", :red
-    elsif res == :nothing
-      say "No targets, bad pattern!", :red      
-    elsif cmd == :status
-      puts res    
-      puts
-    elsif cmd == :quit
-      say "monitoring stopped...", :yellow
-    else
-      say "command affected: #{res.inspect}"
+    res = _cmd(cmd, *args)
+
+    if res == :not_started
+      say "Eye monitoring not found, did you start it?", :red
+      exit
     end
-        
-    res
     
-  rescue Errno::ECONNREFUSED, Errno::ENOENT
-    say "Eye monitoring not started", :red
-    nil
+    res
   end
   
   def server_started?
-    cmd(:ping) == :pong
+    _cmd(:ping) == :pong
   end
   
   def server_start(conf = nil)
