@@ -2,6 +2,19 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "Process Controller" do
 
+  describe "monitor" do
+    it "monitor should call start, as the auto_start is default" do
+      start_ok_process
+
+      @process.unmonitor
+      @process.state_name.should == :unmonitored
+      
+      mock(@process).start
+      @process.monitor
+    end
+    
+  end
+
   describe "unmonitor" do    
     [C.p1, C.p2].each do |cfg|
       it "should just forget about any process #{cfg[:name]}" do

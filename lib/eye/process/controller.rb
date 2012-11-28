@@ -46,7 +46,12 @@ module Eye::Process::Controller
   end
 
   def monitor
-    start
+    info "monitor command"
+    if self[:auto_start]
+      start
+    else
+      info "not supported, yet!"
+    end
   end
 
   def unmonitor

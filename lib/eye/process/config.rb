@@ -15,7 +15,7 @@ module Eye::Process::Config
     :restart_grace => 0.5.seconds, 
 
     :daemonize => false,
-    :autostart => true,
+    :auto_start => true,
 
     :clear_pid_file => nil,
 

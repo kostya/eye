@@ -123,8 +123,7 @@ private
         processes.each do |process_name, process_cfg|
           process = Eye::Process.new(process_cfg, @logger)
           group.add_process(process)
-
-          process.queue(:start) # bad place
+          process.queue(:monitor)
         end
       end
     end
