@@ -6,7 +6,7 @@ require 'ostruct'
 class Eye::Controller
   include Celluloid
 
-  include Eye::Process::Logger
+  include Eye::Logger::Helpers
 
   attr_reader :applications
 

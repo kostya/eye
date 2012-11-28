@@ -6,12 +6,12 @@ class Eye::Checker
 
   TYPES = [:memory, :cpu, :http, :tail_log]
 
-  include Eye::Process::Logger
+  include Eye::Logger::Helpers
 
   #{:type => :cpu, :every => 3.seconds, :below => 80, :times => 3},
   #{:type => :memory, :every => 5.seconds, :below => 100.megabytes, :times => [3,5]}
 
-  attr_accessor :value, :values, :options, :logger, :pid
+  attr_accessor :value, :values, :options, :pid
 
   def self.create(pid, options = {}, logger = nil)
     obj = case options[:type]
@@ -26,8 +26,7 @@ class Eye::Checker
 
   def initialize(pid, options = {}, logger = nil)
     @pid = pid
-    @logger = logger || Eye::Logger.new(nil)
-    @additional_logger_tag = " ?[#{self.check_name}] "
+    prepare_logger(logger, "#{logger.prefix rescue nil} check:#{check_name}")
     @options = options
 
     @value = nil

@@ -2,11 +2,14 @@ class Eye::Application
 
   attr_reader :groups, :name
 
+  include Eye::Logger::Helpers
+
   def initialize(name, config = {}, logger = nil)
     @groups = []
     @name = name
-    @logger = logger
+    prepare_logger(logger, @name)    
     @config = config
+    info "create app"
   end
 
   def add_group(group)

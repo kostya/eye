@@ -7,9 +7,9 @@ class Eye::Trigger
 
   autoload :Flapping,   'eye/trigger/flapping'
 
-  include Eye::Process::Logger
+  include Eye::Logger::Helpers
 
-  attr_reader :message, :logger, :options
+  attr_reader :message, :options
 
   def self.create(options = {}, logger = nil)
     obj = case options[:type]
@@ -21,7 +21,7 @@ class Eye::Trigger
 
   def initialize(options = {}, logger = nil)
     @options = options
-    @logger = logger
+    prepare_logger(logger)
 
     debug "add trigger #{options}"
   end

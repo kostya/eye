@@ -9,7 +9,7 @@ describe "Eye::ChildProcess" do
   end
 
   it "some process was declared by my child" do
-    @process = Eye::ChildProcess.new(@pid, $logger, {})
+    @process = Eye::ChildProcess.new(@pid, {}, $logger)
     @process.pid.should == @pid
 
     @process.watchers.keys.should == []
@@ -18,7 +18,7 @@ describe "Eye::ChildProcess" do
   describe "restart" do
 
     it "kill by default command" do
-      @process = Eye::ChildProcess.new(@pid, $logger, {})
+      @process = Eye::ChildProcess.new(@pid, {}, $logger)
       @process.queue :restart
 
       sleep 0.5
@@ -26,7 +26,7 @@ describe "Eye::ChildProcess" do
     end  
 
     it "kill by stop command" do
-      @process = Eye::ChildProcess.new(@pid, $logger, {:stop_command => "kill -9 {{PID}}"})
+      @process = Eye::ChildProcess.new(@pid, {:stop_command => "kill -9 {{PID}}"}, $logger)
       @process.queue :restart
 
       sleep 0.5
@@ -34,7 +34,7 @@ describe "Eye::ChildProcess" do
     end
 
     it "try to snd URS1" do
-      @process = Eye::ChildProcess.new(@pid, $logger, {:stop_command => "kill -USR1 {{PID}}"})
+      @process = Eye::ChildProcess.new(@pid, {:stop_command => "kill -USR1 {{PID}}"}, $logger)
       @process.queue :restart
 
       sleep 0.5

@@ -10,15 +10,15 @@ class Eye::ChildProcess
   # conditional watchers: start_checkers
   include Eye::Process::Watchers
 
-  # logger methods: info, ...
-  include Eye::Process::Logger
-
   # system methods: send_signal
   include Eye::Process::System
 
-  attr_reader :pid, :name, :config, :logger, :watchers
+  # logger methods: info, ...
+  include Eye::Logger::Helpers
 
-  def initialize(pid, logger = nil, config = {})
+  attr_reader :pid, :name, :config, :watchers
+
+  def initialize(pid, config = {}, logger = nil)
     raise "Empty pid" unless pid
 
     @pid = pid
@@ -26,9 +26,8 @@ class Eye::ChildProcess
     @title = Eye::SystemResources.cmd(pid)
     @name = "child_#{pid}"
 
-    @logger = logger || Eye::Logger.new(nil)
-    @additional_logger_tag = " [child:#{pid}] "
-
+    prepare_logger(logger, "#{logger.prefix} child:#{pid}")
+    
     @watchers = {}
 
     @queue = Celluloid::Chain.new(current_actor)

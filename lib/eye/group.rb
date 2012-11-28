@@ -1,7 +1,7 @@
 class Eye::Group
   include Celluloid
 
-  include Eye::Process::Logger
+  include Eye::Logger::Helpers
 
   attr_reader :processes, :name, :hidden, :config
 
@@ -9,9 +9,10 @@ class Eye::Group
     @name = name
     @config = config
     @processes = []
-    @logger = logger || Eye::Logger.new(nil)
+    prepare_logger(logger, name)    
     @hidden = (name == '__default__')
     @queue = Celluloid::Chain.new(current_actor)
+    info "group add"
   end
 
   def queue(command)

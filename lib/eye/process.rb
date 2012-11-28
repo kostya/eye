@@ -13,20 +13,17 @@ class Eye::Process
   autoload :Controller,       'eye/process/controller'
   autoload :StatesHistory,    'eye/process/states_history'
   autoload :Child,            'eye/process/child'
-  autoload :Logger,           'eye/process/logger'
   autoload :Trigger,          'eye/process/trigger'
 
-  attr_accessor :pid, :logger, :watchers, :config, :states_history, 
+  attr_accessor :pid, :watchers, :config, :states_history, 
                 :state_reason, :childs, :triggers, :flapping, :name
   
   def initialize(config, logger = nil)
     raise "pid file should be" unless config[:pid_file]
 
     @config = prepare_config(config)
-
-    @logger = logger || Eye::Logger.new(nil)
-    @logger.tag = full_name
-
+    prepare_logger(logger, full_name)
+    
     @watchers = {}
     @childs = {}
     @triggers = []
@@ -86,12 +83,12 @@ class Eye::Process
   # child methods
   include Eye::Process::Child
 
-  # logger methods
-  include Eye::Process::Logger
-
   # trigger
   include Eye::Process::Trigger
-    
+
+
+  # logger methods
+  include Eye::Logger::Helpers
 end
 
 require_relative 'process/states'
