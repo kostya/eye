@@ -19,8 +19,7 @@ class Eye::Client
     res
     
   rescue Timeout::Error, EOFError
-    puts "Socket connection error"  
-    nil
+    :timeouted
   end
 
   def send_request(pack)

@@ -27,6 +27,11 @@ class Eye::Server
     command, *args = socket.readline.strip.split(':')
     response = command(command, *args)
     socket.write(Marshal.dump(response))
+    
+  rescue Errno::EPIPE
+    # client timeouted
+    # do nothing
+    
   ensure
     socket.close
   end

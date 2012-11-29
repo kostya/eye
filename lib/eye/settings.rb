@@ -13,7 +13,6 @@ module Eye::Settings
   end
 
   def ensure_eye_dir
-    p dir
     FileUtils.mkdir_p( dir )
   end
 

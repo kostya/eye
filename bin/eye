@@ -59,6 +59,9 @@ private
     if res == :not_started
       say "Eye monitoring not found, did you start it?", :red
       exit
+    elsif res == :timeouted
+      say "Eye does not answer in time", :red
+      exit
     end
     
     res
