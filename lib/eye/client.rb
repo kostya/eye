@@ -9,8 +9,7 @@ class Eye::Client
   end
   
   def command(cmd, *args)
-    pack = [cmd, *args] * ':'
-    attempt_command(pack)
+    attempt_command([cmd, *args] * ':')
   end
   
   def attempt_command(pack)

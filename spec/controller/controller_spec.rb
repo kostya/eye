@@ -24,7 +24,7 @@ describe "Eye::Controller" do
   subject{ Eye::Controller.new($logger) }
 
   it "should ok load config" do
-    subject.load(fixture("dsl/load.eye")).should == true
+    subject.load(fixture("dsl/load.eye")).should == {:error => false}
 
     apps = subject.applications
 
@@ -60,7 +60,7 @@ describe "Eye::Controller" do
   end
 
   it "raise when load config" do
-    subject.load(fixture("dsl/bad.eye")).should == nil
+    subject.load(fixture("dsl/bad.eye")).should include(:error => true, :message => "blank pid_file for: bad")
   end
 
   it "status_string" do

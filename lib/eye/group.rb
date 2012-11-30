@@ -18,6 +18,10 @@ class Eye::Group
     info "group add"
   end
 
+  def update_config(cfg)
+    @config = cfg
+  end
+
   def queue(command)
     @queue.add_no_dup(command)
   end
@@ -72,6 +76,10 @@ class Eye::Group
 
   def unmonitor
     async_all :unmonitor
+  end
+
+  def clear
+    @processes = []
   end
 
 private  

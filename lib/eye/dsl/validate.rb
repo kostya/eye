@@ -5,17 +5,17 @@ module Eye::Dsl::Validate
     
     no_pid_file = all_processes.select{|c| c[:pid_file].blank? }
     if no_pid_file.present?
-      raise Eye::Dsl::Error, "has no pid_file for #{no_pid_file.map{|c| c[:name]}.inspect}"
+      raise Eye::Dsl::Error, "blank pid_file for: #{no_pid_file.map{|c| c[:name]} * ', '}"
     end
     
-    pids = all_processes.map{|c| c[:pid_file] }
-    if pids.size != pids.uniq.size
-      raise Eye::Dsl::Error, "dublicates of the pid_file"
+    dubl_pids = all_processes.each_with_object(Hash.new(0)){ |o, h| h[o[:pid_file]] += 1 }.select{|k,v| v>1}
+    if dubl_pids.present?
+      raise Eye::Dsl::Error, "dublicate pid_files: #{dubl_pids.inspect}"
     end
 
-    pids = all_processes.map{|c| c[:name] }
-    if pids.size != pids.uniq.size
-      raise Eye::Dsl::Error, "dublicates of the names processes"
+    dubl_names = all_processes.each_with_object(Hash.new(0)){ |o, h| h[o[:name]] += 1 }.select{|k,v| v>1}
+    if dubl_names.present?
+      raise Eye::Dsl::Error, "dublicate names: #{dubl_names.inspect}"
     end
   end
 

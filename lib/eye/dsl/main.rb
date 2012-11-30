@@ -1,5 +1,5 @@
 module Eye::Dsl::Main
-  attr_accessor :temp_config, :current_config
+  attr_accessor :temp_config
 
   def application(name, &block)
     @temp_config ||= {}

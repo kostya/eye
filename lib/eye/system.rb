@@ -32,7 +32,6 @@ module Eye::System
 
     # Daemonize cmd, and detach
     # options:
-    #   :uid, :gid, :supplementary_groups
     #   :pid_file
     #   :working_dir
     #   :environment
@@ -47,7 +46,6 @@ module Eye::System
 
     # Blocking execute cmd, return status
     # options
-    #   :pid, :gid, :supplementary_groups
     #   :working_dir
     #   :environment
     #   :stdin, :stdout, :stderr

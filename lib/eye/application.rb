@@ -7,9 +7,13 @@ class Eye::Application
   def initialize(name, config = {}, logger = nil)
     @groups = []
     @name = name
-    prepare_logger(logger, @name)    
+    prepare_logger(logger, @name)
     @config = config
     info "create app"
+  end
+
+  def update_config(cfg)
+    @config = cfg
   end
 
   def add_group(group)

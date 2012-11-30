@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe "find_objects" do
+describe "comamnd spec" do
   subject{ c = Eye::Controller.new($logger); c.load(fixture("dsl/load.eye")); c }
 
   before :each do
@@ -55,12 +55,12 @@ describe "find_objects" do
 
   describe "send_command" do
     it "nothing" do
-      subject.load(fixture("dsl/load.eye")).should == true   
+      subject.load(fixture("dsl/load.eye")).should == {:error => false}
       subject.send_command(:start, "2341234").should == :nothing
     end
 
     it "unknown" do
-      subject.load(fixture("dsl/load.eye")).should == true   
+      subject.load(fixture("dsl/load.eye")).should == {:error => false}
       subject.send_command(:st33art, "2341234").should == :nothing
     end
 

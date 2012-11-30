@@ -50,16 +50,21 @@ module Eye::Process::Config
   def update_config(new_config = {})
     new_config = prepare_config(new_config)
     @config = new_config
+    @full_name = nil
 
-    # if something changes big
+    debug "update config to: #{@config.inspect}"
 
     remove_watchers
     remove_triggers
     remove_childs
 
-    add_watchers!
-    add_childs!
     add_triggers!
+
+    # bad style code!
+    if state_name == :up
+      add_watchers!
+      add_childs!
+    end    
   end
   
 end

@@ -39,7 +39,7 @@ class Eye::Process
 
     add_triggers
 
-    super()
+    super() # for statemachine
   end
 
   # c()

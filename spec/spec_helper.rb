@@ -12,7 +12,7 @@ Eye::Controller #preload
 Eye::Process # preload
 
 class Eye::Controller
-  public :find_objects, :remove_object_from_tree, :create_objects_by_config
+  public :find_objects, :remove_object_from_tree
 end
 
 require 'rspec/mocks'

@@ -21,6 +21,7 @@ describe "Eye::Process::System" do
     File.open(@process[:pid_file_ex], 'w'){|f| f.write(12345) }
     @process.set_pid_from_file
     @process.pid.should == 12345
+    @process.pid = nil
   end
 
   it "save_pid_to_file" do
