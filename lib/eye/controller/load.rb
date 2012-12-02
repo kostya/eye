@@ -2,26 +2,37 @@ module Eye::Controller::Load
 
   include Eye::Dsl::Validate
 
-  def load(filename)
+  def load(filename = "")
+    if filename.blank?
+      return {:error => false, :empty => true}
+    end
+
+    unless File.exists?(filename)
+      error "config file '#{filename}' not found!"
+      return {:error => true, :message => "config file '#{filename}' not found!"}
+    end
+
     cfg = Eye::Dsl.load(nil, filename)
 
-    @new_config = merge_configs(@current_config, cfg)
-    validate(@new_config)
+    new_config = merge_configs(@current_config, cfg)
+    validate(new_config)
 
-    create_objects(@new_config)
+    create_objects(new_config)
 
-    @current_config = @new_config
+    @current_config = new_config
 
     GC.start
 
     {:error => false}
 
-  rescue Eye::Dsl::Error, Exception => ex
+  rescue Eye::Dsl::Error, Exception, NoMethodError => ex
     error "Error loading config <#{filename}>:"
     error ex.message
     error ex.backtrace.join("\n")
 
-    {:error => true, :message => ex.message, :backtrace => ex.backtrace}
+    # filter backtrace for user output
+    bt = (ex.backtrace || []).reject{|line| line.to_s =~ %r{eye/lib/eye} || line.to_s =~ %r{lib/celluloid}} 
+    {:error => true, :message => ex.message, :backtrace => bt}
   end
 
 private

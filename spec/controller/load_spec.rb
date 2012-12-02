@@ -3,6 +3,14 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "Eye::Controller::Load" do
   subject{ Eye::Controller.new($logger) }
 
+  it "blank" do
+    subject.load.should == {:error => false, :empty => true}
+  end
+
+  it "not exists file" do
+    subject.load("/asdf/asd/fasd/fas/df/sfd").should == {:error => true, :message => "config file '/asdf/asd/fasd/fas/df/sfd' not found!"}
+  end
+
   it "load + 1new app" do
     subject.load(fixture("dsl/load.eye")).should == {:error => false}
     subject.short_tree.should == {

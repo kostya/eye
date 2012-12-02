@@ -11,7 +11,12 @@ class Eye::Server
   
   def initialize(socket_path)
     @socket_path = socket_path
-    @server = UNIXServer.open(socket_path)
+    @server = begin
+      UNIXServer.open(socket_path)
+    rescue Errno::EADDRINUSE
+      unlink_socket_file
+      UNIXServer.open(socket_path)
+    end
   end
   
   def finalize

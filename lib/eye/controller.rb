@@ -19,7 +19,8 @@ class Eye::Controller
   attr_reader :applications, :current_config
 
   def initialize(logger = nil)
-    @logger = logger || Eye::Logger.new(nil)
+    @logger = logger || Eye::Logger.new(STDOUT)
+    Celluloid::logger = @logger
     @applications = []
     @current_config = {}
   end

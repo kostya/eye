@@ -13,14 +13,8 @@ class Eye::Dsl
   def self.load(content = "", filename = nil)
     Eye.temp_config = {}
 
-    if content.blank?
-      begin
-        content = File.read(filename)
-      rescue => ex
-        raise Error.new(ex)
-      end
-    end
-
+    content = File.read(filename) if content.blank?
+    
     Kernel.eval(content, $global_binding, filename.to_s)
 
     cfg = Eye.temp_config
@@ -30,16 +24,12 @@ class Eye::Dsl
     Eye.temp_config = {}
 
     cfg 
-
-  rescue NoMethodError => ex
-    raise Error.new(ex)
-  end
-
-  class Error < Exception
   end
 
   extend Eye::Dsl::Validate
   extend Eye::Dsl::Normalize
+
+  class Error < Exception; end
 end
 
 Eye.send(:extend, Eye::Dsl::Main)

@@ -1,6 +1,14 @@
+def bla
+ p 1
+end
+
 Eye.app("int") do
   working_dir File.expand_path(File.join(File.dirname(__FILE__), %w{ .. spec example }))
   stdall "shlak.log"
+
+  bla
+  
+  asdf fasd fasd fasd
 
   group "samples" do
     process("sample1") do

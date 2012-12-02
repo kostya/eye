@@ -170,7 +170,7 @@ describe "Eye::Dsl" do
           end        
         end
       E
-      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)    
+      expect{Eye::Dsl.load(conf)}.to raise_error(NoMethodError) 
     end
 
     it "child pid_file" do

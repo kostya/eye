@@ -52,10 +52,6 @@ module Eye::Dsl::Normalize
     end
 
     result
-
-  rescue => ex
-    raise Eye::Dsl::Error.new(ex)
-
   end
 
 end
