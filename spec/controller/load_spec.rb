@@ -79,6 +79,11 @@ describe "Eye::Controller::Load" do
       "app3"=>{"__default__"=>{"e1"=>"/tmp/app3-e1.pid"}}}
   end
 
+  it "check syntax" do
+    subject.load(fixture("dsl/load2.eye")).should == {:error => false}
+    subject.syntax(fixture("dsl/load4.eye")).should include(:error => true, :message => 'dublicate pid_files: {"app3-e1.pid"=>2}')
+  end
+
   it "process and groups disappears" do
     subject.load(fixture("dsl/load.eye")).should == {:error => false}
     subject.load(fixture("dsl/load5.eye")).should == {:error => false}

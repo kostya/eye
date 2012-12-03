@@ -2,7 +2,8 @@ module Eye::Controller::Load
 
   include Eye::Dsl::Validate
 
-  def load(filename = "")
+  # prepare, check config
+  def syntax(filename = '', &block)
     if filename.blank?
       return {:error => false, :empty => true}
     end
@@ -17,9 +18,7 @@ module Eye::Controller::Load
     new_config = merge_configs(@current_config, cfg)
     validate(new_config)
 
-    create_objects(new_config)
-
-    @current_config = new_config
+    block[new_config] if block
 
     GC.start
 
@@ -33,6 +32,14 @@ module Eye::Controller::Load
     # filter backtrace for user output
     bt = (ex.backtrace || []).reject{|line| line.to_s =~ %r{eye/lib/eye} || line.to_s =~ %r{lib/celluloid}} 
     {:error => true, :message => ex.message, :backtrace => bt}
+  end
+
+  # prepare, check and load config
+  def load(filename = "")
+    syntax(filename) do |new_config|
+      create_objects(new_config)
+      @current_config = new_config
+    end
   end
 
 private
