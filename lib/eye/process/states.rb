@@ -18,7 +18,7 @@ class Eye::Process
     end
 
     event :already_running do
-      transition [:unmonitored, :down] => :up
+      transition [:unmonitored, :down, :up] => :up
     end
 
     event :started do

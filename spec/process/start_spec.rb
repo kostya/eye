@@ -27,6 +27,16 @@ describe "Process Start" do
     @process.watchers.keys.should == [:check_alive]
   end
 
+  it "process started and up, receive command start" do
+    @process = process C.p1
+    @process.start.should == :ok
+    sleep 0.5
+    @process.state_name.should == :up
+
+    @process.start.should == :ok
+    @process.state_name.should == :up
+  end
+
   [C.p1, C.p2].each do |c|
     it "start new process, with config #{c[:name]}" do
       @process = process c
