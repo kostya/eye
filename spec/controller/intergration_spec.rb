@@ -265,6 +265,31 @@ S
       actors.should_not include(Eye::Application)
       actors.should_not include(Eye::Checker::Memory)
     end
+
+    it "remove by mask" do
+      @old_pid1 = @p1.pid
+      @old_pid2 = @p2.pid
+      @old_pid3 = @p3.pid
+
+      @c.send_command(:remove, "sam*").should == "[samples, sample1, sample2]"
+      sleep 7 # while 
+
+      @c.all_processes.should == [@p3]
+      @c.all_groups.map(&:name).should == ['__default__']
+
+      Eye::System.pid_alive?(@old_pid1).should == true
+      Eye::System.pid_alive?(@old_pid2).should == true
+      Eye::System.pid_alive?(@old_pid3).should == true
+
+      Eye::System.send_signal(@old_pid1)
+      sleep 0.5
+      Eye::System.pid_alive?(@old_pid1).should == false
+
+      # noone up this
+      sleep 2
+      Eye::System.pid_alive?(@old_pid1).should == false
+    end
+
   end
 
 end

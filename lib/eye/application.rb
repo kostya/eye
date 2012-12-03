@@ -32,4 +32,8 @@ class Eye::Application
     end
   end
 
+  def alive?
+    true # emulate celluloid actor method
+  end
+
 end

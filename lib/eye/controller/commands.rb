@@ -28,6 +28,8 @@ module Eye::Controller::Commands
     res = "[#{objs.map{|obj| obj.name }.join(", ")}]"
 
     objs.each do |obj|
+      next unless obj.alive?
+      
       obj.send_command(command)
       
       if command == :remove
