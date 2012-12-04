@@ -1,3 +1,5 @@
+require 'celluloid'
+
 class Celluloid::Chain
   include Celluloid
 
