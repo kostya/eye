@@ -32,7 +32,7 @@ class Cli < Thor
   desc "syntax CONF", "check syntax of the config file"
   def syntax(conf)
     conf = File.expand_path(conf) if conf && !conf.empty?
-    say_load_result cmd(:syntax, conf)
+    say_load_result cmd(:syntax, conf), false
   end
   
   desc "quit", "stop eye monitoring"
@@ -96,14 +96,18 @@ private
     say_load_result cmd(:load, conf)
   end
 
-  def say_load_result(res = {})
+  def say_load_result(res = {}, load = true)
     if res[:error]
       say "Config error: ", :red
       say res[:message]
 
       res[:backtrace].to_a.each{|line| say line}
     else      
-      say "config ok!", :yellow if !res[:empty]
+      if load 
+        say "config loaded!", :yellow if !res[:empty]
+      else
+        say "config ok!", :yellow if !res[:empty]
+      end
     end
   end
 
