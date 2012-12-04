@@ -31,6 +31,7 @@ class Cli < Thor
 
   desc "syntax CONF", "check syntax of the config file"
   def syntax(conf)
+    conf = File.expand_path(conf) if conf && !conf.empty?
     say_load_result cmd(:syntax, conf)
   end
   
