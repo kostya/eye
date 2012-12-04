@@ -1,7 +1,5 @@
 class Eye::Dsl::Opts
 
-  attr_reader :config
-
   ALL_OPTIONS = [ :pid_file, :environment, :working_dir, :daemonize, :stdout, :stderr, :stdall,
     :keep_alive, :check_alive_period, :start_timeout, :restart_timeout, :stop_timeout, :start_grace,
     :restart_grace, :stop_grace, :clear_pid_file, :childs_update_period,
@@ -52,6 +50,15 @@ class Eye::Dsl::Opts
 
   def disallow_options
     []
+  end
+
+  # purefy config, from default value {}
+  def config
+    h = {}
+    @config.each do |k,v|
+      h[k] = v
+    end
+    h
   end
 
 end

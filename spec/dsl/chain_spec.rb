@@ -35,6 +35,56 @@ describe "Eye::Dsl::Chain" do
     Eye::Dsl.load(conf).should == h
   end
 
+  it "1 inner group have" do
+    conf = <<-E
+      Eye.application("bla") do
+        group "gr1" do
+          chain :grace => 5.seconds
+        end
+
+        process("p1"){pid_file('1')}
+      end
+    E
+    
+    h = {
+      "bla" => {
+        :groups=>{
+          "gr1"=>{
+            :chain=>{:start=>{:grace=>5, :action=>:start}, 
+              :restart=>{:grace=>5, :action=>:restart}}, 
+              :processes=>{}}, 
+          "__default__"=>{
+            :processes=>{"p1"=>{:pid_file=>"1", :application=>"bla", :group=>"__default__", :name=>"p1"}}}}}}
+
+    Eye::Dsl.load(conf).should == h
+  end
+
+  it "1 group have, 1 not" do
+    conf = <<-E
+      Eye.application("bla") do
+        group "gr1" do
+          working_dir "/tmp"
+          chain :grace => 5.seconds
+        end
+
+        group("gr2"){
+          working_dir '/tmp'
+        }
+      end
+    E
+    
+    h = {
+      "bla" => {
+        :groups=>{
+          "gr1"=>{
+            :working_dir=>"/tmp", 
+            :chain=>{:start=>{:grace=>5, :action=>:start}, :restart=>{:grace=>5, :action=>:restart}}, 
+            :processes=>{}}, 
+          "gr2"=>{:working_dir=>"/tmp", :processes=>{}}}}}
+
+    Eye::Dsl.load(conf).should == h
+  end
+
   it "one option" do
     conf = <<-E
       Eye.application("bla") do

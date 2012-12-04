@@ -19,17 +19,15 @@ module Eye::Dsl::Normalize
         processes.each do |pname, p_cfg|
           next if p_cfg.blank?
 
-          new_pcfg = {}
-          new_pcfg = new_pcfg.merge(merge_hash(app_cfg, group_cfg))
-          new_pcfg = merge_hash(new_pcfg, p_cfg)
+          new_pcfg = merge_hash(merge_hash(app_cfg, group_cfg), p_cfg)
           new_pcfg.merge!(:application => app, :group => group_name, :name => pname)
           nprocesses[pname] = new_pcfg
         end
 
-        ngroups[group_name] = {}.merge(merge_hash(app_cfg, group_cfg)).update(:processes => nprocesses)
+        ngroups[group_name] = merge_hash(app_cfg, group_cfg).update(:processes => nprocesses)
       end
 
-      new_config[app] = {}.merge(app_cfg).update(:groups => ngroups)
+      new_config[app] = app_cfg.update(:groups => ngroups)
     end
 
     new_config
