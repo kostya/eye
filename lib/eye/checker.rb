@@ -8,9 +8,6 @@ class Eye::Checker
 
   include Eye::Logger::Helpers
 
-  #{:type => :cpu, :every => 3.seconds, :below => 80, :times => 3},
-  #{:type => :memory, :every => 5.seconds, :below => 100.megabytes, :times => [3,5]}
-
   attr_accessor :value, :values, :options, :pid
 
   def self.create(pid, options = {}, logger = nil)

@@ -2,7 +2,7 @@ require 'net/http'
 
 class Eye::Checker::Http < Eye::Checker
 
-  # {:type => :http, :every => 5.seconds, :times => 1,
+  # ex: {:type => :http, :every => 5.seconds, :times => 1,
   #  :url => "http://localhost:3000/", :kind => :success, :pattern => /OK/, :timeout => 3.seconds
 
   def check_name

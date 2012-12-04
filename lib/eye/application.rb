@@ -9,7 +9,7 @@ class Eye::Application
     @name = name
     prepare_logger(logger, @name)
     @config = config
-    info "create app"
+    debug "created"
   end
 
   def update_config(cfg)

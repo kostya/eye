@@ -42,53 +42,37 @@ class Eye::Process
     super() # for statemachine
   end
 
-  # c()
-  # self[]  
+  # c(), self[]  
   include Eye::Process::Config
   
-  # states:
-  # statemachine
-  # include Eye::Process::States
-  
-  # data:
-  # pid
-  # state
-  # queue
-  # dsl options
+  # full_name, status_string
   include Eye::Process::Data
   
   # commands:
   # start_process, stop_process, restart_process
-  # sleep
-  # unsleep
   include Eye::Process::Commands
 
-  # start, stop, restart
+  # start, stop, restart, monitor, unmonit, remove
   include Eye::Process::Controller
   
-  # checks:
-  # cpu
-  # memory
-  # http
-  # user defined
+  # add_watchers, remove_watchers:
   include Eye::Process::Watchers
   
-  # monitor:
-  # method monitor! for start actor (Eye::Process.new(config).monitor!)
+  # check alive, crush methods:
   include Eye::Process::Monitor
 
   # system methods:
   include Eye::Process::System
 
-  # child methods
+  # manage childs methods
   include Eye::Process::Child
 
-  # trigger
+  # magage triggers methods
   include Eye::Process::Trigger
-
 
   # logger methods
   include Eye::Logger::Helpers
 end
 
+# include state_machine states
 require_relative 'process/states'

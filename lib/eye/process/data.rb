@@ -1,5 +1,6 @@
 module Eye::Process::Data
 
+  # logger tag
   def full_name
     @full_name ||= [self[:application], (self[:group] == '__default__') ? nil : self[:group], self[:name]].compact.join(':')
   end
@@ -15,5 +16,5 @@ module Eye::Process::Data
 
     res
   end
-  
+
 end

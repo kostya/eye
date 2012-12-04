@@ -1,5 +1,7 @@
 class Eye::Tail < Array
 
+  # limited array
+
   def initialize(max_size = 100)
     @max_size = max_size
     super()

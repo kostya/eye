@@ -15,7 +15,7 @@ class Eye::Group
     prepare_logger(logger, name)    
     @hidden = (name == '__default__')
     @queue = Celluloid::Chain.new(current_actor)
-    info "group add"
+    debug "created"
   end
 
   def update_config(cfg)

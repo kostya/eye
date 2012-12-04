@@ -1,6 +1,6 @@
 class Eye::Checker::TailLog < Eye::Checker
 
-  # {:type => :tail_log, :every => 5.seconds, :log_file => "/tmp/1.log", :times => [3,5]}
+  # ex: {:type => :tail_log, :every => 5.seconds, :log_file => "/tmp/1.log", :times => [3,5]}
 
   params :log_file
 

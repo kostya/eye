@@ -1,9 +1,9 @@
 gem 'state_machine'
 require 'state_machine'
-require 'ostruct'
 
 class Eye::Process
 
+  # do transition
   def transit(name, state_reason = nil)
     self.send("#{name}!")
     @state_reason = state_reason
@@ -58,7 +58,7 @@ class Eye::Process
     after_transition any => :up, :do => :on_up
     after_transition :up => any, :do => :from_up
     after_transition any => any, :do => :log_transition
-    after_transition any => any, :do => :for_triggers
+    after_transition any => any, :do => :upd_for_triggers
   end
 
   def on_crushed
@@ -85,7 +85,7 @@ class Eye::Process
     info "(#{transition.from_name} => #{transition.to_name})"
   end
 
-  def for_triggers(transition)
+  def upd_for_triggers(transition)
     check_triggers
   end
 

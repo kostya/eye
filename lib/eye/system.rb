@@ -65,7 +65,7 @@ module Eye::System
     end
 
     # get table
-    # {pid => {:rss =>, :cpu =>, :ppid => }}
+    # {pid => {:rss =>, :cpu =>, :ppid => , :cmd => }}
     # slow
     def ps_aux
       str = POSIX::Spawn.send('`', "ps axo pid,ppid,pcpu,rss,command")

@@ -13,10 +13,10 @@ class Eye::Client
   end
   
   def attempt_command(pack)
-    res = nil
-    Timeout.timeout(Eye::Settings.client_timeout){ res = send_request(pack) }
-    res
-    
+    Timeout.timeout(Eye::Settings.client_timeout) do
+      return send_request(pack)
+    end
+
   rescue Timeout::Error, EOFError
     :timeouted
   end
@@ -25,7 +25,7 @@ class Eye::Client
     UNIXSocket.open(@socket_path) do |socket|
       socket.puts(pack)
       data = socket.read
-      res = Marshal.load(data) rescue nil
+      res = Marshal.load(data) rescue :corrupred_marshal
     end
   end
   

@@ -1,11 +1,10 @@
 class Eye::Trigger
-  # :triggers => [
-  #   { :type => :flapping, :times => 2, :within => 30.seconds}
-  # ],
+  
+  autoload :Flapping,   'eye/trigger/flapping'
+
+  # ex: { :type => :flapping, :times => 2, :within => 30.seconds}
 
   TYPES = [:flapping]
-
-  autoload :Flapping,   'eye/trigger/flapping'
 
   include Eye::Logger::Helpers
 

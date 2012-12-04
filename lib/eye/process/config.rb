@@ -1,5 +1,3 @@
-require 'pathname'
-
 module Eye::Process::Config
 
   DEFAULTS = {

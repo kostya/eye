@@ -57,9 +57,6 @@ class Eye::ChildProcess
     self.terminate
   end
 
-  # All controller methods should call throught queue
-  #   queue :start
-  #   queue :stop
   def queue(command, reason = "")
     info "queue: #{command} #{reason}"
     @queue.add_no_dup(command)

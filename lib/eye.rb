@@ -1,4 +1,3 @@
-
 module Eye  
   VERSION = "0.1"
 
@@ -26,4 +25,4 @@ module Eye
   end
 end
 
-$global_binding = binding
+$root_binding = binding

@@ -136,10 +136,6 @@ private
     sleep self[:stop_grace].to_f
   end
   
-  def prepare_command(command)
-    command.to_s.gsub("{{PID}}", self.pid.to_s)
-  end
-
   def spawn_process
     self.pid = Eye::System.daemonize(self[:start_command], config)
     sleep self[:start_grace].to_f
@@ -162,6 +158,10 @@ private
     return :not_realy_running unless process_realy_running?
 
     return :ok
+  end
+
+  def prepare_command(command)
+    command.to_s.gsub("{{PID}}", self.pid.to_s)
   end
 
 end

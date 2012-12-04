@@ -1,6 +1,6 @@
 module Eye::Process::Controller
 
-  # All controller methods should call throught queue
+  # All controller methods should call with queue
   #   queue :start
   #   queue :stop
 
@@ -17,7 +17,6 @@ module Eye::Process::Controller
     end
   end
 
-  # load config, manual command start
   def start
     info "controller start command"
 
@@ -64,7 +63,7 @@ module Eye::Process::Controller
     remove_childs
     remove_triggers
 
-    # actor just die without stopping process
+    # actors just die, without stopping process
     @queue.terminate
     self.terminate
   end

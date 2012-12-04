@@ -1,6 +1,6 @@
 class Eye::Checker::Cpu < Eye::Checker
 
-  # {:type => :cpu, :every => 3.seconds, :below => 80, :times => 3},
+  # ex: {:type => :cpu, :every => 3.seconds, :below => 80, :times => 3},
 
   params :below
   

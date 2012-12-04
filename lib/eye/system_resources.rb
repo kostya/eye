@@ -2,29 +2,7 @@ require 'celluloid'
 
 class Eye::SystemResources
 
-  class PsAxActor
-    include Celluloid
-
-    UPDATE_INTERVAL = 5 # seconds
-
-    def initialize
-      set
-    end
-
-    def get
-      set! if @at + UPDATE_INTERVAL < Time.now
-      @ps_aux
-    end
-
-  private
-
-    def set
-      @ps_aux = Eye::System.ps_aux
-      @at = Time.now
-    end
-
-  end
-
+  # cached system resources
   class << self
 
     def memory_usage(pid)
@@ -69,6 +47,29 @@ class Eye::SystemResources
     def ps_aux
       @actor ||= PsAxActor.new
       @actor.get
+    end
+
+  end
+
+  class PsAxActor
+    include Celluloid
+
+    UPDATE_INTERVAL = 5 # seconds
+
+    def initialize
+      set
+    end
+
+    def get
+      set! if @at + UPDATE_INTERVAL < Time.now
+      @ps_aux
+    end
+
+  private
+
+    def set
+      @ps_aux = Eye::System.ps_aux
+      @at = Time.now
     end
 
   end

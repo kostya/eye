@@ -1,6 +1,6 @@
 class Eye::Checker::Memory < Eye::Checker
 
-  # {:type => :memory, :every => 5.seconds, :below => 100.megabytes, :times => [3,5]}
+  # ex: {:type => :memory, :every => 5.seconds, :below => 100.megabytes, :times => [3,5]}
 
   params :below
   

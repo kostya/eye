@@ -1,6 +1,6 @@
 module Eye::Dsl::Normalize
 
-  # join options throught proxies
+  # join options with proxies
   def normalized_config(config)
     new_config = {}
 
@@ -35,7 +35,7 @@ module Eye::Dsl::Normalize
     new_config
   end
 
-  # hash merging
+  # hash crazy merging
   def merge_hash(first, second)
     result = first.clone
 
