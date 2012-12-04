@@ -23,7 +23,7 @@ class Eye::Checker
 
   def initialize(pid, options = {}, logger = nil)
     @pid = pid
-    prepare_logger(logger, "#{logger.prefix rescue nil} check:#{check_name}")
+    prepare_logger(logger, nil, "check:#{check_name}")
     @options = options
 
     @value = nil

@@ -20,7 +20,7 @@ class Eye::Trigger
 
   def initialize(options = {}, logger = nil)
     @options = options
-    prepare_logger(logger)
+    prepare_logger(logger, nil, "trigger")
 
     debug "add trigger #{options}"
   end
