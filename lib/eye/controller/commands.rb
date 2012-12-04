@@ -44,7 +44,7 @@ module Eye::Controller::Commands
   end
 
   def status_string
-    @applications.map{|app| app.status_string }.join("\n")
+    @applications.sort_by(&:name).map{|app| app.status_string }.join("\n")
   end
 
   def quit

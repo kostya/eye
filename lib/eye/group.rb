@@ -34,10 +34,10 @@ class Eye::Group
     res = []
 
     if @hidden
-      @processes.each{|p| res += p.status_string }
+      @processes.sort_by(&:name).each{|p| res += p.status_string }
     else
       res << "#{name}\n"
-      @processes.each{|p| res += p.status_string.map{|c| "  " + c} }
+      @processes.sort_by(&:name).each{|p| res += p.status_string.map{|c| "  " + c} }
     end     
 
     res
