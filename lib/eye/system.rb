@@ -1,6 +1,3 @@
-gem 'posix-spawn'
-require 'posix/spawn'
-
 require "shellwords"
 require 'pathname'
 
@@ -39,8 +36,8 @@ module Eye::System
     def daemonize(cmd, cfg = {})
       Dir.chdir(cfg[:working_dir]) if cfg[:working_dir]
       opts = spawn_options(cfg)
-      pid  = POSIX::Spawn::spawn(cfg[:environment] || {}, *Shellwords.shellwords(cmd), opts)
-      ::Process.detach(pid)
+      pid  = Process::spawn(cfg[:environment] || {}, *Shellwords.shellwords(cmd), opts)
+      Process.detach(pid)
       pid      
     end
 
@@ -52,7 +49,7 @@ module Eye::System
     def execute(cmd, cfg = {})
       Dir.chdir(cfg[:working_dir]) if cfg[:working_dir]
       opts = spawn_options(cfg)
-      pid  = POSIX::Spawn::spawn(cfg[:environment] || {}, *Shellwords.shellwords(cmd), opts)
+      pid  = Process::spawn(cfg[:environment] || {}, *Shellwords.shellwords(cmd), opts)
 
       timeout = cfg[:timeout] || 1.second
       Timeout.timeout(timeout) do
@@ -68,7 +65,7 @@ module Eye::System
     # {pid => {:rss =>, :cpu =>, :ppid => , :cmd => }}
     # slow
     def ps_aux
-      str = POSIX::Spawn.send('`', "ps axo pid,ppid,pcpu,rss,command")
+      str = Process.send('`', "ps axo pid,ppid,pcpu,rss,command")
       str.force_encoding('binary')
       lines = str.split("\n")      
       lines.shift # remove first line

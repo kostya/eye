@@ -21,7 +21,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'celluloid'
   gem.add_dependency 'state_machine'
   gem.add_dependency 'activesupport'
-  gem.add_dependency 'posix-spawn'
+  #gem.add_dependency 'posix-spawn'
   #gem.add_dependency 'cocaine'
   gem.add_dependency 'celluloid-io'
   gem.add_dependency 'thor'
