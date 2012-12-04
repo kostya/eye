@@ -25,7 +25,7 @@ module Eye::Controller::Load
     {:error => false}
 
   rescue Eye::Dsl::Error, Exception, NoMethodError => ex
-    error "Error loading config <#{filename}>:"
+    error "Config error <#{filename}>:"
     error ex.message
     error ex.backtrace.join("\n")
 

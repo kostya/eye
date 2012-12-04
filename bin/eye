@@ -18,7 +18,7 @@ class Cli < Thor
     conf = File.expand_path(conf) if conf && !conf.empty?
 
     if server_started?
-      say_load_result cmd(:load, conf), conf
+      say_load_result cmd(:load, conf)
     else
       if options[:foregraund]
         server_start_foregraund(conf)
@@ -26,6 +26,11 @@ class Cli < Thor
         server_start(conf)
       end
     end
+  end
+
+  desc "syntax CONF", "check syntax of the config file"
+  def syntax(conf)
+    say_load_result cmd(:syntax, conf)
   end
   
   desc "quit", "stop eye monitoring"
@@ -91,17 +96,17 @@ private
     File.open(Eye::Settings.pid_path, 'w'){|f| f.write(pid) }
 
     sleep 2 # time to server up
-    say_load_result cmd(:load, conf), conf
+    say_load_result cmd(:load, conf)
   end
 
-  def say_load_result(res = {}, filename = "")
+  def say_load_result(res = {})
     if res[:error]
-      say "Error config loading: ", :red
+      say "Config error: ", :red
       say res[:message]
 
       res[:backtrace].to_a.each{|line| say line}
     else      
-      say "config loaded!", :yellow if !res[:empty]
+      say "config ok!", :yellow if !res[:empty]
     end
   end
 

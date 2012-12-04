@@ -14,6 +14,8 @@ module Eye::Controller::Commands
         status_string
       when :quit
         quit
+      when :syntax
+        syntax(*args)
       when :ping
         :pong
       else
