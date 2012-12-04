@@ -37,7 +37,7 @@ module Eye::Process::Child
     if removed_childs.present?
       removed_childs.each do |child_pid|
         child = self.childs[child_pid]
-        child.terminate
+        child.remove
         self.childs.delete child_pid
       end      
     end

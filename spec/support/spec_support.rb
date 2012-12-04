@@ -51,7 +51,7 @@ module C
   def p3
     base.merge(
       :name => "forking",
-      :start_command => "ruby forking.rb start",      
+      :start_command => "ruby forking.rb start",
       :stop_command => "ruby forking.rb stop",
       :pid_file => "forking.pid",
       :childs_update_period => Eye::SystemResources::PsAxActor::UPDATE_INTERVAL + 1,

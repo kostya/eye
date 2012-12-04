@@ -52,6 +52,30 @@ describe "ChildProcess" do
       (new_pids - pids).size.should == 1
     end
 
+    it "all childs is die, should update list" do
+      start_ok_process(C.p3.merge(:monitor_children => {}, :childs_update_period => Eye::SystemResources::PsAxActor::UPDATE_INTERVAL + 1)) 
+      @process.watchers.keys.should == [:check_alive, :check_childs]
+
+      sleep 5 # ensure that childs finds
+
+      #p @process.childs
+      master_pid = @process.pid
+      pids = @process.childs.keys.sort
+
+      # one of the child is just die
+      Eye::System.execute("kill -HUP #{master_pid}")
+
+      # sleep enought for update list
+      sleep (Eye::SystemResources::PsAxActor::UPDATE_INTERVAL * 2 + 1).seconds
+
+      new_pids = @process.childs.keys.sort
+
+      master_pid.should == @process.pid
+      new_pids.size.should == 3
+      (pids - new_pids).should == pids
+      (new_pids - pids).should == new_pids
+    end
+
     it "when process stop, childs cleans" do
       start_ok_process(C.p3.merge(:monitor_children => {}, :childs_update_period => Eye::SystemResources::PsAxActor::UPDATE_INTERVAL + 1))
       sleep 5 # ensure that childs finds
@@ -67,6 +91,7 @@ describe "ChildProcess" do
 
       Eye::System.pid_alive?(pid).should == false    
     end
+
   end
 
   describe "add_or_update_childs" do
