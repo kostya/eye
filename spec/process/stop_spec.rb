@@ -66,7 +66,7 @@ describe "Process Stop" do
     @process.stop_process
 
     Eye::System.pid_alive?(@pid).should == true
-    @process.state_name.should == :up # cant stop with this command, so :up
+    @process.state_name.should == :stopping # cant stop with this command, so save :stopping
   end
 
   it "watch_file" do

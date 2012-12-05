@@ -71,17 +71,20 @@ describe "Process Controller" do
       @process.pid.should == nil
     end
 
-    it "stop if cant kill process, too moving to unmonitored" do
+    it "if cant kill process, moving to unmonitored too" do
       start_ok_process(C.p1.merge(:stop_command => "which ruby"))
+
+      @process.watchers.keys.should == [:check_alive]
 
       @process.stop
 
       Eye::System.pid_alive?(@pid).should == true
       @process.state_name.should == :unmonitored
-      @process.states_history.end?(:up, :unmonitored).should == true
+      @process.states_history.end?(:stopping, :unmonitored).should == true
 
       # should clear pid
       @process.pid.should == nil
+      @process.watchers.keys.should == []
     end
   end
 

@@ -59,8 +59,10 @@ module Eye::Process::Commands
     kill_process
 
     if process_realy_running?
-      warn "process not stopped, check command/signals, or sets stop_timeout manually, seems its realy soft, now return to :up"
-      transit :cant_kill
+      warn "process NOT STOPPED, check command/signals, or sets stop_grace manually, seems its realy soft"
+
+      # hard, what to do here
+      # transit :cant_kill
       nil
 
     else
