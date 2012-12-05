@@ -12,7 +12,7 @@ describe "Eye::SystemResources" do
   it "should get memory2" do
     x = Eye::SystemResources.memory_usage2($$)
     x.should > 100
-    x.should < 300_000
+    x.should < 800_000
   end
 
   it "should get cpu" do

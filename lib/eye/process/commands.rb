@@ -4,7 +4,9 @@ module Eye::Process::Commands
     :timeout => "increase start_timeout interval",
     :pid_not_found => "pid_file does not appear, check command",
     :not_realy_running => "process not found",
-    :cant_write_pid => "pid_file is not writable for eye"
+    :cant_write_pid => "pid_file is not writable for eye",
+    :cant_daemonize => "daemonize error (bad command?)",
+    :cant_execute => "execute error (bad command?)"
   }
 
   def start_process
@@ -138,7 +140,11 @@ private
   
   def spawn_process
     self.pid = Eye::System.daemonize(self[:start_command], config)
+
+    return :cant_daemonize unless self.pid
+
     sleep self[:start_grace].to_f
+
     if process_realy_running?
       s = save_pid_to_file rescue nil
       s ? :ok : :cant_write_pid
@@ -151,6 +157,7 @@ private
     res = Eye::System.execute(self[:start_command], config.merge(:timeout => config[:start_timeout]))
 
     return :timeout if res == :timeout
+    return :cant_execute if res == :cant_execute
 
     sleep self[:start_grace].to_f
 

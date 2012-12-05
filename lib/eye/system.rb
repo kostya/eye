@@ -38,7 +38,9 @@ module Eye::System
       opts = spawn_options(cfg)
       pid  = Process::spawn(cfg[:environment] || {}, *Shellwords.shellwords(cmd), opts)
       Process.detach(pid)
-      pid      
+      pid     
+    rescue Errno::ENOENT 
+      nil
     end
 
     # Blocking execute cmd, return status
@@ -59,6 +61,9 @@ module Eye::System
     rescue Timeout::Error
       send_signal(pid) if pid        
       :timeout
+      
+    rescue Errno::ENOENT 
+      :cant_execute
     end
 
     # get table

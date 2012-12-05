@@ -88,7 +88,7 @@ describe "Process Start" do
       @process = process(c.merge(:start_command => "asdf asdf1 r f324 f324f 32f44f"))
       mock(@process).check_crush!
       res = @process.start
-      res.should == (c[:daemonize] ? :not_realy_running : :pid_not_found)
+      res.should == (c[:daemonize] ? :cant_daemonize : :cant_execute)
 
       sleep 0.5
 
