@@ -38,7 +38,7 @@ describe "ChildProcess" do
       die_process!(died, 9)
 
       # sleep enought for update list
-      sleep (Eye::SystemResources::PsAxActor::UPDATE_INTERVAL * 2 + 1).seconds
+      sleep (Eye::SystemResources::PsAxActor::UPDATE_INTERVAL * 2 + 3).seconds
 
       @process.childs.size.should == 3
       @process.childs.keys.should_not include(died)
