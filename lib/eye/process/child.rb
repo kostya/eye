@@ -36,9 +36,8 @@ module Eye::Process::Child
 
     if removed_childs.present?
       removed_childs.each do |child_pid|
-        child = self.childs[child_pid]
-        child.remove
-        self.childs.delete child_pid
+        child = self.childs.delete(child_pid)
+        child.remove if child && child.alive?
       end      
     end
 
@@ -51,12 +50,11 @@ module Eye::Process::Child
   def remove_childs
     return unless self[:monitor_children]
 
-    if self.childs.present?
-      self.childs.each do |child_pid, obj|
-        obj.remove if obj
+    if childs.present?
+      childs.keys.each do |child_pid|
+        child = childs.delete(child_pid)
+        child.remove if child && child.alive?
       end
-
-      self.childs = {}
     else
       warn "No childs to clear"
     end
