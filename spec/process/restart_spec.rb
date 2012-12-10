@@ -63,6 +63,31 @@ describe "Process Restart" do
       File.read(@log).should include("USR1")
     end
 
+    it "emulate restart as stop,start where stop command does not kill" do
+      # should send command, than wait grace time,
+      # and than even if old process doesnot die, start another one, (looks like bug, but this is not, it just bad using, commands)
+
+      # same situation, when stop command kills so long time, that process cant stop
+      start_ok_process(cfg.merge(:stop_command => "kill -USR1 {{PID}}"))
+      old_pid = @pid
+
+      dont_allow(@process).check_crush!
+      @process.restart_process
+
+      sleep 3
+      @process.pid.should_not == old_pid
+
+      Eye::System.pid_alive?(@pid).should == true      
+
+      @process.state_name.should == :up
+      @process.watchers.keys.should == [:check_alive]
+
+      @process.load_pid_from_file.should == @process.pid
+      @process.states_history.end?(:up, :restarting, :stopping, :unmonitored, :starting, :up).should == true
+
+      File.read(@log).should include("USR1")
+    end
+
     it "bad restart_command is #{cfg[:name]} and its kills" do
       # not really restartin, just killing
       # so monitor should see that process died, and up it

@@ -63,6 +63,7 @@ module Eye::Process::Commands
 
       # hard, what to do here
       # transit :cant_kill
+      transit :unmonitoring
       nil
 
     else
