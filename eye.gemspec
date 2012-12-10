@@ -19,12 +19,10 @@ Gem::Specification.new do |gem|
   gem.required_rubygems_version = '>= 1.3.6'  
   
   gem.add_dependency 'celluloid'
+  gem.add_dependency 'celluloid-io'  
   gem.add_dependency 'state_machine'
   gem.add_dependency 'activesupport'
-  #gem.add_dependency 'posix-spawn'
-  #gem.add_dependency 'cocaine'
-  gem.add_dependency 'celluloid-io'
-  gem.add_dependency 'thor'
+  gem.add_dependency 'eye_client'
 
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rspec'

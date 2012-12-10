@@ -1,0 +1,55 @@
+#!/usr/bin/env ruby
+$:.unshift File.expand_path(File.join(File.dirname(__FILE__), %w{.. lib}))
+require 'optparse'
+require 'eye'
+
+options = {}
+
+OptionParser.new do |opts|
+  opts.on( '-h', '--help', 'Display this screen' ) do
+    puts opts
+    exit
+  end
+
+  opts.on( '-c', '--config CONFIG', 'load with config' ) do |config_path|
+    options[:config] = config_path
+  end
+
+  opts.on( '-s', '--socket SOCKET', 'start listen on socket' ) do |socket_path|
+    options[:socket_path] = socket_path
+  end
+
+  opts.on( '-l', '--logger LOGGER', 'custom logger' ) do |logger|
+    options[:logger] = logger
+  end
+
+  opts.on( '-d', '--debug', 'debug info to logger' ) do
+    options[:debug] = true
+  end
+
+end.parse!
+
+$0 = "eye monitoring v#{Eye::VERSION}"
+
+Eye::Settings.ensure_eye_dir
+
+socket_path = options[:socket_path] || Eye::Settings.socket_path
+server = Eye::Server.new(socket_path)
+
+Eye::Logger.log_level = options[:debug] ? Logger::DEBUG : Logger::INFO
+Eye::Logger.link_logger(options[:logger]) if options[:logger]
+
+config = options[:config]
+config = File.expand_path(config) if config && !config.empty?
+if config
+  res = server.command('load', config)
+  exit if res[:error]
+end
+
+server.run!
+
+Kernel.trap("INT") do # for foregraund quit
+  exit
+end
+
+sleep

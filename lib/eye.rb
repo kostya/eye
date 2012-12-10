@@ -14,8 +14,6 @@ module Eye
   autoload :Tail,           'eye/tail'
   autoload :Dsl,            'eye/dsl'  
   autoload :Application,    'eye/application'  
-  
-  autoload :Client,         'eye/client'
   autoload :Settings,       'eye/settings'
 
   class << self

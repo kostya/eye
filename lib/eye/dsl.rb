@@ -11,17 +11,16 @@ class Eye::Dsl
   autoload :Chain,                'eye/dsl/chain'
 
   def self.load(content = nil, filename = nil)
-    Eye.temp_config = {}
+    Eye.parsed_config = {}
+    Eye.parsed_options = {}
 
     content = File.read(filename) if content.blank?
     
     Kernel.eval(content, $root_binding, filename.to_s)
 
-    cfg = Eye.temp_config
+    cfg = Eye.parsed_config
     cfg = normalized_config(cfg)
     validate(cfg)
-
-    Eye.temp_config = {}
 
     cfg 
   end

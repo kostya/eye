@@ -70,4 +70,17 @@ describe "Eye::Dsl" do
     cfg['bla'][:groups]['__default__'][:processes][:some].should == nil
   end
 
+  describe "global options" do
+    it "logger" do
+      conf = <<-E
+        Eye.logger = "/tmp/1.log"
+
+        Eye.application("bla") do        
+        end
+      E
+      Eye::Dsl.load(conf).should == {}
+      Eye.parsed_options.should == {:logger => "/tmp/1.log"}
+    end
+  end
+
 end

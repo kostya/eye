@@ -113,7 +113,7 @@ class TrapError
 end
 
 def process(cfg)  
-  p = Eye::Process.new(cfg, Eye::Logger.new($logger_path))
+  p = Eye::Process.new(cfg)
   @trap = TrapError.new
   @trap.link(p)
   p

@@ -2,7 +2,7 @@ module Eye::Controller::Commands
 
   # Main method, as anwer for client command
   def command(cmd, *args)
-    info "client command: #{cmd}, #{args.inspect}"
+    info "client command: #{cmd} #{args * ', '}"
     cmd = cmd.to_sym
     
     case cmd 
@@ -18,6 +18,8 @@ module Eye::Controller::Commands
         syntax(*args)
       when :ping
         :pong
+      when :logger_dev
+        Eye::Logger.dev
       else
         :unknown_command
     end    
@@ -48,7 +50,7 @@ module Eye::Controller::Commands
   end
 
   def quit
-    info "Get quit command, exitting ..."
+    debug "Get quit command, exitting ..."
     remove
     sleep 1
     Eye::System.send_signal($$) # soft terminate

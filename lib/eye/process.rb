@@ -18,11 +18,11 @@ class Eye::Process
   attr_accessor :pid, :watchers, :config, :states_history, 
                 :state_reason, :childs, :triggers, :flapping, :name
   
-  def initialize(config, logger = nil)
+  def initialize(config)
     raise "pid file should be" unless config[:pid_file]
 
     @config = prepare_config(config)
-    prepare_logger(logger, full_name)
+    @logger = Eye::Logger.new(full_name)
     
     @watchers = {}
     @childs = {}

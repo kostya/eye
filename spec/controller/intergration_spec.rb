@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "Intergration" do
   before :each do
-    @c = Eye::Controller.new($logger)
+    @c = controller_new
     @c.load(fixture("dsl/integration.eye"))
     @processes = @c.all_processes
     @p1 = @processes.detect{|c| c.name == 'sample1'}

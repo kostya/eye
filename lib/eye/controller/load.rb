@@ -27,16 +27,19 @@ module Eye::Controller::Load
   rescue Eye::Dsl::Error, Exception, NoMethodError => ex
     error "Config error <#{filename}>:"
     error ex.message
-    error ex.backtrace.join("\n")
+    #error ex.backtrace.join("\n")
 
     # filter backtrace for user output
-    bt = (ex.backtrace || []).reject{|line| line.to_s =~ %r{eye/lib/eye} || line.to_s =~ %r{lib/celluloid}} 
+    bt = (ex.backtrace || []).reject{|line| line.to_s =~ %r{/lib/eye/} || line.to_s =~ %r{lib/celluloid}} 
+    error bt.join("\n")
+
     {:error => true, :message => ex.message, :backtrace => bt}
   end
 
   # prepare, check and load config
   def load(filename = "")
     syntax(filename) do |new_config|
+      load_options
       create_objects(new_config)
       @current_config = new_config
     end
@@ -46,6 +49,22 @@ private
 
   def merge_configs(old_config, new_config)
     old_config.merge(new_config)
+  end
+
+  # load global config options
+  def load_options
+    opts = Eye.parsed_options
+    return if opts.blank?
+
+    if opts[:logger]
+      # do not apply logger, if in stdout state
+      unless Eye::Logger.dev == 'stdout' || Eye::Logger.dev == 'stderr'
+        Eye::Logger.link_logger(opts[:logger])
+      end
+    end
+
+    # clear parsed options, because we already apply them
+    Eye.parsed_options = {}
   end
 
   # create objects as diff, from configs
@@ -76,12 +95,12 @@ private
       debug "create app #{app_name}"
     end
 
-    app = Eye::Application.new(app_name, app_config, @logger)
+    app = Eye::Application.new(app_name, app_config)
     @applications << app
 
     new_groups = app_config.delete(:groups)
     new_groups.each do |group_name, group_cfg|
-      group = update_or_create_group(group_name, group_cfg.clone)
+      group = update_or_create_group(group_name, group_cfg.clone.merge(:application => app_name))
       app.add_group(group)
     end
 
@@ -101,7 +120,7 @@ private
       group
     else
       debug "create group #{group_name}"
-      Eye::Group.new(group_name, group_config, @logger)
+      Eye::Group.new(group_name, group_config)
     end
 
     processes = group_config.delete(:processes)
@@ -121,7 +140,7 @@ private
       process      
     else
       debug "create process #{process_name}"
-      process = Eye::Process.new(process_cfg, @logger)      
+      process = Eye::Process.new(process_cfg)
       process.queue(:monitor)
       process
     end

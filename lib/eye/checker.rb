@@ -10,20 +10,20 @@ class Eye::Checker
 
   attr_accessor :value, :values, :options, :pid
 
-  def self.create(pid, options = {}, logger = nil)
+  def self.create(pid, options = {}, logger_prefix = nil)
     obj = case options[:type]
-      when :memory then Eye::Checker::Memory.new(pid, options, logger)
-      when :cpu then Eye::Checker::Cpu.new(pid, options, logger)
-      when :http then Eye::Checker::Http.new(pid, options, logger)
-      when :tail_log then Eye::Checker::TailLog.new(pid, options, logger)
+      when :memory then Eye::Checker::Memory.new(pid, options, logger_prefix)
+      when :cpu then Eye::Checker::Cpu.new(pid, options, logger_prefix)
+      when :http then Eye::Checker::Http.new(pid, options, logger_prefix)
+      when :tail_log then Eye::Checker::TailLog.new(pid, options, logger_prefix)
     else
       raise "Unknown checker"
     end
   end
 
-  def initialize(pid, options = {}, logger = nil)
+  def initialize(pid, options = {}, logger_prefix = nil)
     @pid = pid
-    prepare_logger(logger, nil, "check:#{check_name}")
+    @logger = Eye::Logger.new(logger_prefix, "check:#{check_name}")
     @options = options
 
     @value = nil

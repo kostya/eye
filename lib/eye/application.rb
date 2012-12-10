@@ -4,10 +4,10 @@ class Eye::Application
 
   include Eye::Logger::Helpers
 
-  def initialize(name, config = {}, logger = nil)
+  def initialize(name, config = {})
     @groups = []
     @name = name
-    prepare_logger(logger, @name)
+    @logger = Eye::Logger.new(@name)
     @config = config
     debug "created"
   end

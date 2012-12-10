@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "Eye::Controller::Load" do
-  subject{ Eye::Controller.new($logger) }
+  subject{ controller_new }
 
   it "blank" do
     subject.load.should == {:error => false, :empty => true}
@@ -109,6 +109,14 @@ describe "Eye::Controller::Load" do
         "gr1"=>{"q3"=>"/tmp/app1-gr2-q3.pid"}, 
         "__default__"=>{"g4"=>"/tmp/app1-g4.pid", "g5"=>"/tmp/app1-g5.pid"}},
       "app2"=>{"__default__"=>{"z1"=>"/tmp/app2-z1.pid"}}}
+  end
+
+  it "load logger" do
+    subject.load(fixture("dsl/load_logger.eye")).should == {:error => false}
+    Eye::Logger.dev.should == "/tmp/1.log"
+    
+    # return global logger
+    set_glogger
   end
 
 end

@@ -8,11 +8,11 @@ class Eye::Group
 
   attr_reader :processes, :name, :hidden, :config
 
-  def initialize(name, config, logger = nil)
+  def initialize(name, config)
     @name = name
     @config = config
     @processes = []
-    prepare_logger(logger, name)    
+    @logger = Eye::Logger.new([config[:application], name] * ':')
     @hidden = (name == '__default__')
     @queue = Celluloid::Chain.new(current_actor)
     debug "created"

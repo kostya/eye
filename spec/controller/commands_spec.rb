@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "comamnd spec" do
-  subject{ c = Eye::Controller.new($logger); c.load(fixture("dsl/load.eye")); c }
+  subject{ c = controller_new; c.load(fixture("dsl/load.eye")); c }
 
   before :each do
     @apps = subject.applications

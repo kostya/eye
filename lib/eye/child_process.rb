@@ -21,7 +21,7 @@ class Eye::ChildProcess
 
   attr_reader :pid, :name, :config, :watchers
 
-  def initialize(pid, config = {}, logger = nil)
+  def initialize(pid, config = {}, logger_prefix = nil)
     raise "Empty pid" unless pid
 
     @pid = pid
@@ -29,7 +29,7 @@ class Eye::ChildProcess
     @title = Eye::SystemResources.cmd(pid)
     @name = "child_#{pid}"
 
-    prepare_logger(logger, "#{logger.prefix} child:#{pid}")
+    @logger = Eye::Logger.new("#{logger_prefix} child:#{pid}")
     
     @watchers = {}
 

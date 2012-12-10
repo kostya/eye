@@ -21,8 +21,15 @@ require 'fakeweb'
 require File.join(File.dirname(__FILE__), %w{support spec_support})
 
 $logger_path = File.join(File.dirname(__FILE__), %w{spec.log})
-$logger = Eye::Logger.new($logger_path)
 
+def set_glogger
+  Eye::Logger.log_level = Logger::DEBUG
+  Eye::Logger.link_logger($logger_path)
+end
+
+set_glogger
+
+$logger = Eye::Logger.new("spec")
 Celluloid.logger = $logger
 
 RSpec.configure do |config|
@@ -108,4 +115,8 @@ def join(*args)
   end
 
   result
+end
+
+def controller_new
+  Eye::Controller.new
 end

@@ -10,17 +10,17 @@ class Eye::Trigger
 
   attr_reader :message, :options
 
-  def self.create(options = {}, logger = nil)
+  def self.create(options = {}, logger_prefix = nil)
     obj = case options[:type]
-      when :flapping then Eye::Trigger::Flapping.new(options, logger)
+      when :flapping then Eye::Trigger::Flapping.new(options, logger_prefix)
     else
       raise "Unknown checker"
     end
   end
 
-  def initialize(options = {}, logger = nil)
+  def initialize(options = {}, logger_prefix = nil)
     @options = options
-    prepare_logger(logger, nil, "trigger")
+    @logger = Eye::Logger.new(logger_prefix, "trigger")
 
     debug "add trigger #{options}"
   end

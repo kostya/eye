@@ -25,7 +25,7 @@ module Eye::Process::Trigger
 private
 
   def add_trigger(cfg = {})
-    self.triggers << Eye::Trigger.create(cfg, @logger)
+    self.triggers << Eye::Trigger.create(cfg, logger.prefix)
   end
 
 end

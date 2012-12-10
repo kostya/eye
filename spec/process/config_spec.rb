@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "Eye::Process::Config" do
   before :each do
-    @p = Eye::Process.new({:pid_file => '/tmp/1.pid', :start_command => "a"}, nil)
+    @p = Eye::Process.new({:pid_file => '/tmp/1.pid', :start_command => "a"})
   end
 
   it "should use throught [], c" do
