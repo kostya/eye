@@ -6,7 +6,8 @@ module Eye::Process::Commands
     :not_realy_running => "process not found",
     :cant_write_pid => "pid_file is not writable for eye",
     :cant_daemonize => "daemonize error (bad command?)",
-    :cant_execute => "execute error (bad command?)"
+    :cant_execute => "execute error (bad command?)",
+    :bad_out_paths => "cant write stdout/err files (permission?)"
   }
 
   def start_process
@@ -142,9 +143,12 @@ private
   end
   
   def spawn_process
-    self.pid = Eye::System.daemonize(self[:start_command], config)
+    res = Eye::System.daemonize(self[:start_command], config)
 
-    return :cant_daemonize unless self.pid
+    return :cant_daemonize unless res    
+    return :bad_out_paths if res == :bad_out_paths
+    
+    self.pid = res
 
     sleep self[:start_grace].to_f
 
@@ -161,6 +165,7 @@ private
 
     return :timeout if res == :timeout
     return :cant_execute if res == :cant_execute
+    return :bad_out_paths if res == :bad_out_paths
 
     sleep self[:start_grace].to_f
 

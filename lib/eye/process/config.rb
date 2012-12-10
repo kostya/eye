@@ -33,6 +33,9 @@ module Eye::Process::Config
       h[:triggers] ||= {}
       h[:triggers][:flapping] = {:type => :flapping, :times => 10, :within => 10.seconds}
     end
+    
+    h[:stdout] = Eye::System.normalized_file(h[:stdout], h[:working_dir]) if h[:stdout]
+    h[:stderr] = Eye::System.normalized_file(h[:stderr], h[:working_dir]) if h[:stderr]
 
     h    
   end

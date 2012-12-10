@@ -10,7 +10,7 @@ describe "Process Start" do
 
     # should not try to start something
     dont_allow(Eye::System).daemonize
-    dont_allow(Eye::System).execute    
+    dont_allow(Eye::System).execute
 
     # when start process
     @process = process C.p1
@@ -89,6 +89,20 @@ describe "Process Start" do
       mock(@process).check_crush!
       res = @process.start
       res.should == (c[:daemonize] ? :cant_daemonize : :cant_execute)
+
+      sleep 0.5
+
+      @process.pid.should == nil
+      @process.load_pid_from_file.should == nil
+      [:starting, :down].should include(@process.state_name)
+      @process.states_history.all?(:unmonitored, :starting, :down).should == true
+    end
+
+    it "start PROBLEM with stdout permissions" do
+      @process = process(c.merge(:stdout => "/var/run/1.log"))
+      mock(@process).check_crush!
+      res = @process.start
+      res.should == :bad_out_paths
 
       sleep 0.5
 
