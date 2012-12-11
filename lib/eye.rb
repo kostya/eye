@@ -1,5 +1,5 @@
 module Eye  
-  VERSION = "0.1"
+  VERSION = "0.1.1"
 
   autoload :Process,        'eye/process'
   autoload :ChildProcess,   'eye/child_process'
@@ -15,6 +15,7 @@ module Eye
   autoload :Dsl,            'eye/dsl'  
   autoload :Application,    'eye/application'  
   autoload :Settings,       'eye/settings'
+  autoload :Client,         'eye/client'
 
   class << self
     def controller

@@ -1,0 +1,200 @@
+#!/usr/bin/env ruby
+$:.unshift File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib]))
+require 'rubygems' if RUBY_VERSION < '1.9'
+require 'eye'
+
+gem 'thor'
+require 'thor'
+
+class Cli < Thor
+
+  desc "status", "show process statuses"
+  def status
+    res = cmd(:status)
+    puts res if res && !res.empty?
+    puts
+  end
+
+  desc "load [CONF]", "load config (and start server if needed) (-f for foregraund start)"
+  method_option :foregraund, :type => :boolean, :aliases => "-f"
+  method_option :logger, :type => :string, :aliases => "-l"
+  def load(conf = "")
+    conf = File.expand_path(conf) if !conf.empty?
+
+    if options[:foregraund]
+      # in foregraund we stop another server, and run just 1 current config version
+      server_start_foregraund(conf)
+
+    elsif server_started?
+      say_load_result cmd(:load, conf)
+
+    else
+      server_start(conf)
+
+    end
+  end
+
+  desc "syntax CONF", "check syntax of the config file"
+  def syntax(conf)
+    conf = File.expand_path(conf) if conf && !conf.empty?
+    say_load_result cmd(:syntax, conf), false
+  end
+  
+  desc "quit", "stop eye monitoring"
+  def quit
+    cmd(:quit)
+    say "stopped...", :yellow
+  end
+  
+  [:start, :stop, :restart, :remove, :unmonitor].each do |_cmd|
+    class_eval <<-E
+      desc "#{_cmd} [TARGET]", "#{_cmd} app,group or process"
+      def #{_cmd}(str = "")
+        send_command('#{_cmd}', str)
+      end
+    E
+  end
+
+  desc "log [TARGET]", "tailing log for app,group or process"
+  def log(target = "")
+    log_trace(target)
+  end
+
+private
+
+  def client
+    @client ||= Eye::Client.new(Eye::Settings.socket_path)
+  end
+
+  def _cmd(cmd, *args)
+    client.command(cmd, *args)
+  rescue Errno::ECONNREFUSED, Errno::ENOENT
+    :not_started
+  end
+  
+  def cmd(cmd, *args)
+    res = _cmd(cmd, *args)
+
+    if res == :not_started
+      say "Eye monitoring not found, did you start it?", :red
+      exit
+    elsif res == :timeouted
+      say "Eye does not answer, timeouted...", :red
+      exit
+    end
+    
+    res
+  end
+  
+  def server_started?
+    _cmd(:ping) == :pong
+  end
+  
+  def say_load_result(res = {}, load = true)
+    if res[:error]
+      say "Config error: ", :red
+      say res[:message]
+
+      res[:backtrace].to_a.each{|line| say line}
+    else      
+      if load 
+        say "config loaded!", :yellow if !res[:empty]
+      else
+        say "config ok!", :yellow if !res[:empty]
+      end
+    end
+  end
+
+  def send_command(_cmd, *args)
+    res = cmd(_cmd, *args)
+    if res == :unknown_command
+      say "Unknown command", :red
+    elsif res == :nothing
+      say "No targets to #{_cmd}!", :red
+    else
+      say "command #{_cmd} affected to #{res.to_s}"
+    end        
+  end
+
+  def log_trace(tag = '')
+    log_file = cmd(:logger_dev)
+    if log_file && File.exists?(log_file)
+      Process.exec "tail -n 100 -f #{log_file} | grep '#{tag}'"
+    else
+      say "log file not found #{log_file.inspect}", :red
+    end
+  end
+  
+  def loader_path
+    Gem.bin_path('eye', 'loader_eye')
+  rescue Gem::GemNotFoundException, Gem::Exception
+    nil    
+  end  
+  
+  def ruby_path
+    require 'rbconfig'
+    RbConfig::CONFIG['bindir'] + "/ruby"
+  end
+
+  def ensure_loader_path
+    unless loader_path
+      say "Start monitoring needs to run under ruby with installed main gem 'eye'", :red
+      say "First time run 'load' under 1.9.2 at least, than you can use load everywhere", :red
+      exit
+    end
+  end
+
+  def server_start_foregraund(conf = nil)
+    ensure_loader_path
+    Eye::Settings.ensure_eye_dir
+
+    if server_started?
+      _cmd(:quit) && sleep(1) # stop previous server
+    end
+
+    args = []
+    args += ['-c', conf] if conf
+    args += ['-l', 'stdout']
+
+    Process.exec(ruby_path, loader_path, *args)
+  end
+
+  def server_start(conf = nil)
+    ensure_loader_path
+    Eye::Settings.ensure_eye_dir
+    
+    args = []
+    args += ['-l', options[:logger]] if options[:logger]
+
+    pid = Process.spawn(ruby_path, loader_path, *args)
+    Process.detach(pid)
+    File.open(Eye::Settings.pid_path, 'w'){|f| f.write(pid) }
+
+    unless wait_server
+      say "server not runned in 10 seconds, something crazy wrong", :red
+      exit
+    end
+
+    if conf && !conf.empty?
+      say_load_result cmd(:load, conf)
+    else
+      say "started!", :yellow
+    end
+  end
+
+  def wait_server
+    # allow 10 seconds to run server
+    Timeout.timeout(10) do
+      while !server_started?
+        sleep 0.3
+      end
+    end
+
+    true
+  rescue Timeout::Error
+    false
+  end
+
+end
+
+Cli.start
