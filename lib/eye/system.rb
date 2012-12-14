@@ -36,7 +36,7 @@ module Eye::System
     def daemonize(cmd, cfg = {})
       Dir.chdir(cfg[:working_dir]) if cfg[:working_dir]
       opts = spawn_options(cfg)
-      pid  = Process::spawn(cfg[:environment] || {}, *Shellwords.shellwords(cmd), opts)
+      pid  = Process::spawn(prepare_env(cfg), *Shellwords.shellwords(cmd), opts)
       Process.detach(pid)
       pid     
       
@@ -55,7 +55,7 @@ module Eye::System
     def execute(cmd, cfg = {})
       Dir.chdir(cfg[:working_dir]) if cfg[:working_dir]
       opts = spawn_options(cfg)
-      pid  = Process::spawn(cfg[:environment] || {}, *Shellwords.shellwords(cmd), opts)
+      pid  = Process::spawn(prepare_env(cfg), *Shellwords.shellwords(cmd), opts)
 
       timeout = cfg[:timeout] || 1.second
       Timeout.timeout(timeout) do
@@ -105,6 +105,15 @@ module Eye::System
       o.update(err: [config[:stderr], "a"]) if config[:stderr]
       o.update(in: config[:stdin]) if config[:stdin]
       o
+    end
+
+    def prepare_env(config = {})
+      env = config[:environment] || {}
+
+      # ruby process spawn, somehow rewrite LANG env, this is bad for unicorn
+      env['LANG'] = ENV_LANG unless env['LANG']
+
+      env
     end
   end
 

@@ -17,7 +17,7 @@ class Eye::Dsl
 
     content = File.read(filename) if content.blank?
     
-    Kernel.eval(content, $root_binding, filename.to_s)
+    Kernel.eval(content, ROOT_BINDING, filename.to_s)
 
     cfg = Eye.parsed_config
     cfg = normalized_config(cfg)

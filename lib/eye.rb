@@ -24,4 +24,5 @@ module Eye
   end
 end
 
-$root_binding = binding
+ROOT_BINDING  = binding
+ENV_LANG      = ENV['LANG'] # save original LANG, because ruby somehow loose it

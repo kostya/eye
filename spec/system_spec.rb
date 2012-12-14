@@ -57,6 +57,13 @@ describe "Eye::System" do
       data = File.read(@log)
       data.should == "some\n"
     end
+
+    it "should add LANG env varible" do
+      mock(Process).spawn({"BLA"=>"1", "LANG"=>ENV_LANG}, 'echo', 'some', anything)
+      stub(Process).detach
+
+      @pid = Eye::System.daemonize("echo 'some'", {:stdout => @log, :environment => {"BLA" => "1"}})
+    end
   end
 
   describe "execute" do
