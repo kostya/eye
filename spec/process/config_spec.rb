@@ -19,5 +19,57 @@ describe "Eye::Process::Config" do
     @p = Eye::Process.new({:working_dir => "/tmp", :stdout => '1.log', :start_command => "a", :pid_file => '/tmp/1.pid'})
     @p[:stdout].should == "/tmp/1.log"
   end
+
+  it "check and triggers should {} if empty" do
+    @p = Eye::Process.new({:working_dir => "/tmp", :stdout => '1.log', :start_command => "a", :pid_file => '/tmp/1.pid', :triggers => {}})
+    @p[:checks].should == {}
+    @p[:triggers].should == {:flapping => {:type=>:flapping, :times=>10, :within=>10}}
+  end
+
+  it "if trigger setted, no rewrite" do
+    @p = Eye::Process.new({:working_dir => "/tmp", :stdout => '1.log', :start_command => "a", :pid_file => '/tmp/1.pid', :triggers => {:flapping => {:type=>:flapping, :times=>100, :within=>100}}})
+    @p[:triggers].should == {:flapping => {:type=>:flapping, :times=>100, :within=>100}}
+  end
+
+  describe "clear_pid_file" do
+    it "should set clear_pid_file if daemonize" do
+      @p = Eye::Process.new({:pid_file => '/tmp/1.pid', :daemonize => true})
+      @p[:clear_pid_file].should == true      
+    end
+
+    it "should not set clear_pid_file if not daemonize" do
+      @p = Eye::Process.new({:pid_file => '/tmp/1.pid'})
+      @p[:clear_pid_file].should == nil
+    end
+
+    it "set to false, if manual set" do
+      @p = Eye::Process.new({:pid_file => '/tmp/1.pid', :daemonize => true, :clear_pid_file => false})
+      @p[:clear_pid_file].should == false
+    end
+
+  end
+
+  describe ":childs_update_period" do
+    it "should set default" do
+      @p = Eye::Process.new({:pid_file => '/tmp/1.pid'})
+      @p[:childs_update_period].should == 30.seconds
+    end
+
+    it "should set from global options" do
+      @p = Eye::Process.new({:pid_file => '/tmp/1.pid', :childs_update_period => 11.seconds})
+      @p[:childs_update_period].should == 11.seconds
+    end
+
+    it "should set from monitor_children sub options" do
+      @p = Eye::Process.new({:pid_file => '/tmp/1.pid', :monitor_children => {:childs_update_period => 12.seconds}})
+      @p[:childs_update_period].should == 12.seconds
+    end
+
+    it "should set from monitor_children sub options" do
+      @p = Eye::Process.new({:pid_file => '/tmp/1.pid', :childs_update_period => 11.seconds, :monitor_children => {:childs_update_period => 12.seconds}})
+      @p[:childs_update_period].should == 12.seconds
+    end
+
+  end
   
 end

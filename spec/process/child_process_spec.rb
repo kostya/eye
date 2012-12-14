@@ -8,7 +8,8 @@ describe "ChildProcess" do
     end
 
     it "should monitoring when process has childs and enable option" do
-      start_ok_process(C.p3.merge(:monitor_children => {}))
+      cfg = C.p3.merge(:monitor_children => {})
+      start_ok_process(cfg)
       sleep 5 # ensure that childs finds
 
       @process.state_name.should == :up

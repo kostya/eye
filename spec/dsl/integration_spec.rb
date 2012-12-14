@@ -1,5 +1,20 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
+# check that result hash is pure, without autocreated keys
+def check_pure_hash(gk, h)
+  h.each do |k, v|
+    if v.is_a?(Hash) && v.present?
+      check_pure_hash(k, v)
+    end
+
+    begin
+      raise "not pure hash" if h[:not_exists_key] != nil
+    rescue
+      raise "problem with key #{gk}"
+    end
+  end
+end
+
 describe "Eye::Dsl" do
   it "intergration spec" do
     conf = <<-E
@@ -77,7 +92,9 @@ describe "Eye::Dsl" do
                 :name=>"2"}}}}}
     }
 
-    Eye::Dsl.load(conf).should == h
+    res = Eye::Dsl.load(conf)
+    res.should == h
+    check_pure_hash(:root, res)
   end
 
   it "should merge environment" do
@@ -122,6 +139,7 @@ describe "Eye::Dsl" do
     }
 
     Eye::Dsl.load(conf).should == h
+    check_pure_hash(:root, Eye::Dsl.load(conf))
   end
 
   it "should rewrite options" do
@@ -179,6 +197,7 @@ describe "Eye::Dsl" do
     }
 
     Eye::Dsl.load(conf).should == h
+    check_pure_hash(:root, Eye::Dsl.load(conf))
   end
 
   describe "requires" do
@@ -210,6 +229,7 @@ describe "Eye::Dsl" do
       file = fixture('dsl/0.rb')
       conf = File.read(file)
       Eye::Dsl.load(conf, file).should == @h
+      check_pure_hash(:root, Eye::Dsl.load(conf, file))
     end
 
     it "should require other files by require" do

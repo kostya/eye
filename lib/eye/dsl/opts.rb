@@ -29,7 +29,7 @@ class Eye::Dsl::Opts
   end
 
   def initialize
-    @config = Hash.new { |hash, key| hash[key] = Hash.new(&hash.default_proc) }
+    @config = Eye::Dsl::MHash.new
   end
 
   def checks(type, opts = {})
@@ -52,13 +52,8 @@ class Eye::Dsl::Opts
     []
   end
 
-  # purefy config, from default value {}
   def config
-    h = {}
-    @config.each do |k,v|
-      h[k] = v
-    end
-    h
+    @config.pure
   end
 
 end
