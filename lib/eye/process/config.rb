@@ -15,8 +15,6 @@ module Eye::Process::Config
     :daemonize => false,
     :auto_start => true,
 
-    :clear_pid_file => nil,
-
     :childs_update_period => 30.seconds
   }
 
@@ -25,7 +23,6 @@ module Eye::Process::Config
     h[:pid_file_ex] = Eye::System.normalized_file(h[:pid_file], h[:working_dir]) if h[:pid_file]
     h[:checks] = {} if h[:checks].blank?
     h[:triggers] = {} if h[:triggers].blank?
-    h[:clear_pid_file] = true if h[:clear_pid_file].nil? && h[:daemonize]
     h[:childs_update_period] = h[:monitor_children][:childs_update_period] if h[:monitor_children] && h[:monitor_children][:childs_update_period]
 
     # check speedy flapping by default
@@ -66,6 +63,12 @@ module Eye::Process::Config
       add_watchers!
       add_childs!
     end    
+  end
+
+  # is pid_file under Eye::Process control, or not
+  def control_pid?
+    return self[:control_pid] unless self[:control_pid].nil?
+    !!self[:daemonize]
   end
   
 end

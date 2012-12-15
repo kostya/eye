@@ -39,7 +39,7 @@ describe "Process Monitoring" do
       @process.state_name.should == :up
     end
 
-    it "someone rewrite pid_file. should rewrite" do
+    it "someone rewrite pid_file. should rewrite for daemonize only" do
       start_ok_process(cfg)
       old_pid = @pid
       @process.load_pid_from_file.should == @pid
@@ -49,10 +49,34 @@ describe "Process Monitoring" do
 
       sleep 10 # wait until monitor understand it
 
+      if cfg[:daemonize]
+        @process.load_pid_from_file.should == @pid
+      else
+        @process.load_pid_from_file.should == 99999
+      end
+
+      @process.pid.should == old_pid
+      @process.state_name.should == :up
+    end
+
+    it "someone rewrite pid_file. and ctime > limit, should rewrite for both" do
+      start_ok_process(cfg)
+      old_pid = @pid
+      @process.load_pid_from_file.should == @pid
+
+      silence_warnings{ Eye::Process::Monitor::REWRITE_FACKUP_PIDFILE_PERIOD = 4.seconds }
+
+      File.open(cfg[:pid_file], 'w'){|f| f.write(99999) }
+      @process.load_pid_from_file.should == 99999
+
+      sleep 15 # wait until monitor understand it
+
       @process.load_pid_from_file.should == @pid
 
       @process.pid.should == old_pid
       @process.state_name.should == :up
+
+      silence_warnings{ Eye::Process::Monitor::REWRITE_FACKUP_PIDFILE_PERIOD = 2.minutes }
     end
 
     it "EMULATE UNICORN someone rewrite pid_file and process die (should read actual pid from file)" do
@@ -80,6 +104,39 @@ describe "Process Monitoring" do
       @process.load_pid_from_file.should == @process.pid
     end
 
+  end
+
+  it "EMULATE UNICORN2 hard understanding restart case" do
+    start_ok_process(C.p2)
+    old_pid = @pid
+
+    # rewrite by another :)
+    @pid = Eye::System.daemonize("ruby sample.rb", {:environment => {"ENV1" => "SECRET1"}, 
+      :working_dir => C.p2[:working_dir], :stdout => @log})
+
+    File.open(C.p2[:pid_file], 'w'){|f| f.write(@pid) }
+
+    sleep 5
+
+    # both processes exists now
+    # and in pid_file writed second pid
+    @process.load_pid_from_file.should == @pid
+    @process.pid.should == old_pid
+
+    die_process!(old_pid)
+
+    sleep 5 # wait until monitor upping process
+
+    @process.pid.should == @pid
+    old_pid.should_not == @pid
+    @process.load_pid_from_file.should == @pid
+
+    Eye::System.pid_alive?(old_pid).should == false
+    Eye::System.pid_alive?(@pid).should == true
+
+    @process.state_name.should == :up
+    @process.watchers.keys.should == [:check_alive]
+    @process.load_pid_from_file.should == @process.pid
   end
 
   it "if keep_alive disabled, process should not up" do

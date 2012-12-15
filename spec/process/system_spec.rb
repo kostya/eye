@@ -52,6 +52,15 @@ describe "Eye::Process::System" do
 
   it "send_signal"
 
+  it "pid_file_ctime" do
+    File.open(@process[:pid_file_ex], 'w'){|f| f.write("asdf") }
+    sleep 1
+    (Time.now - @process.pid_file_ctime).should > 1.second
+
+    @process.clear_pid_file
+    (Time.now - @process.pid_file_ctime).should < 0.1.second
+  end
+
   it "with_timeout" do
     res = @process.with_timeout(0.5) do
       sleep 0.3

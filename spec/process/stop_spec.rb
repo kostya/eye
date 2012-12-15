@@ -26,7 +26,7 @@ describe "Process Stop" do
     end
 
     it "for not daemonize, but option enabled by manual" do
-      start_ok_process(C.p2.merge(:clear_pid_file => true))
+      start_ok_process(C.p2.merge(:control_pid => true))
 
       @process.stop_process
 

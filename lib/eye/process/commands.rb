@@ -70,7 +70,7 @@ module Eye::Process::Commands
     else
       transit :stopped
 
-      clear_pid_file if self[:clear_pid_file]
+      clear_pid_file if control_pid?
       
       true
 

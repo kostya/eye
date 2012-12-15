@@ -26,6 +26,8 @@ private
       end
     end
   end
+
+  REWRITE_FACKUP_PIDFILE_PERIOD = 2.minutes
   
   def check_alive
     if state_name == :up
@@ -35,11 +37,26 @@ private
         info "process not found, so :crushed"
         transit :crushed
       else
-        # check that pid file exists
+        # check that pid_file still here
         ppid = load_pid_from_file
         if ppid != self.pid
-          warn "process changed pid by itself (#{self.pid}) => (#{ppid})"
-          save_pid_to_file
+          msg = "process changed pid by itself (#{self.pid}) => (#{ppid})"
+          if control_pid?
+            msg += ", not correct, pid_file is under eye control, so rewrited"
+            save_pid_to_file
+          else
+            if ppid == nil
+              msg += ", rewrited"
+              save_pid_to_file
+            elsif (Time.now - pid_file_ctime > REWRITE_FACKUP_PIDFILE_PERIOD)
+              msg += ", was so old, so rewrited (even if pid_file not under control, because it too old)"
+              save_pid_to_file
+            else
+              msg += ", not under control, ignored"
+            end
+          end
+
+          warn msg
         end
       end
     end

@@ -30,6 +30,10 @@ module Eye::Process::System
     nil
   end
 
+  def pid_file_ctime
+    File.ctime(self[:pid_file_ex]) rescue Time.now
+  end
+
   def process_realy_running?
     Eye::System.pid_alive?(self.pid) if self.pid
   end
