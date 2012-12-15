@@ -66,4 +66,18 @@ describe "Eye::Process::System" do
     end
     res.should == :timeout
   end
+  
+  [C.p1, C.p2].each do |cfg|
+    it "blocking execute should not block process actor mailbox #{cfg[:name]}" do
+      @process = Eye::Process.new(cfg.merge(:start_command => "sleep 5", :start_timeout => 10.seconds))
+      tm1 = Time.now
+      @process.start!    
+      sleep 1
+
+      # here mailbox should anwser without blocks
+      @process.name.should == cfg[:name]
+      (Time.now - tm1).should < 2 # seconds
+    end
+  end
+
 end

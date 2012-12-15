@@ -163,7 +163,6 @@ describe "Process Start" do
     @process.pid.should == nil
     @process.load_pid_from_file.should == nil
 
-    @process.state_reason.should == :timeout
     [:starting, :down].should include(@process.state_name)
 
     @process.states_history.seq?(:unmonitored, :starting, :down, :starting).should == true
@@ -178,7 +177,6 @@ describe "Process Start" do
     @process.pid.should == nil
     @process.load_pid_from_file.should == nil
 
-    @process.state_reason.should == :timeout
     [:starting, :down].should include(@process.state_name)
 
     @process.states_history.seq?(:unmonitored, :starting, :down, :starting).should == true

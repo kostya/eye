@@ -9,7 +9,7 @@ describe "Intergration" do
     @p2 = @processes.detect{|c| c.name == 'sample2'}
     @p3 = @processes.detect{|c| c.name == 'forking'}
     @samples = @c.all_groups.detect{|c| c.name == 'samples'}
-    sleep 8 # to ensure that all processes started
+    sleep 10 # to ensure that all processes started
 
     @processes.size.should == 3
     @processes.map{|c| c.state_name}.uniq.should == [:up]

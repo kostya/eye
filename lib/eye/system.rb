@@ -1,6 +1,15 @@
 require "shellwords"
 require 'pathname'
 
+require 'celluloid'
+class AnonimActor
+  include Celluloid
+
+  def with(&block)
+    block.call
+  end
+end
+
 module Eye::System
   class << self
 
@@ -58,19 +67,32 @@ module Eye::System
       pid  = Process::spawn(prepare_env(cfg), *Shellwords.shellwords(cmd), opts)
 
       timeout = cfg[:timeout] || 1.second
-      Timeout.timeout(timeout) do
-        Process.waitpid(pid)
+      res = pid
+
+      wpd = AnonimActor.new
+
+      # doing waitpid with another actor, because waitpid block actor's mailbox
+      wpd.with do
+        begin
+          Timeout.timeout(timeout) do
+            Process.waitpid(pid)
+          end
+        rescue Timeout::Error
+          send_signal(pid) if pid        
+          res = :timeout
+        end
       end
 
-    rescue Timeout::Error
-      send_signal(pid) if pid        
-      :timeout
-      
+      res
+
     rescue Errno::ENOENT 
       :cant_execute
       
     rescue Errno::EACCES
       :bad_out_paths    
+
+    ensure
+      wpd.terminate if defined?(wpd) && wpd && wpd.alive?
     end
 
     # get table

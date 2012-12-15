@@ -81,7 +81,6 @@ module Eye::Process::Commands
     nil
   end
 
- 
   def restart_process
     info "restart_process command"
 
@@ -89,6 +88,7 @@ module Eye::Process::Commands
 
     if self[:restart_command]
       cmd = prepare_command(self[:restart_command])
+      info "execute #{cmd}"
       Eye::System.execute(cmd, config.merge(:timeout => self[:restart_timeout]))
 
       sleep self[:restart_grace].to_f
@@ -113,7 +113,7 @@ private
     if self[:stop_command]      
       cmd = prepare_command(self[:stop_command])
       res = Eye::System.execute(cmd, config.merge(:timeout => self[:stop_timeout]))
-      info "execute command: #{self[:stop_command]} with #{res.inspect}"
+      info "execute command: #{self[:stop_command]} returns #{res.inspect}"
 
     elsif self[:stop_signals]
       info "execute command: #{self[:stop_signals].inspect}"
