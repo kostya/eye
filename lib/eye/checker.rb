@@ -27,7 +27,7 @@ class Eye::Checker
     @options = options
 
     @value = nil
-    @values = Eye::Tail.new(max_tries)
+    @values = Eye::Utils::Tail.new(max_tries)
   end
 
   def check

@@ -29,7 +29,7 @@ class Eye::Dsl::Opts
   end
 
   def initialize
-    @config = Eye::Dsl::MHash.new
+    @config = Eye::Utils::MHash.new
   end
 
   def checks(type, opts = {})

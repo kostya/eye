@@ -11,11 +11,11 @@ module Eye
   autoload :Checker,        'eye/checker'
   autoload :Trigger,        'eye/trigger'
   autoload :Group,          'eye/group'
-  autoload :Tail,           'eye/tail'
   autoload :Dsl,            'eye/dsl'  
   autoload :Application,    'eye/application'  
   autoload :Settings,       'eye/settings'
   autoload :Client,         'eye/client'
+  autoload :Utils,          'eye/utils'
 
   class << self
     def controller

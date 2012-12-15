@@ -3,7 +3,7 @@
 # h[1][2][3] = 4
 #  => {1 => {2 => {3 => 4}}}
 
-class Eye::Dsl::MHash < Hash
+class Eye::Utils::MHash < Hash
   def initialize
     super do |hash, key| 
       hash[key] = self.class.new(&hash.default_proc)
@@ -13,7 +13,7 @@ class Eye::Dsl::MHash < Hash
   def pure
     h = {}
     self.each do |k,v|
-      if v.is_a?(Eye::Dsl::MHash)
+      if v.is_a?(Eye::Utils::MHash)
         h[k] = v.pure
       else
         h[k] = v

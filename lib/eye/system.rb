@@ -1,15 +1,6 @@
 require "shellwords"
 require 'pathname'
 
-require 'celluloid'
-class AnonimActor
-  include Celluloid
-
-  def with(&block)
-    block.call
-  end
-end
-
 module Eye::System
   class << self
 
@@ -69,7 +60,7 @@ module Eye::System
       timeout = cfg[:timeout] || 1.second
       res = pid
 
-      wpd = AnonimActor.new
+      wpd = Eye::Utils::WithActor.new
 
       # doing waitpid with another actor, because waitpid block actor's mailbox
       wpd.with do

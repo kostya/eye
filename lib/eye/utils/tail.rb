@@ -1,4 +1,4 @@
-class Eye::Tail < Array
+class Eye::Utils::Tail < Array
 
   # limited array
 

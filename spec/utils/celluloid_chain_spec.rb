@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-require File.dirname(__FILE__) + '/spec_helper'
+require File.dirname(__FILE__) + '/../spec_helper'
 
 class TestActor
   include Celluloid
@@ -78,6 +78,5 @@ describe "Celluloid::Chain" do
     sleep 2
     @t.m.should == [:a, :b, :c, :a, :c]
   end
-
 
 end

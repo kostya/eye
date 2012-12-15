@@ -1,4 +1,4 @@
-class Eye::Process::StatesHistory < Eye::Tail
+class Eye::Process::StatesHistory < Eye::Utils::Tail
 
   def push(state, tm = Time.now)
     st = OpenStruct.new(:state => state, :at => tm)

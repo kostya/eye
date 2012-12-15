@@ -9,7 +9,6 @@ class Eye::Dsl
   autoload :Opts,                 'eye/dsl/opts'
   autoload :Validate,             'eye/dsl/validate'
   autoload :Chain,                'eye/dsl/chain'
-  autoload :MHash,                'eye/dsl/mhash'
 
   def self.load(content = nil, filename = nil)
     Eye.parsed_config = {}
