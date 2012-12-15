@@ -97,6 +97,31 @@ describe "Eye::Dsl" do
     check_pure_hash(:root, res)
   end
 
+  it "merging envs inside one process" do
+    conf = <<-E
+      Eye.application "bla" do
+        environment "RAILS_ENV" => "test"
+        environment "LANG" => "ru_RU.UTF-8"
+
+        process("1") do
+          environment "A" => "1"
+          environment "B" => "2"
+
+          pid_file "1"          
+        end
+      end
+    E
+    res = Eye::Dsl.load(conf)
+    res["bla"][:environment].should == 
+      {"RAILS_ENV" => "test", "LANG" => "ru_RU.UTF-8"}
+
+    res["bla"][:groups]["__default__"][:environment].should == 
+      {"RAILS_ENV" => "test", "LANG" => "ru_RU.UTF-8"}
+
+    res["bla"][:groups]["__default__"][:processes]['1'][:environment].should == 
+      {"RAILS_ENV" => "test", "LANG" => "ru_RU.UTF-8", "A" => "1", "B" => "2"}
+  end
+
   it "should merge environment" do
     conf = <<-E
       Eye.application("bla") do
@@ -106,11 +131,15 @@ describe "Eye::Dsl" do
           environment "HAHA" => "2"
 
           process("1") do
+            environment "HEHE" => "4"
             pid_file "1"
           end
         end
 
-        process("2") {pid_file "2"}
+        process("2") do 
+          environment "HOHO" => "3"
+          pid_file "2"
+        end
       end
     E
 
@@ -122,7 +151,7 @@ describe "Eye::Dsl" do
             :environment=>{"HAHA"=>"2", "HAH"=>"1"}, 
             :processes=>{
               "1"=>{
-                :environment=>{"HAHA"=>"2", "HAH"=>"1"}, 
+                :environment=>{"HAHA"=>"2", "HAH"=>"1", "HEHE" => "4"}, 
                 :pid_file=>"1", 
                 :application=>"bla", 
                 :group=>"moni", 
@@ -131,7 +160,7 @@ describe "Eye::Dsl" do
             :environment=>{"HAH"=>"1"}, 
             :processes=>{
               "2"=>{
-                :environment=>{"HAH"=>"1"}, 
+                :environment=>{"HAH"=>"1", "HOHO" => "3"}, 
                 :pid_file=>"2", 
                 :application=>"bla", 
                 :group=>"__default__", 

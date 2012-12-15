@@ -44,6 +44,10 @@ class Eye::Dsl::Opts
     @config[:triggers][type] = opts.merge(:type => type)
   end
 
+  def environment(h = {})
+    @config[:environment].merge!(h)
+  end
+
   def allow_options
     nil
   end
