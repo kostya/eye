@@ -12,6 +12,8 @@ module Eye::Process::Data
       self.childs.each do |_, child|
         res << ("  " + child.status_string)
       end
+    elsif self[:monitor_children] && self.state_name == :up
+      res << "  ... loading childs"
     end
 
     res
