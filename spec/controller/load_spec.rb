@@ -4,7 +4,7 @@ describe "Eye::Controller::Load" do
   subject{ controller_new }
 
   it "blank" do
-    subject.load.should == {:error => false, :empty => true}
+    subject.load.should == {:error => true, :message => "config file '' not found!"}
   end
 
   it "not exists file" do
@@ -117,6 +117,38 @@ describe "Eye::Controller::Load" do
     
     # return global logger
     set_glogger
+  end
+
+  it "load folder" do
+    subject.load(fixture("dsl/load_folder/")).should == {:error => false}
+    subject.short_tree.should == {       
+      "app3" => {"wow"=>{"e1"=>"/tmp/app3-e1.pid"}},
+      "app4" => {"__default__"=>{"e2"=>"/tmp/app4-e2.pid"}}
+    }
+  end
+  
+  it "load folder with error" do
+    subject.load(fixture("dsl/load_error_folder/")).should include(error: true)
+  end
+
+  it "load files by mask" do
+    subject.load(fixture("dsl/load_folder/*.eye")).should == {:error => false}
+    subject.short_tree.should == {       
+      "app3" => {"wow"=>{"e1"=>"/tmp/app3-e1.pid"}},
+      "app4" => {"__default__"=>{"e2"=>"/tmp/app4-e2.pid"}}
+    }
+  end
+  
+  it "load files by mask with error" do
+    subject.load(fixture("dsl/load_error_folder/*.eye")).should include(error: true)
+  end
+
+  it "load not files with mask" do
+    subject.load(fixture("dsl/load_folder/*.bla")).should == {:error => true, :message => "config file '/home/kostya/projects/gems/eye/spec/fixtures/dsl/load_folder/*.bla' not found!"}
+  end
+
+  it "bad mask" do
+    subject.load(" asdf asdf afd d").should == {:error => true, :message => "config file ' asdf asdf afd d' not found!"}
   end
 
 end

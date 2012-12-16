@@ -2,12 +2,44 @@ module Eye::Controller::Load
 
   include Eye::Dsl::Validate
 
-  # prepare, check config
-  def syntax(filename = '', &block)
-    if filename.blank?
-      return {:error => false, :empty => true}
+  def syntax(filename = '')
+    parse_config(filename).first
+  end
+
+  # filename is a path, or folder, or mask
+  def load(filename = "")    
+    mask = if File.directory?(filename)
+      File.join filename, "{*.eye}"
+    else
+      filename
     end
 
+    debug "globbing mask #{mask}"
+    configs = []
+
+    Dir[mask].each do |config_path|
+      info "load config #{config_path}"
+
+      res, cfg = parse_config(config_path)
+      configs << cfg
+      return res if res[:error]
+    end
+
+    return {:error => true, :message => "config file '#{mask}' not found!"} if configs.blank?
+
+    configs.each do |config|
+      load_config(config)
+    end
+
+    GC.start
+
+    {:error => false}
+  end
+
+private
+
+  # return: result, config
+  def parse_config(filename = '', &block)
     unless File.exists?(filename)
       error "config file '#{filename}' not found!"
       return {:error => true, :message => "config file '#{filename}' not found!"}
@@ -18,11 +50,9 @@ module Eye::Controller::Load
     new_config = merge_configs(@current_config, cfg)
     validate(new_config)
 
-    block[new_config] if block
-
     GC.start
 
-    {:error => false}
+    [{:error => false}, new_config]
 
   rescue Eye::Dsl::Error, Exception, NoMethodError => ex
     error "Config error <#{filename}>:"
@@ -33,19 +63,14 @@ module Eye::Controller::Load
     bt = (ex.backtrace || []).reject{|line| line.to_s =~ %r{/lib/eye/} || line.to_s =~ %r{lib/celluloid}} 
     error bt.join("\n")
 
-    {:error => true, :message => ex.message, :backtrace => bt}
+    [{:error => true, :message => ex.message, :backtrace => bt}, nil]
   end
 
-  # prepare, check and load config
-  def load(filename = "")
-    syntax(filename) do |new_config|
-      load_options
-      create_objects(new_config)
-      @current_config = new_config
-    end
+  def load_config(new_config)
+    load_options
+    create_objects(new_config)
+    @current_config = new_config
   end
-
-private
 
   def merge_configs(old_config, new_config)
     old_config.merge(new_config)
