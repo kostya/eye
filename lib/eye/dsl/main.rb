@@ -17,7 +17,8 @@ module Eye::Dsl::Main
     dirname = File.dirname(parsed_filename) rescue nil
     mask = Pathname.new(glob).expand_path(dirname).to_s
     Dir[mask].each do |path|
-      Kernel.load(path)
+      res = Kernel.load(path)
+      Eye.controller.info "loaded #{path} with #{res}"
     end
   end
 
