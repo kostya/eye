@@ -60,6 +60,11 @@ class Cli < Thor
     log_trace(target)
   end
 
+  desc "version", "show current version"
+  def version
+    say "Eye v#{Eye::VERSION} (c) Makarchev K."
+  end
+
 private
 
   def client
