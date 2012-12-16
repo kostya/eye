@@ -2,6 +2,13 @@ module Eye::Controller::Commands
 
   # Main method, as anwer for client command
   def command(cmd, *args)
+    # it is import that command processed one by one
+    @mutex.synchronize do
+      safe_command(cmd, *args)
+    end
+  end
+
+  def safe_command(cmd, *args)
     info "client command: #{cmd} #{args * ', '}"
     cmd = cmd.to_sym
     

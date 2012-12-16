@@ -23,6 +23,7 @@ class Eye::Controller
     @current_config = {}
 
     @logger = Eye::Logger.new "eye"
+    @mutex = Mutex.new
     Celluloid::logger = @logger
   end
 
