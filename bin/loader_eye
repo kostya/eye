@@ -4,7 +4,7 @@ require 'eye/loader'
 require 'optparse'
 require 'eye'
 
-options = {}
+options = {:debug => true}
 
 OptionParser.new do |opts|
   opts.on( '-h', '--help', 'Display this screen' ) do
