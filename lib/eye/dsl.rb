@@ -13,7 +13,8 @@ class Eye::Dsl
   def self.load(content = nil, filename = nil)
     Eye.parsed_config = {}
     Eye.parsed_options = {}
-
+    Eye.parsed_filename = filename
+    
     content = File.read(filename) if content.blank?
     
     Kernel.eval(content, ROOT_BINDING, filename.to_s)

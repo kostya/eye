@@ -1,5 +1,5 @@
 module Eye::Dsl::Main
-  attr_accessor :parsed_config, :parsed_options
+  attr_accessor :parsed_config, :parsed_options, :parsed_filename
 
   def application(name, &block)
     @parsed_config ||= {}
@@ -11,7 +11,12 @@ module Eye::Dsl::Main
   alias :app :application 
 
   def load(glob = "")
-    Dir[glob].each do |path|
+    return if glob.blank?
+
+    require 'pathname'
+    dirname = File.dirname(parsed_filename) rescue nil
+    mask = Pathname.new(glob).expand_path(dirname).to_s
+    Dir[mask].each do |path|
       Kernel.load(path)
     end
   end
