@@ -37,7 +37,12 @@ class Cli < Thor
   desc "syntax CONF", "check syntax of the config file"
   def syntax(conf)
     conf = File.expand_path(conf) if conf && !conf.empty?
-    say_load_result cmd(:syntax, conf), false
+    
+    if RUBY_VERSION < '1.9'
+      say_load_result cmd(:syntax, conf), false
+    else
+      say_load_result Eye::controller.syntax(conf), false
+    end
   end
   
   desc "quit", "stop eye monitoring"
