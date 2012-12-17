@@ -42,6 +42,7 @@ class Eye::Checker
     end
 
     info "[#{@values.map{|v| human_value(v[:value])} * ", "}] => #{result ? "OK" : "Fail"}"
+    warn "!!!notify checker failed #{human_value(@value)}" if result
 
     result
   end
