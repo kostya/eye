@@ -68,5 +68,16 @@ class Eye::ChildProcess
   def status_string
     "child(#{pid}): up\n"
   end
+
+  def status_data(debug = false)
+    {:name => :'=child=', :pid => pid, :state => :up, :debug => debug ? debug_string : nil}
+  end
+
+  def debug_string 
+    q = "q(" + @queue.names_list * ',' + ")"
+    w = "w(" + @watchers.keys * ',' + ")"
+
+    [w, q] * '; '
+  end
   
 end

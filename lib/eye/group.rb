@@ -43,6 +43,20 @@ class Eye::Group
     res
   end
 
+  def status_data(debug = false)
+    plist = @processes.sort_by(&:name).map{|p| p.status_data(debug)}
+
+    if @hidden
+      plist
+    else
+      {:subtree => plist, :name  => "{#{name}}", :debug => debug ? debug_string : nil}
+    end
+  end
+
+  def debug_string
+    q = "q(" + @queue.names_list * ',' + ")"
+  end
+
   def send_command(command)
     info "get command: #{command}"
 

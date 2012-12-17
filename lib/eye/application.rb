@@ -26,6 +26,13 @@ class Eye::Application
     res
   end
 
+  def status_data(debug = false)
+    {:name => "[#{@name}]", :subtree => @groups.map{|gr| gr.status_data(debug)}, :debug => debug ? debug_string : nil}
+  end
+
+  def debug_string    
+  end
+
   def send_command(command)
     @groups.each do |group|
       group.send_command(command)

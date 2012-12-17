@@ -6,7 +6,10 @@ module Eye::Process::Data
   end
 
   def status_string
-    res = ["#{self[:name]}(#{pid}): #{state}\n"]
+    n_ = self[:name].ljust(28)
+    p_ = "(#{pid})".ljust(7)
+    res = ["#{n_}#{p_}: #{state}\n"]
+    #res = ["#{self[:name]}(#{pid}): #{state}\n"]
 
     if self.childs.present?
       self.childs.each do |_, child|
@@ -17,6 +20,26 @@ module Eye::Process::Data
     end
 
     res
+  end
+
+  def status_data(debug = false)
+    p_st = {:name => name, :pid => pid, :state => state, :debug => debug ? debug_string : nil}
+
+    if childs.present?
+      p_st.merge(:subtree => childs.values.map{|c| c.status_data(debug)})
+    elsif self[:monitor_children] && self.state_name == :up
+      p_st.merge(:subtree => [{:name => "=loading childs="}])
+    else
+      # common state
+      p_st
+    end
+  end
+
+  def debug_string
+    q = "q(" + @queue.names_list * ',' + ")"
+    w = "w(" + @watchers.keys * ',' + ")"
+
+    [w, q] * '; '
   end
 
 end

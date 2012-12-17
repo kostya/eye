@@ -24,6 +24,10 @@ class Celluloid::Chain
     @calls
   end
 
+  def names_list
+    list.map{|el| el[:method_name].to_sym }
+  end
+
   def clear
     @calls = []
   end

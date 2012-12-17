@@ -22,6 +22,9 @@ class Cli < Thor
 
   desc "debug", "show server debug info"
   def debug    
+    res = cmd(:debug)
+    puts res if res && !res.empty?
+    puts
   end
 
   desc "load [CONF]", "load config (and start server if needed) (-f for foregraund start)"

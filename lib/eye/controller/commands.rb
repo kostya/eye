@@ -19,6 +19,8 @@ module Eye::Controller::Commands
         load(*args)
       when :status
         status_string
+      when :debug
+        status_string_debug
       when :quit
         quit
       when :syntax
@@ -50,10 +52,6 @@ module Eye::Controller::Commands
     end
     
     res
-  end
-
-  def status_string
-    @applications.sort_by(&:name).map{|app| app.status_string }.join("\n")
   end
 
   def quit
