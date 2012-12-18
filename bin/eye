@@ -8,8 +8,8 @@ require 'thor'
 
 class Cli < Thor
 
-  desc "status", "show process statuses"
-  def status
+  desc "info", "show process statuses"
+  def info
     res = cmd(:status)
     puts res if res && !res.empty?
     puts
@@ -51,7 +51,7 @@ class Cli < Thor
     say "stopped...", :yellow
   end
   
-  [:start, :stop, :restart, :remove, :unmonitor].each do |_cmd|
+  [:start, :stop, :restart, :unmonitor].each do |_cmd|
     class_eval <<-E
       desc "#{_cmd} [TARGET]", "#{_cmd} app,group or process"
       def #{_cmd}(str = "")
@@ -60,8 +60,13 @@ class Cli < Thor
     E
   end
 
-  desc "log [TARGET]", "tailing log for app,group or process"
-  def log(target = "")
+  desc "delete [TARGET]", "delete app,group or process"
+  def delete(str = "")
+    send_command('remove', str)
+  end
+
+  desc "tail [TARGET]", "tailing log for app,group or process"
+  def tail(target = "")
     log_trace(target)
   end
 
