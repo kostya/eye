@@ -42,7 +42,7 @@ private
   def parse_config(filename = '', &block)
     unless File.exists?(filename)
       error "config file '#{filename}' not found!"
-      return {:error => true, :message => "config file '#{filename}' not found!"}
+      return [{:error => true, :message => "config file '#{filename}' not found!"}]
     end
 
     cfg = Eye::Dsl.load(nil, filename)
@@ -63,7 +63,7 @@ private
     bt = (ex.backtrace || []).reject{|line| line.to_s =~ %r{/lib/eye/} || line.to_s =~ %r{lib/celluloid}} 
     error bt.join("\n")
 
-    [{:error => true, :message => ex.message, :backtrace => bt}, nil]
+    [{:error => true, :message => ex.message, :backtrace => bt}]
   end
 
   def load_config(new_config)
