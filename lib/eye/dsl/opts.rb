@@ -1,6 +1,6 @@
 class Eye::Dsl::Opts
 
-  ALL_OPTIONS = [ :pid_file, :environment, :working_dir, :daemonize, :stdout, :stderr, :stdall,
+  ALL_OPTIONS = [ :pid_file, :working_dir, :daemonize, :stdout, :stderr, :stdall,
     :keep_alive, :check_alive_period, :start_timeout, :restart_timeout, :stop_timeout, :start_grace,
     :restart_grace, :stop_grace, :control_pid, :childs_update_period,
     :auto_start, :start_command, :stop_command, :restart_command
@@ -47,6 +47,8 @@ class Eye::Dsl::Opts
   def environment(h = {})
     @config[:environment].merge!(h)
   end
+
+  alias :env :environment
 
   def allow_options
     nil

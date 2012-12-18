@@ -144,7 +144,7 @@ describe "Eye::Controller::Load" do
   end
 
   it "load not files with mask" do
-    subject.load(fixture("dsl/load_folder/*.bla")).should == {:error => true, :message => "config file '/home/kostya/projects/gems/eye/spec/fixtures/dsl/load_folder/*.bla' not found!"}
+    subject.load(fixture("dsl/load_folder/*.bla")).should include(error: true) 
   end
 
   it "bad mask" do

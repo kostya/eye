@@ -105,7 +105,7 @@ describe "Eye::Dsl" do
 
         process("1") do
           environment "A" => "1"
-          environment "B" => "2"
+          env "B" => "2"
 
           pid_file "1"          
         end
