@@ -24,6 +24,7 @@ class Eye::Checker
   def initialize(pid, options = {}, logger_prefix = nil)
     @pid = pid
     @logger = Eye::Logger.new(logger_prefix, "check:#{check_name}")
+    debug "create checker, with #{options}"
     @options = options
 
     @value = nil
@@ -42,7 +43,7 @@ class Eye::Checker
     end
 
     info "[#{@values.map{|v| human_value(v[:value])} * ", "}] => #{result ? "OK" : "Fail"}"
-    warn "!!!notify checker failed #{human_value(@value)}" if result
+    warn "!!!notify checker failed #{human_value(@value)}" unless result
 
     result
   end
