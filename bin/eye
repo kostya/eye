@@ -15,6 +15,10 @@ class Cli < Thor
     puts
   end
 
+  desc "debug", "show server debug info"
+  def debug    
+  end
+
   desc "load [CONF]", "load config (and start server if needed) (-f for foregraund start)"
   method_option :foregraund, :type => :boolean, :aliases => "-f"
   method_option :logger, :type => :string, :aliases => "-l"
@@ -65,8 +69,8 @@ class Cli < Thor
     send_command('remove', str)
   end
 
-  desc "tail [TARGET]", "tailing log for app,group or process"
-  def tail(target = "")
+  desc "trace [TARGET]", "tracing log for app,group or process"
+  def trace(target = "")
     log_trace(target)
   end
 
