@@ -10,6 +10,11 @@ class Cli < Thor
 
   desc "info", "show process statuses"
   def info
+    status
+  end
+
+  desc "info", "show process statuses"
+  def status
     res = cmd(:status)
     puts res if res && !res.empty?
     puts
