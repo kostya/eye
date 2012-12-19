@@ -1,5 +1,5 @@
 module Eye  
-  VERSION = "0.1.2"
+  VERSION = "0.1.3"
 
   autoload :Process,        'eye/process'
   autoload :ChildProcess,   'eye/child_process'
