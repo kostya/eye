@@ -38,17 +38,17 @@ describe "Intergration" do
 
   it "status string" do
     str = <<S
-int
-  samples
-    sample1(#{@p1.pid}): up
-    sample2(#{@p2.pid}): up
-  forking(#{@p3.pid}): up
-    child(#{@p3.childs.keys[0]}): up
-    child(#{@p3.childs.keys[1]}): up
-    child(#{@p3.childs.keys[2]}): up
+[int]                                 
+  [samples]                           
+    sample1 .................. (#{@p1.pid}): up
+    sample2 .................. (#{@p2.pid}): up
+  forking .................... (#{@p3.pid}): up
+    =child= .................. (#{@p3.childs.keys[0]}): up
+    =child= .................. (#{@p3.childs.keys[1]}): up
+    =child= .................. (#{@p3.childs.keys[2]}): up
 S
 
-    @c.status_string.should == str
+    @c.status_string.should == str.chomp
   end
 
   it "restart process group samples" do
@@ -311,7 +311,7 @@ S
     @p2_ = procs.detect{|c| c.name == 'sample2_'}
     @p3_ = procs.detect{|c| c.name == 'forking'}
     
-    @p3.should == @p3_
+    @p3.object_id.should == @p3_.object_id
     @p1.alive?.should == false
     @p1_.alive?.should == true
 

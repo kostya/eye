@@ -65,21 +65,20 @@ describe "Eye::Controller" do
 
   it "status_string" do
     str = <<S
-app1
-  gr1
-    p1(): unmonitored
-    p2(): unmonitored
-  gr2
-    q3(): unmonitored
-  g4(): unmonitored
-  g5(): unmonitored
-
-app2
-  z1(): unmonitored
+[app1]                                
+  [gr1]                               
+    p1 .......................        : unmonitored
+    p2 .......................        : unmonitored
+  [gr2]                               
+    q3 .......................        : unmonitored
+  g4 .........................        : unmonitored
+  g5 .........................        : unmonitored
+[app2]                                
+  z1 .........................        : unmonitored
 S
-    
+
     subject.load(fixture("dsl/load.eye"))
-    subject.status_string.should == str
+    subject.status_string.should == str.chomp
   end
 
   describe "command" do

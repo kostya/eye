@@ -49,7 +49,7 @@ class Eye::Group
     if @hidden
       plist
     else
-      {:subtree => plist, :name  => "{#{name}}", :debug => debug ? debug_string : nil}
+      {:subtree => plist, :name  => "[#{name}]", :debug => debug ? debug_string : nil}
     end
   end
 
