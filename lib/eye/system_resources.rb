@@ -42,10 +42,15 @@ class Eye::SystemResources
       -1
     end
 
-  private
-
-    def ps_aux
+    # initialize actor, call 1 time before using
+    def setup
       @actor ||= PsAxActor.new
+    end
+    
+  private
+  
+    def ps_aux
+      setup
       @actor.get
     end
 
