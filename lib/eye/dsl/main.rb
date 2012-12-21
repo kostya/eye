@@ -14,7 +14,8 @@ module Eye::Dsl::Main
     return if glob.blank?
 
     require 'pathname'
-    dirname = File.dirname(parsed_filename) rescue nil
+    real_filename = parsed_filename && File.symlink?(parsed_filename) ? File.readlink(parsed_filename) : parsed_filename
+    dirname = File.dirname(real_filename) rescue nil
     mask = Pathname.new(glob).expand_path(dirname).to_s
     Dir[mask].each do |path|
       res = Kernel.load(path)
