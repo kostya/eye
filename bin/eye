@@ -193,7 +193,7 @@ private
     args = []
     args += ['-l', options[:logger]] if options[:logger]
 
-    pid = Process.spawn(ruby_path, loader_path, *args)
+    pid = Process.spawn(ruby_path, loader_path, *args, :out => :close, :err => :close, :in => :close)
     Process.detach(pid)
     File.open(Eye::Settings.pid_path, 'w'){|f| f.write(pid) }
 
