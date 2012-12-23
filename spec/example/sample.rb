@@ -46,6 +46,10 @@ optparse = OptionParser.new do|opts|
     options[:watch_file_delay] = w
   end
 
+  opts.on( '-T', '--no_terminate', 'catch terminate signal and not die' ) do
+    options[:no_terminate] = true
+  end
+
 end
 
 optparse.parse!
@@ -117,6 +121,12 @@ trap("USR2") do
   puts "USR2 start memory leak"
   $ar = []
   300_000.times{|i| $ar << "memory leak #{i}" * 10}
+end
+
+if options[:no_terminate]
+  trap("TERM") do
+    puts "TERM signal! and we not die O_o"
+  end
 end
 
 loop do

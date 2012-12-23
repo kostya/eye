@@ -50,6 +50,20 @@ describe "Process Stop" do
     @process.watchers.keys.should == []
   end
 
+  it "stop process by default command, and its not die by TERM, should stop anyway" do
+    start_ok_process(C.p2.merge(:start_command => C.p2[:start_command] + " -T"))
+    Eye::System.pid_alive?(@pid).should == true
+
+    dont_allow(@process).check_crush!
+    @process.stop_process
+
+    Eye::System.pid_alive?(@pid).should == false    
+    @process.pid.should == @pid
+    @process.state_name.should == :down
+    @process.states_history.end?(:up, :stopping, :down).should == true
+    @process.watchers.keys.should == []
+  end
+
   it "stop process by specific command" do
     start_ok_process(C.p1.merge(:stop_command => "kill -9 {{PID}}"))
 

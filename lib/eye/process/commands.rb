@@ -115,6 +115,8 @@ private
       res = Eye::System.execute(cmd, config.merge(:timeout => self[:stop_timeout]))
       info "execute command: #{self[:stop_command]} returns #{res.inspect}"
 
+      sleep self[:stop_grace].to_f
+
     elsif self[:stop_signals]
       info "execute command: #{self[:stop_signals].inspect}"
       stop_signals = self[:stop_signals].clone
@@ -134,12 +136,22 @@ private
 
         send_signal(signal)
       end
-    else
+
+      sleep self[:stop_grace].to_f
+
+    else # default command
       info "execute command: kill -TERM {{PID}}"
       send_signal(:TERM)
-    end
+      
+      sleep self[:stop_grace].to_f
 
-    sleep self[:stop_grace].to_f
+      # if process not die here, by default we kill it force
+      if process_realy_running?
+        warn "process not die after TERM and #{self[:stop_grace].to_f}s, so send KILL"
+        send_signal(:KILL)
+        sleep 0.1 # little grace
+      end
+    end
   end
   
   def spawn_process

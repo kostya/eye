@@ -25,3 +25,4 @@ TODO
 *.lock
 experiments
 .git2
+*.stop
