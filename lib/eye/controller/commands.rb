@@ -78,7 +78,8 @@ private
   # find object to action, restart ... (app, group or process)
   # nil if not found
   def find_objects(str)
-    return @applications if str.blank?
+    return nil if str.blank?
+    return @applications if str.strip == 'all'
 
     res = []
     str = Regexp.escape(str).gsub('\*', ".*?")

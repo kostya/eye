@@ -39,8 +39,13 @@ describe "find_objects" do
     objs.map{|c| c.name}.sort.should == %w{app1 app2}
   end
 
-  it "empty, find all projects" do
+  it "empty, find nothing" do
     objs = subject.find_objects("")
+    objs.should be_blank
+  end
+
+  it "'all', find all projects" do
+    objs = subject.find_objects("all")
     objs.map{|c| c.class}.should == [Eye::Application, Eye::Application]
     objs.map{|c| c.name}.sort.should == %w{app1 app2}
   end
