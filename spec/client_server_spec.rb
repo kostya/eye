@@ -14,8 +14,8 @@ describe "Eye::Client, Eye::Server" do
   end
   
   it "client command, should send to controller" do
-    mock(Eye::controller).command('restart', 'samples'){ :command_sended }
-    mock(Eye::controller).command('stop'){ :command_sended2 }
+    mock(Eye::Control).command('restart', 'samples'){ :command_sended }
+    mock(Eye::Control).command('stop'){ :command_sended2 }
     @server.run!
     sleep 0.1
     
@@ -24,7 +24,7 @@ describe "Eye::Client, Eye::Server" do
   end  
 
   it "another spec works too" do
-    mock(Eye::controller).command('stop'){ :command_sended2 }
+    mock(Eye::Control).command('stop'){ :command_sended2 }
     @server.run!
     sleep 0.1
     

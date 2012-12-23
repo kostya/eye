@@ -53,7 +53,7 @@ class Cli < Thor
     if RUBY_VERSION < '1.9'
       say_load_result cmd(:syntax, conf), false
     else
-      say_load_result Eye::controller.syntax(conf), false
+      say_load_result Eye::Control.syntax(conf), false
     end
   end
   
@@ -91,7 +91,7 @@ class Cli < Thor
 
   desc "version", "show current version"
   def version
-    say Eye.about
+    say Eye::ABOUT
   end
 
 private

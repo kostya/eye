@@ -83,28 +83,28 @@ S
 
   describe "command" do
     it "should send_command" do
-      mock(Eye.controller).send_command(:restart, 'samples')
-      Eye.controller.command('restart', 'samples')
+      mock(Eye::Control).send_command(:restart, 'samples')
+      Eye::Control.command('restart', 'samples')
     end
 
     it "should send_command" do
-      mock(Eye.controller).send_command(:restart)
-      Eye.controller.command(:restart)
+      mock(Eye::Control).send_command(:restart)
+      Eye::Control.command(:restart)
     end
 
     it "load" do
-      mock(Eye.controller).load('/tmp/file')
-      Eye.controller.command('load', '/tmp/file')
+      mock(Eye::Control).load('/tmp/file')
+      Eye::Control.command('load', '/tmp/file')
     end
 
     it "status" do
-      mock(Eye.controller).status_string
-      Eye.controller.command('status')
+      mock(Eye::Control).status_string
+      Eye::Control.command('status')
     end
 
     it "quit" do
-      mock(Eye.controller).quit
-      Eye.controller.command('quit')
+      mock(Eye::Control).quit
+      Eye::Control.command('quit')
     end
 
   end

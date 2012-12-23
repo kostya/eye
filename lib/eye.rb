@@ -1,13 +1,13 @@
 module Eye  
-  VERSION = "0.1.3"
+  VERSION   = "0.1.3"
+  ABOUT     = "Eye v#{VERSION} (c) 2012 @kostya"
 
   autoload :Process,        'eye/process'
   autoload :ChildProcess,   'eye/child_process'
   autoload :Server,         'eye/server'
   autoload :Logger,         'eye/logger'
   autoload :System,         'eye/system'
-  autoload :SystemResources,'eye/system_resources'
-  autoload :Controller,     'eye/controller'
+  autoload :SystemResources,'eye/system_resources'  
   autoload :Checker,        'eye/checker'
   autoload :Trigger,        'eye/trigger'
   autoload :Group,          'eye/group'
@@ -16,16 +16,9 @@ module Eye
   autoload :Settings,       'eye/settings'
   autoload :Client,         'eye/client'
   autoload :Utils,          'eye/utils'
-
-  class << self
-    def controller
-      @controller ||= Eye::Controller.new
-    end    
-
-    def about
-      "Eye v#{VERSION} (c) 2012 @kostya"
-    end
-  end
+  
+  autoload :Controller,     'eye/controller'
+  autoload :Control,        'eye/control'
 end
 
 ROOT_BINDING  = binding

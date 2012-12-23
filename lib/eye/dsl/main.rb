@@ -19,7 +19,7 @@ module Eye::Dsl::Main
     mask = Pathname.new(glob).expand_path(dirname).to_s
     Dir[mask].each do |path|
       res = Kernel.load(path)
-      Eye.controller.info "loaded #{path} with #{res}"
+      Eye::Control.info "loaded #{path} with #{res}"
     end
   end
 

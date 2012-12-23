@@ -11,7 +11,7 @@ module Eye::Controller::Status
     actors = Celluloid::Actor.all.map{|actor| actor.class }.group_by{|a| a}.map{|k,v| [k, v.size]}.sort_by{|a|a[1]}.reverse
 
     str = <<-S
-#{Eye.about}
+#{Eye::ABOUT}
 info: #{Eye::SystemResources.info_string($$)}
 
 Actors:
