@@ -70,7 +70,12 @@ class Eye::ChildProcess
   end
 
   def status_data(debug = false)
-    {:name => :'=child=', :pid => pid, :state => :up, :debug => debug ? debug_string : nil}
+    { :name => :'=child=', 
+      :pid => pid, 
+      :state => :up, 
+      :debug => debug ? debug_string : nil,
+      :resources => Eye::SystemResources.info_string(pid)
+    }
   end
 
   def debug_string 

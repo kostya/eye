@@ -21,6 +21,11 @@ describe "Eye::SystemResources" do
     x.should < 100
   end
 
+  it "should get start time" do
+    x = Eye::SystemResources.start_time($$)
+    x.length.should == 5
+  end
+
   it "should get childs" do
     x = Eye::SystemResources.childs($$)
     x.is_a?(Array).should == true

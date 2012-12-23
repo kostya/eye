@@ -11,6 +11,9 @@ module Eye::Controller::Status
     actors = Celluloid::Actor.all.map{|actor| actor.class }.group_by{|a| a}.map{|k,v| [k, v.size]}.sort_by{|a|a[1]}.reverse
 
     <<-S
+#{Eye.about}
+info: #{Eye::SystemResources.info_string($$)}
+
 Actors:
 #{actors.inspect}
 
@@ -42,6 +45,7 @@ private
           str += '| ' + data[:debug]
         elsif data[:state]
           str += ': ' + data[:state].to_s 
+          str += ' (' + data[:resources] + ')' if data[:resources].present?
         end
       end
 

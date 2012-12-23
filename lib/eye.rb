@@ -21,6 +21,10 @@ module Eye
     def controller
       @controller ||= Eye::Controller.new
     end    
+
+    def about
+      "Eye v#{VERSION} (c) 2012 @kostya"
+    end
   end
 end
 

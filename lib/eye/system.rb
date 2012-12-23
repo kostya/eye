@@ -90,7 +90,7 @@ module Eye::System
     # {pid => {:rss =>, :cpu =>, :ppid => , :cmd => }}
     # slow
     def ps_aux
-      str = Process.send('`', "ps axo pid,ppid,pcpu,rss,command")
+      str = Process.send('`', "ps axo pid,ppid,pcpu,rss,start_time,command")
       str.force_encoding('binary')
       lines = str.split("\n")      
       lines.shift # remove first line
@@ -99,7 +99,8 @@ module Eye::System
         mem[chunk[0].to_i] = {:rss => chunk[3].to_i, 
           :cpu => chunk[2].to_i, 
           :ppid => chunk[1].to_i, 
-          :cmd => chunk[4..-1].join(' ')}
+          :start_time => chunk[4],
+          :cmd => chunk[5..-1].join(' ')}          
         mem
       end
     end

@@ -23,7 +23,12 @@ module Eye::Process::Data
   end
 
   def status_data(debug = false)
-    p_st = {:name => name, :pid => pid, :state => state, :debug => debug ? debug_string : nil}
+    p_st = {:name => name, 
+      :pid => pid, 
+      :state => state, 
+      :debug => debug ? debug_string : nil,
+      :resources => Eye::SystemResources.info_string(pid)
+    }
 
     if childs.present?
       p_st.merge(:subtree => childs.values.map{|c| c.status_data(debug)})

@@ -28,6 +28,20 @@ class Eye::SystemResources
       ps_aux[pid].try :[], :cmd
     end
 
+    def start_time(pid)
+      ps_aux[pid].try :[], :start_time
+    end
+
+    def info_string(pid)
+      return "" unless ps_aux[pid]
+
+      mem = memory_usage pid
+      cpu = cpu_usage pid
+      st  = start_time pid
+
+      "#{st}, #{cpu}%, #{mem / 1024}Mb"
+    end
+
     def cpu_usage2(pid)
     end
 
