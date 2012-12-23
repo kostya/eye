@@ -30,6 +30,7 @@ Eye.app("int") do
     monitor_children do
       childs_update_period 5.seconds
       restart_command "kill -2 {{PID}}"
+      checks :memory, :below => 300.megabytes, :times => 3
     end
   end
 

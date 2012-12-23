@@ -19,6 +19,9 @@ class Eye::ChildProcess
   # logger methods: info, ...
   include Eye::Logger::Helpers
 
+  # self_status_data
+  include Eye::Process::Data
+
   attr_reader :pid, :name, :config, :watchers
 
   def initialize(pid, config = {}, logger_prefix = nil)
@@ -26,8 +29,7 @@ class Eye::ChildProcess
 
     @pid = pid
     @config = prepare_config(config)
-    @title = Eye::SystemResources.cmd(pid)
-    @name = "child_#{pid}"
+    @name = '=child='
 
     @logger = Eye::Logger.new("#{logger_prefix} child:#{pid}")
     
@@ -38,6 +40,10 @@ class Eye::ChildProcess
     debug "start monitoring CHILD config: #{@config.inspect}"
 
     start_checkers!
+  end
+
+  def state
+    :up
   end
 
   def stop
@@ -65,24 +71,8 @@ class Eye::ChildProcess
     @queue.add_no_dup(command)
   end
 
-  def status_string
-    "child(#{pid}): up\n"
-  end
-
   def status_data(debug = false)
-    { :name => :'=child=', 
-      :pid => pid, 
-      :state => :up, 
-      :debug => debug ? debug_string : nil,
-      :resources => Eye::SystemResources.info_string(pid)
-    }
+    self_status_data(debug)
   end
 
-  def debug_string 
-    q = "q(" + @queue.names_list * ',' + ")"
-    w = "w(" + @watchers.keys * ',' + ")"
-
-    [w, q] * '; '
-  end
-  
 end

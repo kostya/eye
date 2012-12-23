@@ -20,17 +20,14 @@ class Eye::Application
     @groups << group
   end
 
-  def status_string
-    res = "#{@name}\n"
-    @groups.each{|gr| res << gr.status_string.map{|c| "  " + c}.join }
-    res
-  end
-
   def status_data(debug = false)
-    {:name => "[#{@name}]", :subtree => @groups.map{|gr| gr.status_data(debug)}, :debug => debug ? debug_string : nil}
+    { :name => @name, 
+      :subtree => @groups.map{|gr| gr.status_data(debug)}, 
+      :debug => debug ? debug_data : nil,
+    }
   end
 
-  def debug_string    
+  def debug_data
   end
 
   def send_command(command)

@@ -53,4 +53,6 @@ Kernel.trap("INT") do # for foregraund quit
   exit
 end
 
+puts 'started!'
+
 sleep

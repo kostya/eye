@@ -30,31 +30,18 @@ class Eye::Group
     @processes << process
   end
 
-  def status_string
-    res = []
-
-    if @hidden
-      @processes.sort_by(&:name).each{|p| res += p.status_string }
-    else
-      res << "#{name}\n"
-      @processes.sort_by(&:name).each{|p| res += p.status_string.map{|c| "  " + c} }
-    end     
-
-    res
-  end
-
   def status_data(debug = false)
     plist = @processes.sort_by(&:name).map{|p| p.status_data(debug)}
 
     if @hidden
       plist
     else
-      {:subtree => plist, :name  => "[#{name}]", :debug => debug ? debug_string : nil}
+      {:subtree => plist, :name => name, :debug => debug ? debug_data : nil}
     end
   end
 
-  def debug_string
-    q = "q(" + @queue.names_list * ',' + ")"
+  def debug_data
+    {:queue => @queue.names_list}
   end
 
   def send_command(command)

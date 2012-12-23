@@ -32,28 +32,14 @@ class Eye::SystemResources
       ps_aux[pid].try :[], :start_time
     end
 
-    def info_string(pid)
-      return "" unless ps_aux[pid]
+    def resources(pid)
+      return {} unless ps_aux[pid]
 
-      mem = memory_usage pid
-      cpu = cpu_usage pid
-      st  = start_time pid
-
-      "#{st}, #{cpu}%, #{mem / 1024}Mb"
-    end
-
-    def cpu_usage2(pid)
-    end
-
-    MEMORY_REGX = /VmData:\s*([^\s]+)\s/
-
-    # fast
-    def memory_usage2(pid)
-      data = File.read("/proc/#{pid}/status")
-      data.match(MEMORY_REGX)
-      $1.to_i
-    rescue
-      -1
+      { :memory => memory_usage(pid) / 1024, 
+        :cpu => cpu_usage(pid), 
+        :start_time => start_time(pid),
+        :command => cmd(pid)
+      }
     end
 
     # initialize actor, call 1 time before using

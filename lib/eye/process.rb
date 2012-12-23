@@ -45,7 +45,7 @@ class Eye::Process
   # c(), self[]  
   include Eye::Process::Config
   
-  # full_name, status_string
+  # full_name, status_data
   include Eye::Process::Data
   
   # commands:
