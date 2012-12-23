@@ -4,8 +4,8 @@ require File.expand_path('../lib/eye', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["'Konstantin Makarchev'"]
   gem.email         = ["'kostya27@gmail.com'"]
-  gem.description   = %q{Write a gem description}
-  gem.summary       = %q{Write a gem summary}
+  gem.description   = %q{Process monitoring tool.}
+  gem.summary       = %q{Process monitoring tool.}
   gem.homepage      = "http://github.com/kostya/eye"
 
   gem.files         = `git ls-files`.split($\)
