@@ -10,9 +10,10 @@ module Eye::Controller::Commands
 
   def safe_command(cmd, *args)
     info "client command: #{cmd} #{args * ', '}"
+    start_at = Time.now
     cmd = cmd.to_sym
     
-    case cmd 
+    res = case cmd 
       when :start, :stop, :restart, :remove, :unmonitor
         send_command(cmd, *args)
       when :load
@@ -31,7 +32,11 @@ module Eye::Controller::Commands
         Eye::Logger.dev
       else
         :unknown_command
-    end    
+    end   
+
+    debug "client command: #{cmd} #{args * ', '} end #{Time.now - start_at}"
+
+    res  
   end
 
   def send_command(command, obj_str = "")
