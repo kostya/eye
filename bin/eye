@@ -217,8 +217,8 @@ private
   end
 
   def wait_server
-    # allow 10 seconds to run server
-    Timeout.timeout(10) do
+    # allow 20 seconds to run server
+    Timeout.timeout(20) do
       while !server_started?
         sleep 0.3
       end
