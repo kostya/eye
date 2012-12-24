@@ -50,7 +50,15 @@ describe "Eye::Process::System" do
     @process.process_realy_running?.should == false
   end
 
-  it "send_signal"
+  it "send_signal ok" do
+    mock(Eye::System).send_signal(@process.pid, :TERM){ {:status => :ok} }
+    @process.send_signal(:TERM).should == true
+  end
+
+  it "send_signal not ok" do
+    mock(Eye::System).send_signal(@process.pid, :TERM){ {:status => :error} }
+    @process.send_signal(:TERM).should == false
+  end
 
   it "pid_file_ctime" do
     File.open(@process[:pid_file_ex], 'w'){|f| f.write("asdf") }
