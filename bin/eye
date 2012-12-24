@@ -64,7 +64,7 @@ class Cli < Thor
     # if eye server got crazy, stop by force
     if res == :corrupred_marshal
       pid = File.read(Eye::Settings.pid_path) rescue nil
-      Eye::System.send_signal(pid, "KILL") if pid
+      Eye::System.send_signal(pid.to_i, "KILL") if pid
     end
 
     say "stopped...", :yellow
