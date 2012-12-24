@@ -45,7 +45,6 @@ private
         end
 
         if data[:debug]
-          p data          
           str += '| ' + debug_str(data[:debug])
         elsif data[:state]
           str += ': ' + data[:state].to_s 
