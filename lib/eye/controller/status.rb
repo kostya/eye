@@ -13,7 +13,7 @@ module Eye::Controller::Status
 
     str = <<-S
 About:  #{Eye::ABOUT}
-Info:   #{resources_str(Eye::SystemResources.resources($$))}
+Info:   #{$$}, #{resources_str(Eye::SystemResources.resources($$), false)}
 Logger: #{Eye::Logger.dev}
 Actors: #{actors.inspect}
 
@@ -48,7 +48,7 @@ private
           str += '| ' + debug_str(data[:debug])
         elsif data[:state]
           str += ': ' + data[:state].to_s 
-          str += ' ' + resources_str(data[:resources]) if data[:resources].present?
+          str += ' (' + resources_str(data[:resources]) + ')' if data[:resources].present?
         end
       end
 
@@ -56,8 +56,9 @@ private
     end
   end
 
-  def resources_str(r)
-    "(#{r[:start_time]}, #{r[:cpu]}%, #{r[:memory]}Mb)"
+  def resources_str(r, mb = true)
+    mem = mb ? "#{r[:memory] / 1024}Mb" : "#{r[:memory]}Kb"
+    "#{r[:start_time]}, #{r[:cpu]}%, #{mem}"
   end
 
   def debug_str(debug)

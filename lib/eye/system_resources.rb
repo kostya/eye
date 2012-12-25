@@ -35,7 +35,7 @@ class Eye::SystemResources
     def resources(pid)
       return {} unless ps_aux[pid]
 
-      { :memory => memory_usage(pid) / 1024, 
+      { :memory => memory_usage(pid), 
         :cpu => cpu_usage(pid), 
         :start_time => start_time(pid),
         :command => cmd(pid)

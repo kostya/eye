@@ -81,6 +81,11 @@ S
     subject.status_string.should == str.chomp
   end
 
+  it "status_string_debug should be" do
+    subject.load(fixture("dsl/load.eye"))
+    subject.status_string_debug.split("\n").size.should > 10
+  end
+
   describe "command" do
     it "should send_command" do
       mock(Eye::Control).send_command(:restart, 'samples')
