@@ -18,11 +18,11 @@ module Eye::Process::Controller
   end
 
   def start
-    info "controller start command"
+    info "=> start"
 
     if set_pid_from_file
       if process_realy_running?
-        info "process found and already running"
+        info "process found (#{self.pid}) and already running"
         transit :already_running
         :ok
       else
@@ -30,22 +30,24 @@ module Eye::Process::Controller
         start_process
       end
     else
-      info "pid_file not found, so starting..."
+      info "pid_file not found, so starting process..."
       start_process
     end
   end
 
   def stop
+    info "=> stop"
     stop_process
     transit :unmonitoring
   end
 
   def restart
+    info "=> restart"
     restart_process
   end
 
   def monitor
-    info "monitor command"
+    info "=> monitor"
     if self[:auto_start]
       start
     else
@@ -54,7 +56,7 @@ module Eye::Process::Controller
   end
 
   def unmonitor
-    info "unmonitor command"
+    info "=> unmonitor"
     transit :unmonitoring
   end
   

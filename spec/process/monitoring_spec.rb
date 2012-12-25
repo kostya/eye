@@ -85,7 +85,7 @@ describe "Process Monitoring" do
 
       # rewrite by another :)
       @pid = Eye::System.daemonize("ruby sample.rb", {:environment => {"ENV1" => "SECRET1"}, 
-        :working_dir => cfg[:working_dir], :stdout => @log})
+        :working_dir => cfg[:working_dir], :stdout => @log})[:pid]
 
       File.open(cfg[:pid_file], 'w'){|f| f.write(@pid) }
 
@@ -112,7 +112,7 @@ describe "Process Monitoring" do
 
     # rewrite by another :)
     @pid = Eye::System.daemonize("ruby sample.rb", {:environment => {"ENV1" => "SECRET1"}, 
-      :working_dir => C.p2[:working_dir], :stdout => @log})
+      :working_dir => C.p2[:working_dir], :stdout => @log})[:pid]
 
     File.open(C.p2[:pid_file], 'w'){|f| f.write(@pid) }
 

@@ -99,6 +99,16 @@ describe "Process Restart" do
       Eye::System.pid_alive?(@pid).should == false      
       @process.states_history.seq?(:up, :restarting, :down).should == true
     end
+
+    it "Bad restart command, invalid" do
+      start_ok_process(cfg.merge(:restart_command => "asdfasdf sdf asd fasdf asdf"))
+
+      dont_allow(@process).check_crush!
+
+      @process.restart_process
+      Eye::System.pid_alive?(@pid).should == true
+      @process.states_history.seq?(:up, :restarting, :up).should == true
+    end
   end
 
   [:down, :unmonitored, :up].each do |st|

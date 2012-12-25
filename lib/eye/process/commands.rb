@@ -1,17 +1,7 @@
 module Eye::Process::Commands
 
-  REASON_ADVICE = {
-    :timeout => "increase start_timeout interval",
-    :pid_not_found => "pid_file does not appear, check command",
-    :not_realy_running => "process not found",
-    :cant_write_pid => "pid_file is not writable for eye",
-    :cant_daemonize => "daemonize error (bad command?)",
-    :cant_execute => "execute error (bad command?)",
-    :bad_out_paths => "cant write stdout/err files (permission?)"
-  }
-
   def start_process
-    info "start_process command"
+    debug "start_process command"
 
     unless self[:start_command]
       info "no start command, skip"
@@ -20,7 +10,7 @@ module Eye::Process::Commands
 
     transit :starting
 
-    info "execute command: #{self[:start_command]}"
+    info "=#{self[:start_command]}="
 
     result = if self[:daemonize]
       spawn_process
@@ -28,16 +18,16 @@ module Eye::Process::Commands
       execute_process
     end
 
-    if result == :ok      
+    if !result[:error]
       info "process (#{self.pid}) ok started"
       transit :started
     else
-      warn "process (#{self.pid}) cant start, reason: #{result}! #{REASON_ADVICE[result]}"
+      warn "process (#{self.pid}) not started"
       
       if self.pid && Eye::System.pid_alive?(self.pid)
         info "try kill, what remains from process (#{self.pid}), because its failed to start"
-        send_signal(:TERM)
-        sleep 0.2        
+        send_signal(:KILL)
+        sleep 0.2 # little grace
       end
       self.pid = nil
 
@@ -53,7 +43,7 @@ module Eye::Process::Commands
   end
   
   def stop_process
-    info "stop_process command"
+    debug "stop_process command"
 
     transit :stopping
 
@@ -82,14 +72,22 @@ module Eye::Process::Commands
   end
 
   def restart_process
-    info "restart_process command"
+    debug "restart_process command"
 
     transit :restarting
 
     if self[:restart_command]
       cmd = prepare_command(self[:restart_command])
-      info "execute #{cmd}"
-      Eye::System.execute(cmd, config.merge(:timeout => self[:restart_timeout]))
+      info "=#{cmd}="
+      res = Eye::System.execute(cmd, config.merge(:timeout => self[:restart_timeout]))
+
+      if res[:error]
+        error "restart raised with #{res[:error].inspect}"
+
+        if res[:error].class == Timeout::Error
+          error "You should increase restart_timeout setting"
+        end
+      end
 
       sleep self[:restart_grace].to_f
 
@@ -110,15 +108,15 @@ module Eye::Process::Commands
 private
 
   def kill_process
-    if self[:stop_command]      
+    if self[:stop_command]
       cmd = prepare_command(self[:stop_command])
       res = Eye::System.execute(cmd, config.merge(:timeout => self[:stop_timeout]))
-      info "execute command: #{self[:stop_command]} returns #{res.inspect}"
+      info "=#{self[:stop_command]}= returns #{res.inspect}"
 
       sleep self[:stop_grace].to_f
 
     elsif self[:stop_signals]
-      info "execute command: #{self[:stop_signals].inspect}"
+      info "=#{self[:stop_signals].inspect}="
       stop_signals = self[:stop_signals].clone
 
       signal = stop_signals.shift
@@ -140,7 +138,7 @@ private
       sleep self[:stop_grace].to_f
 
     else # default command
-      info "execute command: kill -TERM {{PID}}"
+      info "=kill -TERM {{PID}}="
       send_signal(:TERM)
       
       sleep self[:stop_grace].to_f
@@ -157,34 +155,71 @@ private
   def spawn_process
     res = Eye::System.daemonize(self[:start_command], config)
 
-    return :cant_daemonize unless res    
-    return :bad_out_paths if res == :bad_out_paths
+    if res[:error]
+      error "process raised with #{res[:error].inspect}"
+
+      if res[:error].message == 'Permission denied - open'
+        error "seems stdout,err files is not writable write"
+      end
+
+      return {:error => res[:error].inspect}
+    end
     
-    self.pid = res
+    self.pid = res[:pid]
+
+    unless self.pid
+      error "returned empty pid, WTF O_o"
+      return {:error => :empty_pid}
+    end
 
     sleep self[:start_grace].to_f
 
-    if process_realy_running?
-      s = save_pid_to_file rescue nil
-      s ? :ok : :cant_write_pid
-    else
-      :not_realy_running
+    unless process_realy_running?
+      error "Process with pid (#{self.pid}) not found"
+      return {:error => :not_realy_running}
     end
+
+    begin
+      save_pid_to_file
+    rescue => ex
+      error "Save pid to file raised with #{ex.inspect}"
+      return {:error => :cant_write_pid}
+    end
+
+    res
   end
 
   def execute_process
     res = Eye::System.execute(self[:start_command], config.merge(:timeout => config[:start_timeout]))
 
-    return :timeout if res == :timeout
-    return :cant_execute if res == :cant_execute
-    return :bad_out_paths if res == :bad_out_paths
+    if res[:error]
+      error "process raised with #{res[:error].inspect}"
+
+      if res[:error].message == 'Permission denied - open'
+        error "seems stdout,err files is not writable write"
+      end
+
+      if res[:error].message == 'execution expired'
+        error "try to increase start_timeout interval (current #{self[:start_timeout]} is too small)"
+      end
+
+      return {:error => res[:error].inspect}
+    end
 
     sleep self[:start_grace].to_f
 
-    return :pid_not_found unless set_pid_from_file
-    return :not_realy_running unless process_realy_running?
+    unless set_pid_from_file
+      error "Pidfile does not appear after start_grace #{self[:start_grace].to_f}, check start_command, or tune start_grace"
+      return {:error => :pid_not_found}
+    end
 
-    return :ok
+    unless process_realy_running?
+      error "Process with pid (#{self.pid}) not found"
+      return {:error => :not_realy_running}
+    end
+
+    res[:pid] = self.pid
+    res
   end
 
   def prepare_command(command)

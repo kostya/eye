@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "Eye::ChildProcess" do
 
   before :each do
-    @pid = Eye::System.daemonize(C.p1[:start_command], C.p1)
+    @pid = Eye::System.daemonize(C.p1[:start_command], C.p1)[:pid]
     Eye::System.pid_alive?(@pid).should == true
     sleep 0.5
   end

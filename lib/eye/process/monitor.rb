@@ -66,10 +66,10 @@ private
     if state_name == :down
 
       if self[:keep_alive] && !@flapping
-        info "process in down, so :start"
+        info "check_crush: process in down, so :start"
         queue :start
       else
-        info "process in down, and something wrong, so :unmonitor"
+        info "check_crush: process in down, and something wrong, so :unmonitor"
         queue :unmonitor
       end
     end

@@ -25,7 +25,7 @@ describe "Eye::System" do
   describe "daemonize" do
     it "daemonize default" do
       @pid = Eye::System.daemonize("ruby sample.rb", {:environment => {"ENV1" => "SECRET1"}, 
-        :working_dir => C.p1[:working_dir], :stdout => @log})
+        :working_dir => C.p1[:working_dir], :stdout => @log})[:pid]
 
       @pid.should > 0
 
@@ -44,14 +44,14 @@ describe "Eye::System" do
     end
 
     it "daemonize empty" do
-      @pid = Eye::System.daemonize("ruby sample.rb", {:working_dir => C.p1[:working_dir]})
+      @pid = Eye::System.daemonize("ruby sample.rb", {:working_dir => C.p1[:working_dir]})[:pid]
 
       # process should be alive
       Eye::System.pid_alive?(@pid).should == true
     end
 
     it "daemonize empty" do
-      @pid = Eye::System.daemonize("echo 'some'", {:stdout => @log})
+      @pid = Eye::System.daemonize("echo 'some'", {:stdout => @log})[:pid]
 
       sleep 0.3
 
@@ -63,7 +63,7 @@ describe "Eye::System" do
       mock(Process).spawn({"BLA"=>"1", "LANG"=>ENV_LANG}, 'echo', 'some', anything)
       stub(Process).detach
 
-      @pid = Eye::System.daemonize("echo 'some'", {:stdout => @log, :environment => {"BLA" => "1"}})
+      @pid = Eye::System.daemonize("echo 'some'", {:stdout => @log, :environment => {"BLA" => "1"}})[:pid]
     end
   end
 
@@ -89,7 +89,7 @@ describe "Eye::System" do
     end
 
     it "send_signal to daemon" do
-      @pid = Eye::System.daemonize("ruby sample.rb", {:working_dir => C.p1[:working_dir]})
+      @pid = Eye::System.daemonize("ruby sample.rb", {:working_dir => C.p1[:working_dir]})[:pid]
 
       # process should be alive
       Eye::System.pid_alive?(@pid).should == true
@@ -101,7 +101,7 @@ describe "Eye::System" do
 
     it "catch signal in fork" do
       @pid = Eye::System.daemonize("ruby sample.rb", {:working_dir => C.p1[:working_dir],
-        :stdout => @log})
+        :stdout => @log})[:pid]
 
       sleep 4
 

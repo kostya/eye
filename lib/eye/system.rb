@@ -38,13 +38,10 @@ module Eye::System
       opts = spawn_options(cfg)
       pid  = Process::spawn(prepare_env(cfg), *Shellwords.shellwords(cmd), opts)
       Process.detach(pid)
-      pid     
+      {:pid => pid}
       
-    rescue Errno::ENOENT 
-      nil
-      
-    rescue Errno::EACCES
-      :bad_out_paths
+    rescue Errno::ENOENT, Errno::EACCES => ex
+      {:error => ex}
     end
 
     # Blocking execute cmd, return status
@@ -58,32 +55,31 @@ module Eye::System
       pid  = Process::spawn(prepare_env(cfg), *Shellwords.shellwords(cmd), opts)
 
       timeout = cfg[:timeout] || 1.second
-      res = pid
+      res = {:pid => pid}
 
-      wpd = Eye::Utils::WithActor.new
+      wa = Eye::Utils::WithActor.new
 
-      # doing waitpid with another actor, because waitpid block actor's mailbox
-      wpd.with do
+      # doing waitpid with anonim actor, because waitpid block actor's mailbox
+      wa.with do
         begin
           Timeout.timeout(timeout) do
             Process.waitpid(pid)
           end
-        rescue Timeout::Error
-          send_signal(pid) if pid        
-          res = :timeout
+        rescue Timeout::Error => ex
+          # kill it
+          send_signal(pid) if pid 
+
+          res = {:error => ex}
         end
       end
 
       res
 
-    rescue Errno::ENOENT 
-      :cant_execute
-      
-    rescue Errno::EACCES
-      :bad_out_paths    
+    rescue Errno::ENOENT, Errno::EACCES => ex
+      {:error => ex}
 
     ensure
-      wpd.terminate if defined?(wpd) && wpd && wpd.alive?
+      wa.terminate if defined?(wa) && wa && wa.alive?
     end
 
     # get table
