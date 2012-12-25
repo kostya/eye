@@ -3,6 +3,7 @@ require 'active_support'
 require 'active_support/time'
 require 'active_support/core_ext'
 require 'ostruct'
+require_relative 'utils/leak_19'
 
 class Eye::Controller
   include Celluloid
