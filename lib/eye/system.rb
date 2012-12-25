@@ -122,7 +122,7 @@ module Eye::System
     end
 
     def prepare_env(config = {})
-      env = config[:environment] || {}
+      env = config[:environment].present? ? config[:environment].clone : {}
 
       # ruby process spawn, somehow rewrite LANG env, this is bad for unicorn
       env['LANG'] = ENV_LANG unless env['LANG']
