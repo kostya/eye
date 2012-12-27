@@ -8,7 +8,7 @@ class Eye::Checker
 
   include Eye::Logger::Helpers
 
-  attr_accessor :value, :values, :options, :pid
+  attr_accessor :value, :values, :options, :pid, :type
 
   def self.create(pid, options = {}, logger_prefix = nil)
     obj = case options[:type]
@@ -26,9 +26,19 @@ class Eye::Checker
     @logger = Eye::Logger.new(logger_prefix, "check:#{check_name}")
     debug "create checker, with #{options}"
     @options = options
+    @type = options[:type]
 
     @value = nil
     @values = Eye::Utils::Tail.new(max_tries)
+  end
+
+  def last_human_values
+    h_values = @values.map do |v| 
+      sign = v[:good] ? '' : '*'
+      sign + human_value(v[:value]).to_s
+    end
+
+    '[' + h_values * ", " + ']'
   end
 
   def check
@@ -42,7 +52,7 @@ class Eye::Checker
       result = false if bad_count >= min_tries
     end
 
-    info "[#{@values.map{|v| human_value(v[:value])} * ", "}] => #{result ? "OK" : "Fail"}"
+    info "#{last_human_values} => #{result ? "OK" : "Fail"}"
     warn "!!!notify checker failed #{human_value(@value)}" unless result
 
     result

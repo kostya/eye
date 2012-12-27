@@ -31,6 +31,7 @@ describe "Process Memory check" do
       sleep 3
 
       stub(Eye::SystemResources).memory_usage(@process.pid){ 50_000 }      
+      mock(@process).notify(:crit, anything)
       mock(@process).queue(:restart)
 
       sleep 1

@@ -8,6 +8,7 @@ describe "Process Monitoring" do
       old_pid = @pid
 
       die_process!(@pid)
+      mock(@process).notify(:warn, anything)
 
       sleep 10 # wait until monitor upping process
 

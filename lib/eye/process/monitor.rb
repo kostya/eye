@@ -35,6 +35,7 @@ private
       # check that process runned
       unless process_realy_running?
         info "process not found, so :crushed"
+        notify :warn, "Process #{full_name} crushed!"
         transit :crushed
       else
         # check that pid_file still here

@@ -22,6 +22,9 @@ class Eye::ChildProcess
   # self_status_data
   include Eye::Process::Data
 
+  # manage notify methods
+  include Eye::Process::Notify
+
   attr_reader :pid, :name, :config, :watchers
 
   def initialize(pid, config = {}, logger_prefix = nil)

@@ -31,7 +31,7 @@ module Eye::Process::Watchers
 
 private  
 
-  def add_watcher(type, period = 2, subject = nil, &block)    
+  def add_watcher(type, period = 2, subject = nil, &block)
     return if @watchers[type]
 
     debug "add watcher #{type}(#{period})"
@@ -44,25 +44,21 @@ private
     @watchers[type] ||= {:timer => timer, :subject => subject}
   end  
   
-  def clear_watcher(type)
-    if @watchers[type]
-      @watchers[type][:timer].cancel
-      @watchers.delete(type)
-    end
-  end
-
   def start_checkers
-    self[:checks].each do |_, cfg|
-      start_checker(cfg)
-    end
+    self[:checks].each{|_, cfg| start_checker(cfg) }
   end
 
   def start_checker(cfg)
     subject = Eye::Checker.create(pid, cfg, logger.prefix)
 
     # ex: {:type => :mem_usage, :every => 5.seconds, :below => 100.megabytes, :times => [3,5]}
-    add_watcher("check_#{cfg[:type]}".to_sym, cfg[:every] || 5, subject) do |watcher|
-      queue(:restart) unless watcher.check
+    add_watcher("check_#{cfg[:type]}".to_sym, cfg[:every] || 5, subject, &method(:watcher_tick).to_proc)
+  end
+
+  def watcher_tick(subject)
+    unless subject.check
+      notify :crit, "Bounded #{subject.check_name}: #{subject.last_human_values}"
+      queue(:restart)
     end
   end
 

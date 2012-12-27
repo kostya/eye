@@ -14,6 +14,7 @@ class Eye::Process
   autoload :StatesHistory,    'eye/process/states_history'
   autoload :Child,            'eye/process/child'
   autoload :Trigger,          'eye/process/trigger'
+  autoload :Notify,           'eye/process/notify'
 
   attr_accessor :pid, :watchers, :config, :states_history, 
                 :state_reason, :childs, :triggers, :flapping, :name
@@ -67,8 +68,11 @@ class Eye::Process
   # manage childs methods
   include Eye::Process::Child
 
-  # magage triggers methods
+  # manage triggers methods
   include Eye::Process::Trigger
+
+  # manage notify methods
+  include Eye::Process::Notify
 
   # logger methods
   include Eye::Logger::Helpers

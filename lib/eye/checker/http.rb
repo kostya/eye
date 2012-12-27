@@ -56,7 +56,11 @@ class Eye::Checker::Http < Eye::Checker
     if !value.is_a?(Hash)
       "-"
     elsif value[:exception]
-      "Err"
+      if value[:exception] == :timeout
+        "T-out"
+      else
+        "Err"
+      end
     else
       "#{value[:result].code}=#{value[:result].body.size/ 1024}Kb"
     end

@@ -33,6 +33,8 @@ describe "Flapping" do
     @process = process(@c.merge(:start_command => @c[:start_command] + " -r"))
     @process.start!
 
+    mock(@process).notify(:crit, anything)
+
     sleep 13
 
     # check flapping happens here
