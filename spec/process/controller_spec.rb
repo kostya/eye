@@ -52,6 +52,20 @@ describe "Process Controller" do
 
       @process.remove
       Eye::System.pid_alive?(old_pid).should == true
+      sleep 0.3
+      @process.alive?.should == false
+
+      @process = nil
+    end
+
+    it "if stop_on_remove process die" do
+      start_ok_process(C.p1.merge(:stop_on_remove => true))
+      old_pid = @process.pid
+
+      @process.remove
+      Eye::System.pid_alive?(old_pid).should == false
+      sleep 0.3
+      @process.alive?.should == false
 
       @process = nil
     end

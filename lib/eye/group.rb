@@ -68,7 +68,7 @@ class Eye::Group
 
   def remove
     self.processes.each do |process|
-      process.remove
+      process.send_command :remove
     end
 
     @queue.terminate

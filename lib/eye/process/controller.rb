@@ -10,11 +10,7 @@ module Eye::Process::Controller
   end
 
   def send_command(command)
-    if command == :remove
-      remove       
-    else
-      self.queue(command)
-    end
+    queue(command)
   end
 
   def start
@@ -61,11 +57,17 @@ module Eye::Process::Controller
   end
   
   def remove
+    info "=> remove"
+
+    if self[:stop_on_remove]
+      info "process has stop_on_remove option, so stop it first"
+      stop
+    end
+
     remove_watchers
     remove_childs
     remove_triggers
 
-    # actors just die, without stopping process
     @queue.terminate
     self.terminate
   end

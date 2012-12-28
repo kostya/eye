@@ -282,7 +282,6 @@ describe "Intergration" do
       sleep 2
       Eye::System.pid_alive?(@old_pid1).should == false
     end
-
   end
 
   it "load another config, with same processes but changed names" do
