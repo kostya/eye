@@ -68,10 +68,12 @@ describe "ChildProcess" do
       stub(Eye::SystemResources).cpu_usage(crazy.pid){ 55 }
       stub(Eye::SystemResources).cpu_usage(anything){ 5 }
 
+
       crazy.watchers.keys.should == [:check_memory, :check_cpu]
+      mock(crazy).notify(:crit, "Bounded cpu: [*55%, *55%]")
       mock(crazy).queue :restart
 
-      sleep 3
+      sleep 4
     end
   end
 end

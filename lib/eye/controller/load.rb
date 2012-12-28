@@ -60,7 +60,7 @@ private
     #error ex.backtrace.join("\n")
 
     # filter backtrace for user output
-    bt = (ex.backtrace || []).reject{|line| line.to_s =~ %r{/lib/eye/} || line.to_s =~ %r{lib/celluloid}} 
+    bt = (ex.backtrace || []).reject{|line| line.to_s =~ %r[/lib/eye/] || line.to_s =~ %r[lib/celluloid] || line.to_s =~ %r[internal:prelude] } 
     error bt.join("\n")
 
     [{:error => true, :message => ex.message, :backtrace => bt}]
