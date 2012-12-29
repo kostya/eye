@@ -64,11 +64,11 @@ Eye.app "test" do
 end
 ```
 
-## Start and/or load config:
+### Start and/or load config:
 
     $ eye load examples/test.eye
 
-### Status: 
+Processes status: 
   
     $ eye i(nfo)
 
