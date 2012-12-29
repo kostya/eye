@@ -1,13 +1,14 @@
-# Eye
+Eye
+===
 
 Process monitoring tool. With bluepill-like config syntax. Requires ruby >= 1.9.2. Uses Celluloid and Celluloid::IO.
 
-### Recommended installation on the server (system wide):
+Recommended installation on the server (system wide):
 
     $ sudo /usr/local/ruby/1.9.3/bin/gem install eye
     $ sudo ln -sf /usr/local/ruby/1.9.3/bin/eye /usr/local/bin/eye
 
-### Config example, shows most of the options (examples/test.eye):
+Config example, shows most of the options (examples/test.eye):
 
 ```ruby
 Eye.load("./eye/*.rb") # load submodules
