@@ -48,7 +48,7 @@ private
           str += '| ' + debug_str(data[:debug])
         elsif data[:state]
           str += ': ' + data[:state].to_s 
-          str += ' (' + resources_str(data[:resources]) + ')' if data[:resources].present?
+          str += ' (' + resources_str(data[:resources]) + ')' if data[:resources].present? && data[:state] == :up
         end
       end
 
