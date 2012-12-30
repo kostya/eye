@@ -48,7 +48,7 @@ private
           str += '| ' + debug_str(data[:debug])
         elsif data[:state]
           str += ': ' + data[:state].to_s 
-          str += ' (' + resources_str(data[:resources]) + ')' if data[:resources].present? && data[:state] == :up
+          str += ' (' + resources_str(data[:resources]) + ')' if data[:resources].present? && data[:state].to_sym == :up
         end
       end
 
@@ -59,9 +59,15 @@ private
   REV_REGX = /r:([a-z0-9]{5,})/i
 
   def resources_str(r, mb = true)
-    mem = mb ? "#{r[:memory] / 1024}Mb" : "#{r[:memory]}Kb"
-    res = "#{r[:start_time]}, #{r[:cpu]}%, #{mem}"
+    return '' if r.blank?
     
+    res = "#{r[:start_time]}, #{r[:cpu]}%"
+
+    if r[:memory]
+      mem = mb ? "#{r[:memory] / 1024}Mb" : "#{r[:memory]}Kb"
+      res += ", #{mem}"
+    end
+
     # show process revision, as parse from procline part: 'r:12345678'
     if r[:command] && r[:command].to_s =~ REV_REGX
       res += ", #{$1.to_s[0..5]}"
