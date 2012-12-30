@@ -62,4 +62,32 @@ class Eye::Dsl::Opts
     @config.pure
   end
 
+  # execute part of config on particular server
+  # array of strings
+  # regexp
+  # string
+  def with_server(glob = nil, &block)
+    on_server = true
+
+    if glob.present? 
+      host = Eye::SystemResources.host
+
+      if glob.is_a?(Array)
+        on_server = !!glob.any?{|elem| elem == host}
+      elsif glob.is_a?(Regexp)
+        on_server = !!host.match(glob)
+      elsif glob.is_a?(String) || glob.is_a?(Symbol)
+        on_server = (host == glob.to_s)
+      end
+    end
+
+    with_condition(on_server, &block)
+
+    on_server
+  end
+
+  def with_condition(cond = true, &block)
+    self.instance_eval(&block) if cond && block
+  end
+
 end
