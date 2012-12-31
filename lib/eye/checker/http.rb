@@ -34,6 +34,10 @@ class Eye::Checker::Http < Eye::Checker
   end
 
   def get_value(pid)
+    Eye::Utils.async_and_wait{ get_value_sync }
+  end
+
+  def get_value_sync
     res = @session.start do |http|
       http.get(@uri.path)
     end

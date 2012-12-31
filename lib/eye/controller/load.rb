@@ -7,7 +7,7 @@ module Eye::Controller::Load
   end
 
   # filename is a path, or folder, or mask
-  def load(filename = "")    
+  def load(filename = "")
     mask = if File.directory?(filename)
       File.join filename, "{*.eye}"
     else
