@@ -55,7 +55,8 @@ module C
       :stop_command => "ruby forking.rb stop",
       :pid_file => "forking.pid",
       :childs_update_period => Eye::SystemResources::PsAxActor::UPDATE_INTERVAL + 1,
-      :stop_timeout => 5.seconds      
+      :stop_timeout => 5.seconds,
+      :start_timeout => 15.seconds
     )
   end
 

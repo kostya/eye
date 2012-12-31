@@ -31,7 +31,7 @@ class Eye::Group
   end
 
   def status_data(debug = false)
-    plist = @processes.sort_by(&:name).map{|p| p.status_data(debug)}
+    plist = @processes.sort_by(&:name).map{|p| p.status_data(debug) if p.alive? }.compact
 
     if @hidden
       plist
@@ -67,9 +67,7 @@ class Eye::Group
   end
 
   def remove
-    self.processes.each do |process|
-      process.send_command :remove
-    end
+    async_all :remove
 
     @queue.terminate
     self.terminate
@@ -89,27 +87,24 @@ private
     info "send to all #{command}"
     
     @processes.each do |process|
-      process.send_command(command)
+      process.send_command(command) if process.alive?
     end    
   end
 
-  def sync_queue(command, grace = 0)
-    info "start sync queue #{command} with #{grace}s"
+  def chain(type, command, grace = 0)
+    info "start #{type} queue #{command} with #{grace}s"
 
     @processes.each do | process |
-      # sync command, with waiting
-      process.send(command)
+      # check alive, for prevent races, process can be dead here
+      next unless process.alive?
 
-      # wait next process
-      sleep grace.to_f
-    end
-  end
-
-  def async_queue(command, grace = 0)
-    info "start async queue #{command} with #{grace}s"
-    @processes.each do | process |
-      # async command
-      process.send_command(command)
+      if type == :sync
+        # sync command, with waiting
+        process.send(command)
+      else
+        # async command
+        process.send_command(command)
+      end
 
       # wait next process
       sleep grace.to_f
@@ -119,13 +114,7 @@ private
   def chain_command(command)
     if @config[:chain] && @config[:chain][command]
       type = @config[:chain][command][:type] || :async
-
-      if type == :sync
-        sync_queue(command, @config[:chain][command][:grace] || 5)
-      else
-        async_queue(command, @config[:chain][command][:grace] || 5)
-      end
-
+      chain(type, command, @config[:chain][command][:grace] || 5)
     else
       async_all(command)
     end    
