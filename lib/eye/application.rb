@@ -22,7 +22,7 @@ class Eye::Application
 
   def status_data(debug = false)
     { :name => @name, 
-      :subtree => @groups.map{|gr| gr.status_data(debug)}, 
+      :subtree => @groups.map{|gr| gr.status_data(debug) if gr.alive? }.compact, 
       :debug => debug ? debug_data : nil,
     }
   end
@@ -32,7 +32,7 @@ class Eye::Application
 
   def send_command(command)
     @groups.each do |group|
-      group.send_command(command)
+      group.send_command(command) if group.alive?
     end
   end
 

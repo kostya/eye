@@ -134,6 +134,25 @@ describe "Intergration" do
       # restart sended, in 5 seconds to each
       (r2 - r1).should be_within(0.2).of(5)
     end
+
+    it "if processes dead in chain restart, nothing raised" do
+      @samples.config.merge!(:chain => C.restart_async)
+
+      @old_pid1 = @p1.pid
+      @old_pid2 = @p2.pid
+      @old_pid3 = @p3.pid
+      @c.send_command(:restart, "samples")
+      sleep 3
+
+      # in the middle of the process, we kill all processes
+      @p1.terminate
+      @p2.terminate
+
+      sleep 3
+
+      # nothing happens
+      @samples.alive?.should == true
+    end
   end
 
   it "stop group" do
