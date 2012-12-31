@@ -5,9 +5,9 @@ module Eye::Utils
 
   def self.async_and_wait(&block)
     # TODO: add pool?
-    wa = WithActor.new
+    wa = Eye::Utils::WithActor.new
     wa.with{ block.call }
   ensure
-    wa.terminate if wa.alive?
+    wa.terminate if wa && wa.alive?
   end
 end
