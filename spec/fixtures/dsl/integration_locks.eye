@@ -5,13 +5,13 @@ Eye.app("int") do
   group "samples" do
     process("sample1") do
       pid_file "1.pid"
-      start_command "ruby sample.rb"
+      start_command "ruby sample.rb -L lock1.lock"
       daemonize true
     end
 
     process("sample2") do
       pid_file "2.pid"
-      start_command "ruby sample.rb -d --pid 2.pid --log shlak.log"
+      start_command "ruby sample.rb -d --pid 2.pid --log shlak.log -L lock2.lock"
       checks :memory, :below => 300.megabytes
     end
   end
