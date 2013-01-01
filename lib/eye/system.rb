@@ -83,20 +83,27 @@ module Eye::System
     end
 
     # get table
-    # {pid => {:rss =>, :cpu =>, :ppid => , :cmd => }}
+    # {pid => {:rss =>, :cpu =>, :ppid => , :cmd => , :start_time}}
     # slow
     def ps_aux
-      str = Process.send('`', "ps axo pid,ppid,pcpu,rss,start_time,command")
-      str.force_encoding('binary')
+      cmd = if RUBY_PLATFORM.include?('darwin')
+        "ps axo pid,ppid,pcpu,rss,start,command"
+      else
+        "ps axo pid,ppid,pcpu,rss,start_time,command"
+      end
+
+      str = Process.send('`', cmd).force_encoding('binary')
       lines = str.split("\n")      
       lines.shift # remove first line
       lines.inject(Hash.new) do |mem, line|
         chunk = line.strip.split(/\s+/).map(&:strip)
-        mem[chunk[0].to_i] = {:rss => chunk[3].to_i, 
+        mem[chunk[0].to_i] = {
+          :rss => chunk[3].to_i, 
           :cpu => chunk[2].to_i, 
           :ppid => chunk[1].to_i, 
           :start_time => chunk[4],
-          :cmd => chunk[5..-1].join(' ')}          
+          :cmd => chunk[5..-1].join(' ')
+        }
         mem
       end
     end
