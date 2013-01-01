@@ -102,4 +102,18 @@ class Eye::Dsl::Opts
     self.instance_eval(&block) if cond && block
   end
 
+  def include(proc, *args)
+    ie = if proc.is_a?(Symbol) || proc.is_a?(String)
+      if args.present?
+        lambda{|i| i.send(proc, i, *args) }
+      else
+        method(proc).to_proc
+      end
+    else
+      proc
+    end
+
+    self.instance_eval(&ie)
+  end
+
 end
