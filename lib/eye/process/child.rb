@@ -48,8 +48,6 @@ module Eye::Process::Child
   end
 
   def remove_childs
-    return unless self[:monitor_children]
-
     if childs.present?
       childs.keys.each do |child_pid|
         child = childs.delete(child_pid)
