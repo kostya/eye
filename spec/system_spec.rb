@@ -32,9 +32,6 @@ describe "Eye::System" do
       # process should be alive
       Eye::System.pid_alive?(@pid).should == true
 
-      # should change dir
-      Dir.getwd.should == C.p1[:working_dir]
-
       sleep 4
       
       # should capture log

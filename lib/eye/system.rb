@@ -34,7 +34,6 @@ module Eye::System
     #   :environment
     #   :stdin, :stdout, :stderr
     def daemonize(cmd, cfg = {})
-      Dir.chdir(cfg[:working_dir]) if cfg[:working_dir]
       opts = spawn_options(cfg)
       pid  = Process::spawn(prepare_env(cfg), *Shellwords.shellwords(cmd), opts)
       Process.detach(pid)
@@ -56,7 +55,6 @@ module Eye::System
     end
 
     def execute_blocked(cmd, cfg = {})
-      Dir.chdir(cfg[:working_dir]) if cfg[:working_dir]
       opts = spawn_options(cfg)
       pid  = Process::spawn(prepare_env(cfg), *Shellwords.shellwords(cmd), opts)
 
