@@ -50,36 +50,29 @@ module Eye::System
     #   :environment
     #   :stdin, :stdout, :stderr
     def execute(cmd, cfg = {})
+      Eye::Utils.async_and_wait do
+        execute_blocked(cmd, cfg)
+      end
+    end
+
+    def execute_blocked(cmd, cfg = {})
       Dir.chdir(cfg[:working_dir]) if cfg[:working_dir]
       opts = spawn_options(cfg)
       pid  = Process::spawn(prepare_env(cfg), *Shellwords.shellwords(cmd), opts)
 
-      timeout = cfg[:timeout] || 1.second
-      res = {:pid => pid}
-
-      wa = Eye::Utils::WithActor.new
-
-      # doing waitpid with anonim actor, because waitpid block actor's mailbox
-      wa.with do
-        begin
-          Timeout.timeout(timeout) do
-            Process.waitpid(pid)
-          end
-        rescue Timeout::Error => ex
-          # kill it
-          send_signal(pid) if pid 
-
-          res = {:error => ex}
-        end
+      Timeout.timeout(cfg[:timeout] || 1.second) do
+        Process.waitpid(pid)
       end
 
-      res
+      {:pid => pid}
+
+    rescue Timeout::Error => ex
+      # kill it?
+      send_signal(pid) if pid 
+      {:error => ex}
 
     rescue Errno::ENOENT, Errno::EACCES => ex
       {:error => ex}
-
-    ensure
-      wa.terminate if defined?(wa) && wa && wa.alive?
     end
 
     # get table
@@ -127,7 +120,7 @@ module Eye::System
     def prepare_env(config = {})
       env = config[:environment].present? ? config[:environment].clone : {}
 
-      # ruby process spawn, somehow rewrite LANG env, this is bad for unicorn
+      # return original LANG env, because ruby loose it (needs for unicorn)
       env['LANG'] = ENV_LANG unless env['LANG']
 
       env
