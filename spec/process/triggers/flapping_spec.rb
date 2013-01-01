@@ -18,6 +18,13 @@ describe "Flapping" do
     triggers.first.times.should == 4
   end
 
+  it "shouldnot create trigger from config, if notriggers" do
+    start_ok_process(@c.merge(:notriggers => {:flapping => 1}))
+
+    triggers = @process.triggers
+    triggers.size.should == 0
+  end
+
   it "should check speedy flapping by default" do
     start_ok_process(C.p1)
 
@@ -33,6 +40,7 @@ describe "Flapping" do
     @process = process(@c.merge(:start_command => @c[:start_command] + " -r"))
     @process.start!
 
+    stub(@process).notify(:warn, anything)
     mock(@process).notify(:crit, anything)
 
     sleep 13

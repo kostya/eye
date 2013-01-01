@@ -2,8 +2,8 @@ module Eye::Process::Trigger
 
   def add_triggers
     if self[:triggers]
-      self[:triggers].each do |_, cfg|
-        add_trigger(cfg)
+      self[:triggers].each do |type, cfg|
+        add_trigger(cfg) unless self[:notriggers].try(:[], type)
       end      
     end
   end

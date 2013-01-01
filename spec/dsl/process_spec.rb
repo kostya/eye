@@ -263,6 +263,44 @@ describe "Eye::Dsl" do
       Eye::Dsl.load(conf).should == {"bla" => {:groups=>{"__default__"=>{:processes=>{"1"=>{:pid_file=>"1.pid", :triggers=>{:flapping=>{:times=>2, :within=>15, :type=>:flapping}}, :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
     end
 
+    it "nochecks to remove inherit checks" do
+      conf = <<-E
+        Eye.application("bla") do
+          checks :memory, :below => 100.megabytes, :every => 10.seconds
+
+          process("1") do
+            pid_file "1.pid"
+            nochecks :memory
+          end        
+
+          process("2") do
+            pid_file "2.pid"
+          end
+        end
+      E
+      Eye::Dsl.load(conf).should == {"bla" => {:checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :groups=>{"__default__"=>{:checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :processes=>{"1"=>{:checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :pid_file=>"1.pid", :nochecks=>{:memory=>1}, :application=>"bla", :group=>"__default__", :name=>"1"}, "2"=>{:checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :pid_file=>"2.pid", :application=>"bla", :group=>"__default__", :name=>"2"}}}}}}
+    end
+
+    it "empty nocheck do nothing" do
+      conf = <<-E
+        Eye.application("bla") do
+          checks :memory, :below => 100.megabytes, :every => 10.seconds
+          nochecks :cpu
+
+          process("1") do
+            pid_file "1.pid"
+            nochecks :cpu
+            nochecks :memory
+          end        
+
+          process("2") do
+            pid_file "2.pid"
+          end
+        end
+      E
+      Eye::Dsl.load(conf).should == {"bla" => {:checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :nochecks=>{:cpu=>1}, :groups=>{"__default__"=>{:checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :nochecks=>{:cpu=>1}, :processes=>{"1"=>{:checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :nochecks=>{:cpu=>1,:memory=>1}, :pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}, "2"=>{:checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :nochecks=>{:cpu=>1}, :pid_file=>"2.pid", :application=>"bla", :group=>"__default__", :name=>"2"}}}}}}
+    end
+
   end
 
   it "valid process with proxies" do
