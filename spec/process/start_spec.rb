@@ -198,7 +198,7 @@ describe "Process Start" do
 
   # O_o, what checks this spec
   it "blocking start with lock" do
-    @process = process(C.p2.merge(:start_command => C.p2[:start_command] + " -L 1.lock", :start_timeout => 2.seconds))
+    @process = process(C.p2.merge(:start_command => C.p2[:start_command] + " --daemonize_delay 3 -L 1.lock", :start_timeout => 2.seconds))
     @process.start.should == {:error => "#<Timeout::Error: execution expired>"}
 
     sleep 0.5
@@ -214,7 +214,7 @@ describe "Process Start" do
   it "bad config daemonize self daemonized process pid the same" do
     # little crazy behaviour, but process after first death, upped from pid_file pid
     # NOT RECOMENDED FOR USE CASE
-    @process = process(C.p2.merge(:daemonize => true))
+    @process = process(C.p2.merge(:daemonize => true, :start_grace => 10.seconds))
     old_pid = @process.pid
 
     @process.start.should == {:error => :not_realy_running}
@@ -229,7 +229,7 @@ describe "Process Start" do
 
   it "bad config daemonize self daemonized process pid different" do
     # NOT RECOMENDED FOR USE CASE
-    @process = process(C.p2.merge(:daemonize => true, :pid_file => "2.pid"))
+    @process = process(C.p2.merge(:daemonize => true, :pid_file => "2.pid", :start_grace => 10.seconds))
     @process.start.should == {:error => :not_realy_running}
     @process.pid.should == nil
     

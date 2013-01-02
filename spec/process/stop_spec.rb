@@ -133,7 +133,7 @@ describe "Process Stop" do
     Eye::System.pid_alive?(pid).should == false    
   end
 
-  it "stop process by stop_signals as commands" 
+  it "stop process by stop_signals and commands" 
 
   [:unmonitored, :down, :starting, :stopping].each do |st|
     it "no stop from #{st}" do

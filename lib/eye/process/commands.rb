@@ -12,11 +12,12 @@ module Eye::Process::Commands
     result = self[:daemonize] ? daemonize_process : execute_process
 
     if !result[:error]
-      info "process (#{self.pid}) ok started"
+      debug "process (#{self.pid}) ok started"
       switch :started
     else
+      debug "process (#{self.pid}) failed to start (#{result[:error].inspect})"
       if self.pid && Eye::System.pid_alive?(self.pid)
-        info "kill, what remains from process (#{self.pid}), because its failed to start (without pid_file impossible to monitoring)"
+        warn "kill, what remains from process (#{self.pid}), because its failed to start (without pid_file impossible to monitoring)"
         send_signal(:KILL)
         sleep 0.2 # little grace
       end
@@ -42,7 +43,7 @@ module Eye::Process::Commands
     kill_process
 
     if process_realy_running?
-      warn "process NOT STOPPED, check command/signals, or sets stop_grace manually, seems its realy soft"
+      warn "NOT STOPPED, check command/signals, or tune stop_grace, seems command or stop_grace was realy soft"
 
       # hard, what to do here
       # switch :cant_kill
@@ -52,7 +53,10 @@ module Eye::Process::Commands
     else
       switch :stopped
 
-      clear_pid_file if control_pid?
+      if control_pid?
+        info "delete pid_file: #{self[:pid_file]}"
+        clear_pid_file 
+      end
       
       true
 
@@ -70,14 +74,14 @@ module Eye::Process::Commands
 
     if self[:restart_command]
       cmd = prepare_command(self[:restart_command])
-      info "=#{cmd}="
+      info "executing: `#{cmd}` with restart_timeout: #{self[:restart_timeout].to_f}s and restart_grace: #{self[:restart_grace].to_f}s"
       res = Eye::System.execute(cmd, config.merge(:timeout => self[:restart_timeout]))
 
       if res[:error]
         error "restart raised with #{res[:error].inspect}"
 
         if res[:error].class == Timeout::Error
-          error "You should increase restart_timeout setting"
+          error "you should tune restart_timeout setting"
         end
       end
 
@@ -103,12 +107,13 @@ private
     if self[:stop_command]
       cmd = prepare_command(self[:stop_command])
       res = Eye::System.execute(cmd, config.merge(:timeout => self[:stop_timeout]))
-      info "=#{self[:stop_command]}= returns #{res.inspect}"
+      info "executing: `#{cmd}` with stop_grace: #{self[:stop_grace].to_f}s"
+      # returns #{res.inspect}
 
       sleep self[:stop_grace].to_f
 
     elsif self[:stop_signals]
-      info "=#{self[:stop_signals].inspect}="
+      info "executing signals `#{self[:stop_signals].inspect}`"
       stop_signals = self[:stop_signals].clone
 
       signal = stop_signals.shift
@@ -130,14 +135,14 @@ private
       sleep self[:stop_grace].to_f
 
     else # default command
-      info "=kill -TERM {{PID}}="
+      info "executing: `kill -TERM #{self.pid}` with stop_grace: #{self[:stop_grace].to_f}s"
       send_signal(:TERM)
       
       sleep self[:stop_grace].to_f
 
       # if process not die here, by default we kill it force
       if process_realy_running?
-        warn "process not die after TERM and #{self[:stop_grace].to_f}s, so send KILL"
+        warn "process not die after TERM and stop_grace #{self[:stop_grace].to_f}s, so send KILL"
         send_signal(:KILL)
         sleep 0.1 # little grace
       end
@@ -172,14 +177,14 @@ private
     sleep self[:start_grace].to_f
 
     unless process_realy_running?
-      warn "process with pid (#{self.pid}) not found, may be crushed (#{check_logs_str})"
+      error "process with pid (#{self.pid}) not found, may be crushed (#{check_logs_str})"
       return {:error => :not_realy_running}
     end
 
     begin
       save_pid_to_file
     rescue => ex
-      warn "save pid to file raised with #{ex.inspect}"
+      error "save pid to file raised with #{ex.inspect}"
       return {:error => :cant_write_pid}
     end
 
@@ -200,7 +205,7 @@ private
         error "seems stdout/err/all files is not writable"
       end
 
-      if res[:error].message == 'execution expired'
+      if res[:error].class == Timeout::Error
         error "try to increase start_timeout interval (current #{self[:start_timeout]} seems too small, for process selfdaemonization)"
       end
 
@@ -215,7 +220,7 @@ private
     end
 
     unless process_realy_running?
-      warn "process in pid_file(#{self[:pid_file]})(#{self.pid}) not found, maybe process do not write there actual pid, or just crushed (#{check_logs_str})"
+      error "process in pid_file(#{self[:pid_file]})(#{self.pid}) not found, maybe process do not write there actual pid, or just crushed (#{check_logs_str})"
       return {:error => :not_realy_running}
     end
 

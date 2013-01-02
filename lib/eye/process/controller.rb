@@ -43,8 +43,9 @@ module Eye::Process::Controller
 
   def restart
     info "=> restart"
-    restart_process
+    res = restart_process
     info "<= restart"
+    res 
   end
 
   def monitor

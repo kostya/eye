@@ -7,7 +7,7 @@ describe "Process Restart" do
       old_pid = @pid
 
       dont_allow(@process).check_crush!
-      @process.restart_process
+      @process.restart
 
       @process.pid.should_not == old_pid
       @process.pid.should > 0
@@ -27,7 +27,7 @@ describe "Process Restart" do
       old_pid = @pid
 
       dont_allow(@process).check_crush!
-      @process.restart_process
+      @process.restart
 
       @process.pid.should_not == old_pid
       @process.pid.should > 0
@@ -47,7 +47,7 @@ describe "Process Restart" do
       old_pid = @pid
 
       dont_allow(@process).check_crush!
-      @process.restart_process
+      @process.restart
 
       sleep 3
       @process.pid.should == old_pid
@@ -72,7 +72,7 @@ describe "Process Restart" do
       old_pid = @pid
 
       dont_allow(@process).check_crush!
-      @process.restart_process
+      @process.restart
 
       sleep 3
       @process.pid.should_not == old_pid
@@ -95,7 +95,7 @@ describe "Process Restart" do
 
       mock(@process).check_crush!
 
-      @process.restart_process
+      @process.restart
       Eye::System.pid_alive?(@pid).should == false      
       @process.states_history.seq?(:up, :restarting, :down).should == true
     end
@@ -105,9 +105,25 @@ describe "Process Restart" do
 
       dont_allow(@process).check_crush!
 
-      @process.restart_process
+      @process.restart
       Eye::System.pid_alive?(@pid).should == true
       @process.states_history.seq?(:up, :restarting, :up).should == true
+    end
+
+    it "restart command timeouted" do
+      start_ok_process(cfg.merge(:restart_command => "sleep 5", :restart_timeout => 3))
+      @process.restart
+
+      sleep 1
+      @process.pid.should == @pid
+
+      Eye::System.pid_alive?(@pid).should == true      
+
+      @process.state_name.should == :up
+      @process.watchers.keys.should == [:check_alive]
+
+      @process.load_pid_from_file.should == @process.pid
+      @process.states_history.end?(:up, :restarting, :up).should == true
     end
   end
 

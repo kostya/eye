@@ -12,16 +12,17 @@ private
       # if pid file was rewrited
       newpid = load_pid_from_file
       if newpid != self.pid
-        info "Process change pid, updating..."
+        info "process changed pid to #{newpid}, updating..."
         self.pid = newpid
+
         if process_realy_running?
           return true
         else
-          warn "process not found"
+          warn "process with new_pid #{newpid} not found"
           return false          
         end
       else
-        warn "process not found"
+        debug "process not found"
         return false
       end
     end
