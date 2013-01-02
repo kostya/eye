@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 describe "Process Integration checks" do
   before :each do
     @c = C.p1.merge(
-      :checks => join(C.check_cpu, C.check_mem, C.check_tail_log, C.check_http)
+      :checks => join(C.check_cpu, C.check_mem, C.check_ctime, C.check_http)
     )
 
     FakeWeb.register_uri(:get, "http://localhost:3000/bla", :body => "Somebody OK")
@@ -12,7 +12,7 @@ describe "Process Integration checks" do
   it "should start periodical watcher" do
     start_ok_process(@c)
 
-    @process.watchers.keys.should == [:check_alive, :check_cpu, :check_memory, :check_tail_log, :check_http]
+    @process.watchers.keys.should == [:check_alive, :check_cpu, :check_memory, :check_ctime, :check_http]
 
     @process.stop
 
@@ -24,7 +24,7 @@ describe "Process Integration checks" do
     @c.merge!(:nochecks => {:memory => 1, :cpu => 1})
     start_ok_process(@c)
 
-    @process.watchers.keys.should == [:check_alive, :check_tail_log, :check_http]
+    @process.watchers.keys.should == [:check_alive, :check_ctime, :check_http]
 
     @process.stop
 

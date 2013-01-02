@@ -68,8 +68,8 @@ module C
     {:cpu => {:type => :cpu, :every => 2.seconds, :below => 80, :times => [4,5]}.merge(a)}
   end
 
-  def check_tail_log(a = {})
-    {:tail_log => {:type => :tail_log, :every => 2, :log_file => sample_dir + "/#{log_name}", :times => [3,5]}.merge(a)}
+  def check_ctime(a = {})
+    {:ctime => {:type => :ctime, :every => 2, :file => sample_dir + "/#{log_name}", :times => [3,5]}.merge(a)}
   end
 
   def check_http(a = {})

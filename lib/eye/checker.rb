@@ -2,9 +2,9 @@ class Eye::Checker
   autoload :Memory,   'eye/checker/memory'
   autoload :Cpu,      'eye/checker/cpu'
   autoload :Http,     'eye/checker/http'
-  autoload :TailLog,  'eye/checker/tail_log'
+  autoload :FileCTime,  'eye/checker/file_ctime'
 
-  TYPES = [:memory, :cpu, :http, :tail_log]
+  TYPES = [:memory, :cpu, :http, :ctime]
 
   include Eye::Logger::Helpers
 
@@ -15,7 +15,7 @@ class Eye::Checker
       when :memory then Eye::Checker::Memory.new(pid, options, logger_prefix)
       when :cpu then Eye::Checker::Cpu.new(pid, options, logger_prefix)
       when :http then Eye::Checker::Http.new(pid, options, logger_prefix)
-      when :tail_log then Eye::Checker::TailLog.new(pid, options, logger_prefix)
+      when :ctime then Eye::Checker::FileCTime.new(pid, options, logger_prefix)
     else
       raise "Unknown checker"
     end

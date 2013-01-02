@@ -1,16 +1,16 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
-describe "Process Tail Log" do
+describe "Check CTime" do
   before :each do
     @c = C.p1.merge(
-      :checks => C.check_tail_log(:times => 2)
+      :checks => C.check_ctime(:times => 3)
     )
   end
 
   it "should start periodical watcher" do
     start_ok_process(@c)
 
-    @process.watchers.keys.should == [:check_alive, :check_tail_log]
+    @process.watchers.keys.should == [:check_alive, :check_ctime]
 
     @process.stop
 
@@ -18,16 +18,16 @@ describe "Process Tail Log" do
     @process.watchers.keys.should == []
   end
 
-  it "if log tailing should restart" do
+  it "if ctime changes should_not restart" do
     start_ok_process(@c)
-    @process.watchers.keys.should == [:check_alive, :check_tail_log]
+    @process.watchers.keys.should == [:check_alive, :check_ctime]
 
     dont_allow(@process).queue(:restart)
 
     sleep 6
   end
 
-  it "log stopped" do
+  it "if ctime not changed should restart" do
     start_ok_process(@c)
 
     mock(@process).queue(:restart)
