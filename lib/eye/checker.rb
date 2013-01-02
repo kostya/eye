@@ -23,11 +23,12 @@ class Eye::Checker
 
   def initialize(pid, options = {}, logger_prefix = nil)
     @pid = pid
-    @logger = Eye::Logger.new(logger_prefix, "check:#{check_name}")
-    debug "create checker, with #{options}"
     @options = options
     @type = options[:type]
 
+    @logger = Eye::Logger.new(logger_prefix, "check:#{check_name}")
+    debug "create checker, with #{options}"
+    
     @value = nil
     @values = Eye::Utils::Tail.new(max_tries)
   end
@@ -53,8 +54,6 @@ class Eye::Checker
     end
 
     info "#{last_human_values} => #{result ? "OK" : "Fail"}"
-    warn "!!!notify checker failed #{human_value(@value)}" unless result
-
     result
   end
 

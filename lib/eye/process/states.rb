@@ -4,7 +4,7 @@ require 'state_machine'
 class Eye::Process
 
   # do transition
-  def transit(name, state_reason = nil)
+  def switch(name, state_reason = nil)
     self.send("#{name}!")
     @state_reason = state_reason
   end
@@ -55,8 +55,8 @@ class Eye::Process
 
     after_transition :on => :crushed, :do => :on_crushed
     after_transition any => :unmonitored, :do => :on_unmonitored
-    after_transition any => :up, :do => :on_up
-    after_transition :up => any, :do => :from_up
+    after_transition any-:up => :up, :do => :on_up
+    after_transition :up => any-:up, :do => :from_up
     after_transition any => any, :do => :log_transition
     after_transition any => any, :do => :upd_for_triggers
   end
@@ -82,7 +82,7 @@ class Eye::Process
 
   def log_transition(transition)
     @states_history << transition.to_name
-    info "(#{transition.from_name} => #{transition.to_name})"
+    info "switch [:#{transition.from_name} => :#{transition.to_name}]"
   end
 
   def upd_for_triggers(transition)

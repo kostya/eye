@@ -35,7 +35,7 @@ module C
     base.merge(
       :name => "blocking process",
       :start_command => "ruby sample.rb",
-      :daemonize => true,
+      :daemonize => true
     )
   end
 

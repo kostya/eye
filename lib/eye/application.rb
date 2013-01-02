@@ -31,6 +31,8 @@ class Eye::Application
   end
 
   def send_command(command)
+    debug "send_command #{command}"
+    
     @groups.each do |group|
       group.send_command(command) if group.alive?
     end

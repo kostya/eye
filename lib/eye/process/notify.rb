@@ -8,7 +8,7 @@ module Eye::Process::Notify
   # level = [:warn, :crit]
 
   def notify(level, msg)
-    warn "!!!!!!!! #{level}, #{msg} !!!!!!!!!!!"
+    warn "!!!!!!!! NOTIFY: #{level}, #{msg} !!!!!!!!!!!"
   end
 
 end

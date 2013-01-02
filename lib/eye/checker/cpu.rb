@@ -5,7 +5,7 @@ class Eye::Checker::Cpu < Eye::Checker
   params :below
   
   def check_name
-    "cpu"
+    "cpu(#{human_value(below)})"
   end
 
   def get_value(pid)

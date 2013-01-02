@@ -32,9 +32,12 @@ describe "Process Start" do
     @process.start.should == {:pid=>@process.pid}
     sleep 0.5
     @process.state_name.should == :up
+    @process.watchers.keys.should == [:check_alive]
 
     @process.start.should == :ok
+    sleep 1
     @process.state_name.should == :up
+    @process.watchers.keys.should == [:check_alive]
   end
 
   [C.p1, C.p2].each do |c|
@@ -164,7 +167,8 @@ describe "Process Start" do
       :start_grace => 2.seconds ))
     @process.start.should == {:pid=>@process.pid}
 
-    sleep 0.5
+    sleep 5
+    Eye::System.pid_alive?(@process.pid).should == true
     @process.state_name.should == :up
   end
 
@@ -183,6 +187,16 @@ describe "Process Start" do
     @process.states_history.all?(:unmonitored, :starting, :down).should == true    
   end
 
+  it "long process with #{C.p2[:name]} but start_timeout is OK" do
+    @process = process(C.p2.merge(:start_command => C.p2[:start_command] + " --daemonize_delay 3", 
+      :start_timeout => 10.seconds))
+    @process.start.should == {:pid => @process.pid}
+
+    @process.load_pid_from_file.should == @process.pid
+    @process.state_name.should == :up
+  end
+
+  # O_o, what checks this spec
   it "blocking start with lock" do
     @process = process(C.p2.merge(:start_command => C.p2[:start_command] + " --daemonize_delay 3 -L 1.lock", :start_timeout => 2.seconds))
     @process.start.should == {:error => "#<Timeout::Error: execution expired>"}
@@ -200,7 +214,7 @@ describe "Process Start" do
   it "bad config daemonize self daemonized process pid the same" do
     # little crazy behaviour, but process after first death, upped from pid_file pid
     # NOT RECOMENDED FOR USE CASE
-    @process = process(C.p2.merge(:daemonize => true))
+    @process = process(C.p2.merge(:daemonize => true, :start_grace => 10.seconds))
     old_pid = @process.pid
 
     @process.start.should == {:error => :not_realy_running}
@@ -215,7 +229,7 @@ describe "Process Start" do
 
   it "bad config daemonize self daemonized process pid different" do
     # NOT RECOMENDED FOR USE CASE
-    @process = process(C.p2.merge(:daemonize => true, :pid_file => "2.pid"))
+    @process = process(C.p2.merge(:daemonize => true, :pid_file => "2.pid", :start_grace => 10.seconds))
     @process.start.should == {:error => :not_realy_running}
     @process.pid.should == nil
     

@@ -17,7 +17,7 @@ module Eye::Process::Trigger
 
     self.triggers.each do |trigger|
       if !trigger.check(self.states_history)
-        notify :crit, "Process #{full_name} flapping!"
+        notify :crit, "flapping!"
         @flapping = true        
       end
     end
