@@ -84,6 +84,8 @@ private
       unless Eye::Logger.dev == 'stdout' || Eye::Logger.dev == 'stderr'
         Eye::Logger.link_logger(opts[:logger])
       end
+      
+      Eye::Logger.log_level = opts[:logger_level] if opts[:logger_level]
     end
 
     # clear parsed options, because we already apply them

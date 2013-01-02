@@ -37,8 +37,7 @@ class Eye::Logger
   end
 
   class << self
-    attr_reader :dev
-    attr_accessor :log_level
+    attr_reader :dev, :log_level
 
     def link_logger(dev)
       @dev = dev.to_s.downcase
@@ -49,6 +48,11 @@ class Eye::Logger
       
       @inner_logger = InnerLogger.new(@dev_fd)
       @inner_logger.level = self.log_level || Logger::INFO
+    end
+
+    def log_level=(level)
+      @log_level = level
+      @inner_logger.level = self.log_level if @inner_logger
     end
 
     def inner_logger

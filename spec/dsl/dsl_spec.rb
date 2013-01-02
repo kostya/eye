@@ -74,12 +74,13 @@ describe "Eye::Dsl" do
     it "logger" do
       conf = <<-E
         Eye.logger = "/tmp/1.log"
+        Eye.logger_level = Logger::DEBUG
 
         Eye.application("bla") do        
         end
       E
       Eye::Dsl.load(conf).should == {}
-      Eye.parsed_options.should == {:logger => "/tmp/1.log"}
+      Eye.parsed_options.should == {:logger => "/tmp/1.log", :logger_level => Logger::DEBUG}
     end
   end
 

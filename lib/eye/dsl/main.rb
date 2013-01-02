@@ -27,4 +27,9 @@ module Eye::Dsl::Main
     @parsed_options ||= {}
     @parsed_options[:logger] = log_path
   end
+  
+  def logger_level=(log_level)
+    @parsed_options ||= {}
+    @parsed_options[:logger_level] = log_level
+  end
 end
