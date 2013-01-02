@@ -2,11 +2,11 @@
 require File.expand_path('../lib/eye', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.authors       = ["'Konstantin Makarchev'"]
-  gem.email         = ["'kostya27@gmail.com'"]
+  gem.authors       = "Konstantin Makarchev"
+  gem.email         = "kostya27@gmail.com"
 
-  gem.description   = %q{Process monitoring tool.}
-  gem.summary       = %q{Process monitoring tool. With bluepill-like config syntax. Requires ruby >= 1.9.2. Uses Celluloid and Celluloid::IO.}
+  gem.description   = %q{Process monitoring tool. With bluepill-like config syntax. Requires MRI Ruby >= 1.9.2. Uses Celluloid and Celluloid::IO.}
+  gem.summary       = %q{Process monitoring tool. With bluepill-like config syntax. Requires MRI Ruby >= 1.9.2. Uses Celluloid and Celluloid::IO.}
   gem.homepage      = "http://github.com/kostya/eye"
 
   gem.files         = `git ls-files`.split($\)
@@ -15,6 +15,7 @@ Gem::Specification.new do |gem|
   gem.name          = "eye"
   gem.require_paths = ["lib"]
   gem.version       = Eye::VERSION
+  gem.license       = "MIT"
 
   gem.required_ruby_version     = '>= 1.9.2' # because of celluloid
   gem.required_rubygems_version = '>= 1.3.6'  
