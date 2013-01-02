@@ -82,7 +82,7 @@ class Eye::Process
 
   def log_transition(transition)
     @states_history << transition.to_name
-    info "switch(:#{transition.from_name} => :#{transition.to_name})"
+    info "switch [:#{transition.from_name} => :#{transition.to_name}]"
   end
 
   def upd_for_triggers(transition)

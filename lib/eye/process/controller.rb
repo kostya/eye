@@ -68,7 +68,7 @@ module Eye::Process::Controller
     info "=> remove"
 
     if self[:stop_on_remove]
-      info "process has stop_on_remove option, so stop it first"
+      info "process has stop_on_remove option, so sync-stop it first"
       stop
     end
 

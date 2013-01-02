@@ -5,7 +5,7 @@ class Eye::Checker::Memory < Eye::Checker
   params :below
   
   def check_name
-    "memory"
+    "memory(#{human_value(below)})"
   end
 
   def get_value(pid)
@@ -13,7 +13,7 @@ class Eye::Checker::Memory < Eye::Checker
   end
 
   def human_value(value)
-    "#{value / 1024 / 1024}Mb"    
+    "#{value.to_i / 1024 / 1024}Mb"
   end
 
   def good?(value)

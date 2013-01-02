@@ -33,7 +33,7 @@ class Eye::Trigger
     if res
       debug "check flapping"
     else
-      error "!!! #{self.class} recognized !!!"
+      debug "!!! #{self.class} recognized !!!"
     end
     
     res

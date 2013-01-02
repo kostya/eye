@@ -35,26 +35,26 @@ private
 
       # check that process runned
       unless process_realy_running?
-        info "process not found, so :crushed"
-        notify :warn, "Process #{full_name} crushed!"
+        warn "check_alive: process not found, so :crushed"
+        notify :warn, "crushed!"
         switch :crushed
       else
         # check that pid_file still here
         ppid = load_pid_from_file
         if ppid != self.pid
-          msg = "process changed pid by itself (#{self.pid}) => (#{ppid})"
+          msg = "check_alive: pid_file(#{self[:pid_file]}) changes by itself (#{self.pid}) => (#{ppid})"
           if control_pid?
-            msg += ", not correct, pid_file is under eye control, so rewrited"
+            msg += ", not correct, pid_file is under eye control, so rewrited back #{self.pid}"
             save_pid_to_file
           else
             if ppid == nil
-              msg += ", rewrited"
+              msg += ", rewrited because empty"
               save_pid_to_file
             elsif (Time.now - pid_file_ctime > REWRITE_FACKUP_PIDFILE_PERIOD)
-              msg += ", was so old, so rewrited (even if pid_file not under control, because it too old)"
+              msg += ", > #{REWRITE_FACKUP_PIDFILE_PERIOD.inspect} ago, so rewrited (even if pid_file not under eye control)"
               save_pid_to_file
             else
-              msg += ", not under control, ignored"
+              msg += ", not under eye control, so ignored"
             end
           end
 

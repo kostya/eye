@@ -107,7 +107,7 @@ private
     if self[:stop_command]
       cmd = prepare_command(self[:stop_command])
       res = Eye::System.execute(cmd, config.merge(:timeout => self[:stop_timeout]))
-      info "executing: `#{cmd}` with stop_grace: #{self[:stop_grace].to_f}s"
+      info "executing: `#{cmd}` with stop_timeout: #{self[:stop_timeout].to_f}s and stop_grace: #{self[:stop_grace].to_f}s"
       # returns #{res.inspect}
 
       sleep self[:stop_grace].to_f
@@ -154,7 +154,7 @@ private
     res = Eye::System.daemonize(self[:start_command], config)
     start_time = Time.now - time_before
 
-    info "daemonizing: `#{self[:start_command]}` and wait start_grace: #{self[:start_grace].to_f}s, time: #{start_time}s"
+    info "daemonizing: `#{self[:start_command]}` with start_grace: #{self[:start_grace].to_f}s"
     
 
     if res[:error]
@@ -192,7 +192,7 @@ private
   end
 
   def execute_process
-    info "executing: `#{self[:start_command]}` with start_timeout: #{config[:start_timeout].to_f}s"
+    info "executing: `#{self[:start_command]}` with start_timeout: #{config[:start_timeout].to_f}s and start_grace: #{self[:start_grace].to_f}s"
     time_before = Time.now
 
     res = Eye::System.execute(self[:start_command], config.merge(:timeout => config[:start_timeout]))
