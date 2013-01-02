@@ -68,10 +68,10 @@ private
     if state_name == :down
 
       if self[:keep_alive] && !@flapping
-        warn "check crushed: process in down, so :start"
+        warn "check crushed: process is down, so :start"
         queue :start
       else
-        warn "check crushed: process in down, and something wrong, so :unmonitor"
+        warn "check crushed: process is down, and flapping happens, so :unmonitor"
         queue :unmonitor
       end
     end
