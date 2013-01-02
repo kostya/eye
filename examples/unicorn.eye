@@ -1,12 +1,13 @@
-Eye.application "test_unicorn" do
-  env "RAILS_ENV" => "production"
-  working_dir "/projects/test_unicorn"
-  ruby = '/usr/local/ruby/1.9.3/bin/ruby'
+RUBY = '/usr/local/ruby/1.9.3/bin/ruby' # ruby on the server
+RAILS_ENV = 'production'
 
+Eye.application "rails_unicorn" do
+  env "RAILS_ENV" => RAILS_ENV, "PATH" => "#{File.dirname(RUBY)}:#{ENV['PATH']}"
+  working_dir "/projects/rails_unicorn"
+  
   process("unicorn") do
-    env "PATH" => "/usr/local/ruby/1.9.3/bin/:#{ENV['PATH']}"
-    pid_file "/projects/cap/test_unicorn/shared/tmp/pids/unicorn.pid"
-    start_command "#{ruby} ./bin/unicorn -Dc ./config/unicorn.rb -E production"
+    pid_file "tmp/pids/unicorn.pid"
+    start_command "#{RUBY} ./bin/unicorn -Dc ./config/unicorn.rb -E #{RAILS_ENV}"
     stop_command "kill -QUIT {{PID}}"
     restart_command "kill -USR2 {{PID}}"
     stdall "log/unicorn.log"
@@ -16,7 +17,7 @@ Eye.application "test_unicorn" do
 
     start_timeout 30.seconds
     stop_grace 5.seconds
-    restart_grace 10.seconds
+    restart_grace 30.seconds
 
     monitor_children do
       stop_command "kill -QUIT {{PID}}"
