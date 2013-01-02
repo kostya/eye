@@ -45,7 +45,7 @@ class Eye::Group
   end
 
   def send_command(command)
-    info "get command: #{command}"
+    info "send_command: #{command}"
 
     if command == :remove
       remove

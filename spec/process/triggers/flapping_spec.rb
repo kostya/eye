@@ -56,7 +56,7 @@ describe "Flapping" do
 
     @process.start
 
-    # 4 times because, flapping flag, check on next transit
+    # 4 times because, flapping flag, check on next switch
     4.times do
       die_process!(@process.pid)
       sleep 3

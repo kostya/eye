@@ -5,7 +5,7 @@ module Eye::Process::Controller
   #   queue :stop
 
   def queue(command, reason = "")
-    info "queue: #{command} #{reason}"
+    info "reschedule :#{command}"
     @queue.add_no_dup(command)
   end
 
@@ -16,10 +16,10 @@ module Eye::Process::Controller
   def start
     info "=> start"
 
-    if set_pid_from_file
+    res = if set_pid_from_file
       if process_realy_running?
-        info "process found (#{self.pid}) and already running"
-        transit :already_running
+        info "process from pid_file(#{self.pid}) found and already running, so :up"
+        switch :already_running
         :ok
       else
         info "pid_file found, but process in pid_file(#{self.pid}) not found, starting..."
@@ -29,17 +29,22 @@ module Eye::Process::Controller
       info "pid_file not found, so starting process..."
       start_process
     end
+
+    info "<= start"
+    res
   end
 
   def stop
     info "=> stop"
     stop_process
-    transit :unmonitoring
+    switch :unmonitoring
+    info "<= stop"
   end
 
   def restart
     info "=> restart"
     restart_process
+    info "<= restart"
   end
 
   def monitor
@@ -49,11 +54,13 @@ module Eye::Process::Controller
     else
       info "not supported, yet!"
     end
+    info "<= monitor"
   end
 
   def unmonitor
     info "=> unmonitor"
-    transit :unmonitoring
+    switch :unmonitoring
+    info "<= unmonitor"
   end
   
   def remove
@@ -70,6 +77,7 @@ module Eye::Process::Controller
 
     @queue.terminate
     self.terminate
+    info "<= remove"
   end
   
 end

@@ -36,7 +36,7 @@ private
       unless process_realy_running?
         info "process not found, so :crushed"
         notify :warn, "Process #{full_name} crushed!"
-        transit :crushed
+        switch :crushed
       else
         # check that pid_file still here
         ppid = load_pid_from_file
@@ -67,10 +67,10 @@ private
     if state_name == :down
 
       if self[:keep_alive] && !@flapping
-        info "check_crush: process in down, so :start"
+        warn "check crushed: process in down, so :start"
         queue :start
       else
-        info "check_crush: process in down, and something wrong, so :unmonitor"
+        warn "check crushed: process in down, and something wrong, so :unmonitor"
         queue :unmonitor
       end
     end

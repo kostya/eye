@@ -14,11 +14,11 @@ module Eye::Controller::Load
       filename
     end
 
-    debug "globbing mask #{mask}"
+    debug "load: globbing mask #{mask}"
     configs = []
 
     Dir[mask].each do |config_path|
-      info "load config #{config_path}"
+      info "load: config #{config_path}"
 
       res, cfg = parse_config(config_path)
       configs << cfg
@@ -41,7 +41,7 @@ private
   # return: result, config
   def parse_config(filename = '', &block)
     unless File.exists?(filename)
-      error "config file '#{filename}' not found!"
+      error "load: config file '#{filename}' not found!"
       return [{:error => true, :message => "config file '#{filename}' not found!"}]
     end
 
@@ -55,9 +55,7 @@ private
     [{:error => false}, new_config]
 
   rescue Eye::Dsl::Error, Exception, NoMethodError => ex
-    error "Config error <#{filename}>:"
-    error ex.message
-    #error ex.backtrace.join("\n")
+    error "load: config error <#{filename}>: #{ex.message}"
 
     # filter backtrace for user output
     bt = (ex.backtrace || []).reject{|line| line.to_s =~ %r[/lib/eye/] || line.to_s =~ %r[lib/celluloid] || line.to_s =~ %r[internal:prelude] } 
@@ -94,6 +92,7 @@ private
 
   # create objects as diff, from configs
   def create_objects(new_config)
+    debug "create objects"
     new_config.each do |app_name, app_cfg|
       update_or_create_application(app_name, app_cfg.clone)
     end

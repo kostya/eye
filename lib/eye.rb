@@ -22,4 +22,4 @@ module Eye
 end
 
 ROOT_BINDING  = binding
-ENV_LANG      = ENV['LANG'] # save original LANG, because ruby somehow loose it
+ENV_LANG      = ENV['LANG'] # save original LANG, because ruby somehow rewrite it

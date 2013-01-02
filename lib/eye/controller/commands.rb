@@ -60,7 +60,7 @@ module Eye::Controller::Commands
   end
 
   def quit
-    debug "Get quit command, exitting ..."
+    info "exiting..."
     remove
     sleep 1
     Eye::System.send_signal($$) # soft terminate

@@ -64,9 +64,8 @@ module Eye::System
 
       {:pid => pid}
 
-    rescue Timeout::Error => ex
-      # kill it?
-      send_signal(pid) if pid 
+    rescue Timeout::Error => ex      
+      send_signal(pid, 9) if pid # kill it?
       {:error => ex}
 
     rescue Errno::ENOENT, Errno::EACCES => ex

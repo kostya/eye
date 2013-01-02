@@ -4,40 +4,32 @@ module Eye::Process::Commands
     debug "start_process command"
 
     unless self[:start_command]
-      info "no start command, skip"
+      warn "no start command, skipped"
       return :no_start_command
     end
 
-    transit :starting
-
-    info "=#{self[:start_command]}="
-
-    result = if self[:daemonize]
-      spawn_process
-    else
-      execute_process
-    end
+    switch :starting
+    result = self[:daemonize] ? daemonize_process : execute_process
 
     if !result[:error]
       info "process (#{self.pid}) ok started"
-      transit :started
+      switch :started
     else
-      warn "process (#{self.pid}) not started"
-      
       if self.pid && Eye::System.pid_alive?(self.pid)
-        info "try kill, what remains from process (#{self.pid}), because its failed to start"
+        info "kill, what remains from process (#{self.pid}), because its failed to start (without pid_file impossible to monitoring)"
         send_signal(:KILL)
         sleep 0.2 # little grace
       end
+
       self.pid = nil
 
-      transit :crushed, result
+      switch :crushed, result
     end
 
     result
 
   rescue StateMachine::InvalidTransition => e
-    warn "state transition error '#{e.message}'"
+    warn "wrong switch '#{e.message}'"
 
     :state_error
   end
@@ -45,7 +37,7 @@ module Eye::Process::Commands
   def stop_process
     debug "stop_process command"
 
-    transit :stopping
+    switch :stopping
 
     kill_process
 
@@ -53,12 +45,12 @@ module Eye::Process::Commands
       warn "process NOT STOPPED, check command/signals, or sets stop_grace manually, seems its realy soft"
 
       # hard, what to do here
-      # transit :cant_kill
-      transit :unmonitoring
+      # switch :cant_kill
+      switch :unmonitoring
       nil
 
     else
-      transit :stopped
+      switch :stopped
 
       clear_pid_file if control_pid?
       
@@ -67,14 +59,14 @@ module Eye::Process::Commands
     end
 
   rescue StateMachine::InvalidTransition => e
-    warn "state transition error '#{e.message}'"
+    warn "wrong switch '#{e.message}'"
     nil
   end
 
   def restart_process
     debug "restart_process command"
 
-    transit :restarting
+    switch :restarting
 
     if self[:restart_command]
       cmd = prepare_command(self[:restart_command])
@@ -92,7 +84,7 @@ module Eye::Process::Commands
       sleep self[:restart_grace].to_f
 
       result = check_alive_with_refresh_pid_if_needed
-      transit(result ? :restarted : :crushed)
+      switch(result ? :restarted : :crushed)
     else
       stop_process
       start_process
@@ -101,7 +93,7 @@ module Eye::Process::Commands
     true
 
   rescue StateMachine::InvalidTransition => e
-    warn "state transition error '#{e.message}'"
+    warn "wrong switch '#{e.message}'"
     nil
   end
 
@@ -152,14 +144,19 @@ private
     end
   end
   
-  def spawn_process
+  def daemonize_process
+    time_before = Time.now
     res = Eye::System.daemonize(self[:start_command], config)
+    start_time = Time.now - time_before
+
+    info "daemonizing: `#{self[:start_command]}` and wait start_grace: #{self[:start_grace].to_f}s, time: #{start_time}s"
+    
 
     if res[:error]
-      error "process raised with #{res[:error].inspect}"
+      error "raised with #{res[:error].inspect}"
 
       if res[:error].message == 'Permission denied - open'
-        error "seems stdout,err files is not writable write"
+        error "seems stdout/err/all files is not writable"
       end
 
       return {:error => res[:error].inspect}
@@ -175,14 +172,14 @@ private
     sleep self[:start_grace].to_f
 
     unless process_realy_running?
-      error "Process with pid (#{self.pid}) not found"
+      warn "process with pid (#{self.pid}) not found, may be crushed (#{check_logs_str})"
       return {:error => :not_realy_running}
     end
 
     begin
       save_pid_to_file
     rescue => ex
-      error "Save pid to file raised with #{ex.inspect}"
+      warn "save pid to file raised with #{ex.inspect}"
       return {:error => :cant_write_pid}
     end
 
@@ -190,17 +187,21 @@ private
   end
 
   def execute_process
+    info "executing: `#{self[:start_command]}` with start_timeout: #{config[:start_timeout].to_f}s"
+    time_before = Time.now
+
     res = Eye::System.execute(self[:start_command], config.merge(:timeout => config[:start_timeout]))
+    start_time = Time.now - time_before    
 
     if res[:error]
-      error "process raised with #{res[:error].inspect}"
+      error "raised with #{res[:error].inspect}"
 
       if res[:error].message == 'Permission denied - open'
-        error "seems stdout,err files is not writable write"
+        error "seems stdout/err/all files is not writable"
       end
 
       if res[:error].message == 'execution expired'
-        error "try to increase start_timeout interval (current #{self[:start_timeout]} is too small)"
+        error "try to increase start_timeout interval (current #{self[:start_timeout]} seems too small, for process selfdaemonization)"
       end
 
       return {:error => res[:error].inspect}
@@ -209,17 +210,25 @@ private
     sleep self[:start_grace].to_f
 
     unless set_pid_from_file
-      error "Pidfile does not appear after start_grace #{self[:start_grace].to_f}, check start_command, or tune start_grace"
+      error "pid_file(#{self[:pid_file]}) does not appears after start_grace #{self[:start_grace].to_f}, check start_command, or tune start_grace (eye dont know what to monitor without pid)"
       return {:error => :pid_not_found}
     end
 
     unless process_realy_running?
-      error "Process with pid (#{self.pid}) not found"
+      warn "process in pid_file(#{self[:pid_file]})(#{self.pid}) not found, maybe process do not write there actual pid, or just crushed (#{check_logs_str})"
       return {:error => :not_realy_running}
     end
 
     res[:pid] = self.pid
     res
+  end
+
+  def check_logs_str
+    if !self[:stdout] && !self[:stderr]
+      "maybe should add stdout/err/all logs"
+    else
+      "check also it stdout/err/all logs #{[self[:stdout], self[:stderr]].inspect}"
+    end    
   end
 
   def prepare_command(command)
