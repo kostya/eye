@@ -62,7 +62,7 @@ class Eye::Process
   end
 
   def on_crushed
-    check_crush!
+    queue :check_crush
   end
 
   def on_unmonitored
@@ -82,7 +82,7 @@ class Eye::Process
 
   def log_transition(transition)
     @states_history << transition.to_name
-    info "switch [:#{transition.from_name} => :#{transition.to_name}]"
+    info "switch :#{transition.event} [:#{transition.from_name} => :#{transition.to_name}]"
   end
 
   def upd_for_triggers(transition)

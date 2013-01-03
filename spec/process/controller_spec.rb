@@ -102,4 +102,35 @@ describe "Process Controller" do
     end
   end
 
+  describe "process cant start, crush each time" do
+    before :each do
+      @process = process(C.p2.merge(:start_command => C.p2[:start_command] + " -r" ))
+      @process.send_command :start
+    end
+
+    it "we send command to stop it" do
+      # process flapping here some times
+      sleep 10
+
+      # now send stop command
+      @process.send_command :stop
+      sleep 7
+
+      # process should be stopped here
+      @process.state_name.should == :unmonitored
+    end
+
+    it "we send command to unmonitor it" do
+      # process flapping here some times
+      sleep 10
+
+      # now send stop command
+      @process.send_command :unmonitor
+      sleep 7
+
+      # process should be stopped here
+      @process.state_name.should == :unmonitored
+    end
+  end
+
 end

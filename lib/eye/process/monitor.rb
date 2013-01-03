@@ -77,4 +77,6 @@ private
     end
   end
 
+  public :check_crush # bug of celluloid 0.12
+
 end
