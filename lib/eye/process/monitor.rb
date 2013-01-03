@@ -69,10 +69,10 @@ private
 
       if self[:keep_alive] && !@flapping
         warn "check crushed: process is down, so :start"
-        queue :start
+        schedule :start
       else
         warn "check crushed: process is down, and flapping happens, so :unmonitor"
-        queue :unmonitor
+        schedule :unmonitor
       end
     end
   end

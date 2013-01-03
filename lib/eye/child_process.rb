@@ -25,6 +25,9 @@ class Eye::ChildProcess
   # manage notify methods
   include Eye::Process::Notify
 
+  # scheduler
+  include Eye::Process::Scheduler
+
   attr_reader :pid, :name, :config, :watchers
 
   def initialize(pid, config = {}, logger_prefix = nil)
@@ -37,8 +40,6 @@ class Eye::ChildProcess
     @logger = Eye::Logger.new("#{logger_prefix} child:#{pid}")
     
     @watchers = {}
-
-    @queue = Celluloid::Chain.new(current_actor)
 
     debug "start monitoring CHILD config: #{@config.inspect}"
 
@@ -65,13 +66,7 @@ class Eye::ChildProcess
 
   def remove
     remove_watchers
-    @queue.terminate
     self.terminate
-  end
-
-  def queue(command, reason = "")
-    info "queue: #{command} #{reason}"
-    @queue.add_no_dup(command)
   end
 
   def status_data(debug = false)

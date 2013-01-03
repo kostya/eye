@@ -167,7 +167,7 @@ private
     else
       debug "create process #{process_name}"
       process = Eye::Process.new(process_cfg)
-      process.queue(:monitor)
+      process.schedule(:monitor)
       process
     end
   end

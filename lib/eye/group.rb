@@ -6,6 +6,9 @@ class Eye::Group
 
   include Eye::Logger::Helpers
 
+  # scheduler
+  include Eye::Process::Scheduler
+
   attr_reader :processes, :name, :hidden, :config
 
   def initialize(name, config)
@@ -14,16 +17,11 @@ class Eye::Group
     @processes = []
     @logger = Eye::Logger.new([config[:application], name] * ':')
     @hidden = (name == '__default__')
-    @queue = Celluloid::Chain.new(current_actor)
     debug "created"
   end
 
   def update_config(cfg)
     @config = cfg
-  end
-
-  def queue(command)
-    @queue.add_no_dup(command)
   end
 
   def add_process(process)
@@ -41,7 +39,7 @@ class Eye::Group
   end
 
   def debug_data
-    {:queue => @queue.names_list}
+    {:queue => scheduler.names_list}
   end
 
   def send_command(command)
@@ -50,7 +48,7 @@ class Eye::Group
     if command == :remove
       remove
     else
-      queue(command)
+      schedule command
     end
   end
 
@@ -69,7 +67,6 @@ class Eye::Group
   def remove
     async_all :remove
 
-    @queue.terminate
     self.terminate
   end
 
@@ -92,7 +89,7 @@ private
   end
 
   def chain(type, command, grace = 0)
-    info "start #{type} queue #{command} with #{grace}s"
+    info "start #{type} chain #{command} with #{grace}s"
 
     @processes.each do | process |
       # check alive, for prevent races, process can be dead here

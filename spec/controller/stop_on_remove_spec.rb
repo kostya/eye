@@ -23,7 +23,7 @@ describe "StopOnRemove behaviour" do
   after :each do
     @processes = @c.all_processes
     @processes.each do |p|
-      p.queue(:stop) if p.alive?
+      p.schedule(:stop) if p.alive?
     end
     sleep 5
     @processes.each do |process|

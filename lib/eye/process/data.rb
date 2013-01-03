@@ -29,7 +29,7 @@ module Eye::Process::Data
   end
 
   def debug_data
-    {:queue => @queue.names_list, :watchers => @watchers.keys}
+    {:queue => scheduler.names_list, :watchers => @watchers.keys}
   end
 
 end

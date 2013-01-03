@@ -18,7 +18,7 @@ describe "Intergration" do
 
   after :each do
     @processes.each do |p|
-      p.queue(:stop) if p.alive?
+      p.schedule(:stop) if p.alive?
     end
     sleep 5
     @processes.each do |process|

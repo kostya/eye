@@ -19,7 +19,7 @@ describe "ChildProcess" do
       @childs = @process.childs.values
       @childs.each do |child|
         child.watchers.keys.should == [:check_memory, :check_cpu]
-        dont_allow(child).queue :restart
+        dont_allow(child).schedule :restart
       end
 
       sleep 7
@@ -46,7 +46,7 @@ describe "ChildProcess" do
       @childs = @process.childs.values
       @childs.each do |child|
         child.watchers.keys.should == [:check_memory, :check_cpu]
-        dont_allow(child).queue :restart
+        dont_allow(child).schedule :restart
       end
     end
 
@@ -62,7 +62,7 @@ describe "ChildProcess" do
 
       @childs.each do |child|
         child.watchers.keys.should == [:check_memory, :check_cpu]
-        dont_allow(child).queue :restart
+        dont_allow(child).schedule :restart
       end
 
       stub(Eye::SystemResources).cpu_usage(crazy.pid){ 55 }
@@ -71,7 +71,7 @@ describe "ChildProcess" do
 
       crazy.watchers.keys.should == [:check_memory, :check_cpu]
       mock(crazy).notify(:crit, "Bounded cpu(50%): [*55%, *55%]")
-      mock(crazy).queue :restart
+      mock(crazy).schedule :restart
 
       sleep 4
     end

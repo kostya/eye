@@ -38,7 +38,7 @@ describe "Eye::Controller::Load" do
     p = subject.process_by_name('e1')
     p[:daemonize].should == false
 
-    dont_allow(p).queue
+    dont_allow(p).schedule
 
     subject.load(fixture("dsl/load3.eye")).should == {:error => false}
 

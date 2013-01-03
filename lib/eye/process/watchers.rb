@@ -58,7 +58,7 @@ private
   def watcher_tick(subject)
     unless subject.check
       notify :crit, "Bounded #{subject.check_name}: #{subject.last_human_values}"
-      queue(:restart)
+      schedule(:restart)
     end
   end
 

@@ -15,6 +15,7 @@ class Eye::Process
   autoload :Child,            'eye/process/child'
   autoload :Trigger,          'eye/process/trigger'
   autoload :Notify,           'eye/process/notify'
+  autoload :Scheduler,        'eye/process/scheduler'
 
   attr_accessor :pid, :watchers, :config, :states_history, 
                 :state_reason, :childs, :triggers, :flapping, :name
@@ -30,8 +31,6 @@ class Eye::Process
     @triggers = []
     @flapping = false
     @name = @config[:name]
-
-    @queue = Celluloid::Chain.new(current_actor)
 
     @states_history = Eye::Process::StatesHistory.new(1000)
     @states_history << :unmonitored
@@ -76,6 +75,9 @@ class Eye::Process
 
   # logger methods
   include Eye::Logger::Helpers
+
+  # scheduler
+  include Eye::Process::Scheduler
 end
 
 # include state_machine states
