@@ -43,10 +43,8 @@ module Eye::Process::Commands
     kill_process
 
     if process_realy_running?
-      warn "NOT STOPPED, check command/signals, or tune stop_timeout/stop_grace, seems it was realy soft"
+      warn "NOT STOPPED, check command/signals, or tune stop_timeout/stop_grace, seems it was really soft"
 
-      # hard, what to do here
-      # switch :cant_kill
       switch :unmonitoring
       nil
 
@@ -213,7 +211,7 @@ private
       end
 
       if res[:error].class == Timeout::Error
-        error "try to increase start_timeout interval (current #{self[:start_timeout]} seems too small, for process selfdaemonization)"
+        error "try to increase start_timeout interval (current #{self[:start_timeout]} seems too small, for process self-daemonization)"
       end
 
       return {:error => res[:error].inspect}

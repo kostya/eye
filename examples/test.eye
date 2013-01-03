@@ -1,5 +1,6 @@
 Eye.load("./eye/*.rb") # load submodules
 Eye.logger = "/tmp/eye.log" # eye logger
+Eye.logger_level = Logger::DEBUG
 
 Eye.app "test" do
   working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
