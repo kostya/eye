@@ -71,6 +71,7 @@ describe "Flapping" do
     @process.start!
 
     proxy(@process).queue(:start)
+    proxy(@process).queue(:check_crush)
     dont_allow(@process).queue(:unmonitor)
 
 

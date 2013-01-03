@@ -6,7 +6,7 @@ describe "Process Restart" do
       start_ok_process(cfg)
       old_pid = @pid
 
-      dont_allow(@process).check_crush!
+      dont_allow(@process).check_crush
       @process.restart
 
       @process.pid.should_not == old_pid
@@ -26,7 +26,7 @@ describe "Process Restart" do
       start_ok_process(cfg.merge(:stop_command => "kill -9 {{PID}}"))
       old_pid = @pid
 
-      dont_allow(@process).check_crush!
+      dont_allow(@process).check_crush
       @process.restart
 
       @process.pid.should_not == old_pid
@@ -46,7 +46,7 @@ describe "Process Restart" do
       start_ok_process(cfg.merge(:restart_command => "kill -USR1 {{PID}}"))
       old_pid = @pid
 
-      dont_allow(@process).check_crush!
+      dont_allow(@process).check_crush
       @process.restart
 
       sleep 3
@@ -71,7 +71,7 @@ describe "Process Restart" do
       start_ok_process(cfg.merge(:stop_command => "kill -USR1 {{PID}}"))
       old_pid = @pid
 
-      dont_allow(@process).check_crush!
+      dont_allow(@process).check_crush
       @process.restart
 
       sleep 3
@@ -93,7 +93,7 @@ describe "Process Restart" do
       # so monitor should see that process died, and up it
       start_ok_process(cfg.merge(:restart_command => "kill -9 {{PID}}"))
 
-      mock(@process).check_crush!
+      mock(@process).check_crush
 
       @process.restart
       Eye::System.pid_alive?(@pid).should == false      
@@ -103,7 +103,7 @@ describe "Process Restart" do
     it "Bad restart command, invalid" do
       start_ok_process(cfg.merge(:restart_command => "asdfasdf sdf asd fasdf asdf"))
 
-      dont_allow(@process).check_crush!
+      dont_allow(@process).check_crush
 
       @process.restart
       Eye::System.pid_alive?(@pid).should == true
@@ -133,7 +133,7 @@ describe "Process Restart" do
       @process.state = st.to_s
       old_pid = @pid
 
-      dont_allow(@process).check_crush!
+      dont_allow(@process).check_crush
       @process.restart
 
       @process.pid.should_not == old_pid
