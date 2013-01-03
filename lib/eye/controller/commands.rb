@@ -9,7 +9,6 @@ module Eye::Controller::Commands
   end
 
   def safe_command(cmd, *args)
-    info "client command: #{cmd} #{args * ', '}"
     start_at = Time.now
     cmd = cmd.to_sym
     
@@ -34,7 +33,7 @@ module Eye::Controller::Commands
         :unknown_command
     end   
 
-    debug "client command: #{cmd} #{args * ', '} end #{Time.now - start_at}"
+    info "client command: #{cmd} #{args * ', '} (#{Time.now - start_at}s)"
 
     res  
   end
