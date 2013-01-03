@@ -43,7 +43,7 @@ module Eye::Process::Commands
     kill_process
 
     if process_realy_running?
-      warn "NOT STOPPED, check command/signals, or tune stop_grace, seems command or stop_grace was realy soft"
+      warn "NOT STOPPED, check command/signals, or tune stop_timeout/stop_grace, seems it was realy soft"
 
       # hard, what to do here
       # switch :cant_kill
@@ -108,7 +108,14 @@ private
       cmd = prepare_command(self[:stop_command])
       res = Eye::System.execute(cmd, config.merge(:timeout => self[:stop_timeout]))
       info "executing: `#{cmd}` with stop_timeout: #{self[:stop_timeout].to_f}s and stop_grace: #{self[:stop_grace].to_f}s"
-      # returns #{res.inspect}
+
+      if res[:error]
+        error "raised with #{res[:error].inspect}"
+
+        if res[:error].class == Timeout::Error
+          error "you should tune stop_timeout setting"
+        end
+      end
 
       sleep self[:stop_grace].to_f
 
