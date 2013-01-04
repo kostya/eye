@@ -23,8 +23,7 @@ module Eye::Process::Commands
       end
 
       self.pid = nil
-
-      switch :crushed, result
+      switch :crushed
     end
 
     result

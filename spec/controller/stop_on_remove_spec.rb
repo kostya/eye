@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "StopOnRemove behaviour" do
   before :each do
-    @c = controller_new
+    @c = Eye::Controller.new
     @c.load(fixture("dsl/integration_sor.eye"))
     @processes = @c.all_processes
     @p1 = @processes.detect{|c| c.name == 'sample1'}
@@ -23,7 +23,7 @@ describe "StopOnRemove behaviour" do
   after :each do
     @processes = @c.all_processes
     @processes.each do |p|
-      p.queue(:stop) if p.alive?
+      p.schedule(:stop) if p.alive?
     end
     sleep 5
     @processes.each do |process|

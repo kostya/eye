@@ -35,7 +35,7 @@ describe "Process Integration checks" do
   it "intergration" do
     start_ok_process(@c)
 
-    dont_allow(@process).queue(:restart)
+    dont_allow(@process).schedule(:restart)
 
     # should not happens anything
     sleep 10

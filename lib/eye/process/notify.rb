@@ -7,6 +7,7 @@ module Eye::Process::Notify
 
   # level = [:warn, :crit]
 
+  # TODO: add mail, jabber here
   def notify(level, msg)
     warn "!!!!!!!! NOTIFY: #{level}, #{msg} !!!!!!!!!!!"
   end

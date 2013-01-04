@@ -19,7 +19,7 @@ describe "Eye::ChildProcess" do
 
     it "kill by default command" do
       @process = Eye::ChildProcess.new(@pid, {})
-      @process.queue :restart
+      @process.schedule :restart
 
       sleep 0.5
       Eye::System.pid_alive?(@pid).should == false      
@@ -27,7 +27,7 @@ describe "Eye::ChildProcess" do
 
     it "kill by stop command" do
       @process = Eye::ChildProcess.new(@pid, {:stop_command => "kill -9 {{PID}}"})
-      @process.queue :restart
+      @process.schedule :restart
 
       sleep 0.5
       Eye::System.pid_alive?(@pid).should == false
@@ -35,7 +35,7 @@ describe "Eye::ChildProcess" do
 
     it "try to snd URS1" do
       @process = Eye::ChildProcess.new(@pid, {:stop_command => "kill -USR1 {{PID}}"})
-      @process.queue :restart
+      @process.schedule :restart
 
       sleep 0.5
       Eye::System.pid_alive?(@pid).should == true

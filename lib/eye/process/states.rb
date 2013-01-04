@@ -4,9 +4,8 @@ require 'state_machine'
 class Eye::Process
 
   # do transition
-  def switch(name, state_reason = nil)
+  def switch(name)
     self.send("#{name}!")
-    @state_reason = state_reason
   end
 
   state_machine :state, :initial => :unmonitored do
@@ -62,7 +61,7 @@ class Eye::Process
   end
 
   def on_crushed
-    queue :check_crush
+    schedule :check_crush
   end
 
   def on_unmonitored
@@ -71,8 +70,8 @@ class Eye::Process
   end
 
   def on_up
-    add_watchers!
-    add_childs!
+    add_watchers
+    add_childs
   end
 
   def from_up

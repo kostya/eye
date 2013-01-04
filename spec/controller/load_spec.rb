@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "Eye::Controller::Load" do
-  subject{ controller_new }
+  subject{ Eye::Controller.new }
 
   it "blank" do
     subject.load.should == {:error => true, :message => "config file '' not found!"}
@@ -38,7 +38,8 @@ describe "Eye::Controller::Load" do
     p = subject.process_by_name('e1')
     p[:daemonize].should == false
 
-    dont_allow(p).queue
+    proxy(p).schedule :update_config, anything
+    dont_allow(p).schedule :monitor
 
     subject.load(fixture("dsl/load3.eye")).should == {:error => false}
 
@@ -50,6 +51,7 @@ describe "Eye::Controller::Load" do
       "app2"=>{"__default__"=>{"z1"=>"/tmp/app2-z1.pid"}}, 
       "app3"=>{"wow"=>{"e1"=>"/tmp/app3-e1.pid"}}}
 
+    sleep 0.1
     p2 = subject.process_by_name('e1')
     p2[:daemonize].should == true
 

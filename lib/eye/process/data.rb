@@ -10,7 +10,7 @@ module Eye::Process::Data
 
     if childs.present?
       p_st.merge(:subtree => childs.values.map{|c| c.status_data(debug) if c.alive? }.compact)
-    elsif self[:monitor_children] && self.state_name == :up
+    elsif self[:monitor_children] && self.up?
       p_st.merge(:subtree => [{:name => "=loading childs="}])
     else
       # common state
@@ -29,7 +29,7 @@ module Eye::Process::Data
   end
 
   def debug_data
-    {:queue => @queue.names_list, :watchers => @watchers.keys}
+    {:queue => scheduler.names_list, :watchers => @watchers.keys}
   end
 
 end

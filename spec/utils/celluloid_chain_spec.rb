@@ -59,21 +59,21 @@ describe "Celluloid::Chain" do
     @c.add :b
     @c.add :b
     @c.add :c
-    @c.add_no_dup :c
+    @c.add_wo_dups :c
 
     sleep 1
     @t.m.should == [:a, :b, :b, :c]
   end
 
   it "should remove dups" do
-    @c.add_no_dup :a
-    @c.add_no_dup :b
-    @c.add_no_dup :b
-    @c.add_no_dup :c
-    @c.add_no_dup :c
-    @c.add_no_dup :a
-    @c.add_no_dup :c
-    @c.add_no_dup :c
+    @c.add_wo_dups :a
+    @c.add_wo_dups :b
+    @c.add_wo_dups :b
+    @c.add_wo_dups :c
+    @c.add_wo_dups :c
+    @c.add_wo_dups :a
+    @c.add_wo_dups :c
+    @c.add_wo_dups :c
 
     sleep 2
     @t.m.should == [:a, :b, :c, :a, :c]

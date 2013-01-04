@@ -14,7 +14,7 @@ class Celluloid::Chain
     process! unless @running
   end
 
-  def add_no_dup(method_name, *args, &block)
+  def add_wo_dups(method_name, *args, &block)
     h = {:method_name => method_name, :args => args, :block => block}
     @calls << h if @calls[-1] != h
     process! unless @running

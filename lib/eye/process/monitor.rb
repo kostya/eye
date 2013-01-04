@@ -31,7 +31,7 @@ private
   REWRITE_FACKUP_PIDFILE_PERIOD = 2.minutes
   
   def check_alive
-    if state_name == :up
+    if up?
 
       # check that process runned
       unless process_realy_running?
@@ -65,14 +65,13 @@ private
   end
 
   def check_crush
-    if state_name == :down
-
+    if down?
       if self[:keep_alive] && !@flapping
         warn "check crushed: process is down, so :start"
-        queue :start
+        schedule :start
       else
         warn "check crushed: process is down, and flapping happens, so :unmonitor"
-        queue :unmonitor
+        schedule :unmonitor
       end
     end
   end

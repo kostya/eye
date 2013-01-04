@@ -15,9 +15,10 @@ class Eye::Process
   autoload :Child,            'eye/process/child'
   autoload :Trigger,          'eye/process/trigger'
   autoload :Notify,           'eye/process/notify'
+  autoload :Scheduler,        'eye/process/scheduler'
 
   attr_accessor :pid, :watchers, :config, :states_history, 
-                :state_reason, :childs, :triggers, :flapping, :name
+                :childs, :triggers, :flapping, :name
   
   def initialize(config)
     raise "pid file should be" unless config[:pid_file]
@@ -31,9 +32,7 @@ class Eye::Process
     @flapping = false
     @name = @config[:name]
 
-    @queue = Celluloid::Chain.new(current_actor)
-
-    @states_history = Eye::Process::StatesHistory.new(1000)
+    @states_history = Eye::Process::StatesHistory.new(100)
     @states_history << :unmonitored
 
     debug "start monitoring config: #{@config.inspect}"
@@ -76,6 +75,9 @@ class Eye::Process
 
   # logger methods
   include Eye::Logger::Helpers
+
+  # scheduler
+  include Eye::Process::Scheduler
 end
 
 # include state_machine states

@@ -22,7 +22,7 @@ describe "Check CTime" do
     start_ok_process(@c)
     @process.watchers.keys.should == [:check_alive, :check_ctime]
 
-    dont_allow(@process).queue(:restart)
+    dont_allow(@process).schedule(:restart)
 
     sleep 6
   end
@@ -30,7 +30,7 @@ describe "Check CTime" do
   it "if ctime not changed should restart" do
     start_ok_process(@c)
 
-    mock(@process).queue(:restart)
+    mock(@process).schedule(:restart)
 
     sleep 3
 
