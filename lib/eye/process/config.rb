@@ -59,7 +59,7 @@ module Eye::Process::Config
     add_triggers
 
     # bad style code!
-    if state_name == :up
+    if up?
       add_watchers
       add_childs
     end    

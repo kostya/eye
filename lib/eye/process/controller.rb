@@ -1,7 +1,7 @@
 module Eye::Process::Controller
 
   def send_command(command)
-    schedule(command)
+    schedule command
   end
 
   def start

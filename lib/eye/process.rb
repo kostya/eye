@@ -18,7 +18,7 @@ class Eye::Process
   autoload :Scheduler,        'eye/process/scheduler'
 
   attr_accessor :pid, :watchers, :config, :states_history, 
-                :state_reason, :childs, :triggers, :flapping, :name
+                :childs, :triggers, :flapping, :name
   
   def initialize(config)
     raise "pid file should be" unless config[:pid_file]
@@ -32,7 +32,7 @@ class Eye::Process
     @flapping = false
     @name = @config[:name]
 
-    @states_history = Eye::Process::StatesHistory.new(1000)
+    @states_history = Eye::Process::StatesHistory.new(100)
     @states_history << :unmonitored
 
     debug "start monitoring config: #{@config.inspect}"

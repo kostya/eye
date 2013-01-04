@@ -13,7 +13,7 @@ module Eye::Process::Trigger
   end
 
   def check_triggers
-    return if self.state_name == :unmonitored
+    return if unmonitored?
 
     self.triggers.each do |trigger|
       if !trigger.check(self.states_history)

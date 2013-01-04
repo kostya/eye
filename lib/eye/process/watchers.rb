@@ -1,6 +1,8 @@
 module Eye::Process::Watchers
 
   def add_watchers(force = false)
+    return unless self.up?
+
     remove_watchers if force
 
     if @watchers.blank?
@@ -58,7 +60,7 @@ private
   def watcher_tick(subject)
     unless subject.check
       notify :crit, "Bounded #{subject.check_name}: #{subject.last_human_values}"
-      schedule(:restart)
+      schedule :restart
     end
   end
 

@@ -141,7 +141,7 @@ private
     group = if @old_groups[group_name]
       debug "update group #{group_name}"
       group = @old_groups.delete(group_name)
-      group.update_config(group_config)
+      group.schedule :update_config, group_config
       group.clear
       group
     else
@@ -162,12 +162,12 @@ private
     if @old_processes[process_name]
       debug "update process #{process_name}"
       process = @old_processes.delete(process_name)
-      process.update_config(process_cfg)
+      process.schedule :update_config, process_cfg
       process      
     else
       debug "create process #{process_name}"
       process = Eye::Process.new(process_cfg)
-      process.schedule(:monitor)
+      process.schedule :monitor
       process
     end
   end

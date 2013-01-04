@@ -1,11 +1,12 @@
 # -*- encoding : utf-8 -*-
 require 'rubygems'
 require "bundler/setup"
-
 require 'celluloid'
 
-require 'simplecov'
-SimpleCov.start if ENV['COV']
+if ENV['COV']
+  require 'simplecov'
+  SimpleCov.start 
+end
 
 Bundler.require :default
 Eye::Controller #preload
@@ -33,12 +34,6 @@ $logger = Eye::Logger.new("spec")
 Celluloid.logger = $logger
 
 RSpec.configure do |config|
-  # ## Mock Framework
-  #
-  # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
-  #
-  # config.mock_with :mocha
-  # config.mock_with :flexmock
   config.mock_with :rr
 
   config.before(:all) do
@@ -78,7 +73,6 @@ RSpec.configure do |config|
 end
 
 def terminate_old_actors
-  # terminate old actors
   Celluloid::Actor.all.each do |actor|
     next unless actor.alive?
     if [Eye::Process, Eye::Group, Eye::ChildProcess].include?(actor.class)

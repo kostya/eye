@@ -7,7 +7,7 @@ module Eye::Process::Child
   def add_or_update_childs
     return unless self[:monitor_children]
 
-    return unless self.state_name == :up
+    return unless self.up?
 
     unless self.pid
       warn "Cant add childs, because no pid"
