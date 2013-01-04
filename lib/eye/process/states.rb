@@ -71,8 +71,8 @@ class Eye::Process
   end
 
   def on_up
-    add_watchers!
-    add_childs!
+    add_watchers
+    add_childs
   end
 
   def from_up

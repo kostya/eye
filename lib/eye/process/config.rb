@@ -13,7 +13,7 @@ module Eye::Process::Config
     :restart_grace => 0.5.seconds, 
 
     :daemonize => false,
-    :auto_start => true,
+    :auto_start => true, # auto start on monitor action
 
     :childs_update_period => 30.seconds
   }
@@ -56,12 +56,12 @@ module Eye::Process::Config
     remove_triggers
     remove_childs
 
-    add_triggers!
+    add_triggers
 
     # bad style code!
     if state_name == :up
-      add_watchers!
-      add_childs!
+      add_watchers
+      add_childs
     end    
   end
 

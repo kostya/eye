@@ -43,7 +43,7 @@ class Eye::ChildProcess
 
     debug "start monitoring CHILD config: #{@config.inspect}"
 
-    start_checkers!
+    start_checkers
   end
 
   def state
