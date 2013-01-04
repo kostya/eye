@@ -95,4 +95,24 @@ describe "Scheduler" do
     scheduler.alive?.should == false
   end
 
+  it "should terminate even with tasks" do
+    scheduler = @process.scheduler
+    @process.schedule :scheduler_test1, 1
+    @process.schedule :scheduler_test1, 1
+    @process.schedule :scheduler_test1, 1
+
+    @process.terminate
+    scheduler.alive?.should == false
+  end
+
+  it "when scheduling terminate of the parent actor" do
+    scheduler = @process.scheduler
+    @process.schedule :terminate
+    @process.schedule(:scheduler_test1, 1) rescue nil
+
+    sleep 0.2
+    @process.alive?.should == false
+    scheduler.alive?.should == false
+  end
+
 end

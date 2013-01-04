@@ -21,7 +21,7 @@ def p_check(p, name, pid_file)
 end
 
 describe "Eye::Controller" do
-  subject{ controller_new }
+  subject{ Eye::Controller.new }
 
   it "should ok load config" do
     subject.load(fixture("dsl/load.eye")).should == {:error => false}

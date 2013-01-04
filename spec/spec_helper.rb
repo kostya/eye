@@ -80,7 +80,10 @@ end
 def terminate_old_actors
   # terminate old actors
   Celluloid::Actor.all.each do |actor|
-    actor.terminate if [Eye::Process, Eye::Group, Celluloid::Chain, Eye::ChildProcess].include?(actor.class)
+    next unless actor.alive?
+    if [Eye::Process, Eye::Group, Eye::ChildProcess].include?(actor.class)
+      actor.terminate 
+    end
   end
 end
 
@@ -115,8 +118,4 @@ def join(*args)
   end
 
   result
-end
-
-def controller_new
-  Eye::Controller.new
 end

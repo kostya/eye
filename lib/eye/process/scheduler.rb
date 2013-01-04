@@ -1,8 +1,10 @@
 module Eye::Process::Scheduler
 
   def schedule(command, *args, &block)
-    info "schedule :#{command}"
-    scheduler.add_no_dup(:scheduled_action, command, *args, &block)
+    if scheduler.alive?
+      info "schedule :#{command}"
+      scheduler.add_wo_dups(:scheduled_action, command, *args, &block) 
+    end
   end
 
   def scheduled_action(command, *args, &block)

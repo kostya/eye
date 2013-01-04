@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "Some crazey situations" do
 
   before :each do
-    @c = controller_new
+    @c = Eye::Controller.new
     @c.load(fixture("dsl/integration.eye"))
     @processes = @c.all_processes
     @p1 = @processes.detect{|c| c.name == 'sample1'}

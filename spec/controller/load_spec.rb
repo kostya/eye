@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "Eye::Controller::Load" do
-  subject{ controller_new }
+  subject{ Eye::Controller.new }
 
   it "blank" do
     subject.load.should == {:error => true, :message => "config file '' not found!"}
