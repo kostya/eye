@@ -36,7 +36,7 @@ class Eye::Checker::Http < Eye::Checker
   end
 
   def get_value(pid)
-    Eye::Utils.async_and_wait{ get_value_sync }
+    Eye::Utils.defer{ get_value_sync }
   end
 
   def get_value_sync

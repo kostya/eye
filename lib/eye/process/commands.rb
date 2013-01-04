@@ -72,7 +72,10 @@ module Eye::Process::Commands
     if self[:restart_command]
       cmd = prepare_command(self[:restart_command])
       info "executing: `#{cmd}` with restart_timeout: #{self[:restart_timeout].to_f}s and restart_grace: #{self[:restart_grace].to_f}s"
-      res = Eye::System.execute(cmd, config.merge(:timeout => self[:restart_timeout]))
+
+      res = Eye::Utils.defer do
+        Eye::System.execute(cmd, config.merge(:timeout => self[:restart_timeout]))
+      end
 
       if res[:error]
         error "restart raised with #{res[:error].inspect}"

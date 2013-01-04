@@ -3,7 +3,7 @@ module Eye::Utils
   autoload :MHash,     'eye/utils/mhash'
   autoload :Tail,      'eye/utils/tail'
 
-  def self.async_and_wait(&block)
+  def self.defer(&block)
     # TODO: add pool?
     wa = Eye::Utils::WithActor.new
     wa.with{ block.call }

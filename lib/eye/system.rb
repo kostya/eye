@@ -43,18 +43,12 @@ module Eye::System
       {:error => ex}
     end
 
-    # Blocking execute cmd, return status
+    # Execute cmd with blocking, return status (be careful: inside actor blocks it mailbox, use with defer)
     # options
     #   :working_dir
     #   :environment
     #   :stdin, :stdout, :stderr
     def execute(cmd, cfg = {})
-      Eye::Utils.async_and_wait do
-        execute_blocked(cmd, cfg)
-      end
-    end
-
-    def execute_blocked(cmd, cfg = {})
       opts = spawn_options(cfg)
       pid  = Process::spawn(prepare_env(cfg), *Shellwords.shellwords(cmd), opts)
 
