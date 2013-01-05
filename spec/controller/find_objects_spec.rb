@@ -39,6 +39,12 @@ describe "find_objects" do
     objs.map{|c| c.name}.sort.should == %w{app1 app2}
   end
 
+  it "find * apps by mask" do
+    objs = subject.find_objects("z*\n")
+    objs.map{|c| c.class}.should == [Eye::Process]
+    objs.map{|c| c.name}.sort.should == %w{z1}
+  end
+
   it "empty, find nothing" do
     objs = subject.find_objects("")
     objs.should be_blank

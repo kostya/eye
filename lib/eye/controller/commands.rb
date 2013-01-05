@@ -78,8 +78,10 @@ private
 
   # find object to action, restart ... (app, group or process)
   # nil if not found
-  def find_objects(str)
+  def find_objects(str)   
     return nil if str.blank?
+
+    str.strip!
     return @applications if str.strip == 'all'
 
     res = []
