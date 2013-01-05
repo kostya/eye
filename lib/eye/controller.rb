@@ -28,7 +28,6 @@ class Eye::Controller
     @logger = Eye::Logger.new "eye"
     Celluloid::logger = @logger
 
-    @mutex = Mutex.new
     Eye::SystemResources.setup
   end
 

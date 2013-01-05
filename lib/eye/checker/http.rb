@@ -36,7 +36,9 @@ class Eye::Checker::Http < Eye::Checker
   end
 
   def get_value(pid)
-    Eye::Utils.defer{ get_value_sync }
+    Celluloid::Future.new do
+      get_value_sync
+    end.value    
   end
 
   def get_value_sync

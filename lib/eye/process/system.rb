@@ -52,5 +52,11 @@ module Eye::Process::System
   rescue Timeout::Error
     :timeout
   end
+
+  def defer_execute(cmd, cfg = {})
+    defer do
+      Eye::System::execute cmd, cfg
+    end
+  end
   
 end

@@ -1,11 +1,8 @@
 module Eye::Controller::Commands
 
-  # Main method, as anwer for client command
+  # Main method, answer for the client command
   def command(cmd, *args)
-    # it is import that command processed one by one
-    @mutex.synchronize do
-      safe_command(cmd, *args)
-    end
+    exclusive{ safe_command(cmd, *args) }
   end
 
   def safe_command(cmd, *args)

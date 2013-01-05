@@ -73,9 +73,7 @@ module Eye::Process::Commands
       cmd = prepare_command(self[:restart_command])
       info "executing: `#{cmd}` with restart_timeout: #{self[:restart_timeout].to_f}s and restart_grace: #{self[:restart_grace].to_f}s"
 
-      res = Eye::Utils.defer do
-        Eye::System.execute(cmd, config.merge(:timeout => self[:restart_timeout]))
-      end
+      res = defer_execute(cmd, config.merge(:timeout => self[:restart_timeout]))
 
       if res[:error]
         error "restart raised with #{res[:error].inspect}"
@@ -106,7 +104,7 @@ private
   def kill_process
     if self[:stop_command]
       cmd = prepare_command(self[:stop_command])
-      res = Eye::System.execute(cmd, config.merge(:timeout => self[:stop_timeout]))
+      res = defer_execute(cmd, config.merge(:timeout => self[:stop_timeout]))
       info "executing: `#{cmd}` with stop_timeout: #{self[:stop_timeout].to_f}s and stop_grace: #{self[:stop_grace].to_f}s"
 
       if res[:error]
@@ -202,7 +200,7 @@ private
     info "executing: `#{self[:start_command]}` with start_timeout: #{config[:start_timeout].to_f}s and start_grace: #{self[:start_grace].to_f}s"
     time_before = Time.now
 
-    res = Eye::System.execute(self[:start_command], config.merge(:timeout => config[:start_timeout]))
+    res = defer_execute(self[:start_command], config.merge(:timeout => config[:start_timeout]))
     start_time = Time.now - time_before    
 
     if res[:error]
