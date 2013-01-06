@@ -2,6 +2,7 @@ Eye.application "app1" do
   working_dir "/tmp"
 
   group "gr2" do
+    chain :grace => 10.seconds
     process("p1"){ pid_file "app1-gr1-p1.pid" }
     process("p2"){ pid_file "app1-gr1-p2.pid" }
   end

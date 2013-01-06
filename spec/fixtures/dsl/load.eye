@@ -7,6 +7,7 @@ Eye.application "app1" do
   end
 
   group "gr2" do
+    chain :grace => 5.seconds
     process("q3"){ pid_file "app1-gr2-q3.pid" }
   end
 
