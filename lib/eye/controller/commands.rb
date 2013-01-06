@@ -32,6 +32,7 @@ module Eye::Controller::Commands
         :unknown_command
     end   
 
+    GC.start
     info "client command: #{cmd} #{args * ', '} (#{Time.now - start_at}s)"
 
     res  
