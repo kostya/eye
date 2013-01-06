@@ -1,27 +1,26 @@
 class Eye::Process::StatesHistory < Eye::Utils::Tail
 
   def push(state, tm = Time.now)
-    st = OpenStruct.new(:state => state, :at => tm)
-    super(st)
+    super(state: state, at: tm)
   end
 
   def states
-    self.map &:state
+    self.map{|c| c[:state] }
   end
 
   def states_for_period(period)
     tm = Time.now - period
     self.select do |s|
-      s.at >= tm
-    end.map(&:state)
+      s[:at] >= tm
+    end.map{|c| c[:state] }
   end
 
   def last_state
-    last.state
+    last[:state]
   end
 
   def last_state_changed_at
-    last.at
+    last[:at]
   end
 
   def seq?(*seq)
