@@ -104,8 +104,8 @@ describe "Intergration" do
       @p2.pid.should_not == @old_pid2
       @p3.pid.should == @old_pid3
 
-      r1 = @p1.states_history.detect{|c| c.state == :restarting}.at
-      r2 = @p2.states_history.detect{|c| c.state == :restarting}.at
+      r1 = @p1.states_history.detect{|c| c[:state] == :restarting}[:at]
+      r2 = @p2.states_history.detect{|c| c[:state] == :restarting}[:at]
 
       # >8 because, grace start, and grace stop added
       (r2 - r1).should > 8
@@ -125,8 +125,8 @@ describe "Intergration" do
       @p2.pid.should_not == @old_pid2
       @p3.pid.should == @old_pid3
 
-      r1 = @p1.states_history.detect{|c| c.state == :restarting}.at
-      r2 = @p2.states_history.detect{|c| c.state == :restarting}.at
+      r1 = @p1.states_history.detect{|c| c[:state] == :restarting}[:at]
+      r2 = @p2.states_history.detect{|c| c[:state] == :restarting}[:at]
 
       # restart sended, in 5 seconds to each
       (r2 - r1).should be_within(0.2).of(5)
