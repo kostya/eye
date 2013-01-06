@@ -24,6 +24,18 @@ describe "Eye::Dsl" do
     Eye::Dsl.load(conf).should == {"bla"=>{:groups=>{"__default__"=>{:processes=>{"1"=>{:pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
   end
 
+  it "disable process" do
+    conf = <<-E
+      Eye.application("bla") do
+        env "a" => 'b'
+        xprocess("1") do
+          pid_file "1.pid"
+        end        
+      end
+    E
+    Eye::Dsl.load(conf).should == {"bla" => {:environment=>{"a"=>"b"}, :groups=>{}}}
+  end
+
   it "process with times" do
     conf = <<-E
       Eye.application("bla") do

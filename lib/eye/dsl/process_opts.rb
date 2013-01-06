@@ -6,4 +6,6 @@ class Eye::Dsl::ProcessOpts < Eye::Dsl::Opts
     @config[:monitor_children].merge!(opts.config)
   end
 
+  def xmonitor_children(&block); end
+
 end

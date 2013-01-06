@@ -18,4 +18,6 @@ class Eye::Dsl::ApplicationOpts < Eye::Dsl::Opts
     @config[:groups]['__default__'][:processes][name.to_s] = opts.config if opts.config
   end
 
+  def xgroup(name, &block); end
+  def xprocess(name, &block); end
 end
