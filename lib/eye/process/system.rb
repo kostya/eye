@@ -53,10 +53,8 @@ module Eye::Process::System
     :timeout
   end
 
-  def defer_execute(cmd, cfg = {})
-    defer do
-      Eye::System::execute cmd, cfg
-    end
+  def execute(cmd, cfg = {})
+    defer{ Eye::System::execute cmd, cfg }
   end
   
 end
