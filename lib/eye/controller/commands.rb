@@ -2,10 +2,12 @@ module Eye::Controller::Commands
 
   # Main method, answer for the client command
   def command(cmd, *args)
-    exclusive{ safe_command(cmd, *args) }
+    @mutex.synchronize{ safe_command(cmd, *args) }
   end
 
   def safe_command(cmd, *args)
+    debug "client command #{cmd} #{args * ','}"
+
     start_at = Time.now
     cmd = cmd.to_sym
     

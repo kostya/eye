@@ -25,6 +25,8 @@ class Eye::Controller
     @applications = []
     @current_config = {}
 
+    @mutex = Mutex.new
+
     @logger = Eye::Logger.new "eye"
     Celluloid::logger = @logger
 
