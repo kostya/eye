@@ -4,11 +4,13 @@ class Eye::Logger
   attr_accessor :prefix, :subprefix
 
   class InnerLogger < Logger
+    FORMAT = '%d.%m.%Y %H:%M:%S'
+
     def initialize(*args)
       super
 
       self.formatter = Proc.new do |s, d, p, m|
-        "#{d.strftime("%d.%m.%Y %H:%M:%S")} #{s.ljust(5)} -- #{m}\n"
+        "#{d.strftime(FORMAT)} #{s.ljust(5)} -- #{m}\n"
       end      
     end
   end
@@ -64,7 +66,7 @@ private
 
   def prefix_str
     @pref_string ||= begin
-      pref_string = ""
+      pref_string = ''
 
       if @prefix
         pref_string = "[#{@prefix}] "

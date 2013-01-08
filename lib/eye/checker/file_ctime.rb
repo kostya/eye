@@ -5,7 +5,7 @@ class Eye::Checker::FileCTime < Eye::Checker
   params :file
 
   def check_name
-    "ctime"
+    'ctime'
   end
 
   def get_value(pid)
@@ -14,9 +14,9 @@ class Eye::Checker::FileCTime < Eye::Checker
 
   def human_value(value)
     if value == nil
-      "Err"
+      'Err'
     else
-      value.strftime("%H:%M")
+      value.strftime('%H:%M')
     end
   end
 

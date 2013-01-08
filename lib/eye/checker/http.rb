@@ -8,7 +8,7 @@ class Eye::Checker::Http < Eye::Checker
   params :url, :pattern, :kind, :timeout, :open_timeout, :read_timeout
 
   def check_name
-    "http"
+    'http'
   end
 
   def initialize(*args)
@@ -47,7 +47,7 @@ class Eye::Checker::Http < Eye::Checker
     end
     {:result => res}
   rescue Timeout::Error
-    warn "Timeout error"
+    warn 'Timeout error'
     {:exception => :timeout}
   rescue => ex
     warn "Exception #{ex.message}"
@@ -62,12 +62,12 @@ class Eye::Checker::Http < Eye::Checker
 
   def human_value(value)
     if !value.is_a?(Hash)
-      "-"
+      '-'
     elsif value[:exception]
       if value[:exception] == :timeout
-        "T-out"
+        'T-out'
       else
-        "Err"
+        'Err'
       end
     else
       "#{value[:result].code}=#{value[:result].body.size/ 1024}Kb"

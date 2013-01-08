@@ -38,7 +38,7 @@ module Eye::Controller::Commands
     res  
   end
 
-  def send_command(command, obj_str = "")
+  def send_command(command, obj_str = nil)
     objs = find_objects(obj_str)
     return :nothing if objs.blank?
 
@@ -59,7 +59,7 @@ module Eye::Controller::Commands
   end
 
   def quit
-    info "exiting..."
+    info 'exiting...'
     remove
     sleep 1
     Eye::System.send_signal($$) # soft terminate
@@ -88,7 +88,7 @@ private
     return @applications if str.strip == 'all'
 
     res = []
-    str = Regexp.escape(str).gsub('\*', ".*?")
+    str = Regexp.escape(str).gsub('\*', '.*?')
     r = %r{\A#{str}\z}
 
     # find app

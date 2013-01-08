@@ -1,10 +1,10 @@
 module Eye::Process::Commands
 
   def start_process
-    debug "start_process command"
+    debug 'start_process command'
 
     unless self[:start_command]
-      warn "no start command, skipped"
+      warn 'no start command, skipped'
       return :no_start_command
     end
 
@@ -35,14 +35,14 @@ module Eye::Process::Commands
   end
   
   def stop_process
-    debug "stop_process command"
+    debug 'stop_process command'
 
     switch :stopping
 
     kill_process
 
     if process_realy_running?
-      warn "NOT STOPPED, check command/signals, or tune stop_timeout/stop_grace, seems it was really soft"
+      warn 'NOT STOPPED, check command/signals, or tune stop_timeout/stop_grace, seems it was really soft'
 
       switch :unmonitoring
       nil
@@ -65,7 +65,7 @@ module Eye::Process::Commands
   end
 
   def restart_process
-    debug "restart_process command"
+    debug 'restart_process command'
 
     switch :restarting
 
@@ -79,7 +79,7 @@ module Eye::Process::Commands
         error "restart raised with #{res[:error].inspect}"
 
         if res[:error].class == Timeout::Error
-          error "you should tune restart_timeout setting"
+          error 'you should tune restart_timeout setting'
         end
       end
 
@@ -111,7 +111,7 @@ private
         error "raised with #{res[:error].inspect}"
 
         if res[:error].class == Timeout::Error
-          error "you should tune stop_timeout setting"
+          error 'you should tune stop_timeout setting'
         end
       end
 
@@ -130,7 +130,7 @@ private
 
         sleep(delay.to_f)
         unless process_realy_running?
-          info "has terminated"
+          info 'has terminated'
           break
         end
 
@@ -166,7 +166,7 @@ private
       error "raised with #{res[:error].inspect}"
 
       if res[:error].message == 'Permission denied - open'
-        error "seems stdout/err/all files is not writable"
+        error 'seems stdout/err/all files is not writable'
       end
 
       return {:error => res[:error].inspect}
@@ -175,7 +175,7 @@ private
     self.pid = res[:pid]
 
     unless self.pid
-      error "returned empty pid, WTF O_o"
+      error 'returned empty pid, WTF O_o'
       return {:error => :empty_pid}
     end
 
@@ -207,7 +207,7 @@ private
       error "raised with #{res[:error].inspect}"
 
       if res[:error].message == 'Permission denied - open'
-        error "seems stdout/err/all files is not writable"
+        error 'seems stdout/err/all files is not writable'
       end
 
       if res[:error].class == Timeout::Error
@@ -235,14 +235,14 @@ private
 
   def check_logs_str
     if !self[:stdout] && !self[:stderr]
-      "maybe should add stdout/err/all logs"
+      'maybe should add stdout/err/all logs'
     else
       "check also it stdout/err/all logs #{[self[:stdout], self[:stderr]].inspect}"
     end    
   end
 
   def prepare_command(command)
-    command.to_s.gsub("{{PID}}", self.pid.to_s)
+    command.to_s.gsub('{{PID}}', self.pid.to_s)
   end
 
 end

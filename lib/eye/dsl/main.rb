@@ -10,7 +10,7 @@ module Eye::Dsl::Main
 
   alias :app :application 
 
-  def load(glob = "")
+  def load(glob = '')
     return if glob.blank?
 
     require 'pathname'

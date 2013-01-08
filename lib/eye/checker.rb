@@ -17,7 +17,7 @@ class Eye::Checker
       when :http then Eye::Checker::Http.new(pid, options, logger_prefix)
       when :ctime then Eye::Checker::FileCTime.new(pid, options, logger_prefix)
     else
-      raise "Unknown checker"
+      raise 'Unknown checker'
     end
   end
 
@@ -39,7 +39,7 @@ class Eye::Checker
       sign + human_value(v[:value]).to_s
     end
 
-    '[' + h_values * ", " + ']'
+    '[' + h_values * ', ' + ']'
   end
 
   def check
@@ -53,12 +53,12 @@ class Eye::Checker
       result = false if bad_count >= min_tries
     end
 
-    info "#{last_human_values} => #{result ? "OK" : "Fail"}"
+    info "#{last_human_values} => #{result ? 'OK' : 'Fail'}"
     result
   end
 
   def get_value(pid)
-    raise "Realize me"
+    raise 'Realize me'
   end
 
   def human_value(value)
@@ -68,7 +68,7 @@ class Eye::Checker
   # true if check ok
   # false if check bad
   def good?(value)
-    raise "Realize me"
+    raise 'Realize me'
   end
 
   def check_name

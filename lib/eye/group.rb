@@ -17,7 +17,7 @@ class Eye::Group
     @processes = []
     @logger = Eye::Logger.new([config[:application], name] * ':')
     @hidden = (name == '__default__')
-    debug "created"
+    debug 'created'
   end
 
   def update_config(cfg)

@@ -15,7 +15,7 @@ module Eye::Process::Controller
         start_process
       end
     else
-      info "pid_file not found, so starting process..."
+      info 'pid_file not found, so starting process...'
       start_process
     end
   end
@@ -33,7 +33,7 @@ module Eye::Process::Controller
     if self[:auto_start]
       start
     else
-      info "not supported, yet!"
+      info 'not supported, yet!'
     end
   end
 
@@ -43,7 +43,7 @@ module Eye::Process::Controller
   
   def remove
     if self[:stop_on_remove]
-      info "process has stop_on_remove option, so sync-stop it first"
+      info 'process has stop_on_remove option, so sync-stop it first'
       stop
     end
 

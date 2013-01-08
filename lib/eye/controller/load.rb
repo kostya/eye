@@ -7,9 +7,9 @@ module Eye::Controller::Load
   end
 
   # filename is a path, or folder, or mask
-  def load(filename = "")
+  def load(filename = '')
     mask = if File.directory?(filename)
-      File.join filename, "{*.eye}"
+      File.join filename, '{*.eye}'
     else
       filename
     end
@@ -94,7 +94,7 @@ private
 
   # create objects as diff, from configs
   def create_objects(new_config)
-    debug "create objects"
+    debug 'create objects'
     new_config.each do |app_name, app_cfg|
       update_or_create_application(app_name, app_cfg.clone)
     end

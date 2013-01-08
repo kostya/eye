@@ -31,7 +31,7 @@ class Eye::ChildProcess
   attr_reader :pid, :name, :config, :watchers
 
   def initialize(pid, config = {}, logger_prefix = nil)
-    raise "Empty pid" unless pid
+    raise 'Empty pid' unless pid
 
     @pid = pid
     @config = prepare_config(config)

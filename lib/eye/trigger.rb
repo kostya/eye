@@ -14,7 +14,7 @@ class Eye::Trigger
     obj = case options[:type]
       when :flapping then Eye::Trigger::Flapping.new(options, logger_prefix)
     else
-      raise "Unknown checker"
+      raise 'Unknown checker'
     end
   end
 
@@ -31,7 +31,7 @@ class Eye::Trigger
     res = good?
 
     if res
-      debug "check flapping"
+      debug 'check flapping'
     else
       debug "!!! #{self.class} recognized !!!"
     end
@@ -40,7 +40,7 @@ class Eye::Trigger
   end
 
   def good?
-    raise "realize me"
+    raise 'realize me'
   end
 
   def self.params(*syms)

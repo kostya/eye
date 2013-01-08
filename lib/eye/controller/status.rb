@@ -41,7 +41,7 @@ private
         if data[:pid]
           str += " (#{data[:pid].to_s})".ljust(8)
         else
-          str += " ".ljust(8, ' ') #if data[:state]
+          str += ' '.ljust(8, ' ') #if data[:state]
         end
 
         if data[:debug]
@@ -79,8 +79,8 @@ private
   def debug_str(debug)
     return '' unless debug
 
-    q = "q(" + (debug[:queue] || []) * ',' + ")"
-    w = "w(" + (debug[:watchers] || []) * ',' + ")"
+    q = 'q(' + (debug[:queue] || []) * ',' + ')'
+    w = 'w(' + (debug[:watchers] || []) * ',' + ')'
 
     [w, q] * '; '
   end

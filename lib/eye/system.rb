@@ -1,4 +1,4 @@
-require "shellwords"
+require 'shellwords'
 require 'pathname'
 
 module Eye::System
@@ -14,14 +14,14 @@ module Eye::System
 
     # Send signal to process (uses for kill)
     # code: TERM(15), KILL(9), QUIT(3), ...
-    def send_signal(pid, code = "TERM")
+    def send_signal(pid, code = :TERM)
       code = code.to_s.upcase if code.is_a?(String) || code.is_a?(Symbol)
 
       ::Process.kill(code, pid)
       {:status => :ok}
 
     rescue Errno::ESRCH    
-      {:status => :error, :message => "process not found"}
+      {:status => :error, :message => 'process not found'}
 
     rescue => e
       {:status => :error, :message => "failed signal #{code}: #{e.message}"}
@@ -71,13 +71,13 @@ module Eye::System
     # slow
     def ps_aux
       cmd = if RUBY_PLATFORM.include?('darwin')
-        "ps axo pid,ppid,pcpu,rss,start,command"
+        'ps axo pid,ppid,pcpu,rss,start,command'
       else
-        "ps axo pid,ppid,pcpu,rss,start_time,command"
+        'ps axo pid,ppid,pcpu,rss,start_time,command'
       end
 
       str = Process.send('`', cmd).force_encoding('binary')
-      lines = str.split("\n")      
+      lines = str.split("\n")
       lines.shift # remove first line
       lines.inject(Hash.new) do |mem, line|
         chunk = line.strip.split(/\s+/).map(&:strip)
@@ -102,8 +102,8 @@ module Eye::System
     def spawn_options(config = {})
       o = {}
       o = {chdir: config[:working_dir]} if config[:working_dir]
-      o.update(out: [config[:stdout], "a"]) if config[:stdout]
-      o.update(err: [config[:stderr], "a"]) if config[:stderr]
+      o.update(out: [config[:stdout], 'a']) if config[:stdout]
+      o.update(err: [config[:stderr], 'a']) if config[:stderr]
       o.update(in: config[:stdin]) if config[:stdin]
       o
     end

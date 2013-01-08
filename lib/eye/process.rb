@@ -21,7 +21,7 @@ class Eye::Process
                 :childs, :triggers, :flapping, :name
   
   def initialize(config)
-    raise "pid file should be" unless config[:pid_file]
+    raise 'pid file should be' unless config[:pid_file]
 
     @config = prepare_config(config)
     @logger = Eye::Logger.new(full_name)

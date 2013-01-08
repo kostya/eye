@@ -26,7 +26,7 @@ class Eye::Controller
 
     @mutex = Mutex.new
 
-    @logger = Eye::Logger.new "eye"
+    @logger = Eye::Logger.new 'eye'
     Celluloid::logger = @logger
 
     Eye::SystemResources.setup

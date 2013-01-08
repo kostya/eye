@@ -22,7 +22,7 @@ module Eye::Process::Watchers
       # monitor conditional watchers
       start_checkers
     else
-      warn "try add_watchers, but its already here"
+      warn 'try add_watchers, but its already here'
     end
   end
   

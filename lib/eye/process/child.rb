@@ -10,7 +10,7 @@ module Eye::Process::Child
     return unless self.up?
 
     unless self.pid
-      warn "Cant add childs, because no pid"
+      warn 'Cant add childs, because no pid'
       return
     end
 
@@ -54,7 +54,7 @@ module Eye::Process::Child
         child.remove if child && child.alive?
       end
     else
-      debug "No childs to clear"
+      debug 'No childs to clear'
     end
   end
 

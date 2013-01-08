@@ -7,7 +7,7 @@ private
       return true
 
     else
-      warn "process not realy running"
+      warn 'process not realy running'
 
       # if pid file was rewrited
       newpid = load_pid_from_file
@@ -22,7 +22,7 @@ private
           return false          
         end
       else
-        debug "process not found"
+        debug 'process not found'
         return false
       end
     end
@@ -35,8 +35,8 @@ private
 
       # check that process runned
       unless process_realy_running?
-        warn "check_alive: process not found, so :crushed"
-        notify :warn, "crushed!"
+        warn 'check_alive: process not found, so :crushed'
+        notify :warn, 'crushed!'
         switch :crushed
       else
         # check that pid_file still here
@@ -48,13 +48,13 @@ private
             save_pid_to_file
           else
             if ppid == nil
-              msg += ", rewrited because empty"
+              msg += ', rewrited because empty'
               save_pid_to_file
             elsif (Time.now - pid_file_ctime > REWRITE_FACKUP_PIDFILE_PERIOD)
               msg += ", > #{REWRITE_FACKUP_PIDFILE_PERIOD.inspect} ago, so rewrited (even if pid_file not under eye control)"
               save_pid_to_file
             else
-              msg += ", not under eye control, so ignored"
+              msg += ', not under eye control, so ignored'
             end
           end
 
@@ -67,10 +67,10 @@ private
   def check_crush
     if down?
       if self[:keep_alive] && !@flapping
-        warn "check crushed: process is down, so :start"
+        warn 'check crushed: process is down, so :start'
         schedule :start
       else
-        warn "check crushed: process is down, and flapping happens, so :unmonitor"
+        warn 'check crushed: process is down, and flapping happens, so :unmonitor'
         schedule :unmonitor
       end
     end
