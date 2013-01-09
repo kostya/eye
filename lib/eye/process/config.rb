@@ -52,16 +52,12 @@ module Eye::Process::Config
 
     debug "update config to: #{@config.inspect}"
 
-    remove_watchers
     remove_triggers
-    remove_childs
-
     add_triggers
 
-    # bad style code!
     if up?
-      add_watchers
-      add_childs
+      # rebuild checks for this process
+      from_up; to_up
     end    
   end
 
