@@ -8,7 +8,7 @@ module Eye::System
     # very fast
     def pid_alive?(pid)
       pid ? ::Process.kill(0, pid) && true : false
-    rescue Errno::ESRCH
+    rescue Errno::ESRCH, Errno::EPERM
       false
     end
 
@@ -17,11 +17,14 @@ module Eye::System
     def send_signal(pid, code = :TERM)
       code = code.to_s.upcase if code.is_a?(String) || code.is_a?(Symbol)
 
-      ::Process.kill(code, pid)
+      ::Process.kill(code, pid) if pid
       {:status => :ok}
 
     rescue Errno::ESRCH    
       {:status => :error, :message => 'process not found'}
+
+    rescue Errno::EPERM
+      {:status => :error, :message => 'wrong permissions to kill'}
 
     rescue => e
       {:status => :error, :message => "failed signal #{code}: #{e.message}"}
@@ -59,7 +62,7 @@ module Eye::System
       {:pid => pid}
 
     rescue Timeout::Error => ex      
-      send_signal(pid, 9) if pid # kill it?
+      send_signal(pid, 9)
       {:error => ex}
 
     rescue Errno::ENOENT, Errno::EACCES => ex
