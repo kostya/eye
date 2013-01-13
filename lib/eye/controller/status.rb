@@ -37,7 +37,7 @@ private
         off = level * 2
         off_str = ' ' * off
         str = off_str + (data[:name].to_s + ' ').ljust(35 - off, data[:state] ? '.' : ' ')
-        
+
         if data[:pid]
           str += " (#{data[:pid].to_s})".ljust(8)
         else
@@ -46,10 +46,16 @@ private
 
         if data[:debug]
           str += '| ' + debug_str(data[:debug])
+
+          # for group show chain data
+          if data[:debug][:chain]
+            str += " (chain: #{data[:debug][:chain].map(&:to_i)})"
+          end
         elsif data[:state]
           str += ': ' + data[:state].to_s 
           str += ' (' + resources_str(data[:resources]) + ')' if data[:resources].present? && data[:state].to_sym == :up
         end
+
       end
 
       [str, make_str(data[:subtree], level + 1)].compact * "\n"

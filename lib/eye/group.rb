@@ -39,7 +39,7 @@ class Eye::Group
   end
 
   def debug_data
-    {:queue => scheduler.names_list}
+    {:queue => scheduler.names_list, :chain => chain_status}
   end
 
   def send_command(command)
@@ -105,6 +105,12 @@ private
 
       # wait next process
       sleep grace.to_f
+    end
+  end
+
+  def chain_status
+    if @config[:chain]
+      [:start, :restart].map{|c| @config[:chain][c].try(:[], :grace) }
     end
   end
 
