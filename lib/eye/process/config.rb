@@ -57,7 +57,7 @@ module Eye::Process::Config
 
     if up?
       # rebuild checks for this process
-      from_up; to_up
+      from_up; on_up
     end    
   end
 
