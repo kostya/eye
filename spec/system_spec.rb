@@ -22,6 +22,12 @@ describe "Eye::System" do
     x[:start_time].length.should == 5
   end
 
+  it "prepare env" do
+    Eye::System.send(:prepare_env, {}).should include({})
+    Eye::System.send(:prepare_env, {:environment => {'A' => 'B'}}).should include({'A' => 'B'})
+    Eye::System.send(:prepare_env, {:environment => {'A' => 'B'}, :working_dir => "/tmp"}).should include({'A' => 'B', 'PWD' => '/tmp'})
+  end
+
   describe "daemonize" do
     it "daemonize default" do
       @pid = Eye::System.daemonize("ruby sample.rb", {:environment => {"ENV1" => "SECRET1"}, 

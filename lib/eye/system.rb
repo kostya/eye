@@ -117,6 +117,9 @@ module Eye::System
       # return original LANG env, because ruby loose it (needs for unicorn)
       env['LANG'] = ENV_LANG unless env['LANG']
 
+      # set PWD for unicorn respawn
+      env['PWD'] = config[:working_dir] if config[:working_dir]
+
       env
     end
   end
