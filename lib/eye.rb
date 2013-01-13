@@ -1,6 +1,6 @@
 module Eye  
-  VERSION   = "0.1.7"
-  ABOUT     = "Eye v#{VERSION} (c) 2012 @kostya"
+  VERSION   = "0.1.8"
+  ABOUT     = "Eye v#{VERSION} (c) 2012-2013 @kostya"
 
   autoload :Process,        'eye/process'
   autoload :ChildProcess,   'eye/child_process'
