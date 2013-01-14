@@ -12,6 +12,10 @@ class Eye::Application
     debug 'created'
   end
 
+  def full_name
+    @name
+  end
+
   def update_config(cfg)
     @config = cfg
   end
@@ -40,6 +44,12 @@ class Eye::Application
 
   def alive?
     true # emulate celluloid actor method
+  end
+
+  def sub_object?(obj)
+    res = @groups.include?(obj)
+    res = @groups.any?{|gr| gr.sub_object?(obj)} if !res
+    res
   end
 
 end

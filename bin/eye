@@ -70,15 +70,15 @@ class Cli < Thor
   [:start, :stop, :restart, :unmonitor].each do |_cmd|
     class_eval <<-E
       desc "#{_cmd} [TARGET]", "#{_cmd} app,group or process"
-      def #{_cmd}(str = "")
-        send_command('#{_cmd}', str)
+      def #{_cmd}(*targets)
+        send_command('#{_cmd}', *targets)
       end
     E
   end
 
   desc "delete [TARGET]", "delete app,group or process"
-  def delete(str = "")
-    send_command('remove', str)
+  def delete(*targets)
+    send_command('remove', *targets)
   end
 
   desc "trace [TARGET]", "tracing log for app,group or process"
@@ -140,10 +140,12 @@ private
     res = cmd(_cmd, *args)
     if res == :unknown_command
       say "Unknown command", :red
-    elsif res == :nothing
+    elsif res == :corrupred_marshal
+      say "Something wrong, check eye logs!", :red
+    elsif res == []
       say "No targets to #{_cmd}!", :red
     else
-      say "command #{_cmd} affected to #{res.to_s}"
+      say "command #{_cmd} affected to [#{res * ", "}]"
     end        
   end
 

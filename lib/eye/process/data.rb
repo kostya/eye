@@ -32,4 +32,9 @@ module Eye::Process::Data
     {:queue => scheduler.names_list, :watchers => @watchers.keys}
   end
 
+  def sub_object?(obj)
+    # we not recognize childs
+    false
+  end
+
 end

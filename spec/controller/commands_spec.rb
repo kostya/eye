@@ -56,12 +56,12 @@ describe "comamnd spec" do
   describe "send_command" do
     it "nothing" do
       subject.load(fixture("dsl/load.eye")).should == {:error => false}
-      subject.send_command(:start, "2341234").should == :nothing
+      subject.send_command(:start, "2341234").should == []
     end
 
     it "unknown" do
       subject.load(fixture("dsl/load.eye")).should == {:error => false}
-      subject.send_command(:st33art, "2341234").should == :nothing
+      subject.send_command(:st33art, "2341234").should == []
     end
 
     [:start, :stop, :restart, :unmonitor].each do |cmd|

@@ -20,8 +20,13 @@ class Eye::Group
     debug 'created'
   end
 
+  def full_name
+    @full_name ||= "#{@config[:application]}:#{@name}"
+  end
+
   def update_config(cfg)
     @config = cfg
+    @full_name = nil
   end
 
   def add_process(process)
@@ -76,6 +81,10 @@ class Eye::Group
 
   def clear
     @processes = []
+  end
+
+  def sub_object?(obj)
+    @processes.include?(obj)
   end
 
 private  

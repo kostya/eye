@@ -81,7 +81,7 @@ describe "Intergration" do
     @old_pid1 = @p1.pid
     @old_pid2 = @p2.pid
     @old_pid3 = @p3.pid
-    @c.send_command(:restart, "blabla").should == :nothing
+    @c.send_command(:restart, "blabla").should == []
     sleep 1
     @processes.map{|c| c.state_name}.uniq.should == [:up]
     @p1.pid.should == @old_pid1
