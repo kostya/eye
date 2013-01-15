@@ -54,7 +54,7 @@ describe "StopOnRemove behaviour" do
   end
 
   it "remove application => stop group proceses" do
-    @c.send_command(:remove, "samples").should == "[samples]"
+    @c.send_command(:remove, "samples").should == ["int:samples"]
     sleep 7 # while 
 
     @c.all_processes.should == [@p3]

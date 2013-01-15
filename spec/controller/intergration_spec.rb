@@ -190,7 +190,7 @@ describe "Intergration" do
     @old_pid2 = @p2.pid
     @old_pid3 = @p3.pid
 
-    @c.send_command(:unmonitor, "sample1").should == "[sample1]"
+    @c.send_command(:unmonitor, "sample1").should == ["int:samples:sample1"]
     sleep 7 # while they stopping
 
     @p1.state_name.should == :unmonitored
@@ -208,7 +208,7 @@ describe "Intergration" do
       @old_pid2 = @p2.pid
       @old_pid3 = @p3.pid
 
-      @c.send_command(:remove, "samples").should == "[samples]"
+      @c.send_command(:remove, "samples").should == ["int:samples"]
       sleep 7 # while 
 
       @c.all_processes.should == [@p3]
@@ -280,7 +280,7 @@ describe "Intergration" do
       @old_pid2 = @p2.pid
       @old_pid3 = @p3.pid
 
-      @c.send_command(:remove, "sam*").should == "[samples, sample1, sample2]"
+      @c.send_command(:remove, "sam*").should == ["int:samples"]
       sleep 7 # while 
 
       @c.all_processes.should == [@p3]
