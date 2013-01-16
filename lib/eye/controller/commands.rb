@@ -12,7 +12,7 @@ module Eye::Controller::Commands
     cmd = cmd.to_sym
     
     res = case cmd 
-      when :start, :stop, :restart, :remove, :unmonitor
+      when :start, :stop, :restart, :remove, :unmonitor, :monitor
         send_command(cmd, *args)
       when :load
         load(*args)

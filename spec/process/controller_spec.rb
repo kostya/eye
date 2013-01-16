@@ -4,13 +4,35 @@ describe "Process Controller" do
 
   describe "monitor" do
     it "monitor should call start, as the auto_start is default" do
-      start_ok_process
+      @process = process C.p1
 
-      @process.unmonitor
-      @process.state_name.should == :unmonitored
-      
-      mock(@process).start
+      proxy(@process).start
       @process.monitor
+      sleep 1
+
+      @process.state_name.should == :up
+    end
+
+    it "without auto_start and process not running" do
+      @process = process C.p1.merge(:auto_start => false)
+      @process.monitor
+      sleep 1
+
+      @process.state_name.should == :unmonitored
+    end
+
+    it "without auto_start and process already running" do
+      @pid = Eye::System.daemonize(C.p1[:start_command], C.p1)[:pid]
+      Eye::System.pid_alive?(@pid).should == true
+      File.open(C.p1[:pid_file], 'w'){|f| f.write(@pid) }
+      sleep 2
+
+      @process = process C.p1.merge(:auto_start => false)
+      @process.monitor
+      sleep 1
+
+      @process.state_name.should == :up
+      @process.pid.should == @pid
     end
     
   end

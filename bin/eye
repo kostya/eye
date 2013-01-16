@@ -67,7 +67,7 @@ class Cli < Thor
     say "stopped...", :yellow
   end
   
-  [:start, :stop, :restart, :unmonitor].each do |_cmd|
+  [:start, :stop, :restart, :unmonitor, :monitor].each do |_cmd|
     class_eval <<-E
       desc "#{_cmd} [TARGET]", "#{_cmd} app,group or process"
       def #{_cmd}(*targets)

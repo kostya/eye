@@ -33,7 +33,13 @@ module Eye::Process::Controller
     if self[:auto_start]
       start
     else
-      info 'not supported, yet!'
+      if try_update_pid_from_file
+        info "process from pid_file(#{self.pid}) found and already running, so :up"
+        switch :already_running
+      else
+        warn "process not found, so :unmonitor"
+        schedule :unmonitor
+      end
     end
   end
 

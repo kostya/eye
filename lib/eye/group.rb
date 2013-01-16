@@ -75,6 +75,10 @@ class Eye::Group
     self.terminate
   end
 
+  def monitor
+    async_all :monitor
+  end
+
   def unmonitor
     async_all :unmonitor
   end

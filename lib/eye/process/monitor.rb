@@ -8,23 +8,26 @@ private
 
     else
       warn 'process not realy running'
+      try_update_pid_from_file
+    end
+  end
 
-      # if pid file was rewrited
-      newpid = load_pid_from_file
-      if newpid != self.pid
-        info "process changed pid to #{newpid}, updating..."
-        self.pid = newpid
+  def try_update_pid_from_file
+    # if pid file was rewrited
+    newpid = load_pid_from_file
+    if newpid != self.pid 
+      info "process changed pid to #{newpid}, updating..." if self.pid
+      self.pid = newpid
 
-        if process_realy_running?
-          return true
-        else
-          warn "process with new_pid #{newpid} not found"
-          return false          
-        end
+      if process_realy_running?
+        return true
       else
-        debug 'process not found'
-        return false
+        warn "process with new_pid #{newpid} not found"
+        return false          
       end
+    else
+      debug 'process not found'
+      return false
     end
   end
 
