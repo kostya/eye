@@ -113,6 +113,17 @@ describe "Eye::Controller::Load" do
       "app2"=>{"__default__"=>{"z1"=>"/tmp/app2-z1.pid"}}}
   end
 
+  it "two configs with same pids (should validate final config)" do
+    subject.load(fixture("dsl/load.eye")).should == {:error => false}
+    subject.load(fixture("dsl/load2*.eye")).should == {:error => true, :message=>'dublicate pid_files: {"app3-e1.pid"=>2}'}    
+  end
+
+  it "two configs with same pids (should validate final config)" do
+    subject.load(fixture("dsl/load.eye")).should == {:error => false}
+    subject.load(fixture("dsl/load2.eye")).should == {:error => false}
+    subject.load(fixture("dsl/load2_*.eye")).should == {:error => true, :message=>'dublicate pid_files: {"app3-e1.pid"=>2}', :backtrace => []}
+  end
+
   it "load logger" do
     subject.load(fixture("dsl/load_logger.eye")).should == {:error => false}
     Eye::Logger.dev.should == "/tmp/1.log"

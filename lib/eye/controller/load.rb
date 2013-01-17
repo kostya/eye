@@ -22,17 +22,25 @@ module Eye::Controller::Load
 
       res, cfg = parse_config(config_path)
       configs << cfg
+
       return res if res[:error]
     end
 
     return {:error => true, :message => "config file '#{mask}' not found!"} if configs.blank?
 
-    configs.each do |config|
-      load_config(config)
+    new_cfg = @current_config
+    configs.each{|cfg| new_cfg = merge_configs(new_cfg, cfg) }
+
+    begin
+      validate(new_cfg)
+    rescue Eye::Dsl::Error => ex
+      error "load: final merged config not validated: '#{ex.message}'"
+      return {:error => true, :message => ex.message}
     end
 
-    GC.start
+    load_config(new_cfg)
 
+    GC.start
     {:error => false}
   end
 
@@ -46,13 +54,9 @@ private
     end
 
     cfg = Eye::Dsl.load(nil, filename)
+    validate( merge_configs(@current_config, cfg) )
 
-    new_config = merge_configs(@current_config, cfg)
-    validate(new_config)
-
-    GC.start
-
-    [{:error => false}, new_config]
+    [{:error => false}, cfg]
 
   rescue Eye::Dsl::Error, Exception, NoMethodError => ex
     error "load: config error <#{filename}>: #{ex.message}"
