@@ -236,6 +236,13 @@ describe "Process Start" do
     ensure_kill_samples
   end
 
+  it "without start command" do
+    @process = process(C.p2.merge(:start_command => nil))
+    @process.start.should == :no_start_command
+    sleep 1
+    @process.unmonitored?.should == true
+  end
+
   [:up, :starting, :stopping, :restarting].each do |st|
     it "should not start from #{st}" do
       @process = process(C.p1)

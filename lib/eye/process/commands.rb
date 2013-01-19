@@ -4,7 +4,7 @@ module Eye::Process::Commands
     debug 'start_process command'
 
     unless self[:start_command]
-      warn 'no start command, skipped'
+      warn 'no start command, so skipped'
       return :no_start_command
     end
 
