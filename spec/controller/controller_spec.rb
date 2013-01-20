@@ -104,7 +104,7 @@ S
 
     it "status" do
       mock(Eye::Control).status_string
-      Eye::Control.command('status')
+      Eye::Control.command('info')
     end
 
     it "quit" do
