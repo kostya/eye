@@ -10,14 +10,15 @@ class Cli < Thor
 
   desc "info", "show process statuses"
   def info
-    status
+    res = cmd(:info)
+    puts res if res && !res.empty?
+    puts
   end
 
   desc "status", "show process statuses"
   def status
-    res = cmd(:status)
-    puts res if res && !res.empty?
-    puts
+    warn "Status is deprecated, use :info instead"
+    info
   end
 
   desc "debug", "show server debug info"

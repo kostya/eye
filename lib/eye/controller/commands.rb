@@ -16,7 +16,7 @@ module Eye::Controller::Commands
         send_command(cmd, *args)
       when :load
         load(*args)
-      when :status
+      when :info
         status_string
       when :debug
         status_string_debug
