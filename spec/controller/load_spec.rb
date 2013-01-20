@@ -58,10 +58,10 @@ describe "Eye::Controller::Load" do
     p.object_id.should == p2.object_id
   end
 
-  it "load -> remove -> load" do
+  it "load -> delete -> load" do
     subject.load(fixture("dsl/load.eye")).should == {:error => false}
     subject.load(fixture("dsl/load2.eye")).should == {:error => false}
-    subject.command(:remove, 'app3')
+    subject.command(:delete, 'app3')
     subject.load(fixture("dsl/load3.eye")).should == {:error => false}
 
     subject.short_tree.should == {

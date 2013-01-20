@@ -1,5 +1,5 @@
 Eye.app("int") do
-  stop_on_remove true # !!!
+  stop_on_delete true # !!!
 
   working_dir File.join(File.dirname(__FILE__), %w{.. .. example})
   stdall "shlak.log"

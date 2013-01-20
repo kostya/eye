@@ -50,8 +50,8 @@ class Eye::Group
   def send_command(command)
     info "send_command: #{command}"
 
-    if command == :remove
-      remove
+    if command == :delete
+      delete
     else
       schedule command
     end
@@ -69,8 +69,8 @@ class Eye::Group
     chain_command(:restart)
   end
 
-  def remove
-    async_all :remove
+  def delete
+    async_all :delete
 
     self.terminate
   end

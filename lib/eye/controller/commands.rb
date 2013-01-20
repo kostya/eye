@@ -12,7 +12,7 @@ module Eye::Controller::Commands
     cmd = cmd.to_sym
     
     res = case cmd 
-      when :start, :stop, :restart, :remove, :unmonitor, :monitor
+      when :start, :stop, :restart, :delete, :unmonitor, :monitor
         send_command(cmd, *args)
       when :load
         load(*args)
@@ -42,15 +42,15 @@ private
 
   def quit
     info 'exiting...'
-    remove
+    delete
     sleep 1
     Eye::System.send_signal($$) # soft terminate
     sleep 2
     Eye::System.send_signal($$, 9)
   end
 
-  def remove
-    send_command(:remove)
+  def delete
+    send_command(:delete)
   end
 
 end

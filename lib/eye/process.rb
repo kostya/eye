@@ -52,7 +52,7 @@ class Eye::Process
   # start_process, stop_process, restart_process
   include Eye::Process::Commands
 
-  # start, stop, restart, monitor, unmonit, remove
+  # start, stop, restart, monitor, unmonit, delete
   include Eye::Process::Controller
   
   # add_watchers, remove_watchers:

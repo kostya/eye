@@ -76,13 +76,13 @@ describe "comamnd spec" do
       end
     end
 
-    it "remove obj" do
+    it "delete obj" do
       any_instance_of(Eye::Process) do |p|
-        dont_allow(p).send_command(:remove)
+        dont_allow(p).send_command(:delete)
       end
 
-      mock(@p1).send_command(:remove)
-      subject.send_command :remove, "p1"
+      mock(@p1).send_command(:delete)
+      subject.send_command :delete, "p1"
 
       subject.all_processes.should_not include(@p1)
       subject.all_processes.should include(@p2)

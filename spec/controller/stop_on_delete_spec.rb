@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe "StopOnRemove behaviour" do
+describe "StopOnDelete behaviour" do
   before :each do
     @c = Eye::Controller.new
     @c.load(fixture("dsl/integration_sor.eye"))
@@ -38,8 +38,8 @@ describe "StopOnRemove behaviour" do
     end
   end
 
-  it "remove process => stop process" do
-    @c.send_command(:remove, "sample1")
+  it "delete process => stop process" do
+    @c.send_command(:delete, "sample1")
     sleep 7 # while 
 
     @c.all_processes.map(&:name).sort.should == %w{forking sample2}
@@ -53,8 +53,8 @@ describe "StopOnRemove behaviour" do
     Eye::System.pid_alive?(@old_pid1).should == false
   end
 
-  it "remove application => stop group proceses" do
-    @c.send_command(:remove, "samples").should == ["int:samples"]
+  it "delete application => stop group proceses" do
+    @c.send_command(:delete, "samples").should == ["int:samples"]
     sleep 7 # while 
 
     @c.all_processes.should == [@p3]
@@ -72,8 +72,8 @@ describe "StopOnRemove behaviour" do
     Eye::System.pid_alive?(@old_pid1).should == false    
   end
 
-  it "remove application => stop all proceses" do
-    @c.send_command(:remove, "int")
+  it "delete application => stop all proceses" do
+    @c.send_command(:delete, "int")
     sleep 7 # while 
 
     @c.all_processes.should == []
@@ -95,7 +95,7 @@ describe "StopOnRemove behaviour" do
     actors.should_not include(Eye::Checker::Memory)
   end
 
-  it "load config when 1 process removed, it should stopped" do
+  it "load config when 1 process deleted, it should stopped" do
     @c.load(fixture("dsl/integration_sor2.eye"))
     sleep 10
 

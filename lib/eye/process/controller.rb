@@ -51,9 +51,9 @@ module Eye::Process::Controller
     switch :unmonitoring
   end
   
-  def remove
-    if self[:stop_on_remove]
-      info 'process has stop_on_remove option, so sync-stop it first'
+  def delete
+    if self[:stop_on_delete]
+      info 'process has stop_on_delete option, so sync-stop it first'
       stop
     end
 

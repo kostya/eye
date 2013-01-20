@@ -68,18 +68,13 @@ class Cli < Thor
     say "stopped...", :yellow
   end
   
-  [:start, :stop, :restart, :unmonitor, :monitor].each do |_cmd|
+  [:start, :stop, :restart, :unmonitor, :monitor, :delete].each do |_cmd|
     class_eval <<-E
-      desc "#{_cmd} [TARGET]", "#{_cmd} app,group or process"
+      desc "#{_cmd} MASK[,...]", "#{_cmd} app,group or process"
       def #{_cmd}(*targets)
         send_command('#{_cmd}', *targets)
       end
     E
-  end
-
-  desc "delete [TARGET]", "delete app,group or process"
-  def delete(*targets)
-    send_command('remove', *targets)
   end
 
   desc "trace [TARGET]", "tracing log for app,group or process"

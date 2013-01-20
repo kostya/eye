@@ -202,13 +202,13 @@ describe "Intergration" do
     Eye::System.pid_alive?(@old_pid3).should == true
   end
 
-  describe "remove" do
-    it "remove group not monitoring anymore" do
+  describe "delete" do
+    it "delete group not monitoring anymore" do
       @old_pid1 = @p1.pid
       @old_pid2 = @p2.pid
       @old_pid3 = @p3.pid
 
-      @c.send_command(:remove, "samples").should == ["int:samples"]
+      @c.send_command(:delete, "samples").should == ["int:samples"]
       sleep 7 # while 
 
       @c.all_processes.should == [@p3]
@@ -227,12 +227,12 @@ describe "Intergration" do
       Eye::System.pid_alive?(@old_pid1).should == false
     end
 
-    it "remove process not monitoring anymore" do
+    it "delete process not monitoring anymore" do
       @old_pid1 = @p1.pid
       @old_pid2 = @p2.pid
       @old_pid3 = @p3.pid
 
-      @c.send_command(:remove, "sample1")
+      @c.send_command(:delete, "sample1")
       sleep 7 # while 
 
       @c.all_processes.map(&:name).sort.should == %w{forking sample2}
@@ -247,12 +247,12 @@ describe "Intergration" do
       Eye::System.pid_alive?(@old_pid1).should == false
     end
 
-    it "remove application" do
+    it "delete application" do
       @old_pid1 = @p1.pid
       @old_pid2 = @p2.pid
       @old_pid3 = @p3.pid
 
-      @c.send_command(:remove, "int")
+      @c.send_command(:delete, "int")
       sleep 7 # while 
 
       @c.all_processes.should == []
@@ -275,12 +275,12 @@ describe "Intergration" do
       actors.should_not include(Eye::Checker::Memory)
     end
 
-    it "remove by mask" do
+    it "delete by mask" do
       @old_pid1 = @p1.pid
       @old_pid2 = @p2.pid
       @old_pid3 = @p3.pid
 
-      @c.send_command(:remove, "sam*").should == ["int:samples"]
+      @c.send_command(:delete, "sam*").should == ["int:samples"]
       sleep 7 # while 
 
       @c.all_processes.should == [@p3]

@@ -67,12 +67,12 @@ describe "Process Controller" do
     end
   end
 
-  describe "remove" do
-    it "remove monitoring, not kill process" do
+  describe "delete" do
+    it "delete monitoring, not kill process" do
       start_ok_process
       old_pid = @process.pid
 
-      @process.remove
+      @process.delete
       Eye::System.pid_alive?(old_pid).should == true
       sleep 0.3
       @process.alive?.should == false
@@ -80,11 +80,11 @@ describe "Process Controller" do
       @process = nil
     end
 
-    it "if stop_on_remove process die" do
-      start_ok_process(C.p1.merge(:stop_on_remove => true))
+    it "if stop_on_delete process die" do
+      start_ok_process(C.p1.merge(:stop_on_delete => true))
       old_pid = @process.pid
 
-      @process.remove
+      @process.delete
       Eye::System.pid_alive?(old_pid).should == false
       sleep 0.3
       @process.alive?.should == false

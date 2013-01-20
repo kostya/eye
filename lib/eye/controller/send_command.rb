@@ -7,7 +7,7 @@ module Eye::Controller::SendCommand
     objs.each do |obj|
       obj.send_command(command) if obj.alive?
       
-      if command == :remove
+      if command.to_sym == :delete
         remove_object_from_tree(obj) 
         GC.start
       end

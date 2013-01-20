@@ -3,7 +3,7 @@ class Eye::Dsl::Opts
   ALL_OPTIONS = [ :pid_file, :working_dir, :daemonize, :stdout, :stderr, :stdall,
     :keep_alive, :check_alive_period, :start_timeout, :restart_timeout, :stop_timeout, :start_grace,
     :restart_grace, :stop_grace, :control_pid, :childs_update_period,
-    :auto_start, :start_command, :stop_command, :restart_command, :stop_signals, :stop_on_remove
+    :auto_start, :start_command, :stop_command, :restart_command, :stop_signals, :stop_on_delete
   ]
 
   ALL_OPTIONS.each do |opt|
