@@ -2,7 +2,7 @@ module Eye::Controller::Commands
 
   # Main method, answer for the client command
   def command(cmd, *args)
-    @mutex.synchronize{ safe_command(cmd, *args) }
+    safe_command(cmd, *args)
   end
 
   def safe_command(cmd, *args)

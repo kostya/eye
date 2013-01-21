@@ -9,7 +9,7 @@ module Eye::Controller::Status
   end
 
   def status_string_debug
-    actors = Celluloid::Actor.all.map{|actor| actor.class }.group_by{|a| a}.map{|k,v| [k, v.size]}.sort_by{|a|a[1]}.reverse
+    actors = Celluloid::Actor.all.map{|actor| actor.instance_variable_get(:@klass) }.group_by{|a| a}.map{|k,v| [k, v.size]}.sort_by{|a|a[1]}.reverse
 
     str = <<-S
 About:  #{Eye::ABOUT}

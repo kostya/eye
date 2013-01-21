@@ -25,7 +25,7 @@ module Eye::Settings
   end
   
   def client_timeout
-    5 # secs
+    7 # secs
   end
 
 end
