@@ -1,13 +1,38 @@
 module Eye::Controller::Load
-
   include Eye::Dsl::Validate
 
   def syntax(filename = '')
-    parse_config(filename).first
+    catch_load_error(filename) do
+      parse_config(filename)
+    end
   end
 
   # filename is a path, or folder, or mask
   def load(filename = '')
+    catch_load_error(filename) do
+      _load(filename)
+    end
+  end
+
+private
+
+  def catch_load_error(filename, &block)
+    block.call
+
+    {:error => false}
+  rescue Eye::Dsl::Error, Exception, NoMethodError => ex
+    error "load: config error <#{filename}>: #{ex.message}"
+
+    # filter backtrace for user output
+    bt = (ex.backtrace || []).reject{|line| line.to_s =~ %r[/lib/eye/] || line.to_s =~ %r[lib/celluloid] || line.to_s =~ %r[internal:prelude] } 
+    error bt.join("\n")
+
+    res = {:error => true, :message => ex.message}
+    res.merge!(:backtrace => bt) if bt.present?
+    res
+  end
+
+  def _load(filename)
     mask = if File.directory?(filename)
       File.join filename, '{*.eye}'
     else
@@ -19,53 +44,28 @@ module Eye::Controller::Load
 
     Dir[mask].each do |config_path|
       info "load: config #{config_path}"
-
-      res, cfg = parse_config(config_path)
-      configs << cfg
-
-      return res if res[:error]
+      configs << parse_config(config_path)
     end
 
-    return {:error => true, :message => "config file '#{mask}' not found!"} if configs.blank?
+    raise Eye::Dsl::Error, "config file '#{mask}' not found!" if configs.blank?
 
     new_cfg = @current_config
     configs.each{|cfg| new_cfg = merge_configs(new_cfg, cfg) }
-
-    begin
-      validate(new_cfg)
-    rescue Eye::Dsl::Error => ex
-      error "load: final merged config not validated: '#{ex.message}'"
-      return {:error => true, :message => ex.message}
-    end
+    validate(new_cfg)
 
     load_config(new_cfg)
 
     GC.start
-    {:error => false}
   end
-
-private
 
   # return: result, config
   def parse_config(filename = '', &block)
-    unless File.exists?(filename)
-      error "load: config file '#{filename}' not found!"
-      return [{:error => true, :message => "config file '#{filename}' not found!"}]
-    end
+    raise Eye::Dsl::Error, "config file '#{filename}' not found!" unless File.exists?(filename)
 
     cfg = Eye::Dsl.load(nil, filename)
     validate( merge_configs(@current_config, cfg) )
 
-    [{:error => false}, cfg]
-
-  rescue Eye::Dsl::Error, Exception, NoMethodError => ex
-    error "load: config error <#{filename}>: #{ex.message}"
-
-    # filter backtrace for user output
-    bt = (ex.backtrace || []).reject{|line| line.to_s =~ %r[/lib/eye/] || line.to_s =~ %r[lib/celluloid] || line.to_s =~ %r[internal:prelude] } 
-    error bt.join("\n")
-
-    [{:error => true, :message => ex.message, :backtrace => bt}]
+    cfg
   end
 
   def load_config(new_config)

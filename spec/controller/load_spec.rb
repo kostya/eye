@@ -121,7 +121,7 @@ describe "Eye::Controller::Load" do
   it "two configs with same pids (should validate final config)" do
     subject.load(fixture("dsl/load.eye")).should == {:error => false}
     subject.load(fixture("dsl/load2.eye")).should == {:error => false}
-    subject.load(fixture("dsl/load2_*.eye")).should == {:error => true, :message=>'dublicate pid_files: {"app3-e1.pid"=>2}', :backtrace => []}
+    subject.load(fixture("dsl/load2_*.eye")).should == {:error => true, :message=>'dublicate pid_files: {"app3-e1.pid"=>2}'}
   end
 
   it "load logger" do
