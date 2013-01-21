@@ -176,4 +176,8 @@ describe "Eye::Controller::Load" do
     gr.config[:chain].should == {:restart => {:grace=>10, :action=>:restart}, :start => {:grace=>10, :action=>:start}}
   end
 
+  it "raised load" do
+    subject.load(fixture("dsl/load_error.eye")).should == {error: true, message: "No such file or directory - /asd/fasd/fas/df/asd/fas/df/d"}
+  end
+
 end
