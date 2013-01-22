@@ -1,7 +1,7 @@
 Eye
 ===
 
-Process monitoring tool. With bluepill-like config syntax. Requires ruby >= 1.9.2. Uses Celluloid and Celluloid::IO.
+Process monitoring tool. With Bluepill like config syntax. Requires MRI Ruby >= 1.9.2. Uses Celluloid and Celluloid::IO.
 
 Recommended installation on the server (system wide):
 
@@ -64,13 +64,18 @@ Eye.app "test" do
 end
 ```
 
-### Start and/or load config:
+### Start monitoring and load config:
 
     $ eye load examples/test.eye
 
 load folder with configs:
 
-    $ eye load examples/
+    $ eye l examples/
+    $ eye l examples/*.rb
+
+Load also uses for config synchronization and load new application into runned eye daemon. Light operation, so i recommend to use with every deploy (and than restart processes).
+(for processes with option `stop_on_delete`, `load` becomes a tool for full config synchronization, which stopps deleted from config processes).
+
 
 Process statuses:
   
@@ -91,7 +96,7 @@ test
     
     start, stop, restart, delete, monitor, unmonitor
 
-Commands params (restart for example):
+Command params (with restart for example):
 
     $ eye r(estart) all
     $ eye r test
@@ -100,11 +105,12 @@ Commands params (restart for example):
     $ eye r sample*
     $ eye r test:samples
     $ eye r test:samples:sample1
+    $ eye r test:samples:sample*
 
 Check config syntax:
 
-    $ eye sy(ntax) config_file
+    $ eye sy(ntax) examples/test.eye
 
-Quit:
+Quit monitoring:
 
     $ eye q(uit)
