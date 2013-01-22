@@ -128,6 +128,10 @@ describe "Eye::Controller::Load" do
     subject.load(fixture("dsl/load2_dup2.eye")).should == {:error => false}
   end
 
+  it "dups of names but in different scopes" do
+    subject.load(fixture("dsl/load_dup_ex_names.eye")).should == {:error => false}
+  end
+
   it "load logger" do
     subject.load(fixture("dsl/load_logger.eye")).should == {:error => false}
     Eye::Logger.dev.should == "/tmp/1.log"
