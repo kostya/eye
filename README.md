@@ -68,7 +68,11 @@ end
 
     $ eye load examples/test.eye
 
-Processes status: 
+load folder with configs:
+
+    $ eye load examples/
+
+Process statuses:
   
     $ eye i(nfo)
 
@@ -82,3 +86,25 @@ test
     =child= ....................... (4872) : up (22:37, 0%, 22Mb)
     =child= ....................... (4875) : up (22:37, 0%, 22Mb)
 ```
+
+### Commands:
+    
+    start, stop, restart, delete, monitor, unmonitor
+
+Commands params (restart for example):
+
+    $ eye r(estart) all
+    $ eye r test
+    $ eye r samples
+    $ eye r sample1
+    $ eye r sample*
+    $ eye r test:samples
+    $ eye r test:samples:sample1
+
+Check config syntax:
+
+    $ eye sy(ntax) config_file
+
+Quit:
+
+    $ eye q(uit)
