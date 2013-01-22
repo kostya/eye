@@ -72,6 +72,10 @@ module C
     {:ctime => {:type => :ctime, :every => 2, :file => sample_dir + "/#{log_name}", :times => [3,5]}.merge(a)}
   end
 
+  def check_fsize(a = {})
+    {:fsize => {:type => :fsize, :every => 2, :file => sample_dir + "/#{log_name}", :times => [3,5]}.merge(a)}
+  end
+
   def check_http(a = {})
     {:http => {
       :type => :http, :every => 2, :times => 1,

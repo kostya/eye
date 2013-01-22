@@ -34,25 +34,25 @@ class Eye::Dsl::Opts
 
   def checks(type, opts = {})
     type = type.to_sym
-    raise Eye::Dsl::Error, "unknown checker type #{type}" unless Eye::Checker::TYPES.include?(type)
+    raise Eye::Dsl::Error, "unknown checker type #{type}" unless Eye::Checker::TYPES[type]
     @config[:checks][type] = opts.merge(:type => type)
   end
 
   def triggers(type, opts = {})
     type = type.to_sym
-    raise Eye::Dsl::Error, "unknown trigger type #{type}" unless Eye::Trigger::TYPES.include?(type)
+    raise Eye::Dsl::Error, "unknown trigger type #{type}" unless Eye::Trigger::TYPES[type]
     @config[:triggers][type] = opts.merge(:type => type)
   end
 
   def nochecks(type)
     type = type.to_sym
-    raise Eye::Dsl::Error, "unknown checker type #{type}" unless Eye::Checker::TYPES.include?(type)
+    raise Eye::Dsl::Error, "unknown checker type #{type}" unless Eye::Checker::TYPES[type]
     @config[:nochecks][type] = 1
   end
 
   def notriggers(type)
     type = type.to_sym
-    raise Eye::Dsl::Error, "unknown trigger type #{type}" unless Eye::Trigger::TYPES.include?(type)
+    raise Eye::Dsl::Error, "unknown trigger type #{type}" unless Eye::Trigger::TYPES[type]
     @config[:notriggers][type] = 1
   end
 

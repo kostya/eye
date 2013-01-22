@@ -1,0 +1,48 @@
+require File.dirname(__FILE__) + '/../spec_helper'
+
+def chmem(cfg = {})
+  Eye::Checker.create(123, {:type => :memory, :every => 5.seconds, 
+        :times => 1}.merge(cfg))
+end
+
+describe "Eye::Checker::Memory" do
+
+  describe "without below" do
+    subject{ chmem }
+
+    it "get_value" do
+      mock(Eye::SystemResources).memory_usage(123){ 65 }
+      subject.get_value.should == 66560
+    end
+
+    it "without below always true" do
+      stub(subject).get_value{ 315 }
+      subject.check.should == true
+
+      stub(subject).get_value{ 320 }
+      subject.check.should == true
+    end
+  end
+
+  describe "with below" do
+    subject{ chmem(:below => 300.megabytes) }
+
+    it "good" do
+      stub(subject).get_value{ 200.megabytes }
+      subject.check.should == true
+
+      stub(subject).get_value{ 250.megabytes }
+      subject.check.should == true
+    end
+
+    it "good" do
+      stub(subject).get_value{ 250.megabytes }
+      subject.check.should == true
+
+      stub(subject).get_value{ 350.megabytes }
+      subject.check.should == false
+    end
+
+  end
+
+end

@@ -1,6 +1,8 @@
 class Eye::Checker::FileCTime < Eye::Checker
 
-  # ex: {:type => :ctime, :every => 5.seconds, :file => "/tmp/1.log", :times => [3,5]}
+  # Check that file changes (log for example)
+
+  # checks :ctime, :every => 5.seconds, :file => "/tmp/1.log", :times => [3,5]
 
   params :file
 
@@ -8,7 +10,7 @@ class Eye::Checker::FileCTime < Eye::Checker
     'ctime'
   end
 
-  def get_value(pid)
+  def get_value
     File.ctime(file) rescue nil
   end
 

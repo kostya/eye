@@ -2,10 +2,12 @@ require 'net/http'
 
 class Eye::Checker::Http < Eye::Checker
 
-  # ex: {:type => :http, :every => 5.seconds, :times => 1,
+  # checks :http, :every => 5.seconds, :times => 1,
   #  :url => "http://localhost:3000/", :kind => :success, :pattern => /OK/, :timeout => 3.seconds
 
   params :url, :pattern, :kind, :timeout, :open_timeout, :read_timeout
+
+  attr_reader :session, :uri
 
   def check_name
     'http'
@@ -14,7 +16,7 @@ class Eye::Checker::Http < Eye::Checker
   def initialize(*args)
     super
 
-    @uri = URI.parse(url)
+    @uri = URI.parse(url) rescue URI.parse('http://localhost')
     @pattern = pattern
     @kind = case kind
               when Fixnum then Net::HTTPResponse::CODE_TO_OBJ[kind]
@@ -35,20 +37,21 @@ class Eye::Checker::Http < Eye::Checker
     @session.read_timeout = @read_timeout
   end
 
-  def get_value(pid)
-    Celluloid::Future.new do
-      get_value_sync
-    end.value    
+  def get_value
+    Celluloid::Future.new{ get_value_sync }.value
   end
 
   def get_value_sync
     res = @session.start do |http|
       http.get(@uri.path)
     end
+
     {:result => res}
+
   rescue Timeout::Error
     warn 'Timeout error'
     {:exception => :timeout}
+
   rescue => ex
     warn "Exception #{ex.message}"
     {:exception => ex.message}
@@ -57,7 +60,12 @@ class Eye::Checker::Http < Eye::Checker
   def good?(value)
     return false unless value[:result]
     return false unless value[:result].kind_of?(@kind)
-    @pattern === value[:result].body
+
+    if @pattern
+      @pattern === value[:result].body
+    else
+      true
+    end
   end
 
   def human_value(value)

@@ -1,6 +1,6 @@
 class Eye::Checker::Memory < Eye::Checker
 
-  # ex: {:type => :memory, :every => 5.seconds, :below => 100.megabytes, :times => [3,5]}
+  # checks :memory, :every => 3.seconds, :below => 80.megabytes, :times => [3,5]
 
   params :below
   
@@ -8,8 +8,8 @@ class Eye::Checker::Memory < Eye::Checker
     "memory(#{human_value(below)})"
   end
 
-  def get_value(pid)
-    Eye::SystemResources.memory_usage(pid).to_i * 1024
+  def get_value
+    Eye::SystemResources.memory_usage(@pid).to_i * 1024
   end
 
   def human_value(value)

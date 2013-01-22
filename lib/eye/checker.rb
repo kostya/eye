@@ -1,24 +1,22 @@
 class Eye::Checker
-  autoload :Memory,   'eye/checker/memory'
-  autoload :Cpu,      'eye/checker/cpu'
-  autoload :Http,     'eye/checker/http'
-  autoload :FileCTime,  'eye/checker/file_ctime'
-
-  TYPES = [:memory, :cpu, :http, :ctime]
-
   include Eye::Logger::Helpers
+
+  autoload :Memory,     'eye/checker/memory'
+  autoload :Cpu,        'eye/checker/cpu'
+  autoload :Http,       'eye/checker/http'
+  autoload :FileCTime,  'eye/checker/file_ctime'
+  autoload :FileSize,   'eye/checker/file_size'
+
+  TYPES = {:memory => "Memory", :cpu => "Cpu", :http => "Http", 
+           :ctime => "FileCTime", :fsize => "FileSize"}
 
   attr_accessor :value, :values, :options, :pid, :type
 
   def self.create(pid, options = {}, logger_prefix = nil)
-    obj = case options[:type]
-      when :memory then Eye::Checker::Memory.new(pid, options, logger_prefix)
-      when :cpu then Eye::Checker::Cpu.new(pid, options, logger_prefix)
-      when :http then Eye::Checker::Http.new(pid, options, logger_prefix)
-      when :ctime then Eye::Checker::FileCTime.new(pid, options, logger_prefix)
-    else
-      raise 'Unknown checker'
-    end
+    type = options[:type]
+    klass = "Eye::Checker::#{TYPES[type]}".constantize
+    raise "Unknown checker #{type}" unless klass
+    klass.new(pid, options, logger_prefix)
   end
 
   def initialize(pid, options = {}, logger_prefix = nil)
@@ -43,7 +41,7 @@ class Eye::Checker
   end
 
   def check
-    @value = get_value(@pid)
+    @value = get_value
     @values << {:value => @value, :good => good?(value)}
 
     result = true
@@ -57,7 +55,7 @@ class Eye::Checker
     result
   end
 
-  def get_value(pid)
+  def get_value
     raise 'Realize me'
   end
 

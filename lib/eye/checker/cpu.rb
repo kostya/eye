@@ -1,6 +1,6 @@
 class Eye::Checker::Cpu < Eye::Checker
 
-  # ex: {:type => :cpu, :every => 3.seconds, :below => 80, :times => 3},
+  # checks :cpu, :every => 3.seconds, :below => 80, :times => [3,5]
 
   params :below
   
@@ -8,8 +8,8 @@ class Eye::Checker::Cpu < Eye::Checker
     "cpu(#{human_value(below)})"
   end
 
-  def get_value(pid)
-    Eye::SystemResources.cpu_usage(pid).to_i # nil => 0
+  def get_value
+    Eye::SystemResources.cpu_usage(@pid).to_i # nil => 0
   end
 
   def human_value(value)

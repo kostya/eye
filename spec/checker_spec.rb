@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/spec_helper'
 
 class Checker1 < Eye::Checker
 
-  def get_value(pid)
+  def get_value
     true
   end
 
@@ -45,26 +45,26 @@ describe "Eye::Checker" do
     end
 
     it "times 3 from 3" do
-      stub(@c).get_value(1){true}
+      stub(@c).get_value{true}
       @c.check.should == true
-      stub(@c).get_value(1){false}
+      stub(@c).get_value{false}
       @c.check.should == true
-      stub(@c).get_value(1){false}
+      stub(@c).get_value{false}
       @c.check.should == true
 
-      stub(@c).get_value(1){true}
+      stub(@c).get_value{true}
       @c.check.should == true
     end
 
     it "times 3 from 3" do
-      stub(@c).get_value(1){true}
+      stub(@c).get_value{true}
       @c.check.should == true
-      stub(@c).get_value(1){false}
+      stub(@c).get_value{false}
       @c.check.should == true
-      stub(@c).get_value(1){false}
+      stub(@c).get_value{false}
       @c.check.should == true
 
-      stub(@c).get_value(1){false}
+      stub(@c).get_value{false}
       @c.check.should == false
     end
 
@@ -85,42 +85,42 @@ describe "Eye::Checker" do
     end
 
     it "times 2 from 5" do
-      stub(@c).get_value(1){true}
+      stub(@c).get_value{true}
       @c.check.should == true
-      stub(@c).get_value(1){false}
+      stub(@c).get_value{false}
       @c.check.should == true
-      stub(@c).get_value(1){true}
-      @c.check.should == true
-
-      stub(@c).get_value(1){true}
+      stub(@c).get_value{true}
       @c.check.should == true
 
-      stub(@c).get_value(1){true}
+      stub(@c).get_value{true}
       @c.check.should == true
 
-      stub(@c).get_value(1){true}
+      stub(@c).get_value{true}
+      @c.check.should == true
+
+      stub(@c).get_value{true}
       @c.check.should == true
     end
 
 
     it "times 2 from 5" do
-      stub(@c).get_value(1){true}
+      stub(@c).get_value{true}
       @c.check.should == true
-      stub(@c).get_value(1){false}
+      stub(@c).get_value{false}
       @c.check.should == true
-      stub(@c).get_value(1){false}
-      @c.check.should == true
-
-      stub(@c).get_value(1){true}
+      stub(@c).get_value{false}
       @c.check.should == true
 
-      stub(@c).get_value(1){true}
+      stub(@c).get_value{true}
+      @c.check.should == true
+
+      stub(@c).get_value{true}
       @c.check.should == false
 
-      stub(@c).get_value(1){true}
+      stub(@c).get_value{true}
       @c.check.should == false
 
-      stub(@c).get_value(1){true}
+      stub(@c).get_value{true}
       @c.check.should == true
     end
   end

@@ -1,21 +1,19 @@
 class Eye::Trigger
+  include Eye::Logger::Helpers
   
   autoload :Flapping,   'eye/trigger/flapping'
 
   # ex: { :type => :flapping, :times => 2, :within => 30.seconds}
 
-  TYPES = [:flapping]
-
-  include Eye::Logger::Helpers
+  TYPES = {:flapping => "Flapping"}
 
   attr_reader :message, :options
 
   def self.create(options = {}, logger_prefix = nil)
-    obj = case options[:type]
-      when :flapping then Eye::Trigger::Flapping.new(options, logger_prefix)
-    else
-      raise 'Unknown checker'
-    end
+    type = options[:type]
+    klass = "Eye::Trigger::#{TYPES[type]}".constantize
+    raise "Unknown trigger #{type}" unless klass
+    klass.new(options, logger_prefix)
   end
 
   def initialize(options = {}, logger_prefix = nil)
