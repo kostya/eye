@@ -9,7 +9,12 @@ module Eye::Dsl::Validate
       raise Eye::Dsl::Error, "blank pid_file for: #{no_pid_file.map{|c| c[:name]} * ', '}"
     end
     
-    dubl_pids = all_processes.each_with_object(Hash.new(0)){ |o, h| h[o[:pid_file]] += 1 }.select{|k,v| v>1}
+    dubl_pids = all_processes.each_with_object(Hash.new(0)) do |o, h| 
+      ex_pid_file = Eye::System.normalized_file(o[:pid_file], o[:working_dir])
+      h[ex_pid_file] += 1
+    end
+    dubl_pids = dubl_pids.select{|k,v| v>1}
+
     if dubl_pids.present?
       raise Eye::Dsl::Error, "dublicate pid_files: #{dubl_pids.inspect}"
     end

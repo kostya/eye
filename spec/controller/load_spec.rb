@@ -75,7 +75,7 @@ describe "Eye::Controller::Load" do
 
   it "load + 1 app, and pid_file crossed" do
     subject.load(fixture("dsl/load2.eye")).should == {:error => false}
-    subject.load(fixture("dsl/load4.eye")).should include(:error => true, :message => 'dublicate pid_files: {"app3-e1.pid"=>2}')
+    subject.load(fixture("dsl/load4.eye")).should include(:error => true, :message => "dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}")
 
     subject.short_tree.should == {
       "app3"=>{"__default__"=>{"e1"=>"/tmp/app3-e1.pid"}}}
@@ -83,7 +83,7 @@ describe "Eye::Controller::Load" do
 
   it "check syntax" do
     subject.load(fixture("dsl/load2.eye")).should == {:error => false}
-    subject.syntax(fixture("dsl/load4.eye")).should include(:error => true, :message => 'dublicate pid_files: {"app3-e1.pid"=>2}')
+    subject.syntax(fixture("dsl/load4.eye")).should include(:error => true, :message => "dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}")
   end
 
   it "process and groups disappears" do
@@ -115,13 +115,17 @@ describe "Eye::Controller::Load" do
 
   it "two configs with same pids (should validate final config)" do
     subject.load(fixture("dsl/load.eye")).should == {:error => false}
-    subject.load(fixture("dsl/load2*.eye")).should == {:error => true, :message=>'dublicate pid_files: {"app3-e1.pid"=>2}'}    
+    subject.load(fixture("dsl/load2*.eye")).should == {:error => true, :message=>"dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}"}    
   end
 
   it "two configs with same pids (should validate final config)" do
     subject.load(fixture("dsl/load.eye")).should == {:error => false}
     subject.load(fixture("dsl/load2.eye")).should == {:error => false}
-    subject.load(fixture("dsl/load2_*.eye")).should == {:error => true, :message=>'dublicate pid_files: {"app3-e1.pid"=>2}'}
+    subject.load(fixture("dsl/load2_*.eye")).should == {:error => true, :message=>"dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}"}
+  end
+
+  it "dups of pid_files, but they different with expand" do
+    subject.load(fixture("dsl/load2_dup2.eye")).should == {:error => false}
   end
 
   it "load logger" do
