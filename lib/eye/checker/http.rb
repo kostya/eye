@@ -3,7 +3,7 @@ require 'net/http'
 class Eye::Checker::Http < Eye::Checker
 
   # checks :http, :every => 5.seconds, :times => 1,
-  #  :url => "http://localhost:3000/", :kind => :success, :pattern => /OK/, :timeout => 3.seconds
+  #  :url => "http://127.0.0.1:3000/", :kind => :success, :pattern => /OK/, :timeout => 3.seconds
 
   params :url, :pattern, :kind, :timeout, :open_timeout, :read_timeout
 
@@ -16,7 +16,7 @@ class Eye::Checker::Http < Eye::Checker
   def initialize(*args)
     super
 
-    @uri = URI.parse(url) rescue URI.parse('http://localhost')
+    @uri = URI.parse(url) rescue URI.parse('http://127.0.0.1')
     @pattern = pattern
     @kind = case kind
               when Fixnum then Net::HTTPResponse::CODE_TO_OBJ[kind]

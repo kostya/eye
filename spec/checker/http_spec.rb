@@ -23,7 +23,7 @@ describe "Eye::Checker::Http" do
     end
 
     it "without url" do
-      chhttp(:url => nil).uri.should == URI.parse('http://localhost')
+      chhttp(:url => nil).uri.should == URI.parse('http://127.0.0.1')
     end
 
     it "get_value" do
