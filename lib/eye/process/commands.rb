@@ -3,12 +3,14 @@ module Eye::Process::Commands
   def start_process
     debug 'start_process command'
 
+    switch :starting
+
     unless self[:start_command]
-      warn 'no start command, so skipped'
+      warn 'no start command, so unmonitoring'
+      switch :unmonitoring
       return :no_start_command
     end
 
-    switch :starting
     result = self[:daemonize] ? daemonize_process : execute_process
 
     if !result[:error]
@@ -102,6 +104,8 @@ module Eye::Process::Commands
 private
 
   def kill_process
+    return unless self.pid
+
     if self[:stop_command]
       cmd = prepare_command(self[:stop_command])
       res = execute(cmd, config.merge(:timeout => self[:stop_timeout]))

@@ -19,8 +19,6 @@ module Eye::Process::Controller
       start_process
     end
 
-    schedule :unmonitor if res == :no_start_command
-
     res
   end
 

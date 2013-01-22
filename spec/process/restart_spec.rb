@@ -163,4 +163,12 @@ describe "Process Restart" do
     end
   end
 
+  it "restart process without start command" do
+    @process = process(C.p2.merge(:start_command => nil))
+    @process.restart
+    sleep 1
+    @process.unmonitored?.should == true
+  end
+
+
 end
