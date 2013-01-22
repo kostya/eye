@@ -1,3 +1,5 @@
+require_relative 'dsl/helpers'
+
 class Eye::Dsl
 
   autoload :Main,                 'eye/dsl/main'
