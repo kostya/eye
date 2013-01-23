@@ -18,7 +18,7 @@ module Eye::Controller::Commands
         load(*args)
       when :info
         status_string
-      when :debug
+      when :einfo
         status_string_debug
       when :quit
         quit

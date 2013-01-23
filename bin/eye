@@ -21,9 +21,9 @@ class Cli < Thor
     info
   end
 
-  desc "debug", "show server debug info"
-  def debug    
-    res = cmd(:debug)
+  desc "einfo", "extended eye info, for debug"
+  def einfo    
+    res = cmd(:einfo)
     puts res if res && !res.empty?
     puts
   end
