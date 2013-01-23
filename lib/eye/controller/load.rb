@@ -7,6 +7,12 @@ module Eye::Controller::Load
     end
   end
 
+  def explain(filename)
+    catch_load_error(filename) do
+      parse_set_of_configs(filename)
+    end
+  end
+
   # filename is a path, or folder, or mask
   def load(filename = '')
     catch_load_error(filename) do
@@ -20,9 +26,9 @@ private
   BT_REGX = %r[/lib/eye/|lib/celluloid|internal:prelude|logger.rb:].freeze
 
   def catch_load_error(filename, &block)
-    block.call
+    res = block.call
 
-    {:error => false}
+    {:error => false, :config => res}
   rescue Eye::Dsl::Error, Exception, NoMethodError => ex
     error "load: config error <#{filename}>: #{ex.message}"
 
@@ -35,7 +41,7 @@ private
     res
   end
 
-  def _load(filename)
+  def parse_set_of_configs(filename)
     mask = if File.directory?(filename)
       File.join filename, '{*.eye}'
     else
@@ -58,6 +64,12 @@ private
     end
 
     validate(new_cfg)
+
+    new_cfg
+  end
+
+  def _load(filename)
+    new_cfg = parse_set_of_configs(filename)
 
     load_config(new_cfg)
 

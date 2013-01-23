@@ -33,4 +33,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'ruby-graphviz'
   gem.add_development_dependency 'forking'
   gem.add_development_dependency 'fakeweb'
+  gem.add_development_dependency 'awesome_print'
 end

@@ -47,17 +47,6 @@ class Cli < Thor
     end
   end
 
-  desc "syntax CONF", "check syntax of the config file"
-  def syntax(conf)
-    conf = File.expand_path(conf) if conf && !conf.empty?
-    
-    if RUBY_VERSION < '1.9'
-      say_load_result cmd(:syntax, conf), false
-    else
-      say_load_result Eye::Control.syntax(conf), false
-    end
-  end
-  
   desc "quit", "stop eye monitoring"
   def quit
     res = _cmd(:quit)
@@ -85,6 +74,28 @@ class Cli < Thor
   desc "version", "show current version"
   def version
     say Eye::ABOUT
+  end
+
+  desc "syntax CONF", "check syntax of the config file"
+  def syntax(conf)
+    conf = File.expand_path(conf) if conf && !conf.empty?
+    
+    if RUBY_VERSION < '1.9'
+      say_load_result cmd(:syntax, conf), false
+    else
+      say_load_result Eye::Control.syntax(conf), false
+    end
+  end
+
+  desc "explain CONF", "explain config tree (for debug)"
+  def explain(conf)
+    conf = File.expand_path(conf) if conf && !conf.empty?
+
+    if RUBY_VERSION < '1.9'
+      say_load_result cmd(:explain, conf), false, true
+    else
+      say_load_result Eye::Control.explain(conf), false, true
+    end
   end
 
 private
@@ -117,7 +128,7 @@ private
     _cmd(:ping) == :pong
   end
   
-  def say_load_result(res = {}, load = true)
+  def say_load_result(res = {}, load = true, print_config = false)
     if res[:error]
       say "config error: ", :red
       say res[:message]
@@ -129,6 +140,16 @@ private
       else
         say "config ok!", :yellow if !res[:empty]
       end
+
+      if print_config
+        begin
+          require 'awesome_print'
+          ap res, :indent => 2
+        rescue LoadError
+          require 'pp'
+          pp res
+        end
+      end
     end
   end
 
@@ -139,7 +160,7 @@ private
     elsif res == :corrupred_marshal
       say "something crazy wrong, check eye logs!", :red
     elsif res == []
-      say "command #{_cmd} targets not found!", :red
+      say "command #{_cmd}, targets not found!", :red
     else
       say "command #{_cmd} affected to [#{res * ", "}]"
     end        

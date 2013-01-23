@@ -12,7 +12,7 @@ describe "Eye::Controller::Load" do
   end
 
   it "load + 1new app" do
-    subject.load(fixture("dsl/load.eye")).should == {:error => false}
+    subject.load(fixture("dsl/load.eye")).should include(error: false)
     subject.short_tree.should == {
       "app1"=>{
         "gr1"=>{"p1"=>"/tmp/app1-gr1-p1.pid", "p2"=>"/tmp/app1-gr1-p2.pid"}, 
@@ -20,7 +20,7 @@ describe "Eye::Controller::Load" do
         "__default__"=>{"g4"=>"/tmp/app1-g4.pid", "g5"=>"/tmp/app1-g5.pid"}}, 
       "app2"=>{"__default__"=>{"z1"=>"/tmp/app2-z1.pid"}}}
 
-    subject.load(fixture("dsl/load2.eye")).should == {:error => false}
+    subject.load(fixture("dsl/load2.eye")).should include(error: false)
 
     subject.short_tree.should == {
       "app1"=>{
@@ -32,8 +32,8 @@ describe "Eye::Controller::Load" do
   end
 
   it "load 1 changed app" do
-    subject.load(fixture("dsl/load.eye")).should == {:error => false}
-    subject.load(fixture("dsl/load2.eye")).should == {:error => false}
+    subject.load(fixture("dsl/load.eye")).should include(error: false)
+    subject.load(fixture("dsl/load2.eye")).should include(error: false)
 
     p = subject.process_by_name('e1')
     p[:daemonize].should == false
@@ -41,7 +41,7 @@ describe "Eye::Controller::Load" do
     proxy(p).schedule :update_config, anything
     dont_allow(p).schedule :monitor
 
-    subject.load(fixture("dsl/load3.eye")).should == {:error => false}
+    subject.load(fixture("dsl/load3.eye")).should include(error: false)
 
     subject.short_tree.should == {
       "app1"=>{
@@ -59,10 +59,10 @@ describe "Eye::Controller::Load" do
   end
 
   it "load -> delete -> load" do
-    subject.load(fixture("dsl/load.eye")).should == {:error => false}
-    subject.load(fixture("dsl/load2.eye")).should == {:error => false}
+    subject.load(fixture("dsl/load.eye")).should include(error: false)
+    subject.load(fixture("dsl/load2.eye")).should include(error: false)
     subject.command(:delete, 'app3')
-    subject.load(fixture("dsl/load3.eye")).should == {:error => false}
+    subject.load(fixture("dsl/load3.eye")).should include(error: false)
 
     subject.short_tree.should == {
       "app1"=>{
@@ -74,7 +74,7 @@ describe "Eye::Controller::Load" do
   end
 
   it "load + 1 app, and pid_file crossed" do
-    subject.load(fixture("dsl/load2.eye")).should == {:error => false}
+    subject.load(fixture("dsl/load2.eye")).should include(error: false)
     subject.load(fixture("dsl/load4.eye")).should include(:error => true, :message => "dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}")
 
     subject.short_tree.should == {
@@ -82,13 +82,13 @@ describe "Eye::Controller::Load" do
   end
 
   it "check syntax" do
-    subject.load(fixture("dsl/load2.eye")).should == {:error => false}
+    subject.load(fixture("dsl/load2.eye")).should include(error: false)
     subject.syntax(fixture("dsl/load4.eye")).should include(:error => true, :message => "dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}")
   end
 
   it "process and groups disappears" do
-    subject.load(fixture("dsl/load.eye")).should == {:error => false}
-    subject.load(fixture("dsl/load5.eye")).should == {:error => false}
+    subject.load(fixture("dsl/load.eye")).should include(error: false)
+    subject.load(fixture("dsl/load5.eye")).should include(error: false)
 
     group_actors = Celluloid::Actor.all.select{|c| c.class == Eye::Group }
     process_actors = Celluloid::Actor.all.select{|c| c.class == Eye::Process }
@@ -102,8 +102,8 @@ describe "Eye::Controller::Load" do
   end
 
   it "swap groups" do
-    subject.load(fixture("dsl/load.eye")).should == {:error => false}
-    subject.load(fixture("dsl/load6.eye")).should == {:error => false}
+    subject.load(fixture("dsl/load.eye")).should include(error: false)
+    subject.load(fixture("dsl/load6.eye")).should include(error: false)
 
     subject.short_tree.should == {
       "app1" => {
@@ -114,27 +114,27 @@ describe "Eye::Controller::Load" do
   end
 
   it "two configs with same pids (should validate final config)" do
-    subject.load(fixture("dsl/load.eye")).should == {:error => false}
+    subject.load(fixture("dsl/load.eye")).should include(error: false)
     subject.load(fixture("dsl/load2*.eye")).should == {:error => true, :message=>"dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}"}    
   end
 
   it "two configs with same pids (should validate final config)" do
-    subject.load(fixture("dsl/load.eye")).should == {:error => false}
-    subject.load(fixture("dsl/load2.eye")).should == {:error => false}
+    subject.load(fixture("dsl/load.eye")).should include(error: false)
+    subject.load(fixture("dsl/load2.eye")).should include(error: false)
     subject.load(fixture("dsl/load2_*.eye")).should == {:error => true, :message=>"dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}"}
   end
 
   it "dups of pid_files, but they different with expand" do
-    subject.load(fixture("dsl/load2_dup2.eye")).should == {:error => false}
+    subject.load(fixture("dsl/load2_dup2.eye")).should include(error: false)
   end
 
   it "dups of names but in different scopes" do
-    subject.load(fixture("dsl/load_dup_ex_names.eye")).should == {:error => false}
+    subject.load(fixture("dsl/load_dup_ex_names.eye")).should include(error: false)
   end
 
   describe "load logger" do
     it "load logger" do
-      subject.load(fixture("dsl/load_logger.eye")).should == {:error => false}
+      subject.load(fixture("dsl/load_logger.eye")).should include(error: false)
       Eye::Logger.dev.should == "/tmp/1.log"
       
       # return global logger
@@ -142,7 +142,7 @@ describe "Eye::Controller::Load" do
     end
 
     it "set logger when load multiple configs" do
-      subject.load(fixture("dsl/load_logger{,2}.eye")).should == {:error => false}
+      subject.load(fixture("dsl/load_logger{,2}.eye")).should include(error: false)
       Eye::Logger.dev.should == "/tmp/1.log"
       
       # return global logger
@@ -152,7 +152,7 @@ describe "Eye::Controller::Load" do
 
 
   it "load folder" do
-    subject.load(fixture("dsl/load_folder/")).should == {:error => false}
+    subject.load(fixture("dsl/load_folder/")).should include(error: false)
     subject.short_tree.should == {       
       "app3" => {"wow"=>{"e1"=>"/tmp/app3-e1.pid"}},
       "app4" => {"__default__"=>{"e2"=>"/tmp/app4-e2.pid"}}
@@ -164,7 +164,7 @@ describe "Eye::Controller::Load" do
   end
 
   it "load files by mask" do
-    subject.load(fixture("dsl/load_folder/*.eye")).should == {:error => false}
+    subject.load(fixture("dsl/load_folder/*.eye")).should include(error: false)
     subject.short_tree.should == {       
       "app3" => {"wow"=>{"e1"=>"/tmp/app3-e1.pid"}},
       "app4" => {"__default__"=>{"e2"=>"/tmp/app4-e2.pid"}}
@@ -184,12 +184,12 @@ describe "Eye::Controller::Load" do
   end
 
   it "group update it settings" do
-    subject.load(fixture("dsl/load.eye")).should == {:error => false}
+    subject.load(fixture("dsl/load.eye")).should include(error: false)
     app = subject.applications.detect{|c| c.name == 'app1'}
     gr = app.groups.detect{|c| c.name == 'gr2'}
     gr.config[:chain].should == {:restart => {:grace=>5, :action=>:restart}, :start => {:grace=>5, :action=>:start}}
 
-    subject.load(fixture("dsl/load6.eye")).should == {:error => false}
+    subject.load(fixture("dsl/load6.eye")).should include(error: false)
     sleep 0.5
 
     gr.config[:chain].should == {:restart => {:grace=>10, :action=>:restart}, :start => {:grace=>10, :action=>:start}}

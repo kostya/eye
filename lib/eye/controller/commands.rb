@@ -20,6 +20,8 @@ module Eye::Controller::Commands
         quit
       when :syntax
         syntax(*args)
+      when :explain
+        explain(*args)
       when :ping
         :pong
       when :logger_dev
