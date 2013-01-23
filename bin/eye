@@ -77,8 +77,11 @@ class Cli < Thor
   end
 
   desc "syntax CONF", "check syntax of the config file"
+  method_option :host, :type => :string, :aliases => "-h"
   def syntax(conf)
     conf = File.expand_path(conf) if conf && !conf.empty?
+
+    Eye::System.host = options[:host] if options[:host]
     
     if RUBY_VERSION < '1.9'
       say_load_result cmd(:syntax, conf), false
@@ -88,8 +91,11 @@ class Cli < Thor
   end
 
   desc "explain CONF", "explain config tree (for debug)"
+  method_option :host, :type => :string, :aliases => "-h"
   def explain(conf)
     conf = File.expand_path(conf) if conf && !conf.empty?
+
+    Eye::System.host = options[:host] if options[:host]
 
     if RUBY_VERSION < '1.9'
       say_load_result cmd(:explain, conf), false, true

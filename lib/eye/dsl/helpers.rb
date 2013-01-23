@@ -1,3 +1,3 @@
 def hostname
-  @hostname ||= `hostname`.chomp
+  Eye::System.host  
 end

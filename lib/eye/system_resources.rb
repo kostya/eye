@@ -42,10 +42,6 @@ class Eye::SystemResources
       }
     end
 
-    def host
-      @host ||= `hostname`.chomp
-    end
-
     # initialize actor, call 1 time before using
     def setup
       @actor ||= PsAxActor.new

@@ -100,6 +100,15 @@ module Eye::System
       Pathname.new(file).expand_path(working_dir).to_s
     end
 
+    def host
+      @host ||= `hostname`.chomp
+    end
+
+    # set host for tests
+    def host=(hostname)
+      @host = hostname
+    end
+
   private
 
     def spawn_options(config = {})

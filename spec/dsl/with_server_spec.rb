@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "with_server feature" do
 
   it "should load matched by string process" do
-    stub(Eye::SystemResources).host{ "server1" }
+    stub(Eye::System).host{ "server1" }
 
     conf = <<-E
       Eye.application("bla") do
@@ -21,7 +21,7 @@ describe "with_server feature" do
   end
 
   it "should another host conditions" do
-    stub(Eye::SystemResources).host{ "server1" }
+    stub(Eye::System).host{ "server1" }
 
     conf = <<-E
       Eye.application("bla") do
@@ -42,7 +42,7 @@ describe "with_server feature" do
     subject{ Eye::Dsl::Opts.new }
 
     it "match string" do
-      stub(Eye::SystemResources).host{ "server1" }
+      stub(Eye::System).host{ "server1" }
       subject.with_server("server1").should == true
       subject.with_server("server2").should == false
       subject.with_server('').should == true
@@ -50,16 +50,55 @@ describe "with_server feature" do
     end
 
     it "match array" do
-      stub(Eye::SystemResources).host{ "server1" }
+      stub(Eye::System).host{ "server1" }
       subject.with_server(%w{ server1 server2}).should == true
       subject.with_server(%w{ server2 server3}).should == false
     end
 
     it "match regexp" do
-      stub(Eye::SystemResources).host{ "server1" }
+      stub(Eye::System).host{ "server1" }
       subject.with_server(%r{server}).should == true
       subject.with_server(%r{myserver}).should == false
     end
+  end
+
+  describe "helpers" do
+    it "hostname on with server" do
+      conf = <<-E
+        Eye.application("bla"){ 
+          with_server('mega_server') do
+            working_dir "/tmp"
+          end
+        }
+      E
+      Eye::Dsl.load(conf).should == {}
+    end
+
+    it "with_server work" do
+      Eye::System.host = 'mega_server'
+
+      conf = <<-E
+        Eye.application("bla"){ 
+          with_server('mega_server') do
+            working_dir "/tmp"
+          end
+        }
+      E
+      Eye::Dsl.load(conf).should == {"bla" => {:working_dir=>"/tmp", :groups=>{}}}
+    end
+
+    it "hostname work" do
+      Eye::System.host = 'supa_server'
+
+      conf = <<-E
+        Eye.application("bla"){ 
+          working_dir "/tmp"
+          env "HOST" => hostname
+        }
+      E
+      Eye::Dsl.load(conf).should == {"bla" => {:working_dir=>"/tmp", :environment=>{"HOST"=>"supa_server"}, :groups=>{}}}
+    end
+
   end
 
 end

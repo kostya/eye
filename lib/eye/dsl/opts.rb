@@ -82,7 +82,7 @@ class Eye::Dsl::Opts
     on_server = true
 
     if glob.present? 
-      host = Eye::SystemResources.host
+      host = Eye::System.host
 
       if glob.is_a?(Array)
         on_server = !!glob.any?{|elem| elem == host}
