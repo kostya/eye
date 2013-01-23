@@ -66,7 +66,7 @@ describe "with_server feature" do
     it "hostname on with server" do
       conf = <<-E
         Eye.application("bla"){ 
-          with_server('mega_server') do
+          with_server('muga_server') do
             working_dir "/tmp"
           end
         }
