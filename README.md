@@ -123,3 +123,7 @@ Log tracing:
 Quit monitoring:
 
     $ eye q(uit)
+
+Config explain (for debug):
+
+    $ eye explain examples/test.eye
