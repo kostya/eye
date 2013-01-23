@@ -17,7 +17,7 @@ class Cli < Thor
 
   desc "status", "show process statuses"
   def status
-    warn "Status is deprecated, use :info instead"
+    say "status is deprecated, use :info instead", :yellow
     info
   end
 
@@ -103,10 +103,10 @@ private
     res = _cmd(cmd, *args)
 
     if res == :not_started
-      say "Eye monitoring not found, did you start it?", :red
+      say "eye monitoring not found, did you start it?", :red
       exit
     elsif res == :timeouted
-      say "Eye does not answer, timeouted...", :red
+      say "eye does not answer, timeouted...", :red
       exit
     end
     
@@ -119,7 +119,7 @@ private
   
   def say_load_result(res = {}, load = true)
     if res[:error]
-      say "Config error: ", :red
+      say "config error: ", :red
       say res[:message]
 
       res[:backtrace].to_a.each{|line| say line}
@@ -135,11 +135,11 @@ private
   def send_command(_cmd, *args)
     res = cmd(_cmd, *args)
     if res == :unknown_command
-      say "Unknown command", :red
+      say "unknown command", :red
     elsif res == :corrupred_marshal
-      say "Something wrong, check eye logs!", :red
+      say "something crazy wrong, check eye logs!", :red
     elsif res == []
-      say "No targets to #{_cmd}!", :red
+      say "command #{_cmd} targets not found!", :red
     else
       say "command #{_cmd} affected to [#{res * ", "}]"
     end        
@@ -168,8 +168,7 @@ private
 
   def ensure_loader_path
     unless loader_path
-      say "Start monitoring needs to run under ruby with installed main gem 'eye'", :red
-      say "First time run 'load' under 1.9.2 at least, than you can use load everywhere", :red
+      say "start monitoring needs to run under ruby with installed gem 'eye'", :red
       exit
     end
   end
@@ -203,7 +202,7 @@ private
     File.open(Eye::Settings.pid_path, 'w'){|f| f.write(pid) }
 
     unless wait_server
-      say "server not runned in 10 seconds, something crazy wrong", :red
+      say "server not runned in 15 seconds, something crazy wrong", :red
       exit
     end
 
