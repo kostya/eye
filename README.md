@@ -3,10 +3,12 @@ Eye
 
 Process monitoring tool. With Bluepill like config syntax. Requires MRI Ruby >= 1.9.2. Uses Celluloid and Celluloid::IO.
 
+
 Recommended installation on the server (system wide):
 
     $ sudo /usr/local/ruby/1.9.3/bin/gem install eye
     $ sudo ln -sf /usr/local/ruby/1.9.3/bin/eye /usr/local/bin/eye
+
 
 Config example, shows most of the options (examples/test.eye):
 
@@ -66,7 +68,7 @@ end
 
 ### Start monitoring and load config:
 
-    $ eye load examples/test.eye
+    $ eye l(oad) examples/test.eye
 
 load folder with configs:
 
@@ -106,10 +108,17 @@ Command params (with restart for example):
     $ eye r test:samples
     $ eye r test:samples:sample1
     $ eye r test:samples:sample*
+    $ eye r test:*sample*
 
 Check config syntax:
 
     $ eye sy(ntax) examples/test.eye
+
+Log tracing:
+
+    $ eye trace 
+    $ eye tr test
+    $ eye tr sample
 
 Quit monitoring:
 
