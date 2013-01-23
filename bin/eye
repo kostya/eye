@@ -150,10 +150,10 @@ private
       if print_config
         begin
           require 'awesome_print'
-          ap res, :indent => 2
+          ap res[:config], :indent => 2
         rescue LoadError
           require 'pp'
-          pp res
+          pp res[:config]
         end
       end
     end
