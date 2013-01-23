@@ -132,13 +132,24 @@ describe "Eye::Controller::Load" do
     subject.load(fixture("dsl/load_dup_ex_names.eye")).should == {:error => false}
   end
 
-  it "load logger" do
-    subject.load(fixture("dsl/load_logger.eye")).should == {:error => false}
-    Eye::Logger.dev.should == "/tmp/1.log"
-    
-    # return global logger
-    set_glogger
+  describe "load logger" do
+    it "load logger" do
+      subject.load(fixture("dsl/load_logger.eye")).should == {:error => false}
+      Eye::Logger.dev.should == "/tmp/1.log"
+      
+      # return global logger
+      set_glogger
+    end
+
+    it "set logger when load multiple configs" do
+      subject.load(fixture("dsl/load_logger{,2}.eye")).should == {:error => false}
+      Eye::Logger.dev.should == "/tmp/1.log"
+      
+      # return global logger
+      set_glogger
+    end
   end
+
 
   it "load folder" do
     subject.load(fixture("dsl/load_folder/")).should == {:error => false}

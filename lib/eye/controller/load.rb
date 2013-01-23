@@ -53,7 +53,10 @@ private
     raise Eye::Dsl::Error, "config file '#{mask}' not found!" if configs.blank?
 
     new_cfg = @current_config
-    configs.each{|cfg| new_cfg = merge_configs(new_cfg, cfg) }
+    configs.each do |cfg| 
+      new_cfg = merge_configs(new_cfg, cfg)
+    end
+
     validate(new_cfg)
 
     load_config(new_cfg)
@@ -95,7 +98,7 @@ private
       Eye::Logger.log_level = opts[:logger_level] if opts[:logger_level]
     end
 
-    # clear parsed options, because we already apply them
+    # clear parsed options when we load it
     Eye.parsed_options = {}
   end
 
