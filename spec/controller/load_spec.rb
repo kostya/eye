@@ -86,6 +86,12 @@ describe "Eye::Controller::Load" do
     subject.syntax(fixture("dsl/load4.eye")).should include(:error => true, :message => "dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}")
   end
 
+  it "check explain" do
+    res = subject.explain(fixture("dsl/load2.eye"))
+    res[:error].should == false
+    res[:config].is_a?(Hash).should == true
+  end
+
   it "process and groups disappears" do
     subject.load(fixture("dsl/load.eye")).should include(error: false)
     subject.load(fixture("dsl/load5.eye")).should include(error: false)
