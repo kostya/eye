@@ -20,6 +20,7 @@ Eye.app "test" do
   working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
   stdall "trash.log" # stdout + stderr
   env "APP_ENV" => "production"
+  triggers :flapping, :times => 10, :within => 1.minute
 
   group "samples" do
     env "A" => "1" # env merging

@@ -1,6 +1,6 @@
 class Eye::Trigger::Flapping < Eye::Trigger
 
-  # { :type => :flapping, :times => 2, :within => 30.seconds}
+  # triggers :flapping, :times => 10, :within => 1.minute
 
   params :times, :within
 
