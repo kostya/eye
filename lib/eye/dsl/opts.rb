@@ -7,28 +7,37 @@ class Eye::Dsl::Opts
   ]
 
   ALL_OPTIONS.each do |opt|
-    define_method(opt) do |arg|
-      @config ||= {}
-      key = opt.to_sym
-
-      if disallow_options.include?(key) || (allow_options && !allow_options.include?(key))
-        raise Eye::Dsl::Error, "disallow option #{key} for #{self.class.inspect}"
-      end
-
-      case key 
-      when :stdall
-        @config[:stdout] = @config[:stderr] = arg
+    define_method(opt) do |*args|
+      if args.size == 0
+        # getter
+        @config[opt]
       else
-        @config[ key ] = arg
+        # setter
+        arg = args[0]
+        key = opt.to_sym
+
+        if disallow_options.include?(key) || (allow_options && !allow_options.include?(key))
+          raise Eye::Dsl::Error, "disallow option #{key} for #{self.class.inspect}"
+        end
+
+        case key 
+        when :stdall
+          @config[:stdout] = @config[:stderr] = arg
+        else
+          @config[ key ] = arg
+        end
       end
     end
 
-    define_method("#{opt}=") do |arg|
-      send opt, arg
+    define_method("#{opt}=") do |*args|
+      send opt, *args
     end
   end
 
-  def initialize
+  attr_reader :name, :full_name
+
+  def initialize(name = nil)
+    @name = name.to_s
     @config = Eye::Utils::MHash.new
   end
 

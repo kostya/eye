@@ -3,7 +3,7 @@ module Eye::Dsl::Main
 
   def application(name, &block)
     @parsed_config ||= {}
-    opts = Eye::Dsl::ApplicationOpts.new
+    opts = Eye::Dsl::ApplicationOpts.new(name)
     opts.instance_eval(&block)
     @parsed_config[name.to_s] = opts.config if opts.config
   end

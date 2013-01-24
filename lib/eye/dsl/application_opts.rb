@@ -7,13 +7,13 @@ class Eye::Dsl::ApplicationOpts < Eye::Dsl::Opts
   end
 
   def group(name, &block) 
-    opts = Eye::Dsl::GroupOpts.new
+    opts = Eye::Dsl::GroupOpts.new(name)
     opts.instance_eval(&block)
     @config[:groups][name.to_s] = opts.config if opts.config
   end
 
   def process(name, &block)
-    opts = Eye::Dsl::ProcessOpts.new
+    opts = Eye::Dsl::ProcessOpts.new(name)
     opts.instance_eval(&block)
     @config[:groups]['__default__'][:processes][name.to_s] = opts.config if opts.config
   end
