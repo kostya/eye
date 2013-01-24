@@ -14,7 +14,7 @@ class Eye::Checker
 
   def self.create(pid, options = {}, logger_prefix = nil)
     type = options[:type]
-    klass = "Eye::Checker::#{TYPES[type]}".constantize
+    klass = eval("Eye::Checker::#{TYPES[type]}") rescue nil
     raise "Unknown checker #{type}" unless klass
     klass.new(pid, options, logger_prefix)
   end
