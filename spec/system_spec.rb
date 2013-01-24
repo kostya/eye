@@ -24,13 +24,20 @@ describe "Eye::System" do
 
   it "prepare env" do
     Eye::System.send(:prepare_env, {}).should include({})
-    Eye::System.send(:prepare_env, {:environment => {'A' => 'B'}}).should include({'A' => 'B'})
+    Eye::System.send(:prepare_env, {:environment => {'A' => 'B'}}).should include({'A' => 'B'})    
     Eye::System.send(:prepare_env, {:environment => {'A' => 'B'}, :working_dir => "/tmp"}).should include({'A' => 'B', 'PWD' => '/tmp'})
+
+    r = Eye::System.send(:prepare_env, {:environment => {'A' => [], 'B' => {}, 'C' => nil, 'D' => 1, 'E' => '2'}})
+    r['A'].should == '[]'
+    r['B'].should == '{}'
+    r['C'].should == nil
+    r['D'].should == '1'
+    r['E'].should == '2'
   end
 
   describe "daemonize" do
     it "daemonize default" do
-      @pid = Eye::System.daemonize("ruby sample.rb", {:environment => {"ENV1" => "SECRET1"}, 
+      @pid = Eye::System.daemonize("ruby sample.rb", {:environment => {"ENV1" => "SECRET1", 'BLA' => {}}, 
         :working_dir => C.p1[:working_dir], :stdout => @log})[:pid]
 
       @pid.should > 0

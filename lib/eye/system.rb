@@ -121,7 +121,11 @@ module Eye::System
     end
 
     def prepare_env(config = {})
-      env = config[:environment].present? ? config[:environment].clone : {}
+      env = {}
+
+      (config[:environment] || {}).each do |k,v|
+        env[k.to_s] = v.to_s if v
+      end
 
       # return original LANG env, because ruby loose it (needs for unicorn)
       env['LANG'] = ENV_LANG unless env['LANG']
