@@ -84,9 +84,9 @@ class Cli < Thor
     Eye::System.host = options[:host] if options[:host]
     
     if RUBY_VERSION < '1.9'
-      say_load_result cmd(:syntax, conf), false
+      say_load_result cmd(:syntax, conf), :syntax => true
     else
-      say_load_result Eye::Control.syntax(conf), false
+      say_load_result Eye::Control.syntax(conf), :syntax => true
     end
   end
 
@@ -98,9 +98,9 @@ class Cli < Thor
     Eye::System.host = options[:host] if options[:host]
 
     if RUBY_VERSION < '1.9'
-      say_load_result cmd(:explain, conf), false, true
+      say_load_result cmd(:explain, conf), :print_config => true, :syntax => true
     else
-      say_load_result Eye::Control.explain(conf), false, true
+      say_load_result Eye::Control.explain(conf), :print_config => true, :syntax => true
     end
   end
 
@@ -134,20 +134,22 @@ private
     _cmd(:ping) == :pong
   end
   
-  def say_load_result(res = {}, load = true, print_config = false)
+  def say_load_result(res = {}, opts = {}) #load = true, print_config = false)
     if res[:error]
       say "config error: ", :red
       say res[:message]
 
       res[:backtrace].to_a.each{|line| say line}
-    else      
-      if load 
-        say "config loaded!", :yellow if !res[:empty]
-      else
+    else 
+      if opts[:started]
+        say "started and loaded!", :yellow if !res[:empty]
+      elsif opts[:syntax]
         say "config ok!", :yellow if !res[:empty]
+      else
+        say "config loaded!", :yellow if !res[:empty]        
       end
 
-      if print_config
+      if opts[:print_config]
         begin
           require 'awesome_print'
           ap res[:config], :indent => 2
@@ -234,7 +236,7 @@ private
     end
 
     if conf && !conf.empty?
-      say_load_result cmd(:load, conf)
+      say_load_result cmd(:load, conf), :started => true
     else
       say "started!", :yellow
     end
