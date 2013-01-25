@@ -141,4 +141,10 @@ describe "find_objects" do
     end
   end
 
+  describe "match" do
+    it "should match" do
+      subject.match("gr*").should == ["app1:gr1", "app1:gr2"]
+    end
+  end
+
 end

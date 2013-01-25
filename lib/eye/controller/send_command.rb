@@ -16,6 +16,10 @@ module Eye::Controller::SendCommand
     res
   end
 
+  def match(*obj_strs)
+    find_objects(*obj_strs).map{|obj| obj.full_name }
+  end  
+
 private
 
   def remove_object_from_tree(obj)

@@ -22,6 +22,8 @@ module Eye::Controller::Commands
         syntax(*args)
       when :explain
         explain(*args)
+      when :match
+        match(*args)
       when :ping
         :pong
       when :logger_dev
