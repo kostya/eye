@@ -1,6 +1,6 @@
 class Eye::Dsl::PureOpts
 
-  def self.create_options_methods(arr)
+  def self.create_options_methods(arr, types = nil)
     m = Module.new do
       arr.each do |opt|
         define_method("set_#{opt}") do |arg|
@@ -8,6 +8,11 @@ class Eye::Dsl::PureOpts
 
           if (disallow_options && disallow_options.include?(key)) || (allow_options && !allow_options.include?(key))
             raise Eye::Dsl::Error, "disallow option #{key} for #{self.class.inspect}"
+          end
+
+          if types
+            good_type = Array(types).any?{|type| arg.is_a?(type) } || arg.nil?
+            raise Eye::Dsl::Error, "bad #{opt} value #{arg} type, should be #{types.inspect}" unless good_type
           end
 
           @config[key] = arg

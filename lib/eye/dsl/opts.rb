@@ -1,12 +1,24 @@
 class Eye::Dsl::Opts < Eye::Dsl::PureOpts
 
-  ALL_OPTIONS = [ :environment, :pid_file, :working_dir, :daemonize, :stdout, :stderr, :stdall,
-    :keep_alive, :check_alive_period, :start_timeout, :restart_timeout, :stop_timeout, :start_grace,
-    :restart_grace, :stop_grace, :control_pid, :childs_update_period,
-    :auto_start, :start_command, :stop_command, :restart_command, :stop_signals, :stop_on_delete
-  ]
+  STR_OPTIONS = [ :pid_file, :working_dir, :stdout, :stderr, :stdall, :start_command, 
+    :stop_command, :restart_command ]
 
-  create_options_methods(ALL_OPTIONS)
+  create_options_methods(STR_OPTIONS, String)
+
+  BOOL_OPTIONS = [ :daemonize, :keep_alive, :control_pid, :auto_start, :stop_on_delete]
+
+  create_options_methods(BOOL_OPTIONS, [TrueClass, FalseClass])
+
+  INTERVAL_OPTIONS = [ :check_alive_period, :start_timeout, :restart_timeout, :stop_timeout, :start_grace,
+    :restart_grace, :stop_grace, :childs_update_period ]
+
+  create_options_methods(INTERVAL_OPTIONS, [Fixnum, Float])
+
+  OTHER_OPTIONS = [ :environment, :stop_signals ]
+
+  create_options_methods(OTHER_OPTIONS)
+
+
 
   def initialize(name = nil, parent = nil)
     super(name, parent)
@@ -51,6 +63,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   end
 
   def set_environment(value)
+    raise Eye::Dsl::Error, "environment should be a hash, but not #{value}" unless value.is_a?(Hash)
     @config[:environment] ||= {}
     @config[:environment].merge!(value)
   end

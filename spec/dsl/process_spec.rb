@@ -381,5 +381,110 @@ describe "Eye::Dsl" do
     expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
   end
 
+  describe "blank envs" do
+
+    it "empty env" do
+      conf = <<-E
+        Eye.application("bla") do
+          env nil
+        end
+      E
+      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+    end
+
+    it "empty env" do
+      conf = <<-E
+        Eye.application("bla") do
+          env []
+        end
+      E
+      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+    end
+
+    it "empty env" do
+      conf = <<-E
+        Eye.application("bla") do
+          env 'asdfsdf'
+        end
+      E
+      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+    end
+
+  end
+
+  describe "validation" do
+    it "bad string" do
+      conf = "Eye.app('bla'){ self.working_dir = {} }"
+      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+
+      conf = "Eye.app('bla'){ self.working_dir = [] }"      
+      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+
+      conf = "Eye.app('bla'){ self.working_dir = 5.6 }"
+      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+
+      conf = "Eye.app('bla'){ self.working_dir = false }"
+      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+    end
+
+    it "good string" do
+      conf = "Eye.app('bla'){ self.working_dir = nil }"
+      expect{Eye::Dsl.load(conf)}.not_to raise_error(Eye::Dsl::Error)
+
+      conf = "Eye.app('bla'){ self.working_dir = 'bla' }"
+      expect{Eye::Dsl.load(conf)}.not_to raise_error(Eye::Dsl::Error)
+    end
+
+    it "bad bool" do
+      conf = "Eye.app('bla'){ self.daemonize = {} }"
+      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+
+      conf = "Eye.app('bla'){ self.daemonize = [] }"      
+      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+
+      conf = "Eye.app('bla'){ self.daemonize = 5.6 }"
+      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+
+      conf = "Eye.app('bla'){ self.daemonize = 'false' }"
+      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+    end
+
+    it "good bool" do
+      conf = "Eye.app('bla'){ self.daemonize = nil }"
+      expect{Eye::Dsl.load(conf)}.not_to raise_error(Eye::Dsl::Error)
+
+      conf = "Eye.app('bla'){ self.daemonize = true }"
+      expect{Eye::Dsl.load(conf)}.not_to raise_error(Eye::Dsl::Error)
+
+      conf = "Eye.app('bla'){ self.daemonize = false }"
+      expect{Eye::Dsl.load(conf)}.not_to raise_error(Eye::Dsl::Error)
+    end
+
+    it "bad interval" do
+      conf = "Eye.app('bla'){ self.daemonize = {} }"
+      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+
+      conf = "Eye.app('bla'){ self.start_timeout = [] }"      
+      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+
+      conf = "Eye.app('bla'){ self.start_timeout = false }"
+      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+
+      conf = "Eye.app('bla'){ self.start_timeout = 'false' }"
+      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+    end
+
+    it "good interval" do
+      conf = "Eye.app('bla'){ self.start_timeout = nil }"
+      expect{Eye::Dsl.load(conf)}.not_to raise_error(Eye::Dsl::Error)
+
+      conf = "Eye.app('bla'){ self.start_timeout = 10.seconds }"
+      expect{Eye::Dsl.load(conf)}.not_to raise_error(Eye::Dsl::Error)
+
+      conf = "Eye.app('bla'){ self.start_timeout = 1.5.seconds }"
+      expect{Eye::Dsl.load(conf)}.not_to raise_error(Eye::Dsl::Error)
+    end
+
+  end
 
 end
