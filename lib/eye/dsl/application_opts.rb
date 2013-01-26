@@ -10,8 +10,12 @@ class Eye::Dsl::ApplicationOpts < Eye::Dsl::Opts
     opts = Eye::Dsl::GroupOpts.new(name, self)
     opts.instance_eval(&block)    
     if cfg = opts.config
+      @config[:groups] ||= {}
+
       processes = cfg.delete(:processes) || {}
+      @config[:groups][name.to_s] ||= {}
       @config[:groups][name.to_s].merge!(cfg)
+      @config[:groups][name.to_s][:processes] ||= {}
       @config[:groups][name.to_s][:processes].merge!(processes)      
     end
   end

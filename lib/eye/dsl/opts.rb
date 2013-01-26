@@ -10,7 +10,7 @@ class Eye::Dsl::Opts
     define_method(opt) do |*args|
       if args.blank?
         # getter
-        @config[opt]
+        @config[ opt ]
       else
         # setter
         key = opt.to_sym
@@ -41,7 +41,7 @@ class Eye::Dsl::Opts
 
     if parent
       @parent = parent
-      @config = parent.deep_cloned_config
+      @config = Marshal.load(Marshal.dump(parent.config)) # O_o ruby recommended deep clone
 
       # get only options, without subobjects
       @config.delete :groups
@@ -52,7 +52,7 @@ class Eye::Dsl::Opts
 
       @full_name = "#{parent.full_name}:#{@full_name}"
     else
-      @config = Eye::Utils::MHash.new
+      @config = {}
     end
 
     @config[:name] = @name if @name.present?
@@ -61,35 +61,38 @@ class Eye::Dsl::Opts
   def checks(type, opts = {})
     type = type.to_sym
     raise Eye::Dsl::Error, "unknown checker type #{type}" unless Eye::Checker::TYPES[type]
+    @config[:checks] ||= {}
     @config[:checks][type] = opts.merge(:type => type)
   end
 
   def triggers(type, opts = {})
     type = type.to_sym
     raise Eye::Dsl::Error, "unknown trigger type #{type}" unless Eye::Trigger::TYPES[type]
+    @config[:triggers] ||= {}
     @config[:triggers][type] = opts.merge(:type => type)
   end
 
   def nochecks(type) #REF
     type = type.to_sym
     raise Eye::Dsl::Error, "unknown checker type #{type}" unless Eye::Checker::TYPES[type]
+    @config[:nochecks] ||= {}
     @config[:nochecks][type] = 1
   end
 
   def notriggers(type) #REF
     type = type.to_sym
     raise Eye::Dsl::Error, "unknown trigger type #{type}" unless Eye::Trigger::TYPES[type]
+    @config[:notriggers] ||= {}
     @config[:notriggers][type] = 1
   end
 
   def environment(*args)
-    @config[:environment] = {} unless @config.has_key?(:environment)
-    
     if args.blank?
       # getter
       @config[:environment]
     else
       # setter
+      @config[:environment] ||= {}
       @config[:environment].merge!(*args)
     end
   end
@@ -105,11 +108,7 @@ class Eye::Dsl::Opts
   end
 
   def config
-    @config.pure
-  end
-
-  def deep_cloned_config
-    @config.deep_clone
+    @config
   end
 
   # execute part of config on particular server

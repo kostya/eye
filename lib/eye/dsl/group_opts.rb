@@ -9,6 +9,7 @@ class Eye::Dsl::GroupOpts < Eye::Dsl::Opts
   def process(name, &block)
     opts = Eye::Dsl::ProcessOpts.new(name, self)
     opts.instance_eval(&block)
+    @config[:processes] ||= {}
     @config[:processes][name.to_s] = opts.config if opts.config
   end
 
