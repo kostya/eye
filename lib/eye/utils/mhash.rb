@@ -22,10 +22,6 @@ class Eye::Utils::MHash < Hash
     h
   end
 
-  #def deep_clone
-    #Marshal.load(Marshal.dump(self))
-  #end
-
   def self.deep_clone(value)
     if value.is_a?(Hash)
       result = value.clone

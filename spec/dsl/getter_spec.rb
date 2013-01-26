@@ -75,6 +75,7 @@ describe "Eye::Dsl getters" do
 
           process :blap do
             env 'C' => "\#{self.full_name}"
+
             pid_file '1'
           end
         end
@@ -86,11 +87,11 @@ describe "Eye::Dsl getters" do
       end
     E
     Eye::Dsl.load(conf).should == {
-      "bla" => {:name => "bla", :environment=>{"A"=>""}, :groups=>{
-        "blagr"=>{:name => "blagr", :application => "bla", :environment=>{"A"=>"", "B"=>""}, :processes=>{
-          "blap"=>{:environment=>{"A"=>"", "B"=>"", "C"=>""}, :pid_file=>"1", :group=>"blagr", :application=>"bla", :name=>'blap'}}}, 
-        "__default__"=>{:name => "__default__", :application => "bla", :processes=>{
-          "blap2"=>{:environment=>{"A"=>"", "D"=>""}, :pid_file=>"2", :group=>"__default__", :application=>"bla", :name=>'blap2'}}}}}}
+      "bla" => {:name => "bla", :environment=>{"A"=>"bla"}, :groups=>{
+        "blagr"=>{:name => "blagr", :application => "bla", :environment=>{"A"=>"bla", "B"=>"bla:blagr"}, :processes=>{
+          "blap"=>{:environment=>{"A"=>"bla", "B"=>"bla:blagr", "C"=>"bla:blagr:blap"}, :pid_file=>"1", :group=>"blagr", :application=>"bla", :name=>'blap'}}}, 
+        "__default__"=>{:name => "__default__", :environment=>{"A"=>"bla"}, :application => "bla", :processes=>{
+          "blap2"=>{:environment=>{"A"=>"bla", "D"=>"bla:__default__:blap2"}, :pid_file=>"2", :group=>"__default__", :application=>"bla", :name=>'blap2'}}}}}}
   end
 
   it "getting autodefined opts" do

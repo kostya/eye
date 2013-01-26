@@ -33,10 +33,11 @@ class Eye::Dsl::Opts
     end
   end
 
-  attr_reader :name, :full_name, :parent
+  attr_reader :name, :full_name, :parent, :full_name
 
   def initialize(name = nil, parent = nil)
     @name = name.to_s
+    @full_name = @name
 
     if parent
       @parent = parent
@@ -48,6 +49,8 @@ class Eye::Dsl::Opts
 
       @config[:application] = parent.name if parent.is_a?(Eye::Dsl::ApplicationOpts)
       @config[:group] = parent.name if parent.is_a?(Eye::Dsl::GroupOpts)
+
+      @full_name = "#{parent.full_name}:#{@full_name}"
     else
       @config = Eye::Utils::MHash.new
     end
@@ -80,7 +83,7 @@ class Eye::Dsl::Opts
   end
 
   def environment(*args)
-    @config[:environment] = Hash.new unless @config.has_key?(:environment)
+    @config[:environment] = {} unless @config.has_key?(:environment)
     
     if args.blank?
       # getter
