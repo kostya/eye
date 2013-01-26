@@ -17,7 +17,7 @@ describe "with_server feature" do
       end
     E
 
-    Eye::Dsl.load(conf).should == {"bla"=>{:groups=>{"__default__"=>{:processes=>{"1"=>{:pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
+    Eye::Dsl.load(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
   end
 
   it "should another host conditions" do
@@ -35,7 +35,7 @@ describe "with_server feature" do
       end
     E
 
-    Eye::Dsl.load(conf).should == {"bla"=>{:groups=>{"__default__"=>{:processes=>{"1"=>{:pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
+    Eye::Dsl.load(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
   end
 
   describe "matches" do
@@ -71,7 +71,7 @@ describe "with_server feature" do
           end
         }
       E
-      Eye::Dsl.load(conf).should == {}
+      Eye::Dsl.load(conf).should == {"bla" => {:name => "bla"}}
     end
 
     it "with_server work" do
@@ -84,7 +84,7 @@ describe "with_server feature" do
           end
         }
       E
-      Eye::Dsl.load(conf).should == {"bla" => {:working_dir=>"/tmp", :groups=>{}}}
+      Eye::Dsl.load(conf).should == {"bla" => {:working_dir=>"/tmp", :name => "bla"}}
     end
 
     it "hostname work" do
@@ -96,7 +96,7 @@ describe "with_server feature" do
           env "HOST" => hostname
         }
       E
-      Eye::Dsl.load(conf).should == {"bla" => {:working_dir=>"/tmp", :environment=>{"HOST"=>"supa_server"}, :groups=>{}}}
+      Eye::Dsl.load(conf).should == {"bla" => {:name => "bla", :working_dir=>"/tmp", :environment=>{"HOST"=>"supa_server"}}}
     end
 
   end

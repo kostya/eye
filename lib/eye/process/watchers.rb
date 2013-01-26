@@ -47,7 +47,7 @@ private
   end  
   
   def start_checkers
-    self[:checks].each{|type, cfg| start_checker(cfg) unless self[:nochecks].try(:[], type) }
+    self[:checks].each{|type, cfg| start_checker(cfg) }
   end
 
   def start_checker(cfg)

@@ -4,18 +4,17 @@ describe "Eye::Dsl" do
 
   it "fully empty config" do
     conf = <<-E
-      Eye.application("bla") do        
-      end
+      # haha
     E
     Eye::Dsl.load(conf).should == {}
   end
 
-  xit "should accept options to app" do
-    conf = <<-C
-      Eye.application("bla", :stdout => "bla") do
+  it "empty config" do
+    conf = <<-E
+      Eye.application("bla") do        
       end
-    C
-    Eye::Dsl.load(conf).should == {"bla"=>nil}
+    E
+    Eye::Dsl.load(conf).should == {'bla' => {:name => "bla"}}
   end
 
   it "should set param " do
@@ -24,7 +23,7 @@ describe "Eye::Dsl" do
         start_timeout 10.seconds
       end
     E
-    Eye::Dsl.load(conf).should == {"bla"=>{:start_timeout => 10.seconds, :groups => {}}}
+    Eye::Dsl.load(conf).should == {"bla"=>{:start_timeout => 10.seconds, :name => "bla"}}
   end
 
   it "should set param, with self and =" do
@@ -33,14 +32,14 @@ describe "Eye::Dsl" do
         self.start_timeout = 10.seconds
       end
     E
-    Eye::Dsl.load(conf).should == {"bla"=>{:start_timeout => 10.seconds, :groups => {}}}
+    Eye::Dsl.load(conf).should == {"bla"=>{:start_timeout => 10.seconds, :name => "bla"}}
   end
 
   it "another block syntax" do
     conf = <<-E
       Eye.application("bla"){ start_timeout 10.seconds }
     E
-    Eye::Dsl.load(conf).should == {"bla"=>{:start_timeout => 10.seconds, :groups => {}}}
+    Eye::Dsl.load(conf).should == {"bla"=>{:start_timeout => 10.seconds, :name => "bla"}}
   end
 
   it "should raise on unknown option" do
@@ -79,7 +78,7 @@ describe "Eye::Dsl" do
         Eye.application("bla") do        
         end
       E
-      Eye::Dsl.load(conf).should == {}
+      Eye::Dsl.load(conf).should == {"bla" => {:name => "bla"}}
       Eye.parsed_options.should == {:logger => "/tmp/1.log", :logger_level => Logger::DEBUG}
     end
   end

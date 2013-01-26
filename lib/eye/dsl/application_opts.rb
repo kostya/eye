@@ -7,15 +7,21 @@ class Eye::Dsl::ApplicationOpts < Eye::Dsl::Opts
   end
 
   def group(name, &block) 
-    opts = Eye::Dsl::GroupOpts.new
-    opts.instance_eval(&block)
-    @config[:groups][name.to_s] = opts.config if opts.config
+    opts = Eye::Dsl::GroupOpts.new(name, self)
+    opts.instance_eval(&block)    
+    if cfg = opts.config
+      @config[:groups] ||= {}
+
+      processes = cfg.delete(:processes) || {}
+      @config[:groups][name.to_s] ||= {}
+      @config[:groups][name.to_s].merge!(cfg)
+      @config[:groups][name.to_s][:processes] ||= {}
+      @config[:groups][name.to_s][:processes].merge!(processes)      
+    end
   end
 
   def process(name, &block)
-    opts = Eye::Dsl::ProcessOpts.new
-    opts.instance_eval(&block)
-    @config[:groups]['__default__'][:processes][name.to_s] = opts.config if opts.config
+    group("__default__"){ process(name.to_s, &block) }
   end
 
   def xgroup(name, &block); end

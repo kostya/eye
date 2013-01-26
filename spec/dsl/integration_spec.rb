@@ -48,11 +48,11 @@ describe "Eye::Dsl" do
     E
 
     h = {'bla' => 
-      {
+      { :name => "bla",
         :environment=>{"ENV1"=>"1"}, 
         :working_dir=>"/tmp", 
         :groups=>{
-          "mini"=>{
+          "mini"=>{:name => "mini", :application => "bla",
             :environment=>{"ENV1"=>"1"}, 
             :working_dir=>"/tmp", 
             :processes=>{
@@ -64,6 +64,7 @@ describe "Eye::Dsl" do
                 :pid_file=>"1.pid", 
                 :stderr=>"1.log", 
                 :stdout=>"1.log", 
+                :stdall=>"1.log", 
                 :daemonize=>true, 
                 :monitor_children=>{
                   :stop_command=>"kill -9 {{PID}}", 
@@ -79,7 +80,7 @@ describe "Eye::Dsl" do
                 :application=>"bla", 
                 :group=>"mini", 
                 :name=>"1"}}}, 
-          "__default__"=>{
+          "__default__"=>{:name => "__default__", :application => "bla",
             :environment=>{"ENV1"=>"1"}, 
             :working_dir=>"/tmp", 
             :processes=>{
@@ -144,10 +145,10 @@ describe "Eye::Dsl" do
     E
 
     h = {'bla' => 
-      {
+      { :name => "bla",
         :environment=>{"HAH"=>"1"}, 
         :groups=>{
-          "moni"=>{
+          "moni"=>{:name => "moni", :application => "bla",
             :environment=>{"HAHA"=>"2", "HAH"=>"1"}, 
             :processes=>{
               "1"=>{
@@ -156,7 +157,7 @@ describe "Eye::Dsl" do
                 :application=>"bla", 
                 :group=>"moni", 
                 :name=>"1"}}},
-          "__default__"=>{
+          "__default__"=>{:name => "__default__", :application => "bla",
             :environment=>{"HAH"=>"1"}, 
             :processes=>{
               "2"=>{
@@ -196,10 +197,10 @@ describe "Eye::Dsl" do
     E
     
     h = {'bla' => 
-      {
+      { :name => "bla",
         :working_dir=>"/tmp", 
         :groups=>{
-          "moni"=>{
+          "moni"=>{:name => "moni", :application => "bla",
             :working_dir=>"/nah", 
             :processes=>{
               "1"=>{
@@ -214,7 +215,7 @@ describe "Eye::Dsl" do
                 :application=>"bla", 
                 :group=>"moni", 
                 :name=>"2"}}}, 
-          "__default__"=>{
+          "__default__"=>{:name => "__default__", :application => "bla",
             :working_dir=>"/tmp", 
             :processes=>{
               "3"=>{
@@ -224,7 +225,6 @@ describe "Eye::Dsl" do
                 :group=>"__default__", 
                 :name=>"3"}}}}}
     }
-
     Eye::Dsl.load(conf).should == h
     check_pure_hash(:root, Eye::Dsl.load(conf))
   end
@@ -232,10 +232,11 @@ describe "Eye::Dsl" do
   describe "requires" do
     before :each do
       @h = {'bla' => 
-      {
+      { :name => "bla",
         :working_dir=>"/tmp", 
         :groups=>{
           "__default__"=>{
+            :name => "__default__", :application => "bla",
             :working_dir=>"/tmp", 
             :processes=>{
               "11"=>{
@@ -272,6 +273,58 @@ describe "Eye::Dsl" do
       conf = File.read(file)
       Eye::Dsl.load(conf, file).should == @h
     end
+  end
+
+  it "recursive merge cases" do
+    conf = <<-E
+      Eye.application("bla") do
+        working_dir "/tmp"
+        env 'A' => '1'
+        group :bla do
+          env 'C' => '1'
+          process("1"){ pid_file '1'}
+
+          env 'D' => '1'
+          process("2"){ pid_file '2'}
+        end
+
+        working_dir "/tmp2"
+        env 'B' => '1'
+        group :bla2 do
+          # /tmp2
+        end
+      end
+    E
+
+    Eye::Dsl.load(conf).should == {
+      "bla" => {:name => "bla", :working_dir=>"/tmp2", :environment=>{"A"=>"1", "B"=>"1"}, :groups=>{
+        "bla"=>{:name => "bla", :application => "bla", :working_dir=>"/tmp", :environment=>{"A"=>"1", "C"=>"1", "D"=>"1"}, 
+        :processes=>{
+          "1"=>{:working_dir=>"/tmp", :environment=>{"A"=>"1", "C"=>"1"}, :group=>"bla", :application=>"bla", :name=>"1", :pid_file=>"1"}, 
+          "2"=>{:working_dir=>"/tmp", :environment=>{"A"=>"1", "C"=>"1", "D"=>"1"}, :group=>"bla", :application=>"bla", :name=>"2", :pid_file=>"2"}}}, 
+        "bla2"=>{:name => "bla2", :application => "bla", :working_dir=>"/tmp2", :environment=>{"A"=>"1", "B"=>"1"}, :processes=>{}}}}}
+  end
+
+  it "join group spec" do
+    conf = <<-E
+      Eye.application("bla") do
+        group :blagr do
+          process("1"){ pid_file '1'}
+        end
+
+        group :blagr do
+          env 'P' => '1'
+          process("2"){ pid_file '2'}
+        end
+      end
+    E
+
+    Eye::Dsl.load(conf).should == {
+      "bla" => {:name => "bla", :groups=>{
+        "blagr"=>{:name => "blagr", :application => "bla", :processes=>{
+          "1"=>{:group=>"blagr", :application=>"bla", :name=>"1", :pid_file=>"1"}, 
+          "2"=>{:environment=>{"P"=>"1"}, :group=>"blagr", :application=>"bla", :name=>"2", :pid_file=>"2"}}, 
+        :environment=>{"P"=>"1"}}}}}
   end
 
 end
