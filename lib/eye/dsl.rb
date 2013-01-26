@@ -3,7 +3,6 @@ require_relative 'dsl/helpers'
 class Eye::Dsl
 
   autoload :Main,                 'eye/dsl/main'
-  autoload :Normalize,            'eye/dsl/normalize'
   autoload :ApplicationOpts,      'eye/dsl/application_opts'
   autoload :GroupOpts,            'eye/dsl/group_opts'
   autoload :ProcessOpts,          'eye/dsl/process_opts'
@@ -20,16 +19,12 @@ class Eye::Dsl
     content = File.read(filename) if content.blank?
     
     Kernel.eval(content, ROOT_BINDING, filename.to_s)
+    validate(Eye.parsed_config)
 
-    cfg = Eye.parsed_config
-    cfg = normalized_config(cfg)
-    validate(cfg)
-
-    cfg 
+    Eye.parsed_config
   end
 
   extend Eye::Dsl::Validate
-  extend Eye::Dsl::Normalize
 
   class Error < Exception; end
 end

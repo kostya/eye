@@ -34,11 +34,26 @@ class Eye::Dsl::Opts
     end
   end
 
-  attr_reader :name, :full_name
+  attr_reader :name, :full_name, :parent
 
-  def initialize(name = nil)
+  def initialize(name = nil, parent = nil)
     @name = name.to_s
-    @config = Eye::Utils::MHash.new
+
+    if parent
+      @parent = parent
+      @config = parent.instance_variable_get(:@config).deep_clone
+      @config.delete :groups
+      @config.delete :processes
+      @config[parent.opts_name] = parent.name if parent.opts_name && opts_name != :group
+
+      if parent.opts_name == :group
+        @config[:application] = parent.parent.name
+      end
+    else
+      @config = Eye::Utils::MHash.new
+    end
+
+    @config[ opts_name ] = @name if opts_name == :name
   end
 
   def checks(type, opts = {})
@@ -65,8 +80,14 @@ class Eye::Dsl::Opts
     @config[:notriggers][type] = 1
   end
 
-  def environment(h = {})
-    @config[:environment].merge!(h)
+  def environment(*args)
+    @config[:environment] = Hash.new unless @config.has_key?(:environment)
+    
+    if args.size == 0
+      @config[:environment]
+    else
+      @config[:environment].merge!(*args)
+    end
   end
 
   alias :env :environment
@@ -123,6 +144,10 @@ class Eye::Dsl::Opts
     end
 
     self.instance_eval(&ie)
+  end
+
+  def opts_name
+    :name
   end
 
 end

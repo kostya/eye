@@ -4,18 +4,17 @@ describe "Eye::Dsl" do
 
   it "fully empty config" do
     conf = <<-E
-      Eye.application("bla") do        
-      end
+      # haha
     E
     Eye::Dsl.load(conf).should == {}
   end
 
-  xit "should accept options to app" do
-    conf = <<-C
-      Eye.application("bla", :stdout => "bla") do
+  it "empty config" do
+    conf = <<-E
+      Eye.application("bla") do        
       end
-    C
-    Eye::Dsl.load(conf).should == {"bla"=>nil}
+    E
+    Eye::Dsl.load(conf).should == {}
   end
 
   it "should set param " do

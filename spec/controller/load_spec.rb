@@ -11,6 +11,35 @@ describe "Eye::Controller::Load" do
     subject.load("/asdf/asd/fasd/fas/df/sfd").should == {:error => true, :message => "config file '/asdf/asd/fasd/fas/df/sfd' not found!"}
   end
 
+  it "load 1 app" do
+    subject.load(fixture("dsl/load.eye")).should include(error: false)
+    subject.short_tree.should == {
+      "app1"=>{
+        "gr1"=>{"p1"=>"/tmp/app1-gr1-p1.pid", "p2"=>"/tmp/app1-gr1-p2.pid"}, 
+        "gr2"=>{"q3"=>"/tmp/app1-gr2-q3.pid"}, 
+        "__default__"=>{"g4"=>"/tmp/app1-g4.pid", "g5"=>"/tmp/app1-g5.pid"}}, 
+      "app2"=>{"__default__"=>{"z1"=>"/tmp/app2-z1.pid"}}}
+  end
+
+  it "load correctly application, groups for full_names processes" do
+    subject.load(fixture("dsl/load.eye")).should include(error: false)
+
+    p1 = subject.process_by_name('p1')
+    p1[:application].should == 'app1'
+    p1[:group].should == 'gr1'
+    p1.name.should == 'p1'
+    p1.full_name.should == 'app1:gr1:p1'
+
+    gr1 = subject.group_by_name 'gr1'
+    gr1.full_name.should == 'app1:gr1'
+
+    g4 = subject.process_by_name('g4')
+    g4[:application].should == 'app1'
+    g4[:group].should == '__default__'
+    g4.name.should == 'g4'
+    g4.full_name.should == 'app1:g4'
+  end
+
   it "load + 1new app" do
     subject.load(fixture("dsl/load.eye")).should include(error: false)
     subject.short_tree.should == {

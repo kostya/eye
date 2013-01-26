@@ -173,7 +173,7 @@ private
 
     processes = group_config.delete(:processes)
     processes.each do |process_name, process_cfg|
-      process = update_or_create_process(process_name, process_cfg)
+      process = update_or_create_process(process_name, process_cfg.merge(:group => group_name, :application => group_config[:application]))
       group.add_process(process)
     end
 

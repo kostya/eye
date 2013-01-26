@@ -224,7 +224,6 @@ describe "Eye::Dsl" do
                 :group=>"__default__", 
                 :name=>"3"}}}}}
     }
-
     Eye::Dsl.load(conf).should == h
     check_pure_hash(:root, Eye::Dsl.load(conf))
   end
@@ -272,6 +271,58 @@ describe "Eye::Dsl" do
       conf = File.read(file)
       Eye::Dsl.load(conf, file).should == @h
     end
+  end
+
+  it "recursive merge cases" do
+    conf = <<-E
+      Eye.application("bla") do
+        working_dir "/tmp"
+        env 'A' => '1'
+        group :bla do
+          env 'C' => '1'
+          process("1"){ pid_file '1'}
+
+          env 'D' => '1'
+          process("2"){ pid_file '2'}
+        end
+
+        working_dir "/tmp2"
+        env 'B' => '1'
+        group :bla2 do
+          # /tmp2
+        end
+      end
+    E
+
+    Eye::Dsl.load(conf).should == {
+      "bla" => {:working_dir=>"/tmp2", :environment=>{"A"=>"1", "B"=>"1"}, :groups=>{
+        "bla"=>{:working_dir=>"/tmp", :environment=>{"A"=>"1", "C"=>"1", "D"=>"1"}, 
+        :processes=>{
+          "1"=>{:working_dir=>"/tmp", :environment=>{"A"=>"1", "C"=>"1"}, :group=>"bla", :application=>"bla", :name=>"1", :pid_file=>"1"}, 
+          "2"=>{:working_dir=>"/tmp", :environment=>{"A"=>"1", "C"=>"1", "D"=>"1"}, :group=>"bla", :application=>"bla", :name=>"2", :pid_file=>"2"}}}, 
+        "bla2"=>{:working_dir=>"/tmp2", :environment=>{"A"=>"1", "B"=>"1"}, :processes=>{}}}}}
+  end
+
+  it "join group spec" do
+    conf = <<-E
+      Eye.application("bla") do
+        group :blagr do
+          process("1"){ pid_file '1'}
+        end
+
+        group :blagr do
+          env 'P' => '1'
+          process("2"){ pid_file '2'}
+        end
+      end
+    E
+
+    Eye::Dsl.load(conf).should == {
+      "bla" => {:groups=>{
+        "blagr"=>{:processes=>{
+          "1"=>{:group=>"blagr", :application=>"bla", :name=>"1", :pid_file=>"1"}, 
+          "2"=>{:environment=>{"P"=>"1"}, :group=>"blagr", :application=>"bla", :name=>"2", :pid_file=>"2"}}, 
+        :environment=>{"P"=>"1"}}}}}
   end
 
 end

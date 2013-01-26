@@ -2,7 +2,8 @@ module Eye::Dsl::Validate
 
   # validate global config rules
   def validate(config)
-    all_processes = config.values.map{|e| e[:groups].values.map{|c| c[:processes].values} }.flatten
+    all_processes = config.values.map{|e| (e[:groups] || {}).values.map{|c| (c[:processes] || {}).values} }.flatten
+    p all_processes
 
     # Check blank pid_files
     
