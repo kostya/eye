@@ -63,7 +63,7 @@ describe "Scheduler" do
     @process.test1.should == nil
     @process.test2.should == [1, 2]
 
-    sleep 0.2
+    sleep 0.3
     @process.test1.should == 1
     @process.test2.should == [1, 2]
   end
