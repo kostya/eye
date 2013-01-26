@@ -33,18 +33,18 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     @config[:triggers][type] = opts.merge(:type => type)
   end
 
-  def nochecks(type) #REF
+  # clear checks from parent
+  def nochecks(type)
     type = type.to_sym
     raise Eye::Dsl::Error, "unknown checker type #{type}" unless Eye::Checker::TYPES[type]
-    @config[:nochecks] ||= {}
-    @config[:nochecks][type] = 1
+    @config[:checks].try :delete, type
   end
 
-  def notriggers(type) #REF
+  # clear triggers from parent
+  def notriggers(type)
     type = type.to_sym
     raise Eye::Dsl::Error, "unknown trigger type #{type}" unless Eye::Trigger::TYPES[type]
-    @config[:notriggers] ||= {}
-    @config[:notriggers][type] = 1
+    @config[:triggers].try :delete, type
   end
 
   def set_environment(value)

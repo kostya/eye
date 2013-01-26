@@ -20,18 +20,6 @@ describe "Process Integration checks" do
     @process.watchers.keys.should == []
   end
 
-  it "with nochecks, should not add watcher" do
-    @c.merge!(:nochecks => {:memory => 1, :cpu => 1})
-    start_ok_process(@c)
-
-    @process.watchers.keys.should == [:check_alive, :check_ctime, :check_http]
-
-    @process.stop
-
-    # after process stop should remove watcher
-    @process.watchers.keys.should == []
-  end
-
   it "intergration" do
     start_ok_process(@c)
 

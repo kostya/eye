@@ -290,27 +290,45 @@ describe "Eye::Dsl" do
           end
         end
       E
-      Eye::Dsl.load(conf).should == {"bla" => {:name => "bla", :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :processes=>{"1"=>{:checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :pid_file=>"1.pid", :nochecks=>{:memory=>1}, :application=>"bla", :group=>"__default__", :name=>"1"}, "2"=>{:checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :pid_file=>"2.pid", :application=>"bla", :group=>"__default__", :name=>"2"}}}}}}
+      Eye::Dsl.load(conf).should == {
+        "bla" => {:name => "bla", :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, 
+        :groups=>{
+          "__default__"=>{:name => "__default__", :application => "bla", 
+            :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, 
+            :processes=>{
+              "1"=>{:checks=>{}, :pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}, 
+              "2"=>{:checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :pid_file=>"2.pid", :application=>"bla", :group=>"__default__", :name=>"2"}}}}}}
     end
 
-    it "empty nocheck do nothing" do
+    it "empty nocheck do nothing and inherit" do
       conf = <<-E
         Eye.application("bla") do
           checks :memory, :below => 100.megabytes, :every => 10.seconds
           nochecks :cpu
 
-          process("1") do
-            pid_file "1.pid"
-            nochecks :cpu
-            nochecks :memory
-          end        
+          group :blagr do
+            process("1") do
+              pid_file "1.pid"
+              nochecks :cpu
+              nochecks :memory
+            end        
+          end
 
           process("2") do
             pid_file "2.pid"
           end
         end
       E
-      Eye::Dsl.load(conf).should == {"bla" => {:name => "bla", :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :nochecks=>{:cpu=>1}, :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :nochecks=>{:cpu=>1}, :processes=>{"1"=>{:checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :nochecks=>{:cpu=>1,:memory=>1}, :pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}, "2"=>{:checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :nochecks=>{:cpu=>1}, :pid_file=>"2.pid", :application=>"bla", :group=>"__default__", :name=>"2"}}}}}}
+      Eye::Dsl.load(conf).should == {
+        "bla" => {:name => "bla", 
+          :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, 
+          :groups=>{
+            "blagr" => {:name=>"blagr", :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :application=>"bla",
+              :processes => {"1"=>{:checks=>{}, :pid_file=>"1.pid", :application=>"bla", :group=>"blagr", :name=>"1"}}},
+            "__default__"=>{:name => 
+              "__default__", :application => "bla", 
+              :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :processes=>{ 
+                "2"=>{:checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :pid_file=>"2.pid", :application=>"bla", :group=>"__default__", :name=>"2"}}}}}}
     end
 
   end
