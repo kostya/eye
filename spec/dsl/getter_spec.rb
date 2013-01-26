@@ -101,7 +101,7 @@ describe "Eye::Dsl getters" do
         "blagr"=>{:name => "blagr", :application => "bla", :environment=>{"A"=>"bla", "B"=>"bla:blagr"}, :processes=>{
           "blap"=>{:environment=>{"A"=>"bla", "B"=>"bla:blagr", "C"=>"bla:blagr:blap"}, :pid_file=>"1", :group=>"blagr", :application=>"bla", :name=>'blap'}}}, 
         "__default__"=>{:name => "__default__", :environment=>{"A"=>"bla"}, :application => "bla", :processes=>{
-          "blap2"=>{:environment=>{"A"=>"bla", "D"=>"bla:__default__:blap2"}, :pid_file=>"2", :group=>"__default__", :application=>"bla", :name=>'blap2'}}}}}}
+          "blap2"=>{:environment=>{"A"=>"bla", "D"=>"bla:blap2"}, :pid_file=>"2", :group=>"__default__", :application=>"bla", :name=>'blap2'}}}}}}
   end
 
   it "getting autodefined opts" do
@@ -159,6 +159,65 @@ describe "Eye::Dsl getters" do
       end
     E
     Eye::Dsl.load(conf).should == {"bla" => {:name => "bla", :working_dir=>"/tmp", :groups=>{"blagr"=>{:name => "blagr", :application => "bla", :working_dir=>"/tmp/1", :processes => {}}}}}
+  end
+
+  describe "back links (application, group)" do
+    it "process back links" do
+      conf = <<-E
+        Eye.application("bla") do |app|
+          working_dir "/tmp"
+
+          process :p1 do 
+            start_command "ruby -t '\#{self.application.name}.\#{self.group.name}'"
+            pid_file "p1"
+          end
+
+          group :blagr do
+            process :p2 do
+              start_command "ruby -t '\#{self.app.name}.\#{self.group.name}'"
+              pid_file "p2"
+            end
+
+            process :p3 do
+              start_command "ruby -t '\#{self.group.app.name}.\#{self.group.name}'"
+              pid_file "p3"
+            end
+
+          end
+        end
+      E
+      Eye::Dsl.load(conf).should == {
+        "bla" => {:name=>"bla", :working_dir=>"/tmp", :groups=>{
+          "__default__"=>{:name=>"__default__", :working_dir=>"/tmp", :application=>"bla", :processes=>{
+            "p1"=>{:name=>"p1", :working_dir=>"/tmp", :application=>"bla", :group=>"__default__", 
+              :start_command=>"ruby -t 'bla.__default__'", :pid_file=>"p1"}}}, 
+          "blagr"=>{:name=>"blagr", :working_dir=>"/tmp", :application=>"bla", :processes=>{
+            "p2"=>{:name=>"p2", :working_dir=>"/tmp", :application=>"bla", :group=>"blagr", 
+              :start_command=>"ruby -t 'bla.blagr'", :pid_file=>"p2"}, 
+            "p3"=>{:name=>"p3", :working_dir=>"/tmp", :application=>"bla", :group=>"blagr", 
+              :start_command=>"ruby -t 'bla.blagr'", :pid_file=>"p3"}}}}}}
+    end
+
+    it "group back links" do
+      conf = <<-E
+        Eye.application("bla") do |app|
+          working_dir "/tmp"
+
+          env "a" => "\#{self.name}"
+
+          group :blagr do |gr|
+            env "b" => "\#{gr.application.name}"
+            env "c" => "\#{gr.app.name}"
+            env "d" => "\#{gr.parent.name}"
+          end
+        end
+      E
+      Eye::Dsl.load(conf).should == {
+        "bla" => {:name=>"bla", :working_dir=>"/tmp", :environment=>{"a"=>"bla"}, :groups=>{
+          "blagr"=>{:name=>"blagr", :working_dir=>"/tmp", 
+            :environment=>{"a"=>"bla", "b"=>"bla", "c"=>"bla", "d"=>"bla"}, :application=>"bla", :processes=>{}}}}}
+    end
+
   end
 
 end

@@ -17,6 +17,9 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
 
     @config[:application] = parent.name if parent.is_a?(Eye::Dsl::ApplicationOpts)
     @config[:group] = parent.name if parent.is_a?(Eye::Dsl::GroupOpts)
+
+    # hack for full name
+    @full_name = parent.full_name if @name == '__default__'
   end
 
   def checks(type, opts = {})

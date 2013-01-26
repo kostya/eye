@@ -15,4 +15,9 @@ class Eye::Dsl::GroupOpts < Eye::Dsl::Opts
 
   def xprocess(name, &block); end
 
+  def application
+    parent
+  end
+  alias :app :application
+
 end

@@ -9,4 +9,13 @@ class Eye::Dsl::ProcessOpts < Eye::Dsl::Opts
 
   def xmonitor_children(&block); end
 
+  def application
+    parent.try(:parent)
+  end
+  alias :app :application
+
+  def group
+    parent
+  end
+
 end
