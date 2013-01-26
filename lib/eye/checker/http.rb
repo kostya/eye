@@ -49,11 +49,11 @@ class Eye::Checker::Http < Eye::Checker
     {:result => res}
 
   rescue Timeout::Error
-    warn 'Timeout error'
+    debug 'Timeout error'
     {:exception => :timeout}
 
   rescue => ex
-    warn "Exception #{ex.message}"
+    error "Exception #{ex.message}"
     {:exception => ex.message}
   end
 
