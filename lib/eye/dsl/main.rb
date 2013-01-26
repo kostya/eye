@@ -5,10 +5,7 @@ module Eye::Dsl::Main
     @parsed_config ||= {}
     opts = Eye::Dsl::ApplicationOpts.new(name)
     opts.instance_eval(&block)
-    if opts.config.present?
-      @parsed_config[name.to_s] = opts.config
-      @parsed_config[name.to_s][:groups] ||= {}
-    end
+    @parsed_config[name.to_s] = opts.config if opts.config
   end
 
   alias :app :application 

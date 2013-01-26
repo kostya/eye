@@ -8,12 +8,11 @@ class Eye::Dsl::Opts
 
   ALL_OPTIONS.each do |opt|
     define_method(opt) do |*args|
-      if args.size == 0
+      if args.blank?
         # getter
         @config[opt]
       else
         # setter
-        arg = args[0]
         key = opt.to_sym
 
         if disallow_options.include?(key) || (allow_options && !allow_options.include?(key))
@@ -21,10 +20,10 @@ class Eye::Dsl::Opts
         end
 
         case key 
-        when :stdall
-          @config[:stdout] = @config[:stderr] = arg
+        when :stdall #REF
+          @config[:stdout] = @config[:stderr] = args[0]
         else
-          @config[ key ] = arg
+          @config[ key ] = args[0]
         end
       end
     end
@@ -41,19 +40,19 @@ class Eye::Dsl::Opts
 
     if parent
       @parent = parent
-      @config = parent.instance_variable_get(:@config).deep_clone
+      @config = parent.deep_cloned_config
+
+      # get only options, without subobjects
       @config.delete :groups
       @config.delete :processes
-      @config[parent.opts_name] = parent.name if parent.opts_name && opts_name != :group
 
-      if parent.opts_name == :group
-        @config[:application] = parent.parent.name
-      end
+      @config[:application] = parent.name if parent.is_a?(Eye::Dsl::ApplicationOpts)
+      @config[:group] = parent.name if parent.is_a?(Eye::Dsl::GroupOpts)
     else
       @config = Eye::Utils::MHash.new
     end
 
-    @config[ opts_name ] = @name if opts_name == :name
+    @config[:name] = @name if @name.present?
   end
 
   def checks(type, opts = {})
@@ -68,13 +67,13 @@ class Eye::Dsl::Opts
     @config[:triggers][type] = opts.merge(:type => type)
   end
 
-  def nochecks(type)
+  def nochecks(type) #REF
     type = type.to_sym
     raise Eye::Dsl::Error, "unknown checker type #{type}" unless Eye::Checker::TYPES[type]
     @config[:nochecks][type] = 1
   end
 
-  def notriggers(type)
+  def notriggers(type) #REF
     type = type.to_sym
     raise Eye::Dsl::Error, "unknown trigger type #{type}" unless Eye::Trigger::TYPES[type]
     @config[:notriggers][type] = 1
@@ -83,9 +82,11 @@ class Eye::Dsl::Opts
   def environment(*args)
     @config[:environment] = Hash.new unless @config.has_key?(:environment)
     
-    if args.size == 0
+    if args.blank?
+      # getter
       @config[:environment]
     else
+      # setter
       @config[:environment].merge!(*args)
     end
   end
@@ -102,6 +103,10 @@ class Eye::Dsl::Opts
 
   def config
     @config.pure
+  end
+
+  def deep_cloned_config
+    @config.deep_clone
   end
 
   # execute part of config on particular server
@@ -144,10 +149,6 @@ class Eye::Dsl::Opts
     end
 
     self.instance_eval(&ie)
-  end
-
-  def opts_name
-    :name
   end
 
 end

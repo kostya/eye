@@ -3,7 +3,6 @@ module Eye::Dsl::Validate
   # validate global config rules
   def validate(config)
     all_processes = config.values.map{|e| (e[:groups] || {}).values.map{|c| (c[:processes] || {}).values} }.flatten
-    p all_processes
 
     # Check blank pid_files
     
@@ -25,7 +24,6 @@ module Eye::Dsl::Validate
     end
 
     # Check dublicates of the full_name
-
     dubl_names = all_processes.each_with_object(Hash.new(0)) do |o, h| 
       full_name = "#{o[:application]}:#{o[:group]}:#{o[:name]}"
       h[full_name] += 1

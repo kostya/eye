@@ -2,10 +2,6 @@ class Eye::Dsl::GroupOpts < Eye::Dsl::Opts
 
   include Eye::Dsl::Chain
 
-  def opts_name
-    :group
-  end
-
   def disallow_options
     [:pid_file]
   end

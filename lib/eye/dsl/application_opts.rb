@@ -2,10 +2,6 @@ class Eye::Dsl::ApplicationOpts < Eye::Dsl::Opts
 
   include Eye::Dsl::Chain
 
-  def opts_name
-    :application
-  end
-
   def disallow_options
     [:pid_file]
   end
@@ -21,13 +17,7 @@ class Eye::Dsl::ApplicationOpts < Eye::Dsl::Opts
   end
 
   def process(name, &block)
-    #opts = Eye::Dsl::ProcessOpts.new(name, self)
-    #opts.instance_eval(&block)
-    #@config[:groups]['__default__'][:processes][name.to_s] = opts.config if opts.config
-    
-    group("__default__") do
-      self.process(name.to_s, &block)
-    end
+    group("__default__"){ process(name.to_s, &block) }
   end
 
   def xgroup(name, &block); end

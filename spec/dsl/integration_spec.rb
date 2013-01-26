@@ -48,11 +48,11 @@ describe "Eye::Dsl" do
     E
 
     h = {'bla' => 
-      {
+      { :name => "bla",
         :environment=>{"ENV1"=>"1"}, 
         :working_dir=>"/tmp", 
         :groups=>{
-          "mini"=>{
+          "mini"=>{:name => "mini", :application => "bla",
             :environment=>{"ENV1"=>"1"}, 
             :working_dir=>"/tmp", 
             :processes=>{
@@ -79,7 +79,7 @@ describe "Eye::Dsl" do
                 :application=>"bla", 
                 :group=>"mini", 
                 :name=>"1"}}}, 
-          "__default__"=>{
+          "__default__"=>{:name => "__default__", :application => "bla",
             :environment=>{"ENV1"=>"1"}, 
             :working_dir=>"/tmp", 
             :processes=>{
@@ -144,10 +144,10 @@ describe "Eye::Dsl" do
     E
 
     h = {'bla' => 
-      {
+      { :name => "bla",
         :environment=>{"HAH"=>"1"}, 
         :groups=>{
-          "moni"=>{
+          "moni"=>{:name => "moni", :application => "bla",
             :environment=>{"HAHA"=>"2", "HAH"=>"1"}, 
             :processes=>{
               "1"=>{
@@ -156,7 +156,7 @@ describe "Eye::Dsl" do
                 :application=>"bla", 
                 :group=>"moni", 
                 :name=>"1"}}},
-          "__default__"=>{
+          "__default__"=>{:name => "__default__", :application => "bla",
             :environment=>{"HAH"=>"1"}, 
             :processes=>{
               "2"=>{
@@ -196,10 +196,10 @@ describe "Eye::Dsl" do
     E
     
     h = {'bla' => 
-      {
+      { :name => "bla",
         :working_dir=>"/tmp", 
         :groups=>{
-          "moni"=>{
+          "moni"=>{:name => "moni", :application => "bla",
             :working_dir=>"/nah", 
             :processes=>{
               "1"=>{
@@ -214,7 +214,7 @@ describe "Eye::Dsl" do
                 :application=>"bla", 
                 :group=>"moni", 
                 :name=>"2"}}}, 
-          "__default__"=>{
+          "__default__"=>{:name => "__default__", :application => "bla",
             :working_dir=>"/tmp", 
             :processes=>{
               "3"=>{
@@ -231,10 +231,11 @@ describe "Eye::Dsl" do
   describe "requires" do
     before :each do
       @h = {'bla' => 
-      {
+      { :name => "bla",
         :working_dir=>"/tmp", 
         :groups=>{
           "__default__"=>{
+            :name => "__default__", :application => "bla",
             :working_dir=>"/tmp", 
             :processes=>{
               "11"=>{
@@ -295,12 +296,12 @@ describe "Eye::Dsl" do
     E
 
     Eye::Dsl.load(conf).should == {
-      "bla" => {:working_dir=>"/tmp2", :environment=>{"A"=>"1", "B"=>"1"}, :groups=>{
-        "bla"=>{:working_dir=>"/tmp", :environment=>{"A"=>"1", "C"=>"1", "D"=>"1"}, 
+      "bla" => {:name => "bla", :working_dir=>"/tmp2", :environment=>{"A"=>"1", "B"=>"1"}, :groups=>{
+        "bla"=>{:name => "bla", :application => "bla", :working_dir=>"/tmp", :environment=>{"A"=>"1", "C"=>"1", "D"=>"1"}, 
         :processes=>{
           "1"=>{:working_dir=>"/tmp", :environment=>{"A"=>"1", "C"=>"1"}, :group=>"bla", :application=>"bla", :name=>"1", :pid_file=>"1"}, 
           "2"=>{:working_dir=>"/tmp", :environment=>{"A"=>"1", "C"=>"1", "D"=>"1"}, :group=>"bla", :application=>"bla", :name=>"2", :pid_file=>"2"}}}, 
-        "bla2"=>{:working_dir=>"/tmp2", :environment=>{"A"=>"1", "B"=>"1"}, :processes=>{}}}}}
+        "bla2"=>{:name => "bla2", :application => "bla", :working_dir=>"/tmp2", :environment=>{"A"=>"1", "B"=>"1"}, :processes=>{}}}}}
   end
 
   it "join group spec" do
@@ -318,8 +319,8 @@ describe "Eye::Dsl" do
     E
 
     Eye::Dsl.load(conf).should == {
-      "bla" => {:groups=>{
-        "blagr"=>{:processes=>{
+      "bla" => {:name => "bla", :groups=>{
+        "blagr"=>{:name => "blagr", :application => "bla", :processes=>{
           "1"=>{:group=>"blagr", :application=>"bla", :name=>"1", :pid_file=>"1"}, 
           "2"=>{:environment=>{"P"=>"1"}, :group=>"blagr", :application=>"bla", :name=>"2", :pid_file=>"2"}}, 
         :environment=>{"P"=>"1"}}}}}

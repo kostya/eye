@@ -14,12 +14,12 @@ describe "Eye::Dsl::Chain" do
     E
     
     h = {
-      "bla" => {
+      "bla" => {:name => "bla",
         :chain=>{
           :start=>{:grace=>5, :action=>:start}, 
           :restart=>{:grace=>5, :action=>:restart}}, 
         :groups=>{
-          "__default__"=>{
+          "__default__"=>{:name => "__default__", :application => "bla",
             :chain=>{
               :start=>{:grace=>5, :action=>:start}, 
               :restart=>{:grace=>5, :action=>:restart}}, 
@@ -47,13 +47,13 @@ describe "Eye::Dsl::Chain" do
     E
     
     h = {
-      "bla" => {
+      "bla" => {:name => "bla",
         :groups=>{
-          "gr1"=>{
+          "gr1"=>{:name => "gr1", :application => "bla",
             :chain=>{:start=>{:grace=>5, :action=>:start}, 
               :restart=>{:grace=>5, :action=>:restart}}, 
               :processes=>{}}, 
-          "__default__"=>{
+          "__default__"=>{:name => "__default__", :application => "bla",
             :processes=>{"p1"=>{:pid_file=>"1", :application=>"bla", :group=>"__default__", :name=>"p1"}}}}}}
 
     Eye::Dsl.load(conf).should == h
@@ -74,13 +74,13 @@ describe "Eye::Dsl::Chain" do
     E
     
     h = {
-      "bla" => {
+      "bla" => {:name => "bla",
         :groups=>{
-          "gr1"=>{
+          "gr1"=>{:name => "gr1", :application => "bla",
             :working_dir=>"/tmp", 
             :chain=>{:start=>{:grace=>5, :action=>:start}, :restart=>{:grace=>5, :action=>:restart}}, 
             :processes=>{}}, 
-          "gr2"=>{:working_dir=>"/tmp", :processes=>{}}}}}
+          "gr2"=>{:working_dir=>"/tmp", :processes=>{}, :name => "gr2", :application => "bla"}}}}
 
     Eye::Dsl.load(conf).should == h
   end
@@ -96,11 +96,11 @@ describe "Eye::Dsl::Chain" do
       end
     E
     
-    h = {"bla" => {
+    h = {"bla" => {:name => "bla",
       :chain=>{
         :start=>{:grace=>5, :action=>:start, :type=>:async}}, 
       :groups=>{
-        "__default__"=>{
+        "__default__"=>{:name => "__default__", :application => "bla",
           :chain=>{:start=>{:grace=>5, :action=>:start, :type=>:async}}, 
           :processes=>{"3"=>{:chain=>{:start=>{:grace=>5, :action=>:start, :type=>:async}}, :pid_file=>"3", :application=>"bla", :group=>"__default__", :name=>"3"}}}}}}
 
@@ -122,12 +122,12 @@ describe "Eye::Dsl::Chain" do
       end
     E
     
-    h = {"bla" => {
+    h = {"bla" => {:name => "bla",
       :chain=>{
         :start=>{:grace=>5, :action=>:start}, 
         :restart=>{:grace=>5, :action=>:restart}}, 
       :groups=>{
-        "gr"=>{
+        "gr"=>{:name => "gr", :application => "bla",
           :chain=>{
             :start=>{:grace=>10, :action=>:start, :type=>:sync}, 
             :restart=>{:grace=>5, :action=>:restart}}, 

@@ -9,7 +9,7 @@ describe "Eye::Dsl getters" do
         app.stop_timeout = app.start_timeout
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:start_timeout=>10, :stop_timeout=>10, :groups => {}}}
+    Eye::Dsl.load(conf).should == {"bla" => {:start_timeout=>10, :stop_timeout=>10, :name => "bla"}}
   end
 
   it "should get param from scope without =" do
@@ -19,7 +19,7 @@ describe "Eye::Dsl getters" do
         app.stop_timeout app.start_timeout
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:start_timeout=>10, :stop_timeout=>10, :groups => {}}}
+    Eye::Dsl.load(conf).should == {"bla" => {:start_timeout=>10, :stop_timeout=>10, :name => "bla"}}
   end
 
   it "should get param from auto scope" do
@@ -29,7 +29,7 @@ describe "Eye::Dsl getters" do
         stop_timeout start_timeout
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:start_timeout=>10, :stop_timeout=>10, :groups => {}}}
+    Eye::Dsl.load(conf).should == {"bla" => {:start_timeout=>10, :stop_timeout=>10, :name => "bla"}}
   end
 
   it "double =" do
@@ -38,7 +38,7 @@ describe "Eye::Dsl getters" do
         app.stdout = app.stderr = '1'
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:stdout => '1', :stderr => '1', :groups => {}}}
+    Eye::Dsl.load(conf).should == {"bla" => {:name => "bla", :stdout => '1', :stderr => '1'}}
   end
 
   it "env throught proxies" do
@@ -59,8 +59,8 @@ describe "Eye::Dsl getters" do
       end
     E
     Eye::Dsl.load(conf).should == {
-      "bla" => {:environment=>{"A"=>"1"}, :groups=>{
-        "blagr"=>{:environment=>{"A"=>"12"}, :processes=>{
+      "bla" => {:name => "bla", :environment=>{"A"=>"1"}, :groups=>{
+        "blagr"=>{:name => "blagr", :application => "bla", :environment=>{"A"=>"12"}, :processes=>{
           "blap"=>{:environment=>{"A"=>"123"}, :group=>"blagr", :application=>"bla", :name=>'blap', :pid_file=>"1", 
             :start_command=>"ruby app:bla gr:blagr p:blap {\"A\"=>\"1\"} {\"A\"=>\"12\"} {\"A\"=>\"123\"} 1"}}}}}}
   end
@@ -86,10 +86,10 @@ describe "Eye::Dsl getters" do
       end
     E
     Eye::Dsl.load(conf).should == {
-      "bla" => {:environment=>{"A"=>""}, :groups=>{
-        "blagr"=>{:environment=>{"A"=>"", "B"=>""}, :processes=>{
+      "bla" => {:name => "bla", :environment=>{"A"=>""}, :groups=>{
+        "blagr"=>{:name => "blagr", :application => "bla", :environment=>{"A"=>"", "B"=>""}, :processes=>{
           "blap"=>{:environment=>{"A"=>"", "B"=>"", "C"=>""}, :pid_file=>"1", :group=>"blagr", :application=>"bla", :name=>'blap'}}}, 
-        "__default__"=>{:processes=>{
+        "__default__"=>{:name => "__default__", :application => "bla", :processes=>{
           "blap2"=>{:environment=>{"A"=>"", "D"=>""}, :pid_file=>"2", :group=>"__default__", :application=>"bla", :name=>'blap2'}}}}}}
   end
 
@@ -112,8 +112,8 @@ describe "Eye::Dsl getters" do
     E
 
     Eye::Dsl.load(conf).should == {
-      "bla" => {:environment=>{"a"=>"b"}, :groups=>{
-        "blagr"=>{:environment=>{"a"=>"b"}, :processes=>{
+      "bla" => {:name => "bla", :environment=>{"a"=>"b"}, :groups=>{
+        "blagr"=>{:name => "blagr", :application => "bla", :environment=>{"a"=>"b"}, :processes=>{
           "blap"=>{:environment=>{"a"=>"b", "aa"=>"b", "ga"=>"b", "ab" => nil, "gb" => nil}, :pid_file=>"/tmp/blap", :group=>"blagr", :application=>"bla", :name=>'blap'}}}}}}
   end
 
@@ -133,8 +133,8 @@ describe "Eye::Dsl getters" do
     E
 
     Eye::Dsl.load(conf).should == {
-      "bla" => {:working_dir=>"/tmp", :groups=>{
-        "blagr"=>{:working_dir=>"/tmp", :environment=>{"A"=>"/tmp"}, :processes=>{
+      "bla" => {:name => "bla", :working_dir=>"/tmp", :groups=>{
+        "blagr"=>{:name => "blagr", :application => "bla", :working_dir=>"/tmp", :environment=>{"A"=>"/tmp"}, :processes=>{
           "blap"=>{:working_dir=>"/tmp", :environment=>{"A"=>"/tmp"}, :pid_file=>"/tmp/1.pid", :group=>"blagr", :application=>"bla", :name=>'blap'}}}}}}
   end
 
@@ -147,7 +147,7 @@ describe "Eye::Dsl getters" do
         end
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:working_dir=>"/tmp", :groups=>{"blagr"=>{:working_dir=>"/tmp/1", :processes => {}}}}}
+    Eye::Dsl.load(conf).should == {"bla" => {:name => "bla", :working_dir=>"/tmp", :groups=>{"blagr"=>{:name => "blagr", :application => "bla", :working_dir=>"/tmp/1", :processes => {}}}}}
   end
 
 end

@@ -146,9 +146,9 @@ private
     app = Eye::Application.new(app_name, app_config)
     @applications << app
 
-    new_groups = app_config.delete(:groups)
+    new_groups = app_config.delete(:groups) || {}
     new_groups.each do |group_name, group_cfg|
-      group = update_or_create_group(group_name, group_cfg.clone.merge(:application => app_name))
+      group = update_or_create_group(group_name, group_cfg.clone)
       app.add_group(group)
     end
 
@@ -171,9 +171,9 @@ private
       Eye::Group.new(group_name, group_config)
     end
 
-    processes = group_config.delete(:processes)
+    processes = group_config.delete(:processes) || {}
     processes.each do |process_name, process_cfg|
-      process = update_or_create_process(process_name, process_cfg.merge(:group => group_name, :application => group_config[:application]))
+      process = update_or_create_process(process_name, process_cfg.clone)
       group.add_process(process)
     end
 

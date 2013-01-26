@@ -11,7 +11,7 @@ describe "sub procs" do
         include proc        
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:working_dir=>"/tmp", :groups=>{}}}
+    Eye::Dsl.load(conf).should == {"bla" => {:working_dir=>"/tmp", :name => "bla"}}
   end
 
   it "include proc" do
@@ -24,7 +24,7 @@ describe "sub procs" do
         include proc        
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:working_dir=>"/tmp", :groups=>{}}}
+    Eye::Dsl.load(conf).should == {"bla" => {:working_dir=>"/tmp", :name => "bla"}}
   end
 
   it "include method" do
@@ -37,7 +37,7 @@ describe "sub procs" do
         include method(:add_process)
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:working_dir=>"/tmp", :groups=>{}}}
+    Eye::Dsl.load(conf).should == {"bla" => {:working_dir=>"/tmp", :name => "bla"}}
   end
 
   it "include method" do
@@ -50,7 +50,7 @@ describe "sub procs" do
         include :add_process
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:working_dir=>"/tmp", :groups=>{}}}
+    Eye::Dsl.load(conf).should == {"bla" => {:working_dir=>"/tmp", :name => "bla"}}
   end
 
   it "include method" do
@@ -63,7 +63,7 @@ describe "sub procs" do
         include :add_process
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:working_dir=>"/tmp", :groups=>{}}}
+    Eye::Dsl.load(conf).should == {"bla" => {:working_dir=>"/tmp", :name => "bla"}}
   end
 
   it "include method with params" do
@@ -76,7 +76,7 @@ describe "sub procs" do
         include :add_process, "/tmp"
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:working_dir=>"/tmp", :groups=>{}}}
+    Eye::Dsl.load(conf).should == {"bla" => {:working_dir=>"/tmp", :name => "bla"}}
   end
 
 end
