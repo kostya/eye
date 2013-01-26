@@ -127,7 +127,7 @@ describe "Eye::Dsl" do
           end        
         end
       E
-      Eye::Dsl.load(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:stdout=>"1.log", :stderr=>"1.log", :pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
+      Eye::Dsl.load(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:stdout=>"1.log", :stderr=>"1.log", :stdall => "1.log", :pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
     end
 
   end

@@ -8,6 +8,7 @@ class Eye::Dsl
   autoload :ProcessOpts,          'eye/dsl/process_opts'
   autoload :ChildProcessOpts,     'eye/dsl/child_process_opts'
   autoload :Opts,                 'eye/dsl/opts'
+  autoload :PureOpts,             'eye/dsl/pure_opts'
   autoload :Validate,             'eye/dsl/validate'
   autoload :Chain,                'eye/dsl/chain'
 

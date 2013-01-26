@@ -41,6 +41,16 @@ describe "Eye::Dsl getters" do
     Eye::Dsl.load(conf).should == {"bla" => {:name => "bla", :stdout => '1', :stderr => '1'}}
   end
 
+  it "pure_getter" do
+    conf = <<-E
+      Eye.application("bla") do |app|
+        start_timeout 11
+        app.stop_timeout = app.get_start_timeout
+      end
+    E
+    Eye::Dsl.load(conf).should == {"bla" => {:start_timeout=>11, :stop_timeout=>11, :name => "bla"}}
+  end
+
   it "env throught proxies" do
     conf = <<-E
       Eye.application("bla") do |app|

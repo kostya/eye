@@ -64,6 +64,7 @@ describe "Eye::Dsl" do
                 :pid_file=>"1.pid", 
                 :stderr=>"1.log", 
                 :stdout=>"1.log", 
+                :stdall=>"1.log", 
                 :daemonize=>true, 
                 :monitor_children=>{
                   :stop_command=>"kill -9 {{PID}}", 

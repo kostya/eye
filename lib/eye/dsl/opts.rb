@@ -1,61 +1,22 @@
-class Eye::Dsl::Opts
+class Eye::Dsl::Opts < Eye::Dsl::PureOpts
 
-  ALL_OPTIONS = [ :pid_file, :working_dir, :daemonize, :stdout, :stderr, :stdall,
+  ALL_OPTIONS = [ :environment, :pid_file, :working_dir, :daemonize, :stdout, :stderr, :stdall,
     :keep_alive, :check_alive_period, :start_timeout, :restart_timeout, :stop_timeout, :start_grace,
     :restart_grace, :stop_grace, :control_pid, :childs_update_period,
     :auto_start, :start_command, :stop_command, :restart_command, :stop_signals, :stop_on_delete
   ]
 
-  ALL_OPTIONS.each do |opt|
-    define_method(opt) do |*args|
-      if args.blank?
-        # getter
-        @config[ opt ]
-      else
-        # setter
-        key = opt.to_sym
-
-        if disallow_options.include?(key) || (allow_options && !allow_options.include?(key))
-          raise Eye::Dsl::Error, "disallow option #{key} for #{self.class.inspect}"
-        end
-
-        case key 
-        when :stdall #REF
-          @config[:stdout] = @config[:stderr] = args[0]
-        else
-          @config[ key ] = args[0]
-        end
-      end
-    end
-
-    define_method("#{opt}=") do |*args|
-      send opt, *args
-    end
-  end
-
-  attr_reader :name, :full_name, :parent, :full_name
+  create_options_methods(ALL_OPTIONS)
 
   def initialize(name = nil, parent = nil)
-    @name = name.to_s
-    @full_name = @name
+    super(name, parent)
 
-    if parent
-      @parent = parent
-      @config = Marshal.load(Marshal.dump(parent.config)) # O_o ruby recommended deep clone
+    # ensure delete subobjects which can appears from parent config
+    @config.delete :groups
+    @config.delete :processes
 
-      # get only options, without subobjects
-      @config.delete :groups
-      @config.delete :processes
-
-      @config[:application] = parent.name if parent.is_a?(Eye::Dsl::ApplicationOpts)
-      @config[:group] = parent.name if parent.is_a?(Eye::Dsl::GroupOpts)
-
-      @full_name = "#{parent.full_name}:#{@full_name}"
-    else
-      @config = {}
-    end
-
-    @config[:name] = @name if @name.present?
+    @config[:application] = parent.name if parent.is_a?(Eye::Dsl::ApplicationOpts)
+    @config[:group] = parent.name if parent.is_a?(Eye::Dsl::GroupOpts)
   end
 
   def checks(type, opts = {})
@@ -86,71 +47,18 @@ class Eye::Dsl::Opts
     @config[:notriggers][type] = 1
   end
 
-  def environment(*args)
-    if args.blank?
-      # getter
-      @config[:environment]
-    else
-      # setter
-      @config[:environment] ||= {}
-      @config[:environment].merge!(*args)
-    end
+  def set_environment(value)
+    @config[:environment] ||= {}
+    @config[:environment].merge!(value)
   end
 
   alias :env :environment
 
-  def allow_options
-    nil
-  end
+  def set_stdall(value)
+    super
 
-  def disallow_options
-    []
-  end
-
-  def config
-    @config
-  end
-
-  # execute part of config on particular server
-  # array of strings
-  # regexp
-  # string
-  def with_server(glob = nil, &block)
-    on_server = true
-
-    if glob.present? 
-      host = Eye::System.host
-
-      if glob.is_a?(Array)
-        on_server = !!glob.any?{|elem| elem == host}
-      elsif glob.is_a?(Regexp)
-        on_server = !!host.match(glob)
-      elsif glob.is_a?(String) || glob.is_a?(Symbol)
-        on_server = (host == glob.to_s)
-      end
-    end
-
-    with_condition(on_server, &block)
-
-    on_server
-  end
-
-  def with_condition(cond = true, &block)
-    self.instance_eval(&block) if cond && block
-  end
-
-  def include(proc, *args)
-    ie = if proc.is_a?(Symbol) || proc.is_a?(String)
-      if args.present?
-        lambda{|i| i.send(proc, i, *args) }
-      else
-        method(proc).to_proc
-      end
-    else
-      proc
-    end
-
-    self.instance_eval(&ie)
+    set_stdout value
+    set_stderr value
   end
 
 end
