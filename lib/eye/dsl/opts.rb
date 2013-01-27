@@ -63,7 +63,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   end
 
   def set_environment(value)
-    raise Eye::Dsl::Error, "environment should be a hash, but not #{value}" unless value.is_a?(Hash)
+    raise Eye::Dsl::Error, "environment should be a hash, but not #{value.inspect}" unless value.is_a?(Hash)
     @config[:environment] ||= {}
     @config[:environment].merge!(value)
   end

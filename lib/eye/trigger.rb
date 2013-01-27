@@ -11,7 +11,7 @@ class Eye::Trigger
 
   def self.create(options = {}, logger_prefix = nil)
     type = options[:type]
-    klass = "Eye::Trigger::#{TYPES[type]}".constantize
+    klass = eval("Eye::Trigger::#{TYPES[type]}") rescue nil
     raise "Unknown trigger #{type}" unless klass
     klass.new(options, logger_prefix)
   end

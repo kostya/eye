@@ -12,7 +12,7 @@ class Eye::Dsl::PureOpts
 
           if types
             good_type = Array(types).any?{|type| arg.is_a?(type) } || arg.nil?
-            raise Eye::Dsl::Error, "bad #{opt} value #{arg} type, should be #{types.inspect}" unless good_type
+            raise Eye::Dsl::Error, "bad :#{opt} value #{arg.inspect}, type should be #{types.inspect}" unless good_type
           end
 
           @config[key] = arg
