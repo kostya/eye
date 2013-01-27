@@ -246,7 +246,11 @@ private
   end
 
   def prepare_command(command)
-    command.to_s.gsub('{{PID}}', self.pid.to_s)
+    if self.pid
+      command.to_s.gsub('{{PID}}', self.pid.to_s).gsub('{PID}', self.pid.to_s)
+    else
+      command
+    end
   end
 
 end

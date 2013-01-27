@@ -4,8 +4,8 @@ module Eye::Process::Config
     :keep_alive => true, # restart when crushed
     :check_alive_period => 5.seconds,
 
-    :start_timeout => 10.seconds,
-    :stop_timeout => 5.seconds,
+    :start_timeout => 15.seconds,
+    :stop_timeout => 10.seconds,
     :restart_timeout => 10.seconds,
 
     :start_grace => 2.5.seconds, 

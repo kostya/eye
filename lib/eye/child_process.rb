@@ -66,7 +66,7 @@ class Eye::ChildProcess
 
   def delete
     remove_watchers
-    self.terminate
+    terminate
   end
 
   def status_data(debug = false)

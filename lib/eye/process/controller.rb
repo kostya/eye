@@ -59,7 +59,7 @@ module Eye::Process::Controller
     remove_childs
     remove_triggers
 
-    self.terminate
+    terminate
   end
   
 end

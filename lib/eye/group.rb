@@ -71,8 +71,7 @@ class Eye::Group
 
   def delete
     async_all :delete
-
-    self.terminate
+    terminate
   end
 
   def monitor

@@ -3,7 +3,7 @@ class Eye::Dsl::GroupOpts < Eye::Dsl::Opts
   include Eye::Dsl::Chain
 
   def disallow_options
-    [:pid_file]
+    [:pid_file, :start_command]
   end
 
   def process(name, &block)
