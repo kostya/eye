@@ -53,7 +53,7 @@ private
   def start_checker(cfg)
     subject = Eye::Checker.create(pid, cfg, logger.prefix)
 
-    # ex: {:type => :mem_usage, :every => 5.seconds, :below => 100.megabytes, :times => [3,5]}
+    # ex: {:type => :memory, :every => 5.seconds, :below => 100.megabytes, :times => [3,5]}
     add_watcher("check_#{cfg[:type]}".to_sym, subject.every, subject, &method(:watcher_tick).to_proc)
   end
 

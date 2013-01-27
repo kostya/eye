@@ -38,7 +38,7 @@ private
 
       # check that process runned
       unless process_realy_running?
-        warn 'check_alive: process not found, so :crushed'
+        warn 'check_alive: process not found'
         notify :warn, 'crushed!'
         switch :crushed
       else
@@ -70,10 +70,10 @@ private
   def check_crush
     if down?
       if self[:keep_alive] && !@flapping
-        warn 'check crushed: process is down, so :start'
+        warn 'check crushed: process is down'
         schedule :start
       else
-        warn 'check crushed: process is down, and flapping happens, so :unmonitor'
+        warn 'check crushed: process is down, and flapping happens (or not keep_alive option)'
         schedule :unmonitor
       end
     end
