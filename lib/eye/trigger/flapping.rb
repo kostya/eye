@@ -2,7 +2,8 @@ class Eye::Trigger::Flapping < Eye::Trigger
 
   # triggers :flapping, :times => 10, :within => 1.minute
 
-  params :times, :within
+  param :times, [Fixnum], true
+  param :within, [Float, Fixnum], true
 
   def good?
     return true unless within

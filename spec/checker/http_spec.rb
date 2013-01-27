@@ -73,4 +73,25 @@ describe "Eye::Checker::Http" do
       subject.check.should == true
     end
   end
+
+  describe "validates" do
+    it "ok" do
+      Eye::Checker.validate!({:type => :http, :every => 5.seconds, 
+        :times => 1, :url => "http://localhost:3000/", :kind => :success,
+        :pattern => /OK/, :timeout => 2})
+    end
+
+    it "without param url" do
+      expect{ Eye::Checker.validate!({:type => :http, :every => 5.seconds, 
+        :times => 1, :kind => :success,
+        :pattern => /OK/, :timeout => 2}) }.to raise_error(Eye::Checker::Validation::Error)
+    end
+
+    it "bad param timeout" do
+      expect{ Eye::Checker.validate!({:type => :http, :every => 5.seconds, 
+        :times => 1, :kind => :success, :url => "http://localhost:3000/",
+        :pattern => /OK/, :timeout => :fix}) }.to raise_error(Eye::Checker::Validation::Error)
+    end
+  end
+
 end

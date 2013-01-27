@@ -4,7 +4,7 @@ class Eye::Checker::FileCTime < Eye::Checker
 
   # checks :ctime, :every => 5.seconds, :file => "/tmp/1.log", :times => [3,5]
 
-  params :file
+  param :file, [String], true
 
   def check_name
     'ctime'

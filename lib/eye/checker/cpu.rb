@@ -2,8 +2,8 @@ class Eye::Checker::Cpu < Eye::Checker
 
   # checks :cpu, :every => 3.seconds, :below => 80, :times => [3,5]
 
-  params :below
-  
+  param :below, [Fixnum, Float], true
+
   def check_name
     "cpu(#{human_value(below)})"
   end

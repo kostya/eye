@@ -37,15 +37,23 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   def checks(type, opts = {})
     type = type.to_sym
     raise Eye::Dsl::Error, "unknown checker type #{type}" unless Eye::Checker::TYPES[type]
+
+    opts.merge!(:type => type)
+    Eye::Checker.validate!(opts)
+    
     @config[:checks] ||= {}
-    @config[:checks][type] = opts.merge(:type => type)
+    @config[:checks][type] = opts
   end
 
   def triggers(type, opts = {})
     type = type.to_sym
     raise Eye::Dsl::Error, "unknown trigger type #{type}" unless Eye::Trigger::TYPES[type]
+    
+    opts.merge!(:type => type)
+    Eye::Trigger.validate!(opts)
+
     @config[:triggers] ||= {}
-    @config[:triggers][type] = opts.merge(:type => type)
+    @config[:triggers][type] = opts
   end
 
   # clear checks from parent

@@ -262,6 +262,18 @@ describe "Eye::Dsl" do
       Eye::Dsl.load(conf).should == {"bla" => {:groups=>{"__default__"=>{:processes=>{"1"=>{:pid_file=>"1.pid", :monitor_children=>{:checks=>{:cpu=>{:below=>100, :every=>20, :type=>:cpu}}}, :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
     end
 
+    it "no valid checks" do
+      conf = <<-E
+        Eye.application("bla") do
+          process("1") do
+            pid_file "1.pid"
+            checks :cpu,    :below => {1 => 2}, :every => 20.seconds
+          end        
+        end
+      E
+      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Checker::Validation::Error)
+    end
+
     it "ok trigger" do
       conf = <<-E
         Eye.application("bla") do
@@ -273,6 +285,18 @@ describe "Eye::Dsl" do
         end
       E
       Eye::Dsl.load(conf).should == {"bla" => {:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :triggers=>{:flapping=>{:times=>2, :within=>15, :type=>:flapping}}, :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
+    end
+
+    it "no valid trigger" do
+      conf = <<-E
+        Eye.application("bla") do
+          process("1") do
+            pid_file "1.pid"
+            triggers :flapping, :times => 2, :within => "bla"
+          end        
+        end
+      E
+      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Checker::Validation::Error)
     end
 
     it "nochecks to remove inherit checks" do

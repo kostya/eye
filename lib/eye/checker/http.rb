@@ -5,7 +5,12 @@ class Eye::Checker::Http < Eye::Checker
   # checks :http, :every => 5.seconds, :times => 1,
   #  :url => "http://127.0.0.1:3000/", :kind => :success, :pattern => /OK/, :timeout => 3.seconds
 
-  params :url, :pattern, :kind, :timeout, :open_timeout, :read_timeout
+  param :url, String, true
+  param :pattern, [String, Regexp]
+  param :kind
+  param :timeout, [Fixnum, Float]
+  param :open_timeout, [Fixnum, Float]
+  param :read_timeout, [Fixnum, Float]
 
   attr_reader :session, :uri
 

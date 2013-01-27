@@ -45,4 +45,15 @@ describe "Eye::Checker::Memory" do
 
   end
 
+  describe "validates" do
+    it "ok" do
+      Eye::Checker.validate!({:type => :memory, :every => 5.seconds, :times => 1, :below => 10.0.bytes})
+    end
+
+    it "bad param below" do
+      expect{ Eye::Checker.validate!({:type => :memory, :every => 5.seconds, :times => 1, :below => {1 => 2}}) }.to raise_error(Eye::Checker::Validation::Error)
+    end
+  end
+
+
 end

@@ -9,11 +9,18 @@ class Eye::Trigger
 
   attr_reader :message, :options
 
-  def self.create(options = {}, logger_prefix = nil)
-    type = options[:type]
+  def self.get_class(type)
     klass = eval("Eye::Trigger::#{TYPES[type]}") rescue nil
     raise "Unknown trigger #{type}" unless klass
-    klass.new(options, logger_prefix)
+    klass
+  end
+
+  def self.create(options = {}, logger_prefix = nil)
+    get_class(options[:type]).new(options, logger_prefix)
+  end
+
+  def self.validate!(options = {})
+    get_class(options[:type]).validate(options)
   end
 
   def initialize(options = {}, logger_prefix = nil)
@@ -41,8 +48,6 @@ class Eye::Trigger
     raise 'realize me'
   end
 
-  def self.params(*syms)
-    syms.each { |s| define_method(s) { @options[s] } }
-  end
+  extend Eye::Checker::Validation
 
 end

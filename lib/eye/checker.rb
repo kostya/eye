@@ -1,6 +1,8 @@
 class Eye::Checker
   include Eye::Logger::Helpers
 
+  autoload :Validation, 'eye/checker/validation'
+
   autoload :Memory,     'eye/checker/memory'
   autoload :Cpu,        'eye/checker/cpu'
   autoload :Http,       'eye/checker/http'
@@ -12,11 +14,18 @@ class Eye::Checker
 
   attr_accessor :value, :values, :options, :pid, :type
 
-  def self.create(pid, options = {}, logger_prefix = nil)
-    type = options[:type]
+  def self.get_class(type)
     klass = eval("Eye::Checker::#{TYPES[type]}") rescue nil
     raise "Unknown checker #{type}" unless klass
-    klass.new(pid, options, logger_prefix)
+    klass
+  end
+
+  def self.create(pid, options = {}, logger_prefix = nil)
+    get_class(options[:type]).new(pid, options, logger_prefix)
+  end
+
+  def self.validate!(options)
+    get_class(options[:type]).validate(options)
   end
 
   def initialize(pid, options = {}, logger_prefix = nil)
@@ -74,11 +83,11 @@ class Eye::Checker
   end
 
   def max_tries
-    @max_tries ||= if @options[:times]
-      if @options[:times].is_a?(Array)
-        @options[:times][-1].to_i
+    @max_tries ||= if times
+      if times.is_a?(Array)
+        times[-1].to_i
       else
-        @options[:times].to_i
+        times.to_i
       end
     else
       1
@@ -86,9 +95,9 @@ class Eye::Checker
   end
 
   def min_tries
-    @min_tries ||= if @options[:times]
-      if @options[:times].is_a?(Array)
-        @options[:times][0].to_i
+    @min_tries ||= if times
+      if times.is_a?(Array)
+        times[0].to_i
       else
         max_tries
       end
@@ -101,8 +110,8 @@ class Eye::Checker
     @values[-1][:value] if @values.present?
   end
 
-  def self.params(*syms)
-    syms.each { |s| define_method(s) { @options[s] } }
-  end
+  extend Eye::Checker::Validation
+  param :every, [Fixnum, Float], false, 5
+  param :times, [Fixnum, Array]
 
 end

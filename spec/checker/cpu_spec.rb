@@ -45,4 +45,14 @@ describe "Eye::Checker::Cpu" do
 
   end
 
+  describe "validates" do
+    it "ok" do
+      Eye::Checker.validate!({:type => :cpu, :every => 5.seconds, :times => 1, :below => 100})
+    end
+
+    it "bad param below" do
+      expect{ Eye::Checker.validate!({:type => :cpu, :every => 5.seconds, :times => 1, :below => {1 => 2}}) }.to raise_error(Eye::Checker::Validation::Error)
+    end
+  end
+
 end

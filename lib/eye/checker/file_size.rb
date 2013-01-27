@@ -5,7 +5,9 @@ class Eye::Checker::FileSize < Eye::Checker
   # checks :fsize, :every => 5.seconds, :file => "/tmp/1.log", :times => [3,5], 
   #      :below => 30.kilobytes, :above => 10.kilobytes
 
-  params :below, :above, :file
+  param :file, [String], true
+  param :below, [Fixnum, Float]
+  param :above, [Fixnum, Float]
 
   def check_name
     'fsize'
