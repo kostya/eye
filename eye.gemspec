@@ -5,8 +5,8 @@ Gem::Specification.new do |gem|
   gem.authors       = "Konstantin Makarchev"
   gem.email         = "kostya27@gmail.com"
 
-  gem.description   = %q{Process monitoring tool. With bluepill-like config syntax. Requires MRI Ruby >= 1.9.2. Uses Celluloid and Celluloid::IO.}
-  gem.summary       = %q{Process monitoring tool. With bluepill-like config syntax. Requires MRI Ruby >= 1.9.2. Uses Celluloid and Celluloid::IO.}
+  gem.description   = %q{Process monitoring tool. With Bluepill like config syntax. Requires MRI Ruby >= 1.9.2. Uses Celluloid and Celluloid::IO.}
+  gem.summary       = %q{Process monitoring tool. With Bluepill like config syntax. Requires MRI Ruby >= 1.9.2. Uses Celluloid and Celluloid::IO.}
   gem.homepage      = "http://github.com/kostya/eye"
 
   gem.files         = `git ls-files`.split($\)
