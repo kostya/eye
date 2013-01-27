@@ -113,7 +113,7 @@ Command params (with restart for example):
 
 Check config syntax:
 
-    $ eye sy(ntax) examples/test.eye
+    $ eye c(heck) examples/test.eye
 
 Log tracing:
 

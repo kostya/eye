@@ -112,7 +112,7 @@ describe "Eye::Controller::Load" do
 
   it "check syntax" do
     subject.load(fixture("dsl/load2.eye")).should include(error: false)
-    subject.syntax(fixture("dsl/load4.eye")).should include(:error => true, :message => "dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}")
+    subject.check(fixture("dsl/load4.eye")).should include(:error => true, :message => "dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}")
   end
 
   it "check explain" do

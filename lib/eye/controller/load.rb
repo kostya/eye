@@ -1,7 +1,7 @@
 module Eye::Controller::Load
   include Eye::Dsl::Validate
 
-  def syntax(filename = '')
+  def check(filename = '')
     catch_load_error(filename) do
       parse_config(filename)
     end

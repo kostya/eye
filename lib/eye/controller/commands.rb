@@ -18,8 +18,8 @@ module Eye::Controller::Commands
         status_string_debug
       when :quit
         quit
-      when :syntax
-        syntax(*args)
+      when :check
+        check(*args)
       when :explain
         explain(*args)
       when :match

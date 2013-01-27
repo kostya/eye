@@ -76,17 +76,17 @@ class Cli < Thor
     say Eye::ABOUT
   end
 
-  desc "syntax CONF", "check syntax of the config file"
+  desc "check CONF", "check syntax of the config file"
   method_option :host, :type => :string, :aliases => "-h"
-  def syntax(conf)
+  def check(conf)
     conf = File.expand_path(conf) if conf && !conf.empty?
 
     Eye::System.host = options[:host] if options[:host]
     
     if RUBY_VERSION < '1.9'
-      say_load_result cmd(:syntax, conf), :syntax => true
+      say_load_result cmd(:check, conf), :syntax => true
     else
-      say_load_result Eye::Control.syntax(conf), :syntax => true
+      say_load_result Eye::Control.check(conf), :syntax => true
     end
   end
 
