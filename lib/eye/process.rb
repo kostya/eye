@@ -35,7 +35,7 @@ class Eye::Process
     @states_history = Eye::Process::StatesHistory.new(100)
     @states_history << :unmonitored
 
-    debug "start monitoring config: #{@config.inspect}"
+    debug "create with config: #{@config.inspect}"
 
     add_triggers
 

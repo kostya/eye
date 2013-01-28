@@ -20,6 +20,7 @@ require 'rspec/mocks'
 require 'fakeweb'
 
 require File.join(File.dirname(__FILE__), %w{support spec_support})
+require File.join(File.dirname(__FILE__), %w{support scheduler_hack})
 
 $logger_path = File.join(File.dirname(__FILE__), %w{spec.log})
 

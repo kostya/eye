@@ -234,4 +234,43 @@ describe "Eye::Controller::Load" do
     subject.load(fixture("dsl/load_error.eye")).should == {error: true, message: "No such file or directory - /asd/fasd/fas/df/asd/fas/df/d"}
   end
 
+  describe "synchronize groups" do
+    it "correctly schedule monitor for groups and processes" do
+      subject.load(fixture("dsl/load_int.eye")).should include(error: false)
+      sleep 0.2
+
+      p0 = subject.process_by_name 'p0'
+      p1 = subject.process_by_name 'p1'
+      p2 = subject.process_by_name 'p2'
+      gr1 = subject.group_by_name 'gr1'
+      gr_ = subject.group_by_name '__default__'
+
+      p0.schedule_history.states.should == [:monitor]
+      p1.schedule_history.states.should == [:monitor]
+      p2.schedule_history.states.should == [:monitor]
+      gr1.schedule_history.states.should == [:monitor]
+      gr_.schedule_history.states.should == [:monitor]
+
+      subject.load(fixture("dsl/load_int2.eye")).should include(error: false)
+      sleep 0.2
+
+      p1.alive?.should == false
+      p0.alive?.should == false
+
+      p01 = subject.process_by_name 'p0-1'
+      p4 = subject.process_by_name 'p4'
+      p5 = subject.process_by_name 'p5'
+      gr2 = subject.group_by_name 'gr2'
+
+      p2.schedule_history.states.should == [:monitor, :update_config]
+      gr1.schedule_history.states.should == [:monitor, :update_config]
+      gr_.schedule_history.states.should == [:monitor, :update_config]
+
+      p01.schedule_history.states.should == [:monitor]
+      p4.schedule_history.states.should == [:monitor]
+      p5.schedule_history.states.should == [:monitor]
+      gr2.schedule_history.states.should == [:monitor]
+    end
+  end
+
 end

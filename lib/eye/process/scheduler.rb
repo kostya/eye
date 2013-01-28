@@ -17,8 +17,6 @@ module Eye::Process::Scheduler
     remove_scheduler
   end
 
-  #finalize :remove_scheduler
-
 private
 
   def remove_scheduler

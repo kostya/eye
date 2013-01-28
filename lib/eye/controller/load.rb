@@ -145,6 +145,7 @@ private
 
     app = Eye::Application.new(app_name, app_config)
     @applications << app
+    @added_groups, @added_processes = [], []
 
     new_groups = app_config.delete(:groups) || {}
     new_groups.each do |group_name, group_cfg|
@@ -155,6 +156,24 @@ private
     # now, need to clear @old_groups, and @old_processes    
     @old_groups.each{|_, group| group.clear; group.send_command(:delete) }
     @old_processes.each{|_, process| process.send_command(:delete) if process.alive? }
+
+    # schedule monitoring for new groups, processes
+    added_fully_groups = []
+    @added_groups.each do |group|
+      if group.processes.size > 0 && (group.processes - @added_processes).size == 0
+        added_fully_groups << group
+        @added_processes -= group.processes 
+      end
+    end
+
+    added_fully_groups.each{|group| group.send_command :monitor }
+    @added_processes.each{|process| process.send_command :monitor }
+
+    # remove links to prevent memory leaks
+    @old_groups = nil
+    @old_processes = nil
+    @added_groups = nil
+    @added_processes = nil
 
     app
   end
@@ -168,7 +187,9 @@ private
       group
     else
       debug "create group #{group_name}"
-      Eye::Group.new(group_name, group_config)
+      gr = Eye::Group.new(group_name, group_config)
+      @added_groups << gr
+      gr
     end
 
     processes = group_config.delete(:processes) || {}
@@ -189,7 +210,7 @@ private
     else
       debug "create process #{process_name}"
       process = Eye::Process.new(process_cfg)
-      process.schedule :monitor
+      @added_processes << process
       process
     end
   end
