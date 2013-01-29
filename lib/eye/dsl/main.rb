@@ -2,10 +2,12 @@ module Eye::Dsl::Main
   attr_accessor :parsed_config, :parsed_options, :parsed_filename
 
   def application(name, &block)
+    Eye::Dsl.debug "=> app: #{name}"
     @parsed_config ||= {}
     opts = Eye::Dsl::ApplicationOpts.new(name)
     opts.instance_eval(&block)
     @parsed_config[name.to_s] = opts.config if opts.config
+    Eye::Dsl.debug "<= app: #{name}"
   end
 
   alias :app :application 
@@ -18,8 +20,12 @@ module Eye::Dsl::Main
     dirname = File.dirname(real_filename) rescue nil
     mask = Pathname.new(glob).expand_path(dirname).to_s
     Dir[mask].each do |path|
+      Eye::Dsl.debug "=> load #{path}"
+      
       res = Kernel.load(path)
       Eye::Control.info "load: subload #{path} (#{res})"
+
+      Eye::Dsl.debug "<= load #{path}"
     end
   end
 

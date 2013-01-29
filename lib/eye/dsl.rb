@@ -12,22 +12,29 @@ class Eye::Dsl
   autoload :Validate,             'eye/dsl/validate'
   autoload :Chain,                'eye/dsl/chain'
 
-  def self.load(content = nil, filename = nil)
-    Eye.parsed_config = {}
-    Eye.parsed_options ||= {}
-    Eye.parsed_filename = filename
-    
-    content = File.read(filename) if content.blank?
-    
-    Kernel.eval(content, ROOT_BINDING, filename.to_s)
-    validate(Eye.parsed_config)
-
-    Eye.parsed_config
-  end
-
+  class Error < Exception; end
   extend Eye::Dsl::Validate
 
-  class Error < Exception; end
+  class << self
+    attr_accessor :verbose
+
+    def debug(msg = "")
+      puts msg if verbose
+    end
+
+    def load(content = nil, filename = nil)
+      Eye.parsed_config = {}
+      Eye.parsed_options ||= {}
+      Eye.parsed_filename = filename
+      
+      content = File.read(filename) if content.blank?
+      
+      Kernel.eval(content, ROOT_BINDING, filename.to_s)
+      validate(Eye.parsed_config)
+
+      Eye.parsed_config
+    end
+  end
 end
 
 # extend here global module

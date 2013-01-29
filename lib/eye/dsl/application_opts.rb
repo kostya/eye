@@ -7,6 +7,8 @@ class Eye::Dsl::ApplicationOpts < Eye::Dsl::Opts
   end
 
   def group(name, &block) 
+    Eye::Dsl.debug "=> group #{name}"
+    
     opts = Eye::Dsl::GroupOpts.new(name, self)
     opts.instance_eval(&block)    
     if cfg = opts.config
@@ -18,6 +20,8 @@ class Eye::Dsl::ApplicationOpts < Eye::Dsl::Opts
       @config[:groups][name.to_s][:processes] ||= {}
       @config[:groups][name.to_s][:processes].merge!(processes)      
     end
+
+    Eye::Dsl.debug "<= group #{name}"
   end
 
   def process(name, &block)
