@@ -7,7 +7,7 @@ class Eye::Application
   def initialize(name, config = {})
     @groups = []
     @name = name
-    @logger = Eye::Logger.new(@name)
+    @logger = Eye::Logger.new(full_name)
     @config = config
     debug 'created'
   end

@@ -15,7 +15,7 @@ class Eye::Group
     @name = name
     @config = config
     @processes = []
-    @logger = Eye::Logger.new([config[:application], name] * ':')
+    @logger = Eye::Logger.new(full_name)
     @hidden = (name == '__default__')
     debug 'created'
   end
@@ -93,7 +93,7 @@ class Eye::Group
 private  
 
   def async_all(command)
-    info "send to all #{command}"
+    info "send to all processes #{command}"
     
     @processes.each do |process|
       process.send_command(command) if process.alive?
@@ -128,11 +128,23 @@ private
 
   def chain_command(command)
     if @config[:chain] && @config[:chain][command]
-      type = @config[:chain][command][:type] || :async
-      chain(type, command, @config[:chain][command][:grace] || 5)
+      chain_opts = chain_options(command)
+      chain(chain_opts[:type], command, chain_opts[:grace])
     else
       async_all(command)
     end    
+  end
+
+  def chain_options(command)
+    if @config[:chain] && @config[:chain][command]
+      type = @config[:chain][command].try :[], :type
+      type = [:async, :sync].include?(type) ? type : :async
+
+      grace = @config[:chain][command].try :[], :grace
+      grace = grace.to_f rescue 0
+
+      {:type => type, :grace => grace}
+    end
   end
 
 end
