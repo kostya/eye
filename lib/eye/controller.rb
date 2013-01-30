@@ -1,7 +1,11 @@
 require 'celluloid'
+
 require 'active_support'
-require 'active_support/time'
-require 'active_support/core_ext'
+require 'active_support/core_ext/object/blank'
+require 'active_support/core_ext/integer/time'
+require 'active_support/core_ext/numeric/time'
+require 'active_support/core_ext/numeric/bytes'
+
 require_relative 'utils/leak_19'
 
 class Eye::Controller
