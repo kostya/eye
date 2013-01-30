@@ -174,7 +174,7 @@ private
     elsif res == []
       say "command #{_cmd}, targets not found!", :red
     else
-      say "command #{_cmd} affected to [#{res * ", "}]"
+      say "command #{_cmd} sended to [#{res * ", "}]"
     end        
   end
 
