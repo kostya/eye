@@ -38,12 +38,6 @@ private
         off_str = ' ' * off
         str = off_str + (data[:name].to_s + ' ').ljust(35 - off, data[:state] ? '.' : ' ')
 
-        if data[:pid]
-          str += " (#{data[:pid].to_s})".ljust(8)
-        else
-          str += ' '.ljust(8, ' ') #if data[:state]
-        end
-
         if data[:debug]
           str += '| ' + debug_str(data[:debug])
 
@@ -52,8 +46,8 @@ private
             str += " (chain: #{data[:debug][:chain].map(&:to_i)})"
           end
         elsif data[:state]
-          str += ': ' + data[:state].to_s 
-          str += ' (' + resources_str(data[:resources]) + ')' if data[:resources].present? && data[:state].to_sym == :up
+          str += ' ' + data[:state].to_s 
+          str += '  (' + resources_str(data[:resources]) + ')' if data[:resources].present? && data[:state].to_sym == :up
         end
 
       end
@@ -78,6 +72,8 @@ private
     if r[:command] && r[:command].to_s =~ REV_REGX
       res += ", #{$1.to_s[0..5]}"
     end
+
+    res += ", pid:#{r[:pid]}"
     
     res
   end
