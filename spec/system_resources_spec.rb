@@ -25,13 +25,13 @@ describe "Eye::SystemResources" do
     x.is_a?(Array).should == true
     x.first.should > 0
     x.size.should > 0
-    x.sum.should > 0
+    x.all?{|c| c > 0 }.should == true
   end
 
   it "should get cmd" do
+    Eye::Control.set_proc_line
     x = Eye::SystemResources.cmd($$)
-    x.should match(/ruby/)
-    x.should match(/rspec/)
+    x.should match(/eye/)    
   end
 
   it "should cache and update when interval" do
