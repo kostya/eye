@@ -13,7 +13,7 @@ module Eye::Controller::Status
 
     str = <<-S
 About:  #{Eye::ABOUT}
-Info:   #{$$}, #{resources_str(Eye::SystemResources.resources($$), false)}
+Info:   #{resources_str(Eye::SystemResources.resources($$), false)}
 Logger: #{Eye::Logger.dev}
 Actors: #{actors.inspect}
 
@@ -39,7 +39,7 @@ private
         str = off_str + (data[:name].to_s + ' ').ljust(35 - off, data[:state] ? '.' : ' ')
 
         if data[:debug]
-          str += '| ' + debug_str(data[:debug])
+          str += ' | ' + debug_str(data[:debug])
 
           # for group show chain data
           if data[:debug][:chain]
@@ -73,7 +73,7 @@ private
       res += ", #{$1.to_s[0..5]}"
     end
 
-    res += ", pid:#{r[:pid]}"
+    res += ", pid<#{r[:pid]}>"
     
     res
   end

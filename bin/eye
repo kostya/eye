@@ -168,13 +168,13 @@ private
   def send_command(_cmd, *args)
     res = cmd(_cmd, *args)
     if res == :unknown_command
-      say "unknown command", :red
+      say "unknown command #{_cmd}", :red
     elsif res == :corrupred_marshal
       say "something crazy wrong, check eye logs!", :red
     elsif res == []
-      say "command #{_cmd}, targets not found!", :red
+      say "command :#{_cmd}, targets not found!", :red
     else
-      say "command #{_cmd} sended to [#{res * ", "}]"
+      say "command :#{_cmd} sended to [#{res * ", "}]"
     end        
   end
 
