@@ -30,8 +30,6 @@ OptionParser.new do |opts|
 
 end.parse!
 
-$0 = "eye monitoring v#{Eye::VERSION}"
-
 Eye::Settings.ensure_eye_dir
 
 socket_path = options[:socket_path] || Eye::Settings.socket_path
@@ -46,6 +44,8 @@ if config
   res = server.command('load', config)
   exit if res[:error]
 end
+
+Eye::Control.set_proc_line
 
 server.run!
 

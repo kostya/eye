@@ -9,6 +9,7 @@ module Eye::Controller::SendCommand
       
       if command.to_sym == :delete
         remove_object_from_tree(obj) 
+        set_proc_line # to sync proc line if was delete application
         GC.start
       end
     end

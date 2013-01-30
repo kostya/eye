@@ -17,6 +17,7 @@ module Eye::Controller::Load
   def load(filename = '')
     catch_load_error(filename) do
       _load(filename)
+      set_proc_line
     end
   end
 

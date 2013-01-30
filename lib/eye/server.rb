@@ -1,4 +1,3 @@
-require 'socket'
 require 'celluloid/io'
 require_relative 'io/unix_socket'
 require_relative 'io/unix_server'

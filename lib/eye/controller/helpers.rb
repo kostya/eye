@@ -1,6 +1,10 @@
 module Eye::Controller::Helpers
 
-  # methods that helps for specs
+  def set_proc_line
+    str = "eye monitoring v#{Eye::VERSION}"
+    str += " (#{@applications.map(&:name) * ', '})" if @applications.present?
+    $0 = str
+  end
 
   def process_by_name(name)
     all_processes.detect{|c| c.name == name}
