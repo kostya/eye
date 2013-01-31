@@ -220,14 +220,14 @@ describe "Eye::Controller::Load" do
 
   it "group update it settings" do
     subject.load(fixture("dsl/load.eye")).should include(error: false)
-    app = subject.applications.detect{|c| c.name == 'app1'}
-    gr = app.groups.detect{|c| c.name == 'gr2'}
-    gr.config[:chain].should == {:restart => {:grace=>5, :action=>:restart}, :start => {:grace=>5, :action=>:start}}
+    app = subject.application_by_name('app1')
+    gr = subject.group_by_name('gr2')
+    gr.config[:chain].should == {:restart => {:grace=>0.5, :action=>:restart}, :start => {:grace=>0.5, :action=>:start}}
 
     subject.load(fixture("dsl/load6.eye")).should include(error: false)
-    sleep 0.5
+    sleep 1
 
-    gr.config[:chain].should == {:restart => {:grace=>10, :action=>:restart}, :start => {:grace=>10, :action=>:start}}
+    gr.config[:chain].should == {:restart => {:grace=>1.0, :action=>:restart}, :start => {:grace=>1.0, :action=>:start}}
   end
 
   it "raised load" do

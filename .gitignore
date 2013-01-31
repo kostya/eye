@@ -27,3 +27,4 @@ experiments
 .git2
 *.stop
 *sublime*
+examples/work*.eye

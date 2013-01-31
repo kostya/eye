@@ -2,74 +2,89 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "Eye::Group" do
 
-  describe "correctly chain calls" do
-    it "1" do
-      @g = Eye::Group.new('gr', {:chain => {:start => {:type => :sync, :command => :start, :grace => 7}}})
-      mock(@g).chain(:sync, :start, 7)
-      @g.start
-    end
+  describe "Chain calls" do
 
-    it "1.1" do
+    it "should call chain_schedule for start" do
       @g = Eye::Group.new('gr', {:chain => {:start => {:type => :async, :command => :start, :grace => 7}}})
-      mock(@g).chain(:async, :start, 7)
+      mock(@g).chain_schedule(:async, :start, 7)
       @g.start
     end
 
-    it "1.2" do
+    it "should call chain_schedule for start, with type sync" do
+      @g = Eye::Group.new('gr', {:chain => {:start => {:type => :sync, :command => :start, :grace => 7}}})
+      mock(@g).chain_schedule(:sync, :start, 7)
+      @g.start
+    end
+
+    it "config for start and restart, use both" do
       @g = Eye::Group.new('gr', {:chain => {:start => {:type => :async, :command => :start, :grace => 7}, :restart => {:type => :sync, :command => :restart, :grace => 8}}})
-      mock(@g).chain(:async, :start, 7)
+      mock(@g).chain_schedule(:async, :start, 7)
       @g.start
 
-      mock(@g).chain(:sync, :restart, 8)
+      mock(@g).chain_schedule(:sync, :restart, 8)
       @g.restart
     end
 
-    it "2" do
+    it "should use options type" do
       @g = Eye::Group.new('gr', {:chain => {:start => {:type => :sync, :command => :start}}})
-      mock(@g).chain(:sync, :start, 0)
+      mock(@g).chain_schedule(:sync, :start, 0)
       @g.start
     end
 
-    it "3" do
+    it "with empty grace, should call default grace 0" do
       @g = Eye::Group.new('gr', {:chain => {:start => {:command => :start}}})
-      mock(@g).chain(:async, :start, 0)
+      mock(@g).chain_schedule(:async, :start, 0)
       @g.start
     end
 
-    it "4" do
+    it "chain options for restart, but called start, should not call chain" do
       @g = Eye::Group.new('gr', {:chain => {:start => {:command => :restart}}})
-      dont_allow(@g).chain
+      dont_allow(@g).chain_schedule
       @g.restart
     end
 
-    it "4.1" do
+    it "restart without grace, should call default grace 0" do
       @g = Eye::Group.new('gr', {:chain => {:restart => {:command => :restart}}})
-      mock(@g).chain(:async, :restart, 0)
+      mock(@g).chain_schedule(:async, :restart, 0)
       @g.restart
     end
 
-    it "4.1 bad type" do
+    it "restart with invalid type, should call with async" do
       @g = Eye::Group.new('gr', {:chain => {:restart => {:command => :restart, :type => [12324]}}})
-      mock(@g).chain(:async, :restart, 0)
+      mock(@g).chain_schedule(:async, :restart, 0)
       @g.restart
     end
 
-    it "4.1 not valid" do
+    it "restart with invalid grace, should call default grace 0" do
       @g = Eye::Group.new('gr', {:chain => {:restart => {:command => :restart, :grace => []}}})
-      mock(@g).chain(:async, :restart, 0)
+      mock(@g).chain_schedule(:async, :restart, 0)
       @g.restart
     end
 
-    it "4.1 not valid" do
+    it "restart with invalid grace, should call default grace 0" do
       @g = Eye::Group.new('gr', {:chain => {:restart => {:command => :restart, :grace => :some_error}}})
-      mock(@g).chain(:async, :restart, 0)
+      mock(@g).chain_schedule(:async, :restart, 0)
       @g.restart
     end
 
-    it "5" do
+    it "restart with empty config, should call chain_schedule" do
       @g = Eye::Group.new('gr', {})
-      mock(@g).async_all(:restart)
+      mock(@g).async_schedule(:restart)
       @g.restart
+    end
+
+    describe "monitor using chain as start" do
+      it "monitor call chain" do
+        @g = Eye::Group.new('gr', {:chain => {:start => {:command => :start, :grace => 3}}})
+        mock(@g).chain_schedule(:async, :monitor, 3)
+        @g.monitor
+      end
+
+      it "monitor not call chain" do
+        @g = Eye::Group.new('gr', {:chain => {:restart => {:command => :restart, :grace => 3}}})
+        mock(@g).async_schedule(:monitor)
+        @g.monitor
+      end
     end
 
   end

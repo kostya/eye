@@ -58,28 +58,28 @@ class Eye::Group
   end
 
   def start
-    chain_command(:start)
+    chain_command :start
   end
 
   def stop
-    async_all :stop
+    async_schedule :stop
   end
 
   def restart
-    chain_command(:restart)
+    chain_command :restart
   end
 
   def delete
-    async_all :delete
+    async_schedule :delete
     terminate
   end
 
   def monitor
-    async_all :monitor
+    chain_command :monitor
   end
 
   def unmonitor
-    async_all :unmonitor
+    async_schedule :unmonitor
   end
 
   def clear
@@ -92,7 +92,7 @@ class Eye::Group
 
 private  
 
-  def async_all(command)
+  def async_schedule(command)
     info "send to all processes #{command}"
     
     @processes.each do |process|
@@ -100,7 +100,7 @@ private
     end    
   end
 
-  def chain(type, command, grace = 0)
+  def chain_schedule(type, command, grace = 0)
     info "start #{type} chain #{command} with #{grace}s"
 
     @processes.each do | process |
@@ -127,15 +127,16 @@ private
   end
 
   def chain_command(command)
-    if @config[:chain] && @config[:chain][command]
-      chain_opts = chain_options(command)
-      chain(chain_opts[:type], command, chain_opts[:grace])
+    if (chain_opts = chain_options(command))
+      chain_schedule(chain_opts[:type], command, chain_opts[:grace])
     else
-      async_all(command)
+      async_schedule(command)
     end    
   end
 
   def chain_options(command)
+    command = :start if command == :monitor # hack for monitor command, work as start
+
     if @config[:chain] && @config[:chain][command]
       type = @config[:chain][command].try :[], :type
       type = [:async, :sync].include?(type) ? type : :async
