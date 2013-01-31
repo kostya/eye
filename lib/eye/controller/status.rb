@@ -1,11 +1,7 @@
 module Eye::Controller::Status
 
-  def status_data(debug = false)
-    {:subtree => @applications.sort_by(&:name).map{|a| a.status_data(debug) } }
-  end
-
-  def status_string
-    make_str(status_data)
+  def status_string(app = nil)
+    make_str(status_data(false, app))
   end
 
   def status_string_debug
@@ -87,8 +83,14 @@ private
     [w, q] * '; '
   end
 
-  def status_data(debug = false)
-    {:subtree => @applications.sort_by(&:name).map{|a| a.status_data(debug) } }
+  def status_applications(app = nil)
+    apps = app ? @applications.select{|a| a.name == app} : nil
+    apps = @applications unless apps
+    apps
+  end
+
+  def status_data(debug = false, app = nil)
+    {:subtree => status_applications(app).sort_by(&:name).map{|a| a.status_data(debug) } }
   end
 
 end

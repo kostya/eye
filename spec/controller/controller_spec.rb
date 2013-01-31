@@ -64,7 +64,7 @@ describe "Eye::Controller" do
   end
 
   it "status_string" do
-    str = <<S
+    app1 = <<S
 app1                               
   gr1                              
     p1 ............................ unmonitored
@@ -73,12 +73,17 @@ app1
     q3 ............................ unmonitored
   g4 .............................. unmonitored
   g5 .............................. unmonitored
+S
+    app2 = <<S
 app2                               
   z1 .............................. unmonitored
 S
 
     subject.load(fixture("dsl/load.eye"))
-    subject.status_string.should == str.chomp
+    subject.status_string.should == (app1 + app2).chomp
+    subject.status_string('app1').should == app1.chomp
+    subject.status_string('app2').should == app2.chomp
+    subject.status_string('app3').should == ''
   end
 
   it "status_string_debug should be" do

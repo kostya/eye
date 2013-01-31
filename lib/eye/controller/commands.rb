@@ -13,7 +13,7 @@ module Eye::Controller::Commands
       when :load
         load(*args)
       when :info
-        status_string
+        status_string(*args)
       when :xinfo
         status_string_debug
       when :quit
