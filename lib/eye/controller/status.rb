@@ -73,7 +73,7 @@ private
       res += ", #{$1.to_s[0..5]}"
     end
 
-    res += ", pid<#{r[:pid]}>"
+    res += ", <#{r[:pid]}>"
     
     res
   end
