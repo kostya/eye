@@ -30,6 +30,8 @@ private
       str = nil
 
       if data[:name]
+        return make_str(data[:subtree], level) if data[:name] == '__default__'
+
         off = level * 2
         off_str = ' ' * off
         str = off_str + (data[:name].to_s + ' ').ljust(35 - off, data[:state] ? '.' : ' ')
@@ -44,6 +46,8 @@ private
         elsif data[:state]
           str += ' ' + data[:state].to_s 
           str += '  (' + resources_str(data[:resources]) + ')' if data[:resources].present? && data[:state].to_sym == :up
+        elsif data[:current_command]
+          str += " [#{data[:current_command]}]"
         end
 
       end

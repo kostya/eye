@@ -36,11 +36,8 @@ class Eye::Group
   def status_data(debug = false)
     plist = @processes.sort_by(&:name).map{|p| p.status_data(debug) if p.alive? }.compact
 
-    if @hidden
-      plist
-    else
-      {:subtree => plist, :name => name, :debug => debug ? debug_data : nil}
-    end
+    { :subtree => plist, :name => name, :debug => debug ? debug_data : nil, 
+      :current_command => self.current_scheduled_command }
   end
 
   def debug_data

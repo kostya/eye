@@ -27,9 +27,12 @@ describe "Scheduler" do
   it "should schedule action" do
     @process.test1.should == nil
     @process.schedule :scheduler_test1, 1
+    sleep 0.1
+    @process.current_scheduled_command.should == :scheduler_test1
     @process.test1.should == nil
     sleep 0.4
     @process.test1.should == 1
+    @process.current_scheduled_command.should == nil
   end
 
   it "should one after another" do

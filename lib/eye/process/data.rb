@@ -24,7 +24,8 @@ module Eye::Process::Data
       :pid => pid, 
       :state => state, 
       :debug => debug ? debug_data : nil,
-      :resources => Eye::SystemResources.resources(pid)
+      :resources => Eye::SystemResources.resources(pid),
+      :current_command => self.current_scheduled_command
     }    
   end
 

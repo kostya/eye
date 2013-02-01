@@ -7,15 +7,19 @@ module Eye::Process::Scheduler
     end
   end
 
-  def scheduled_action(command, *args, &block)
+  def scheduled_action(command, *args, &block)    
     info "=> #{command} #{args}"
+    @current_scheduled_command = command
     send(command, *args, &block)
+    @current_scheduled_command = nil
     info "<= #{command}"
   end
 
   def finalize
     remove_scheduler
   end
+
+  attr_accessor :current_scheduled_command
 
 private
 
