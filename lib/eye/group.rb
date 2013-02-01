@@ -127,12 +127,12 @@ private
   end
 
   def chain_command(command)
-    if (chain_opts = chain_options(command))
-      chain_schedule(chain_opts[:type], command, chain_opts[:grace])
-    else
-      async_schedule(command)
-    end    
+    chain_opts = chain_options(command)
+    chain_schedule(chain_opts[:type], command, chain_opts[:grace])
   end
+
+  # with such delay will chained processes by default
+  DEFAULT_CHAIN = 0.2
 
   def chain_options(command)
     command = :start if command == :monitor # hack for monitor command, work as start
@@ -142,9 +142,12 @@ private
       type = [:async, :sync].include?(type) ? type : :async
 
       grace = @config[:chain][command].try :[], :grace
-      grace = grace.to_f rescue 0
+      grace = grace ? (grace.to_f rescue DEFAULT_CHAIN) : DEFAULT_CHAIN
 
       {:type => type, :grace => grace}
+    else
+      # default chain case            
+      {:type => :async, :grace => DEFAULT_CHAIN}
     end
   end
 

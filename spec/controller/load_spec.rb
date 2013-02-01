@@ -237,7 +237,7 @@ describe "Eye::Controller::Load" do
   describe "synchronize groups" do
     it "correctly schedule monitor for groups and processes" do
       subject.load(fixture("dsl/load_int.eye")).should include(error: false)
-      sleep 0.2
+      sleep 0.5
 
       p0 = subject.process_by_name 'p0'
       p1 = subject.process_by_name 'p1'
@@ -252,7 +252,7 @@ describe "Eye::Controller::Load" do
       gr_.schedule_history.states.should == [:monitor]
 
       subject.load(fixture("dsl/load_int2.eye")).should include(error: false)
-      sleep 0.2
+      sleep 0.5
 
       p1.alive?.should == false
       p0.alive?.should == false
