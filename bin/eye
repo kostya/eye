@@ -144,6 +144,8 @@ private
       say res[:message]
 
       res[:backtrace].to_a.each{|line| say line}
+
+      exit 1
     else 
       if opts[:started]
         say "started and loaded!", :yellow if !res[:empty]
