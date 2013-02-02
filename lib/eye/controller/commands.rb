@@ -11,7 +11,7 @@ module Eye::Controller::Commands
       when :start, :stop, :restart, :delete, :unmonitor, :monitor
         send_command(cmd, *args)
       when :load
-        load(*args)
+        exclusive{ load(*args) }
       when :info
         status_string(*args)
       when :xinfo
