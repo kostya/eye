@@ -20,4 +20,6 @@ module Eye
   
   autoload :Controller,     'eye/controller'
   autoload :Control,        'eye/control'
+
+  autoload :Http,           'eye/http'
 end

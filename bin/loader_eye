@@ -56,4 +56,9 @@ Kernel.trap("INT") do # for foregraund quit
   exit
 end
 
+# start http server
+Celluloid::Future.new do 
+  app = Eye::Http.new
+  Rack::Handler::Reel.run app, Port: 9292
+end
 sleep
