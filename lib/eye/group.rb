@@ -44,10 +44,18 @@ class Eye::Group
     h = { subtree: plist, name: name }
 
     h.merge!(debug: debug_data) if debug
-    h.merge!(current_command: current_scheduled_command) if current_scheduled_command
 
-    if (chain_commands = scheduler_actions_list) && chain_commands.present?
-      h.merge!(chain_commands: chain_commands) 
+    # show current chain
+    if current_scheduled_command
+      h.update(current_command: current_scheduled_command) 
+
+      if (chain_commands = scheduler_actions_list) && chain_commands.present?
+        h.update(chain_commands: chain_commands) 
+      end
+
+      if @chain_processes_current && @chain_processes_count
+        h.update(chain_progress: [@chain_processes_current, @chain_processes_count]) 
+      end
     end
 
     h
@@ -113,20 +121,33 @@ private
   def chain_schedule(type, command, grace = 0)
     info "start #{type} chain #{command} with #{grace}s"
 
-    @processes.each do | process |
-      # check alive, for prevent races, process can be dead here
-      next unless process.alive?
+    @chain_processes_count = @processes.size
+    @chain_processes_current = 0
 
-      if type == :sync
-        # sync command, with waiting
-        process.send(command)
-      else
-        # async command
-        process.send_command(command)
-      end
+    @processes.each_with_index do | process, ind |
+      @chain_processes_current = @chain_processes_current.to_i + 1
+
+      chain_schedule_process(process, type, command)
+
+      break if ind + 1 == @chain_processes_count.to_i # to not sleep after last process
 
       # wait next process
       sleep grace.to_f
+    end
+
+    @chain_processes_count = nil
+    @chain_processes_current = nil
+  end
+
+  def chain_schedule_process(process, type, command)
+    return unless process.alive?
+
+    if type == :sync
+      # sync command, with waiting
+      process.send(command)
+    else
+      # async command
+      process.send_command(command)
     end
   end
 

@@ -51,7 +51,10 @@ private
           str += ' ' + data[:state].to_s 
           str += '  (' + resources_str(data[:resources]) + ')' if data[:resources].present? && data[:state].to_sym == :up
         elsif data[:current_command]
-          str += " [#{data[:current_command]}]"
+          chain_progress = if data[:chain_progress]
+            " #{data[:chain_progress][0]} of #{data[:chain_progress][1]}" rescue ''
+          end
+          str += " [#{data[:current_command]}#{chain_progress}]"
           str += " (#{data[:chain_commands] * ', '})" if data[:chain_commands]
         end
 

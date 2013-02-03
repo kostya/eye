@@ -66,10 +66,10 @@ describe "Eye::Controller" do
   it "status_string" do
     app1 = <<S
 app1                               
-  gr1                               [monitor]
+  gr1                               [monitor 1 of 2]
     p1 ............................ unmonitored
     p2 ............................ unmonitored
-  gr2                               [monitor]
+  gr2                              
     q3 ............................ unmonitored
   g4 .............................. unmonitored
   g5 .............................. unmonitored
