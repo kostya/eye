@@ -125,10 +125,10 @@ private
 
     if res == :not_started
       say "eye monitoring not found, did you start it?", :red
-      exit
+      exit 1
     elsif res == :timeouted
       say "eye does not answer, timeouted...", :red
-      exit
+      exit 1
     end
     
     res
@@ -138,7 +138,7 @@ private
     _cmd(:ping) == :pong
   end
   
-  def say_load_result(res = {}, opts = {}) #load = true, print_config = false)
+  def say_load_result(res = {}, opts = {})
     if res[:error]
       say "config error: ", :red
       say res[:message]
@@ -170,7 +170,7 @@ private
   def send_command(_cmd, *args)
     res = cmd(_cmd, *args)
     if res == :unknown_command
-      say "unknown command #{_cmd}", :red
+      say "unknown command :#{_cmd}", :red
     elsif res == :corrupred_marshal
       say "something crazy wrong, check eye logs!", :red
     elsif res == []
@@ -204,7 +204,7 @@ private
   def ensure_loader_path
     unless loader_path
       say "start monitoring needs to run under ruby with installed gem 'eye'", :red
-      exit
+      exit 1
     end
   end
 
@@ -238,7 +238,7 @@ private
 
     unless wait_server
       say "server not runned in 15 seconds, something crazy wrong", :red
-      exit
+      exit 1
     end
 
     if conf && !conf.empty?
