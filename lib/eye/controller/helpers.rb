@@ -21,7 +21,7 @@ module Eye::Controller::Helpers
   def all_processes
     processes = []
     all_groups.each do |gr|
-      processes += gr.processes
+      processes += gr.processes.to_a
     end
 
     processes
@@ -30,7 +30,7 @@ module Eye::Controller::Helpers
   def all_groups
     groups = []
     @applications.each do |app|
-      groups += app.groups
+      groups += app.groups.to_a
     end
 
     groups

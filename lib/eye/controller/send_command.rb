@@ -5,7 +5,7 @@ module Eye::Controller::SendCommand
     res = objs.map{|obj| obj.full_name }
 
     objs.each do |obj|
-      obj.send_command(command) if obj.alive?
+      obj.send_command(command)
       
       if command.to_sym == :delete
         remove_object_from_tree(obj) 
@@ -49,7 +49,7 @@ private
       res = final
     end
 
-    res
+    res.present? ? AliveArray.new(res) : res
   end
 
   def find_objects_by_mask(mask)

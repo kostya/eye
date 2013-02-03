@@ -1,3 +1,5 @@
+require_relative 'utils/alive_array'
+
 class Eye::Application
 
   attr_reader :groups, :name
@@ -5,7 +7,7 @@ class Eye::Application
   include Eye::Logger::Helpers
 
   def initialize(name, config = {})
-    @groups = []
+    @groups = AliveArray.new
     @name = name
     @logger = Eye::Logger.new(full_name)
     @config = config
@@ -26,7 +28,7 @@ class Eye::Application
 
   def status_data(debug = false)
     h = { name: @name, 
-      subtree: @groups.map{|gr| gr.status_data(debug) if gr.alive? }.compact }
+      subtree: @groups.map{|gr| gr.status_data(debug) }}
     h.merge!(debug: debug_data) if debug
     h
   end
@@ -38,7 +40,7 @@ class Eye::Application
     debug "send_command #{command}"
     
     @groups.each do |group|
-      group.send_command(command) if group.alive?
+      group.send_command(command)
     end
   end
 

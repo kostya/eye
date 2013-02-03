@@ -1,5 +1,6 @@
 require 'celluloid'
 require_relative 'utils/celluloid_chain'
+require_relative 'utils/alive_array'
 
 class Eye::Group
   include Celluloid
@@ -14,8 +15,8 @@ class Eye::Group
   def initialize(name, config)
     @name = name
     @config = config
-    @processes = []
     @logger = Eye::Logger.new(full_name)
+    @processes = AliveArray.new
     @hidden = (name == '__default__')
     debug 'created'
   end
@@ -35,11 +36,11 @@ class Eye::Group
 
   # sort processes in name order
   def resort_processes
-    @processes = @processes.sort_by{|p| p.name if p.alive? }
+    @processes = @processes.sort_by(&:name)
   end
 
   def status_data(debug = false)
-    plist = @processes.map{|p| p.status_data(debug) if p.alive? }.compact
+    plist = @processes.map{|p| p.status_data(debug) }
 
     h = { subtree: plist, name: name }
 
@@ -101,7 +102,7 @@ class Eye::Group
   end
 
   def clear
-    @processes = []
+    @processes.clear
   end
 
   def sub_object?(obj)
@@ -114,7 +115,7 @@ private
     info "send to all processes #{command}"
     
     @processes.each do |process|
-      process.send_command(command) if process.alive?
+      process.send_command(command)
     end    
   end
 
