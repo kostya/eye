@@ -152,6 +152,7 @@ private
     new_groups.each do |group_name, group_cfg|
       group = update_or_create_group(group_name, group_cfg.clone)
       app.add_group(group)
+      group.resort_processes
     end
 
     # now, need to clear @old_groups, and @old_processes    

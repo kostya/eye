@@ -33,8 +33,13 @@ class Eye::Group
     @processes << process
   end
 
+  # sort processes in name order
+  def resort_processes
+    @processes = @processes.sort_by{|p| p.name if p.alive? }
+  end
+
   def status_data(debug = false)
-    plist = @processes.sort_by(&:name).map{|p| p.status_data(debug) if p.alive? }.compact
+    plist = @processes.map{|p| p.status_data(debug) if p.alive? }.compact
 
     h = { subtree: plist, name: name }
 
