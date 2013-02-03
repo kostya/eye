@@ -25,10 +25,10 @@ class Eye::Application
   end
 
   def status_data(debug = false)
-    { :name => @name, 
-      :subtree => @groups.map{|gr| gr.status_data(debug) if gr.alive? }.compact, 
-      :debug => debug ? debug_data : nil,
-    }
+    h = { name: @name, 
+      subtree: @groups.map{|gr| gr.status_data(debug) if gr.alive? }.compact }
+    h.merge!(debug: debug_data) if debug
+    h
   end
 
   def debug_data

@@ -11,7 +11,7 @@ module Eye::Process::Data
     if childs.present?
       p_st.merge(:subtree => childs.values.map{|c| c.status_data(debug) if c.alive? }.compact)
     elsif self[:monitor_children] && self.up?
-      p_st.merge(:subtree => [{:name => '=loading childs='}])
+      p_st.merge(:subtree => [{name: '=loading childs='}])
     else
       # common state
       p_st
@@ -19,18 +19,16 @@ module Eye::Process::Data
   end
 
   def self_status_data(debug = false)
-    { 
-      :name => name, 
-      :pid => pid, 
-      :state => state, 
-      :debug => debug ? debug_data : nil,
-      :resources => Eye::SystemResources.resources(pid),
-      :current_command => self.current_scheduled_command
-    }    
+    h = { name: name, state: state, resources: Eye::SystemResources.resources(pid) }
+
+    h.merge!(debug: debug_data) if debug
+    h.merge!(current_command: current_scheduled_command) if current_scheduled_command
+
+    h    
   end
 
   def debug_data
-    {:queue => scheduler.names_list, :watchers => @watchers.keys}
+    { queue: scheduler_actions_list, watchers: @watchers.keys }
   end
 
   def sub_object?(obj)

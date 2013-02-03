@@ -36,12 +36,20 @@ class Eye::Group
   def status_data(debug = false)
     plist = @processes.sort_by(&:name).map{|p| p.status_data(debug) if p.alive? }.compact
 
-    { :subtree => plist, :name => name, :debug => debug ? debug_data : nil, 
-      :current_command => self.current_scheduled_command }
+    h = { subtree: plist, name: name }
+
+    h.merge!(debug: debug_data) if debug
+    h.merge!(current_command: current_scheduled_command) if current_scheduled_command
+
+    if (chain_commands = scheduler_actions_list) && chain_commands.present?
+      h.merge!(chain_commands: chain_commands) 
+    end
+
+    h
   end
 
   def debug_data
-    {:queue => scheduler.names_list, :chain => chain_status}
+    {:queue => scheduler_actions_list, :chain => chain_status}
   end
 
   def send_command(command)

@@ -15,6 +15,10 @@ module Eye::Process::Scheduler
     info "<= #{command}"
   end
 
+  def scheduler_actions_list
+    scheduler.list.map{|c| c[:args].first rescue nil }.compact
+  end
+
   def finalize
     remove_scheduler
   end

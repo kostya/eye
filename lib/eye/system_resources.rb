@@ -38,7 +38,7 @@ class Eye::SystemResources
       { :memory => memory_usage(pid), 
         :cpu => cpu_usage(pid), 
         :start_time => start_time(pid),
-        :command => cmd(pid),
+        :cmd => cmd(pid),
         :pid => pid
       }
     end
