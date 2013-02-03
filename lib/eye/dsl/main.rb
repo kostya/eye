@@ -23,7 +23,7 @@ module Eye::Dsl::Main
       Eye::Dsl.debug "=> load #{path}"
       
       res = Kernel.load(path)
-      Eye::Control.info "load: subload #{path} (#{res})"
+      Eye.info "load: subload #{path} (#{res})"
 
       Eye::Dsl.debug "<= load #{path}"
     end

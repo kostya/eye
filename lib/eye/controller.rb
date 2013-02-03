@@ -8,6 +8,8 @@ require 'active_support/core_ext/numeric'
 
 require_relative 'utils/leak_19'
 
+Eye.send(:extend, Eye::Logger::Helpers)
+
 class Eye::Controller
   include Celluloid
 
@@ -30,8 +32,9 @@ class Eye::Controller
     @applications = []
     @current_config = {}
 
-    @logger = Eye::Logger.new 'eye'
-    Celluloid::logger = @logger
+    Eye.instance_variable_set(:@logger, Eye::Logger.new('eye'))
+    self.logger = Eye.logger 
+    Celluloid::logger = Eye.logger
 
     Eye::SystemResources.setup
   end

@@ -124,6 +124,7 @@ describe "Eye::Controller::Load" do
   it "process and groups disappears" do
     subject.load(fixture("dsl/load.eye")).should include(error: false)
     subject.load(fixture("dsl/load5.eye")).should include(error: false)
+    sleep 0.5
 
     group_actors = Celluloid::Actor.all.select{|c| c.class == Eye::Group }
     process_actors = Celluloid::Actor.all.select{|c| c.class == Eye::Process }
@@ -270,6 +271,21 @@ describe "Eye::Controller::Load" do
       p4.schedule_history.states.should == [:monitor]
       p5.schedule_history.states.should == [:monitor]
       gr2.schedule_history.states.should == [:monitor]
+    end
+  end
+
+  describe "load is exclusive" do
+    it "run double in time" do
+      t = Time.now
+      Eye::Control.async.command(:load, fixture("dsl/long_load.eye"))
+      Eye::Control.async.command(:load, fixture("dsl/long_load.eye"))
+      sleep 2.5      
+      Eye::Control.command(:info).should be_a(String) # actor should free here
+    end
+
+    it "load with subloads" do
+      Eye::Control.command(:load, fixture("dsl/subfolder2.eye"))
+      Eye::Control.command(:info).should be_a(String) # actor should free here
     end
   end
 
