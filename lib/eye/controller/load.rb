@@ -121,6 +121,9 @@ private
     new_config.each do |app_name, app_cfg|
       update_or_create_application(app_name, app_cfg.clone)
     end
+
+    # sorting applications
+    @applications.sort_by!(&:name)
   end
 
   def update_or_create_application(app_name, app_config)

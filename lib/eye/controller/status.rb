@@ -1,7 +1,7 @@
 module Eye::Controller::Status
 
   def status_data(debug = false, app = nil)
-    {:subtree => status_applications(app).sort_by(&:name).map{|a| a.status_data(debug) } }
+    {:subtree => status_applications(app).map{|a| a.status_data(debug) } }
   end
 
   def status_string(app = nil)
