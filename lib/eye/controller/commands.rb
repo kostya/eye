@@ -17,7 +17,7 @@ module Eye::Controller::Commands
       when :info
         status_string(*args)
       when :object_info
-        status_data(false, *args)
+        status_data(*args)
       when :xinfo
         status_string_debug
       when :quit
