@@ -1,10 +1,7 @@
 module Eye::Controller::SendCommand
 
   def send_command(command, *obj_strs)
-    objs = find_objects(*obj_strs)
-    res = objs.map{|obj| obj.full_name }
-
-    objs.each do |obj|
+    matched_objects(*obj_strs) do |obj|
       obj.send_command(command)
       
       if command.to_sym == :delete
@@ -13,15 +10,19 @@ module Eye::Controller::SendCommand
         GC.start
       end
     end
-    
-    res
   end
 
   def match(*obj_strs)
-    find_objects(*obj_strs).map{|obj| obj.full_name }
+    matched_objects(*obj_strs)
   end  
 
 private
+
+  def matched_objects(*obj_strs, &block)
+    objs = find_objects(*obj_strs)
+    objs.each{|obj| block[obj] } if block
+    objs.map(&:full_name)
+  end
 
   def remove_object_from_tree(obj)
     @applications.delete(obj)
