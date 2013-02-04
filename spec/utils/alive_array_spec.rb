@@ -42,6 +42,8 @@ describe "AliveArray" do
     l.sort_by(&:name).class.should == AliveArray
     l.sort_by(&:name).pure.should == [a, c]
 
+    l.to_a.map{|c| c.name}.sort.should == %w{a c}
+
     a.terminate
     c.terminate
   end
