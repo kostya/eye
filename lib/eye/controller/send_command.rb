@@ -20,8 +20,9 @@ private
 
   def matched_objects(*obj_strs, &block)
     objs = find_objects(*obj_strs)
+    res = objs.map(&:full_name)
     objs.each{|obj| block[obj] } if block
-    objs.map(&:full_name)
+    res    
   end
 
   def remove_object_from_tree(obj)
