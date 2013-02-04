@@ -139,6 +139,10 @@ describe "Eye::Controller::Load" do
     process_actors.map{|a| a.name}.sort.should == %w{p1 z1}
 
     subject.group_by_name('gr1').processes.full_size.should == 1
+
+    # terminate 1 action
+    subject.process_by_name('p1').terminate
+    subject.status_string.should be_a(String)
   end
 
   it "swap groups" do

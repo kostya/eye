@@ -49,7 +49,7 @@ describe "comamnd spec" do
       subject.remove_object_from_tree(@p2)
       @gr1.processes.should_not include(@p2)
 
-      @gr1.processes.should == []
+      @gr1.processes.should be_empty
     end
   end
 

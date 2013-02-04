@@ -8,12 +8,13 @@ private
     @chain_processes_count = @processes.size
     @chain_processes_current = 0
 
-    @processes.each_with_index do | process, ind |
-      @chain_processes_current = @chain_processes_current.to_i + 1
-
+    @processes.each do | process |
       chain_schedule_process(process, type, command)
 
-      break if ind + 1 == @chain_processes_count.to_i # to not sleep after last process
+      @chain_processes_current = @chain_processes_current.to_i + 1
+
+      # to skip last sleep
+      break if @chain_processes_current.to_i == @chain_processes_count.to_i 
 
       # wait next process
       sleep grace.to_f
@@ -24,8 +25,6 @@ private
   end
 
   def chain_schedule_process(process, type, command)
-    return unless process.alive?
-
     if type == :sync
       # sync command, with waiting
       process.send(command)
