@@ -13,7 +13,7 @@ module Eye::Checker::Validation
   def should_bes; @should_bes ||= []; end
   def defaults; @defaults ||= {}; end
 
-  def param(param, types = nil, should_be = false, default = nil)
+  def param(param, types = [], should_be = false, default = nil)
     param = param.to_sym
 
     validates[param] = types
@@ -28,7 +28,13 @@ module Eye::Checker::Validation
   def validate(options = {})    
     options.each do |param, value|        
       types = validates[param.to_sym]
-      next unless types
+      unless types
+        if param.to_sym != :type
+          raise Error, "#{self.name} unknown param :#{param} value #{value.inspect}" 
+        end
+      end
+
+      next if types.blank?
 
       types = Array(types)
       good = types.any?{|type| value.is_a?(type) }

@@ -53,6 +53,11 @@ describe "Eye::Checker::Memory" do
     it "bad param below" do
       expect{ Eye::Checker.validate!({:type => :memory, :every => 5.seconds, :times => 1, :below => {1 => 2}}) }.to raise_error(Eye::Checker::Validation::Error)
     end
+
+    it "unknown params" do
+      expect{ Eye::Checker.validate!({:hello => true, :type => :memory, :every => 5.seconds, :times => 1, :below => 10.0.bytes})}.to raise_error(Eye::Checker::Validation::Error)
+    end
+
   end
 
 
