@@ -237,6 +237,8 @@ describe "Intergration" do
 
       @c.all_processes.map(&:name).sort.should == %w{forking sample2}
       @c.all_groups.map(&:name).sort.should == %w{__default__ samples}
+      @c.group_by_name('samples').processes.full_size.should == 1
+      @c.group_by_name('samples').processes.map(&:name).should == %w{sample2}
 
       Eye::System.pid_alive?(@old_pid1).should == true
       Eye::System.pid_alive?(@old_pid2).should == true

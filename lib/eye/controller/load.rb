@@ -162,9 +162,9 @@ private
     # schedule monitoring for new groups, processes
     added_fully_groups = []
     @added_groups.each do |group|
-      if group.processes.size > 0 && (group.processes - @added_processes).size == 0
+      if group.processes.size > 0 && (group.processes.pure - @added_processes).size == 0
         added_fully_groups << group
-        @added_processes -= group.processes 
+        @added_processes -= group.processes.pure 
       end
     end
 

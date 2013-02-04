@@ -123,6 +123,8 @@ describe "Eye::Controller::Load" do
 
   it "process and groups disappears" do
     subject.load(fixture("dsl/load.eye")).should include(error: false)
+    subject.group_by_name('gr1').processes.full_size.should == 2
+
     subject.load(fixture("dsl/load5.eye")).should include(error: false)
     sleep 0.5
 
@@ -135,6 +137,8 @@ describe "Eye::Controller::Load" do
 
     group_actors.map{|a| a.name}.sort.should == %w{__default__ gr1}
     process_actors.map{|a| a.name}.sort.should == %w{p1 z1}
+
+    subject.group_by_name('gr1').processes.full_size.should == 1
   end
 
   it "swap groups" do
