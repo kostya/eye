@@ -3,6 +3,7 @@ class AliveArray
   include Enumerable
 
   def_delegators :@arr, :[], :<<, :clear, :delete, :size, :empty?
+  attr_reader :arr
 
   def initialize(arr = [])
     @arr = arr
@@ -13,7 +14,7 @@ class AliveArray
   end
 
   def to_a
-    @arr.map{|x| x}
+    map{|x| x }
   end
 
 end

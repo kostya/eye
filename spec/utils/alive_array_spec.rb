@@ -18,7 +18,7 @@ describe "AliveArray" do
     a.size.should == 3
     a.empty?.should == false
     a << 4
-    a.to_a.should == [1,2,3,4]
+    a.arr.should == [1,2,3,4]
   end
 
   it "alive actions" do
@@ -38,6 +38,8 @@ describe "AliveArray" do
 
     l.include?(a).should == true
     l.include?(b).should == false
+
+    l.sort_by(&:name).map(&:name).should == %w{a c}
 
     a.terminate
     c.terminate
