@@ -1,11 +1,22 @@
 module Eye::Controller::Status
 
-  def status_data(debug = false, app = nil)
-    {:subtree => status_applications(app).map{|a| a.status_data(debug) } }
+  def status_objects(mask = nil)
+    res = []
+    return @applications unless mask
+    matched_objects(mask){|obj| res << obj }    
+    res
   end
 
-  def status_string(app = nil)
-    make_str(status_data(false, app))
+  def status_data(mask = nil)
+    {:subtree => status_objects(mask).map{|a| a.status_data } }
+  end
+
+  def status_data_debug(mask = nil)
+    {:subtree => status_objects(mask).map{|a| a.status_data(true) } }
+  end
+
+  def status_string(mask = nil)
+    make_str(status_data(mask))
   end
 
   def status_string_debug
@@ -17,7 +28,7 @@ Info:   #{resources_str(Eye::SystemResources.resources($$), false)}
 Logger: #{Eye::Logger.dev}
 Actors: #{actors.inspect}
 
-#{make_str(status_data(true))}
+#{make_str(status_data_debug)}
     S
 
     GC.start
