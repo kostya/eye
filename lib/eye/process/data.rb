@@ -19,7 +19,8 @@ module Eye::Process::Data
   end
 
   def self_status_data(debug = false)
-    h = { name: name, state: state, resources: Eye::SystemResources.resources(pid) }
+    h = { name: name, state: state, type: (self.class == Eye::ChildProcess ? :child_process : :process), 
+          resources: Eye::SystemResources.resources(pid) }
 
     h.merge!(debug: debug_data) if debug
     h.merge!(current_command: current_scheduled_command) if current_scheduled_command

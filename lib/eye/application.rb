@@ -27,8 +27,7 @@ class Eye::Application
   end
 
   def status_data(debug = false)
-    h = { name: @name, 
-      subtree: @groups.map{|gr| gr.status_data(debug) }}
+    h = { name: @name, type: :application, subtree: @groups.map{|gr| gr.status_data(debug) }}
     h.merge!(debug: debug_data) if debug
     h
   end

@@ -43,7 +43,7 @@ class Eye::Group
   def status_data(debug = false)
     plist = @processes.map{|p| p.status_data(debug) }
 
-    h = { subtree: plist, name: name }
+    h = { name: name, type: :group, subtree: plist }
 
     h.merge!(debug: debug_data) if debug
 
