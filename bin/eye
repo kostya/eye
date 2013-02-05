@@ -58,12 +58,10 @@ class Cli < Thor
   end
   
   [:start, :stop, :restart, :unmonitor, :monitor, :delete, :match].each do |_cmd|
-    class_eval <<-E
-      desc "#{_cmd} MASK[,...]", "#{_cmd} app,group or process"
-      def #{_cmd}(*targets)
-        send_command('#{_cmd}', *targets)
-      end
-    E
+    desc "#{_cmd} MASK[,...]", "#{_cmd} app,group or process"
+    define_method(_cmd) do |*targets|
+      send_command(_cmd, *targets)
+    end
   end
 
   desc "trace [TARGET]", "tracing log for app,group or process"
