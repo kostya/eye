@@ -28,20 +28,22 @@ describe "Subfolder load spec" do
 
   it "subfolder2" do
     file = fixture('dsl/subfolder2.eye')
-    Eye::Dsl.load(nil, file).should == {
-      "subfolder" => {:name => "subfolder", :working_dir=>"/tmp", :groups=>{
-        "__default__"=>{:name => "__default__", :application => "subfolder", :working_dir=>"/tmp", :processes=>{
-          "e2"=>{:working_dir=>"/tmp", :pid_file=>"e2.pid2", :application=>"subfolder", :group=>"__default__", :name=>"e2"}, 
-          "e3"=>{:working_dir=>"/tmp", :pid_file=>"e3.pid3", :application=>"subfolder", :group=>"__default__", :name=>"e3"}}}}}}
+    res = silence_warnings{ Eye::Dsl.load(nil, file) }
+    res.should == {
+      "subfolder2" => {:name => "subfolder2", :working_dir=>"/tmp", :groups=>{
+        "__default__"=>{:name => "__default__", :application => "subfolder2", :working_dir=>"/tmp", :processes=>{
+          "e3"=>{:working_dir=>"/tmp", :pid_file=>"e3.pid2", :application=>"subfolder2", :group=>"__default__", :name=>"e3"}, 
+          "e4"=>{:working_dir=>"sub2", :pid_file=>"e4.pid3", :application=>"subfolder2", :group=>"__default__", :name=>"e4"}}}}}}
   end
 
   it "subfolder3" do
     file = fixture('dsl/subfolder3.eye')
-    Eye::Dsl.load(nil, file).should == {
-      "subfolder" => {:name => "subfolder", :working_dir=>"/tmp", :groups=>{
-        "__default__"=>{:name => "__default__", :application => "subfolder", :working_dir=>"/tmp", :processes=>{
-          "e1"=>{:working_dir=>"/tmp", :pid_file=>"e1.pid4", :application=>"subfolder", :group=>"__default__", :name=>"e1"}, 
-          "e2"=>{:working_dir=>"/tmp", :pid_file=>"e2.pid5", :application=>"subfolder", :group=>"__default__", :name=>"e2"}}}}}}
+    res = silence_warnings{ Eye::Dsl.load(nil, file) }
+    res.should == {
+      "subfolder3" => {:name => "subfolder3", :working_dir=>"/tmp", :groups=>{
+        "__default__"=>{:name => "__default__", :application => "subfolder3", :working_dir=>"/tmp", :processes=>{
+          "e1"=>{:working_dir=>"/tmp", :pid_file=>"e1.pid4", :application=>"subfolder3", :group=>"__default__", :name=>"e1"}, 
+          "e2"=>{:working_dir=>"sub3", :pid_file=>"e2.pid5", :application=>"subfolder3", :group=>"__default__", :name=>"e2"}}}}}}
   end
 
 end

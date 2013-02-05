@@ -1,6 +1,6 @@
 Eye.load("./subfolder3/**/*.rb")
 
-Eye.application "subfolder" do
+Eye.application "subfolder3" do
   working_dir "/tmp"
 
   proc4 self, "e1"  

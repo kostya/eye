@@ -239,8 +239,20 @@ describe "Eye::Controller::Load" do
     gr.config[:chain].should == {:restart => {:grace=>1.0, :action=>:restart}, :start => {:grace=>1.0, :action=>:start}}
   end
 
+  it "load multiple apps with cross constants" do
+    silence_warnings{ 
+      subject.load(fixture('dsl/subfolder{2,3}.eye')) 
+    }
+    subject.process_by_name('e1')[:working_dir].should == '/tmp'
+    subject.process_by_name('e2')[:working_dir].should == 'sub3'
+
+    subject.process_by_name('e3')[:working_dir].should == '/tmp'
+    subject.process_by_name('e4')[:working_dir].should == 'sub2'
+  end
+
   it "raised load" do
     subject.load(fixture("dsl/load_error.eye")).should == {error: true, message: "No such file or directory - /asd/fasd/fas/df/asd/fas/df/d"}
+    Eye.logger = $logger_path
   end
 
   describe "synchronize groups" do
@@ -292,7 +304,9 @@ describe "Eye::Controller::Load" do
     end
 
     it "load with subloads" do
-      Eye::Control.command(:load, fixture("dsl/subfolder2.eye"))
+      silence_warnings{ 
+        Eye::Control.command(:load, fixture("dsl/subfolder2.eye"))
+      }
       Eye::Control.command(:info).should be_a(String) # actor should free here
     end
   end

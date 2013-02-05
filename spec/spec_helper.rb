@@ -9,8 +9,11 @@ if ENV['COV']
 end
 
 Bundler.require :default
-Eye::Controller #preload
-Eye::Process # preload
+
+# preload
+Eye::Control
+Eye::Controller
+Eye::Process
 
 class Eye::Controller
   public :find_objects, :remove_object_from_tree
