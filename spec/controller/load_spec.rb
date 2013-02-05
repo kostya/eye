@@ -240,9 +240,7 @@ describe "Eye::Controller::Load" do
   end
 
   it "load multiple apps with cross constants" do
-    silence_warnings{ 
-      subject.load(fixture('dsl/subfolder{2,3}.eye')) 
-    }
+    subject.load(fixture('dsl/subfolder{2,3}.eye')) 
     subject.process_by_name('e1')[:working_dir].should == '/tmp'
     subject.process_by_name('e2')[:working_dir].should == 'sub3'
 

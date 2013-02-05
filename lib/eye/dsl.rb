@@ -29,7 +29,10 @@ class Eye::Dsl
       
       content = File.read(filename) if content.blank?
       
-      Kernel.eval(content, ROOT_BINDING, filename.to_s)
+      silence_warnings do
+        Kernel.eval(content, ROOT_BINDING, filename.to_s)
+      end
+      
       validate(Eye.parsed_config)
 
       Eye.parsed_config

@@ -28,8 +28,7 @@ describe "Subfolder load spec" do
 
   it "subfolder2" do
     file = fixture('dsl/subfolder2.eye')
-    res = silence_warnings{ Eye::Dsl.load(nil, file) }
-    res.should == {
+    Eye::Dsl.load(nil, file).should == {
       "subfolder2" => {:name => "subfolder2", :working_dir=>"/tmp", :groups=>{
         "__default__"=>{:name => "__default__", :application => "subfolder2", :working_dir=>"/tmp", :processes=>{
           "e3"=>{:working_dir=>"/tmp", :pid_file=>"e3.pid2", :application=>"subfolder2", :group=>"__default__", :name=>"e3"}, 
@@ -38,8 +37,7 @@ describe "Subfolder load spec" do
 
   it "subfolder3" do
     file = fixture('dsl/subfolder3.eye')
-    res = silence_warnings{ Eye::Dsl.load(nil, file) }
-    res.should == {
+    Eye::Dsl.load(nil, file).should == {
       "subfolder3" => {:name => "subfolder3", :working_dir=>"/tmp", :groups=>{
         "__default__"=>{:name => "__default__", :application => "subfolder3", :working_dir=>"/tmp", :processes=>{
           "e1"=>{:working_dir=>"/tmp", :pid_file=>"e1.pid4", :application=>"subfolder3", :group=>"__default__", :name=>"e1"}, 
