@@ -16,7 +16,7 @@ module Eye::Controller::Status
   end
 
   def status_string(mask = nil)
-    make_str(status_data(mask))
+    make_str(status_data(mask)).to_s
   end
 
   def status_string_debug
@@ -38,9 +38,10 @@ Actors: #{actors.inspect}
 private  
 
   def make_str(data, level = -1)
+    return nil if data.blank?
+
     if data.is_a?(Array)
-      data.map{|el| make_str(el, level) } * "\n"
-    elsif data.nil?              
+      data.map{|el| make_str(el, level) }.compact * "\n"
     else
       str = nil
 
@@ -72,7 +73,13 @@ private
 
       end
 
-      [str, make_str(data[:subtree], level + 1)].compact * "\n"
+      if data[:subtree].nil?
+        str
+      elsif data[:subtree].blank?
+        nil
+      else
+        [str, make_str(data[:subtree], level + 1)].compact * "\n"
+      end
     end
   end
 
