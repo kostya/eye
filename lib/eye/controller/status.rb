@@ -19,7 +19,7 @@ module Eye::Controller::Status
     make_str(status_data(mask)).to_s
   end
 
-  def status_string_debug
+  def status_string_debug(show_config = false)
     actors = Celluloid::Actor.all.map{|actor| actor.instance_variable_get(:@klass) }.group_by{|a| a}.map{|k,v| [k, v.size]}.sort_by{|a|a[1]}.reverse
 
     str = <<-S
@@ -30,6 +30,11 @@ Actors: #{actors.inspect}
 
 #{make_str(status_data_debug)}
     S
+
+    if show_config      
+      str += "Current config: \n"
+      str += "#{current_config}"      
+    end
 
     GC.start
     str
