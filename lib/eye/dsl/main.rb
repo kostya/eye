@@ -16,17 +16,23 @@ module Eye::Dsl::Main
     return if glob.blank?
 
     require 'pathname'
+    saved_parsed_filename = parsed_filename
+
     real_filename = parsed_filename && File.symlink?(parsed_filename) ? File.readlink(parsed_filename) : parsed_filename
     dirname = File.dirname(real_filename) rescue nil
     mask = Pathname.new(glob).expand_path(dirname).to_s
     Dir[mask].each do |path|
       Eye::Dsl.debug "=> load #{path}"
-      
+
+      self.parsed_filename = path
+
       res = Kernel.load(path)
       Eye.info "load: subload #{path} (#{res})"
 
       Eye::Dsl.debug "<= load #{path}"
     end
+
+    self.parsed_filename = saved_parsed_filename
   end
 
   def logger=(log_path)

@@ -44,4 +44,9 @@ describe "Subfolder load spec" do
           "e2"=>{:working_dir=>"sub3", :pid_file=>"e2.pid5", :application=>"subfolder3", :group=>"__default__", :name=>"e2"}}}}}}
   end
 
+  it "subfolder4" do
+    file = fixture('dsl/subfolder4.eye')
+    Eye::Dsl.load(nil, file).should == {"subfolder4"=>{:name=>"subfolder4", :environment=>{"a"=>1, "b"=>2, "c"=>3}}}
+  end
+
 end
