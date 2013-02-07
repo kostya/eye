@@ -43,7 +43,8 @@ private
         switch :crushed
       else
         # check that pid_file still here
-        ppid = load_pid_from_file
+        ppid = failsafe_load_pid
+        
         if ppid != self.pid
           msg = "check_alive: pid_file(#{self[:pid_file]}) changes by itself (#{self.pid}) => (#{ppid})"
           if control_pid?
@@ -65,6 +66,18 @@ private
         end
       end
     end
+  end
+
+  def failsafe_load_pid
+    pid = load_pid_from_file
+
+    if !pid 
+      # this is can be symlink changed case
+      sleep 0.1
+      pid = load_pid_from_file
+    end
+
+    pid
   end
 
   def check_crush
