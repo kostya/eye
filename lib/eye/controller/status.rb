@@ -55,7 +55,7 @@ private
 
         off = level * 2
         off_str = ' ' * off
-        name = (data[:type] == :application) ? "\033[1m#{data[:name]}\033[0m" : data[:name].to_s
+        name = (data[:type] == :application && @applications.size > 1) ? "\033[1m#{data[:name]}\033[0m" : data[:name].to_s
         str = off_str + (name + ' ').ljust(35 - off, data[:state] ? '.' : ' ')
 
         if data[:debug]

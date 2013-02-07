@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 require File.dirname(__FILE__) + '/spec_helper'
 
-class A 
+class Aaa
   include Celluloid
 
   def int
@@ -16,7 +16,7 @@ end
 
 describe "Actor mocking" do
   before :each do
-    @a = A.new    
+    @a = Aaa.new    
   end
 
   it "int" do
