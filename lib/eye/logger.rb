@@ -16,7 +16,7 @@ class Eye::Logger
   end
 
   module Helpers
-    attr_accessor :logger
+    attr_reader :logger
 
     Logger::Severity.constants.each do |level|
       method_name = level.to_s.downcase
