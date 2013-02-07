@@ -95,17 +95,30 @@ class Eye::Dsl::PureOpts
   end
 
   def include(proc, *args)
-    ie = if proc.is_a?(Symbol) || proc.is_a?(String)
-      if args.present?
-        lambda{|i| i.send(proc, i, *args) }
-      else
-        method(proc).to_proc
+    saved_parsed_filename = Eye.parsed_filename
+
+    if proc.is_a?(String)
+      real_filename = Eye.parsed_filename && File.symlink?(Eye.parsed_filename) ? File.readlink(Eye.parsed_filename) : Eye.parsed_filename
+      dirname = File.dirname(real_filename) rescue nil
+      path = Pathname.new(proc).expand_path(dirname).to_s      
+      if File.exists?(path)
+        Eye::Dsl.debug "=> load #{path}"
+        Eye.parsed_filename = path
+        self.instance_eval(File.read(path)) 
+        Eye::Dsl.debug "<= load #{path}"
       end
     else
-      proc
+      ie = if args.present?
+        lambda{|i| proc[i, *args] }
+      else
+        proc
+      end
+
+      self.instance_eval(&ie)
     end
 
-    self.instance_eval(&ie)
+  ensure
+    Eye.parsed_filename = saved_parsed_filename
   end
 
 end

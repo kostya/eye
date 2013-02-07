@@ -13,10 +13,10 @@ module Eye::Dsl::Main
   alias :app :application 
 
   def load(glob = '')
-    return if glob.blank?
+    saved_parsed_filename = self.parsed_filename
 
+    return if glob.blank?
     require 'pathname'
-    saved_parsed_filename = parsed_filename
 
     real_filename = parsed_filename && File.symlink?(parsed_filename) ? File.readlink(parsed_filename) : parsed_filename
     dirname = File.dirname(real_filename) rescue nil
@@ -32,6 +32,7 @@ module Eye::Dsl::Main
       Eye::Dsl.debug "<= load #{path}"
     end
 
+  ensure
     self.parsed_filename = saved_parsed_filename
   end
 
