@@ -26,13 +26,15 @@ module Eye::Controller::Status
 About:  #{Eye::ABOUT}
 Info:   #{resources_str(Eye::SystemResources.resources($$), false)}
 Logger: #{Eye::Logger.dev}
+Socket: #{Eye::Settings::socket_path}
+PidPath: #{Eye::Settings::pid_path}
 Actors: #{actors.inspect}
 
 #{make_str(status_data_debug)}
     S
 
     if show_config      
-      str += "Current config: \n"
+      str += "\nCurrent config: \n"
       str += "#{current_config}"      
     end
 
