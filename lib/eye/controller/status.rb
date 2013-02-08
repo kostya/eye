@@ -98,7 +98,7 @@ private
     res = "#{r[:start_time]}, #{r[:cpu]}%"
 
     if r[:memory]
-      mem = mb ? "#{r[:memory] / 1024}Mb" : "#{r[:memory]}Kb"
+      mem = mb ? "#{r[:memory] / 1000} MB" : "#{r[:memory]} kB"
       res += ", #{mem}"
     end
 

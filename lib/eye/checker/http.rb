@@ -83,7 +83,7 @@ class Eye::Checker::Http < Eye::Checker
         'Err'
       end
     else
-      "#{value[:result].code}=#{value[:result].body.size/ 1024}Kb"
+      "#{value[:result].code}=#{value[:result].body.size/ 1000} kB"
     end
   end
 

@@ -5,7 +5,7 @@ module Eye::Settings
   module_function
   
   def dir
-    File.expand_path(File.join(ENV['HOME'], '.eye'))
+    File.expand_path(File.join('/var/run/eye'))
   end
   
   def path(path)
