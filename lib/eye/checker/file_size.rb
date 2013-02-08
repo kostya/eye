@@ -18,7 +18,7 @@ class Eye::Checker::FileSize < Eye::Checker
   end
 
   def human_value(value)
-    "#{value.to_i / 1024}Kb"
+    "#{value.to_i / 1000} kB"
   end
 
   def good?(value)
