@@ -60,6 +60,18 @@ module C
     )
   end
 
+  # event machine
+  def p4
+    base.merge(
+      :pid_file => "em.pid",
+      :name => "em",
+      :start_command => "ruby em.rb",
+      :daemonize => true,
+      :start_grace => 2.5,
+      :stop_grace => 0
+    )
+  end
+
   def check_mem(a = {})
     {:memory => {:type => :memory, :every => 2.seconds, :below => 100.megabytes, :times => [3,5]}.merge(a)}
   end
@@ -135,6 +147,8 @@ def start_ok_process(cfg = C.p1)
   @process.state_name.should == :up
   @pid = @process.pid
   Eye::System.pid_alive?(@pid).should == true
+
+  @process
 end
 
 def die_process!(pid, signal = :term, int = 0.2)
