@@ -57,7 +57,7 @@ private
 
         off = level * 2
         off_str = ' ' * off
-        name = (data[:type] == :application && @applications.size > 1) ? "\033[1m#{data[:name]}\033[0m" : data[:name].to_s
+        name = (data[:type] == :application) ? "\033[1m#{data[:name]}\033[0m" : data[:name].to_s
         str = off_str + (name + ' ').ljust(35 - off, data[:state] ? '.' : ' ')
 
         if data[:debug]
@@ -74,7 +74,7 @@ private
           chain_progress = if data[:chain_progress]
             " #{data[:chain_progress][0]} of #{data[:chain_progress][1]}" rescue ''
           end
-          str += " [#{data[:current_command]}#{chain_progress}]"
+          str += " \e[1;33m[#{data[:current_command]}#{chain_progress}]\033[0m"
           str += " (#{data[:chain_commands] * ', '})" if data[:chain_commands]
         end
 
