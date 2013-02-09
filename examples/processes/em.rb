@@ -43,6 +43,10 @@ class EchoObj < EM::Connection
   end  
 end
 
+trap "TERM" do
+  EM.stop
+end
+
 EM.run do
   EM.start_server '127.0.0.1', 33221, Echo
   EM.start_server '127.0.0.1', 33222, EchoObj

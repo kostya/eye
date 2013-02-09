@@ -67,8 +67,8 @@ module C
       :name => "em",
       :start_command => "ruby em.rb",
       :daemonize => true,
-      :start_grace => 2.5,
-      :stop_grace => 0
+      :start_grace => 3.5,
+      :stop_grace => 0.5
     )
   end
 

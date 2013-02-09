@@ -77,7 +77,9 @@ class Eye::Checker::Socket < Eye::Checker
 
     if expect_data
       return true if expect_data.is_a?(Regexp) && expect_data.match(value[:result])
-      return false if value[:result].to_s != expect_data.to_s
+      return true if value[:result].to_s == expect_data.to_s
+      warn "pattern #{expect_data} not found in (#{value[:result].truncate(30)}) answer"
+      return false
     end
 
     return true
@@ -93,7 +95,11 @@ class Eye::Checker::Socket < Eye::Checker
         "Err(#{value[:exception]})"
       end
     else
-      "#{value[:result].to_s.size}b"
+      if value[:result] == :listen
+        "listen"
+      else
+        "#{value[:result].to_s.size}b"
+      end
     end
   end
 

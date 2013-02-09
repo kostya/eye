@@ -43,6 +43,11 @@ class EchoObj < EM::Connection
   end  
 end
 
+trap "TERM" do
+  EM.stop
+  `rm /tmp/em_test_sock_spec` rescue nil
+end
+
 EM.run do
   EM.start_server '127.0.0.1', 33231, Echo
   EM.start_server '127.0.0.1', 33232, EchoObj
