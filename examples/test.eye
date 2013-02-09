@@ -49,5 +49,15 @@ Eye.app "test" do
       checks :memory, :below => 300.megabytes, :times => 3
     end
   end
+  
+  process :event_machine do
+    pid_file 'em.pid'
+    start_command 'ruby em.rb'
+    stdall 'em.log'
+    daemonize true
+    
+    checks :socket, :addr => "tcp://127.0.0.1:33221", :send_data => "ping", :expect_data => /pong/,
+                    :every => 10.seconds, :times => 2, :timeout => 1.second
+  end
 
 end
