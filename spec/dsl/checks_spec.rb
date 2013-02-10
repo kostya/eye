@@ -183,4 +183,20 @@ describe "Eye::Dsl checks" do
     expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
   end
 
+  it "check with Proc" do
+    conf = <<-E
+      Eye.application("bla") do
+        process("1") do
+          pid_file "1.pid"
+
+          checks :socket, :addr => "unix:/tmp/1", :expect_data => Proc.new{|data| data == 1}
+        end        
+      end
+    E
+    res = Eye::Dsl.load(conf)
+    proc = res['bla'][:groups]['__default__'][:processes]['1'][:checks][:socket][:expect_data]
+    proc[0].should == false
+    proc[1].should == true
+  end
+
 end

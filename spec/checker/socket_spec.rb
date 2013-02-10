@@ -2,18 +2,24 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 def chsock(cfg = {})
   Eye::Checker.create(nil, {:type => :socket, :every => 5.seconds, 
-        :times => 1, :addr => "tcp://127.0.0.1:3000", :send_data => "ping", 
+        :times => 1, :addr => 'tcp://127.0.0.1:33231', :send_data => "ping",
         :expect_data => /pong/, :timeout => 2}.merge(cfg))
 end
 
-describe "Intergration" do
+def chsockb(cfg = {})
+  Eye::Checker.create(nil, {:type => :socket, :every => 5.seconds, 
+        :times => 1, :addr => 'tcp://127.0.0.1:33232', :protocol => :em_object, :send_data => {}, 
+        :expect_data => /pong/, :timeout => 2}.merge(cfg))
+end
+
+describe "Socket Checker" do
   %w[ tcp://127.0.0.1:33231 unix:/tmp/em_test_sock_spec].each do |addr|
-    describe "real socket: #{addr}" do
+    describe "socket: '#{addr}'" do
       before :each do
         start_ok_process(C.p4)
       end
 
-      it "good answer w" do
+      it "good answer" do
         c = chsock(:addr => addr)
         c.get_value.should == {:result => 'pong'}
         c.check.should == true
@@ -31,6 +37,9 @@ describe "Intergration" do
       it "bad answer" do
         c = chsock(:addr => addr, :send_data => "bad")
         c.get_value.should == {:result => 'what'}
+        c.check.should == false
+
+        c = chsock(:addr => addr, :send_data => "bad", :expect_data => "pong") # string result bad too
         c.check.should == false
       end
 
@@ -62,5 +71,35 @@ describe "Intergration" do
       end
     end
 
+  end
+
+  describe "em binary protocol" do
+    before :each do
+      start_ok_process(C.p4)
+    end
+
+    it "good answer" do
+      c = chsockb(:send_data => {:command => 'ping'}, :expect_data => 'pong')
+      c.get_value.should == {:result => 'pong'}
+      c.check.should == true
+
+      c = chsockb(:send_data => {:command => 'ping'}, :expect_data => /pong/)
+      c.check.should == true
+
+      c = chsockb(:send_data => {:command => 'ping'}, :expect_data => lambda{|r| r == 'pong'})
+      c.check.should == true
+    end
+
+    it "bad answer" do
+      c = chsockb(:send_data => {:command => 'bad'}, :expect_data => 'pong')
+      c.get_value.should == {:result => 'what'}
+      c.check.should == false
+
+      c = chsockb(:send_data => {:command => 'bad'}, :expect_data => /pong/)
+      c.check.should == false
+
+      c = chsockb(:send_data => {:command => 'bad'}, :expect_data => lambda{|r| r == 'pong'})
+      c.check.should == false
+    end
   end
 end

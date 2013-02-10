@@ -35,11 +35,11 @@ class EchoObj < EM::Connection
 
   def receive_object obj # {:command => 'ping'}
     puts "receive #{obj.inspect}"
-    send_object(answer(data[:command]))
+    send_object(answer(obj[:command]).chop)
   end
 
   def unbind
-     puts "-- someone disconnected from the echo server!"
+    puts "-- someone disconnected from the echo server!"
   end  
 end
 

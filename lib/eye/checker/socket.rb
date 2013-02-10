@@ -10,14 +10,15 @@ class Eye::Checker::Socket < Eye::Checker
   # :read_timeout  override generic timeout for data read/write
   # :send_data     after connection send this data
   # :expect_data   after sending :send_data expect this response. Can be a string or a Regexp
-  #
+  # :protocol      way of pack,unpack messages (default = socket default), examples: :protocal => :em_object
 
   param :addr, String, true
   param :timeout, [Fixnum, Float]
   param :open_timeout, [Fixnum, Float]
   param :read_timeout, [Fixnum, Float]
-  param :send_data, String
-  param :expect_data, [String, Regexp]
+  param :send_data
+  param :expect_data, [String, Regexp, Proc]
+  param :protocol, [String, Symbol]
 
   def check_name
     'socket'
@@ -53,8 +54,8 @@ class Eye::Checker::Socket < Eye::Checker
 
     if send_data
       Timeout::timeout(@read_timeout) do
-        sock.write(send_data)
-        { :result => sock.readline.chop }
+        _write_data(sock, send_data)
+        { :result => _read_data(sock) }
       end
     else
       { :result => :listen }
@@ -76,9 +77,16 @@ class Eye::Checker::Socket < Eye::Checker
     return false if !value[:result]
 
     if expect_data
+      if expect_data.is_a?(Proc)        
+        match = !!expect_data[value[:result]] 
+        warn "proc #{expect_data} not matched (#{value[:result].truncate(30)}) answer" unless match
+        return match
+      end
+
       return true if expect_data.is_a?(Regexp) && expect_data.match(value[:result])
       return true if value[:result].to_s == expect_data.to_s
-      warn "pattern #{expect_data} not found in (#{value[:result].truncate(30)}) answer"
+
+      warn "#{expect_data} not matched (#{value[:result].truncate(30)}) answer"      
       return false
     end
 
@@ -100,6 +108,34 @@ class Eye::Checker::Socket < Eye::Checker
       else
         "#{value[:result].to_s.size}b"
       end
+    end
+  end
+
+private
+
+  def _write_data(socket, data)
+    case protocol
+    when :em_object
+      data = Marshal.dump(data)
+      to_send = [data.respond_to?(:bytesize) ? data.bytesize : data.size, data].pack('Na*')
+      socket.write(to_send)
+    else
+      socket.write(data.to_s)
+    end
+  end
+
+  def _read_data(socket)
+    case protocol
+    when :em_object
+      msg_size = socket.recvfrom(4).first.unpack('N').first rescue 0
+      if msg_size > 0
+        data = socket.recvfrom(msg_size).first
+        data = Marshal.load(data) rescue 'corrupted_marshal'
+      else
+        'corrupted_message'
+      end
+    else
+      socket.readline.chop
     end
   end
 
