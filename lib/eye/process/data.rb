@@ -9,7 +9,7 @@ module Eye::Process::Data
     p_st = self_status_data(debug)
 
     if childs.present?
-      p_st.merge(:subtree => AliveArray.new(childs.values).map{|c| c.status_data(debug) } )
+      p_st.merge(:subtree => Eye::Utils::AliveArray.new(childs.values).map{|c| c.status_data(debug) } )
     elsif self[:monitor_children] && self.up?
       p_st.merge(:subtree => [{name: '=loading childs='}])
     else

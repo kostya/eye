@@ -26,10 +26,10 @@ class TestActor
   end
 end
 
-describe "Celluloid::Chain" do
+describe "Eye::Utils::CelluloidChain" do
   before :each do
     @t = TestActor.new
-    @c = Celluloid::Chain.new(@t)    
+    @c = Eye::Utils::CelluloidChain.new(@t)    
   end
 
   it "should chain" do

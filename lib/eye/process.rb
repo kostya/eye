@@ -1,5 +1,4 @@
 require 'celluloid'
-require_relative 'utils/celluloid_chain'
 
 class Eye::Process
   include Celluloid

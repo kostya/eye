@@ -1,6 +1,4 @@
 require 'celluloid'
-require_relative 'utils/celluloid_chain'
-require_relative 'utils/alive_array'
 
 class Eye::Group
   include Celluloid
@@ -17,7 +15,7 @@ class Eye::Group
     @name = name
     @config = config
     @logger = Eye::Logger.new(full_name)
-    @processes = AliveArray.new
+    @processes = Eye::Utils::AliveArray.new
     @hidden = (name == '__default__')
     debug 'created'
   end

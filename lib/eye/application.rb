@@ -1,5 +1,3 @@
-require_relative 'utils/alive_array'
-
 class Eye::Application
 
   attr_reader :groups, :name
@@ -7,7 +5,7 @@ class Eye::Application
   include Eye::Logger::Helpers
 
   def initialize(name, config = {})
-    @groups = AliveArray.new
+    @groups = Eye::Utils::AliveArray.new
     @name = name
     @logger = Eye::Logger.new(full_name)
     @config = config

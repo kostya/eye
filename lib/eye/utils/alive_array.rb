@@ -1,4 +1,4 @@
-class AliveArray
+class Eye::Utils::AliveArray
   extend Forwardable
   include Enumerable
 
@@ -25,7 +25,7 @@ class AliveArray
   end
 
   def sort_by(&block)
-    AliveArray.new super
+    self.class.new super
   end
 
 end

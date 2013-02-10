@@ -51,7 +51,7 @@ private
       res = final
     end
 
-    res.present? ? AliveArray.new(res) : res
+    res.present? ? Eye::Utils::AliveArray.new(res) : res
   end
 
   def find_objects_by_mask(mask)

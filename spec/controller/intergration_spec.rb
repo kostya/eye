@@ -270,7 +270,7 @@ describe "Intergration" do
       Eye::System.pid_alive?(@old_pid1).should == false
 
       actors = Celluloid::Actor.all.map(&:class)
-      actors.should_not include(Celluloid::Chain)
+      actors.should_not include(Eye::Utils::CelluloidChain)
       actors.should_not include(Eye::Process)
       actors.should_not include(Eye::Group)
       actors.should_not include(Eye::Application)

@@ -32,7 +32,7 @@ private
   end
 
   def scheduler
-    @scheduler ||= Celluloid::Chain.new(current_actor)
+    @scheduler ||= Eye::Utils::CelluloidChain.new(current_actor)
   end
 
 end

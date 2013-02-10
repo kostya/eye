@@ -1,6 +1,6 @@
 require 'celluloid'
 
-class Celluloid::Chain
+class Eye::Utils::CelluloidChain
   include Celluloid
 
   def initialize(target)
