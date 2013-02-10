@@ -4,13 +4,13 @@ class Eye::Checker::Socket < Eye::Checker
   #  :addr => "unix:/var/run/daemon.sock", :timeout => 3.seconds,
   #
   # Available parameters:
-  # :addr          the socket addr to open. The format is tcp:<address>:<port> or unix:<path>
+  # :addr          the socket addr to open. The format is tcp://<host>:<port> or unix:<path>
   # :timeout       generic timeout for opening the socket or reading data
   # :open_timeout  override generic timeout for the connection
   # :read_timeout  override generic timeout for data read/write
   # :send_data     after connection send this data
-  # :expect_data   after sending :send_data expect this response. Can be a string or a Regexp
-  # :protocol      way of pack,unpack messages (default = socket default), examples: :protocal => :em_object
+  # :expect_data   after sending :send_data expect this response. Can be a string, Regexp or a Proc
+  # :protocol      way of pack,unpack messages (default = socket default), example: :protocol => :em_object
 
   param :addr, String, true
   param :timeout, [Fixnum, Float]
@@ -26,7 +26,7 @@ class Eye::Checker::Socket < Eye::Checker
 
   def initialize(*args)
     super
-    @open_timeout = (open_timeout || timeout || 1).to_i
+    @open_timeout = (open_timeout || 1).to_i
     @read_timeout = (read_timeout || timeout || 5).to_i
 
     if addr =~ %r[\Atcp://(.*?):(.*?)\z]
@@ -44,12 +44,14 @@ class Eye::Checker::Socket < Eye::Checker
   end
 
   def get_value_sync
-    sock = if @socket_family == :tcp      
-      TCPSocket.open(@socket_addr, @socket_port)
-    elsif @socket_family == :unix
-      UNIXSocket.open(@socket_path)
-    else
-      raise "Unknown socket addr #{addr}"
+    sock = Timeout::timeout(@open_timeout) do
+      if @socket_family == :tcp      
+        TCPSocket.open(@socket_addr, @socket_port)
+      elsif @socket_family == :unix
+        UNIXSocket.open(@socket_path)
+      else
+        raise "Unknown socket addr #{addr}"
+      end
     end
 
     if send_data
@@ -117,8 +119,7 @@ private
     case protocol
     when :em_object
       data = Marshal.dump(data)
-      to_send = [data.respond_to?(:bytesize) ? data.bytesize : data.size, data].pack('Na*')
-      socket.write(to_send)
+      socket.write([data.bytesize, data].pack('Na*'))
     else
       socket.write(data.to_s)
     end
@@ -128,12 +129,14 @@ private
     case protocol
     when :em_object
       msg_size = socket.recvfrom(4).first.unpack('N').first rescue 0
-      if msg_size > 0
-        data = socket.recvfrom(msg_size).first
-        data = Marshal.load(data) rescue 'corrupted_marshal'
-      else
-        'corrupted_message'
+      data = ""
+      while msg_size > 0
+        part = socket.recvfrom(msg_size).first
+        data += part
+        msg_size -= part.bytesize
       end
+      data = data.present? ? (Marshal.load(data) rescue 'corrupted_marshal') : nil
+      
     else
       socket.readline.chop
     end

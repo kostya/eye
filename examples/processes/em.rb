@@ -8,6 +8,7 @@ def answer(data)
     when 'timeout' then sleep 5; "ok\n"
     when 'exception' then raise 'haha'
     when 'quit' then EM.stop
+    when 'big' then 'a' * 10_000_000
   end
 end
 

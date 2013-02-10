@@ -89,6 +89,12 @@ describe "Socket Checker" do
       c = chsockb(:send_data => {:command => 'ping'}, :expect_data => lambda{|r| r == 'pong'})
       c.check.should == true
     end
+    
+    it "should correctly get big message" do
+      c = chsockb(:send_data => {:command => 'big'})
+      res = c.get_value[:result]
+      res.size.should == 9_999_999
+    end
 
     it "bad answer" do
       c = chsockb(:send_data => {:command => 'bad'}, :expect_data => 'pong')
