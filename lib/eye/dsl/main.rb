@@ -13,27 +13,16 @@ module Eye::Dsl::Main
   alias :app :application 
 
   def load(glob = '')
-    saved_parsed_filename = self.parsed_filename
-
     return if glob.blank?
-    require 'pathname'
 
-    real_filename = parsed_filename && File.symlink?(parsed_filename) ? File.readlink(parsed_filename) : parsed_filename
-    dirname = File.dirname(real_filename) rescue nil
-    mask = Pathname.new(glob).expand_path(dirname).to_s
-    Dir[mask].each do |path|
-      Eye::Dsl.debug "=> load #{path}"
-
-      self.parsed_filename = path
-
-      res = Kernel.load(path)
-      Eye.info "load: subload #{path} (#{res})"
-
-      Eye::Dsl.debug "<= load #{path}"
+    Eye::Dsl::Opts.with_parsed_file(glob) do |mask|
+      Dir[mask].each do |path|
+        Eye::Dsl.debug "=> load #{path}"
+        res = Kernel.load(path)
+        Eye.info "load: subload #{path} (#{res})"
+        Eye::Dsl.debug "<= load #{path}"
+      end
     end
-
-  ensure
-    self.parsed_filename = saved_parsed_filename
   end
 
   def logger=(log_path)
