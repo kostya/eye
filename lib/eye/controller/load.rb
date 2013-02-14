@@ -42,6 +42,16 @@ private
     res
   end
 
+  # return: result, config
+  def parse_config(filename = '', &block)
+    raise Eye::Dsl::Error, "config file '#{filename}' not found!" unless File.exists?(filename)
+
+    cfg = Eye::Dsl.parse(nil, filename)
+    validate( merge_configs(@current_config, cfg) )
+
+    cfg
+  end
+
   def parse_set_of_configs(filename)
     mask = if File.directory?(filename)
       File.join filename, '{*.eye}'
@@ -77,29 +87,19 @@ private
     GC.start
   end
 
-  # return: result, config
-  def parse_config(filename = '', &block)
-    raise Eye::Dsl::Error, "config file '#{filename}' not found!" unless File.exists?(filename)
-
-    cfg = Eye::Dsl.load(nil, filename)
-    validate( merge_configs(@current_config, cfg) )
-
-    cfg
-  end
-
   def load_config(new_config)
-    load_options
-    create_objects(new_config)
+    load_options(new_config[:config])
+    create_objects(new_config[:applications])
     @current_config = new_config
   end
 
   def merge_configs(old_config, new_config)
-    old_config.merge(new_config)
+    {:config => old_config[:config].merge(new_config[:config]),
+     :applications => old_config[:applications].merge(new_config[:applications])}
   end
 
   # load global config options
-  def load_options
-    opts = Eye.parsed_options
+  def load_options(opts)
     return if opts.blank?
 
     if opts[:logger]
@@ -110,15 +110,12 @@ private
       
       Eye::Logger.log_level = opts[:logger_level] if opts[:logger_level]
     end
-
-    # clear parsed options when we load it
-    Eye.parsed_options = {}
   end
 
   # create objects as diff, from configs
-  def create_objects(new_config)
+  def create_objects(apps_config)
     debug 'create objects'
-    new_config.each do |app_name, app_cfg|
+    apps_config.each do |app_name, app_cfg|
       update_or_create_application(app_name, app_cfg.clone)
     end
 

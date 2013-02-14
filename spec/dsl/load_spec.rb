@@ -10,7 +10,7 @@ describe "Subfolder load spec" do
         proc1(self, "e1")
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:name => "bla", :groups=>{
+    Eye::Dsl.parse_apps(conf).should == {"bla" => {:name => "bla", :groups=>{
       "__default__"=>{:name => "__default__", :application => "bla", :processes=>{
         "e1"=>{:pid_file=>"e1.pid", :application=>"bla", :group=>"__default__", :name=>"e1"}}}}}}    
   end
@@ -23,12 +23,12 @@ describe "Subfolder load spec" do
         proc55(self, "e1")
       end
     E
-    expect{Eye::Dsl.load(conf)}.to raise_error(NoMethodError)
+    expect{Eye::Dsl.parse_apps(conf)}.to raise_error(NoMethodError)
   end
 
   it "subfolder2" do
     file = fixture('dsl/subfolder2.eye')
-    Eye::Dsl.load(nil, file).should == {
+    Eye::Dsl.parse_apps(nil, file).should == {
       "subfolder2" => {:name => "subfolder2", :working_dir=>"/tmp", :groups=>{
         "__default__"=>{:name => "__default__", :application => "subfolder2", :working_dir=>"/tmp", :processes=>{
           "e3"=>{:working_dir=>"/tmp", :pid_file=>"e3.pid2", :application=>"subfolder2", :group=>"__default__", :name=>"e3"}, 
@@ -37,7 +37,7 @@ describe "Subfolder load spec" do
 
   it "subfolder3" do
     file = fixture('dsl/subfolder3.eye')
-    Eye::Dsl.load(nil, file).should == {
+    Eye::Dsl.parse_apps(nil, file).should == {
       "subfolder3" => {:name => "subfolder3", :working_dir=>"/tmp", :groups=>{
         "__default__"=>{:name => "__default__", :application => "subfolder3", :working_dir=>"/tmp", :processes=>{
           "e1"=>{:working_dir=>"/tmp", :pid_file=>"e1.pid4", :application=>"subfolder3", :group=>"__default__", :name=>"e1"}, 
@@ -46,7 +46,7 @@ describe "Subfolder load spec" do
 
   it "subfolder4" do
     file = fixture('dsl/subfolder4.eye')
-    Eye::Dsl.load(nil, file).should == {"subfolder4"=>{:name=>"subfolder4", :environment=>{"a"=>1, "b"=>2, "c"=>3}}}
+    Eye::Dsl.parse_apps(nil, file).should == {"subfolder4"=>{:name=>"subfolder4", :environment=>{"a"=>1, "b"=>2, "c"=>3}}}
   end
 
 end

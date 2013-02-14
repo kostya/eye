@@ -6,7 +6,8 @@ describe "Eye::Dsl" do
     conf = <<-E
       # haha
     E
-    Eye::Dsl.load(conf).should == {}
+    Eye::Dsl.parse(conf).should == {:applications => {}, :config => {}}
+    Eye::Dsl.parse_apps(conf).should == {}
   end
 
   it "empty config" do
@@ -14,7 +15,7 @@ describe "Eye::Dsl" do
       Eye.application("bla") do        
       end
     E
-    Eye::Dsl.load(conf).should == {'bla' => {:name => "bla"}}
+    Eye::Dsl.parse_apps(conf).should == {'bla' => {:name => "bla"}}
   end
 
   it "should set param " do
@@ -23,7 +24,7 @@ describe "Eye::Dsl" do
         start_timeout 10.seconds
       end
     E
-    Eye::Dsl.load(conf).should == {"bla"=>{:start_timeout => 10.seconds, :name => "bla"}}
+    Eye::Dsl.parse_apps(conf).should == {"bla"=>{:start_timeout => 10.seconds, :name => "bla"}}
   end
 
   it "should set param, with self and =" do
@@ -32,14 +33,14 @@ describe "Eye::Dsl" do
         self.start_timeout = 10.seconds
       end
     E
-    Eye::Dsl.load(conf).should == {"bla"=>{:start_timeout => 10.seconds, :name => "bla"}}
+    Eye::Dsl.parse_apps(conf).should == {"bla"=>{:start_timeout => 10.seconds, :name => "bla"}}
   end
 
   it "another block syntax" do
     conf = <<-E
       Eye.application("bla"){ start_timeout 10.seconds }
     E
-    Eye::Dsl.load(conf).should == {"bla"=>{:start_timeout => 10.seconds, :name => "bla"}}
+    Eye::Dsl.parse_apps(conf).should == {"bla"=>{:start_timeout => 10.seconds, :name => "bla"}}
   end
 
   it "should raise on unknown option" do
@@ -49,7 +50,7 @@ describe "Eye::Dsl" do
         hoho 10
       end
     E
-    expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+    expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
   end
 
   it "hash should not be with defaults" do
@@ -62,25 +63,11 @@ describe "Eye::Dsl" do
         end
       end
     E
-    cfg = Eye::Dsl.load(conf)
+    cfg = Eye::Dsl.parse_apps(conf)
     cfg[:something].should == nil
     cfg['bla'][:something].should == nil
     cfg['bla'][:groups]['__default__'][:some].should == nil
     cfg['bla'][:groups]['__default__'][:processes][:some].should == nil
-  end
-
-  describe "global options" do
-    it "logger" do
-      conf = <<-E
-        Eye.logger = "/tmp/1.log"
-        Eye.logger_level = Logger::DEBUG
-
-        Eye.application("bla") do        
-        end
-      E
-      Eye::Dsl.load(conf).should == {"bla" => {:name => "bla"}}
-      Eye.parsed_options.should == {:logger => "/tmp/1.log", :logger_level => Logger::DEBUG}
-    end
   end
 
 end

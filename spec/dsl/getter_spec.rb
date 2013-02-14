@@ -9,7 +9,7 @@ describe "Eye::Dsl getters" do
         app.stop_timeout = app.start_timeout
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:start_timeout=>10, :stop_timeout=>10, :name => "bla"}}
+    Eye::Dsl.parse_apps(conf).should == {"bla" => {:start_timeout=>10, :stop_timeout=>10, :name => "bla"}}
   end
 
   it "should get param from scope without =" do
@@ -19,7 +19,7 @@ describe "Eye::Dsl getters" do
         app.stop_timeout app.start_timeout
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:start_timeout=>10, :stop_timeout=>10, :name => "bla"}}
+    Eye::Dsl.parse_apps(conf).should == {"bla" => {:start_timeout=>10, :stop_timeout=>10, :name => "bla"}}
   end
 
   it "should get param from auto scope" do
@@ -29,7 +29,7 @@ describe "Eye::Dsl getters" do
         stop_timeout start_timeout
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:start_timeout=>10, :stop_timeout=>10, :name => "bla"}}
+    Eye::Dsl.parse_apps(conf).should == {"bla" => {:start_timeout=>10, :stop_timeout=>10, :name => "bla"}}
   end
 
   it "double =" do
@@ -38,7 +38,7 @@ describe "Eye::Dsl getters" do
         app.stdout = app.stderr = '1'
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:name => "bla", :stdout => '1', :stderr => '1'}}
+    Eye::Dsl.parse_apps(conf).should == {"bla" => {:name => "bla", :stdout => '1', :stderr => '1'}}
   end
 
   it "pure_getter" do
@@ -48,7 +48,7 @@ describe "Eye::Dsl getters" do
         app.stop_timeout = app.get_start_timeout
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:start_timeout=>11, :stop_timeout=>11, :name => "bla"}}
+    Eye::Dsl.parse_apps(conf).should == {"bla" => {:start_timeout=>11, :stop_timeout=>11, :name => "bla"}}
   end
 
   it "env throught proxies" do
@@ -68,7 +68,7 @@ describe "Eye::Dsl getters" do
         end
       end
     E
-    Eye::Dsl.load(conf).should == {
+    Eye::Dsl.parse_apps(conf).should == {
       "bla" => {:name => "bla", :environment=>{"A"=>"1"}, :groups=>{
         "blagr"=>{:name => "blagr", :application => "bla", :environment=>{"A"=>"12"}, :processes=>{
           "blap"=>{:environment=>{"A"=>"123"}, :group=>"blagr", :application=>"bla", :name=>'blap', :pid_file=>"1", 
@@ -96,7 +96,7 @@ describe "Eye::Dsl getters" do
         end
       end
     E
-    Eye::Dsl.load(conf).should == {
+    Eye::Dsl.parse_apps(conf).should == {
       "bla" => {:name => "bla", :environment=>{"A"=>"bla"}, :groups=>{
         "blagr"=>{:name => "blagr", :application => "bla", :environment=>{"A"=>"bla", "B"=>"bla:blagr"}, :processes=>{
           "blap"=>{:environment=>{"A"=>"bla", "B"=>"bla:blagr", "C"=>"bla:blagr:blap"}, :pid_file=>"1", :group=>"blagr", :application=>"bla", :name=>'blap'}}}, 
@@ -122,7 +122,7 @@ describe "Eye::Dsl getters" do
       end
     E
 
-    Eye::Dsl.load(conf).should == {
+    Eye::Dsl.parse_apps(conf).should == {
       "bla" => {:name => "bla", :environment=>{"a"=>"b"}, :groups=>{
         "blagr"=>{:name => "blagr", :application => "bla", :environment=>{"a"=>"b"}, :processes=>{
           "blap"=>{:environment=>{"a"=>"b", "aa"=>"b", "ga"=>"b", "ab" => nil, "gb" => nil}, :pid_file=>"/tmp/blap", :group=>"blagr", :application=>"bla", :name=>'blap'}}}}}}
@@ -143,7 +143,7 @@ describe "Eye::Dsl getters" do
       end
     E
 
-    Eye::Dsl.load(conf).should == {
+    Eye::Dsl.parse_apps(conf).should == {
       "bla" => {:name => "bla", :working_dir=>"/tmp", :groups=>{
         "blagr"=>{:name => "blagr", :application => "bla", :working_dir=>"/tmp", :environment=>{"A"=>"/tmp"}, :processes=>{
           "blap"=>{:working_dir=>"/tmp", :environment=>{"A"=>"/tmp"}, :pid_file=>"/tmp/1.pid", :group=>"blagr", :application=>"bla", :name=>'blap'}}}}}}
@@ -158,7 +158,7 @@ describe "Eye::Dsl getters" do
         end
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:name => "bla", :working_dir=>"/tmp", :groups=>{"blagr"=>{:name => "blagr", :application => "bla", :working_dir=>"/tmp/1", :processes => {}}}}}
+    Eye::Dsl.parse_apps(conf).should == {"bla" => {:name => "bla", :working_dir=>"/tmp", :groups=>{"blagr"=>{:name => "blagr", :application => "bla", :working_dir=>"/tmp/1", :processes => {}}}}}
   end
 
   describe "back links (application, group)" do
@@ -186,7 +186,7 @@ describe "Eye::Dsl getters" do
           end
         end
       E
-      Eye::Dsl.load(conf).should == {
+      Eye::Dsl.parse_apps(conf).should == {
         "bla" => {:name=>"bla", :working_dir=>"/tmp", :groups=>{
           "__default__"=>{:name=>"__default__", :working_dir=>"/tmp", :application=>"bla", :processes=>{
             "p1"=>{:name=>"p1", :working_dir=>"/tmp", :application=>"bla", :group=>"__default__", 
@@ -212,7 +212,7 @@ describe "Eye::Dsl getters" do
           end
         end
       E
-      Eye::Dsl.load(conf).should == {
+      Eye::Dsl.parse_apps(conf).should == {
         "bla" => {:name=>"bla", :working_dir=>"/tmp", :environment=>{"a"=>"bla"}, :groups=>{
           "blagr"=>{:name=>"blagr", :working_dir=>"/tmp", 
             :environment=>{"a"=>"bla", "b"=>"bla", "c"=>"bla", "d"=>"bla"}, :application=>"bla", :processes=>{}}}}}

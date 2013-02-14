@@ -10,7 +10,7 @@ describe "Eye::Dsl" do
         end        
       end
     E
-    expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)    
+    expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)    
   end
 
   it "valid process" do
@@ -21,7 +21,7 @@ describe "Eye::Dsl" do
         end        
       end
     E
-    Eye::Dsl.load(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
+    Eye::Dsl.parse_apps(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
   end
 
   it "disable process" do
@@ -33,7 +33,7 @@ describe "Eye::Dsl" do
         end        
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:environment=>{"a"=>"b"}, :name => "bla"}}
+    Eye::Dsl.parse_apps(conf).should == {"bla" => {:environment=>{"a"=>"b"}, :name => "bla"}}
   end
 
   it "process with times" do
@@ -46,7 +46,7 @@ describe "Eye::Dsl" do
         end
       end
     E
-    Eye::Dsl.load(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"0"=>{:pid_file=>"0.pid", :application=>"bla", :group=>"__default__", :name=>"0"}, "1"=>{:pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
+    Eye::Dsl.parse_apps(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"0"=>{:pid_file=>"0.pid", :application=>"bla", :group=>"__default__", :name=>"0"}, "1"=>{:pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
   end
 
   it "process with def" do
@@ -62,7 +62,7 @@ describe "Eye::Dsl" do
         add_process(self, "2")
       end
     E
-    Eye::Dsl.load(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}, "2"=>{:pid_file=>"2.pid", :application=>"bla", :group=>"__default__", :name=>"2"}}}}}}
+    Eye::Dsl.parse_apps(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}, "2"=>{:pid_file=>"2.pid", :application=>"bla", :group=>"__default__", :name=>"2"}}}}}}
   end
 
   it "process with constant" do
@@ -75,7 +75,7 @@ describe "Eye::Dsl" do
         end
       end
     E
-    Eye::Dsl.load(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
+    Eye::Dsl.parse_apps(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
   end
 
   it "when 2 processes with same pid_file, its ERROR" do
@@ -91,7 +91,7 @@ describe "Eye::Dsl" do
         add_process(self, "2")
       end
     E
-    expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)    
+    expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)    
   end
 
   it "when 2 processes with same name, should squash" do
@@ -101,7 +101,7 @@ describe "Eye::Dsl" do
         process("1"){pid_file "12"}
       end
     E
-    Eye::Dsl.load(conf).should == {'bla' => {:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"12", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
+    Eye::Dsl.parse_apps(conf).should == {'bla' => {:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"12", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
   end
 
   describe "stdout, stder, stdall" do
@@ -115,7 +115,7 @@ describe "Eye::Dsl" do
           end        
         end
       E
-      Eye::Dsl.load(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:stdout=>"1.log", :stderr=>"2.log", :pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
+      Eye::Dsl.parse_apps(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:stdout=>"1.log", :stderr=>"2.log", :pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
     end
 
     it "stdall" do
@@ -127,7 +127,7 @@ describe "Eye::Dsl" do
           end        
         end
       E
-      Eye::Dsl.load(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:stdout=>"1.log", :stderr=>"1.log", :stdall => "1.log", :pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
+      Eye::Dsl.parse_apps(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:stdout=>"1.log", :stderr=>"1.log", :stdall => "1.log", :pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
     end
 
   end
@@ -143,7 +143,7 @@ describe "Eye::Dsl" do
           end        
         end
       E
-      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)    
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)    
     end
 
     it "pid_file in group is invalid" do
@@ -156,7 +156,7 @@ describe "Eye::Dsl" do
           end
         end
       E
-      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)    
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)    
     end
   end
 
@@ -170,7 +170,7 @@ describe "Eye::Dsl" do
           end        
         end
       E
-      Eye::Dsl.load(conf).should == {"bla" => {:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :monitor_children=>{:restart_command=>"kill"}, :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
+      Eye::Dsl.parse_apps(conf).should == {"bla" => {:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :monitor_children=>{:restart_command=>"kill"}, :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
     end
 
     it "child invalid command" do
@@ -182,7 +182,7 @@ describe "Eye::Dsl" do
           end        
         end
       E
-      expect{Eye::Dsl.load(conf)}.to raise_error(NoMethodError) 
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(NoMethodError) 
     end
 
     it "child pid_file" do
@@ -194,7 +194,7 @@ describe "Eye::Dsl" do
           end        
         end
       E
-      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)    
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)    
     end
 
   end
@@ -207,7 +207,7 @@ describe "Eye::Dsl" do
         end        
       end
     E
-    Eye::Dsl.load(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"2.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
+    Eye::Dsl.parse_apps(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"2.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
   end
 
   it "valid process with proxies" do
@@ -218,7 +218,7 @@ describe "Eye::Dsl" do
         end        
       end
     E
-    Eye::Dsl.load(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"2.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
+    Eye::Dsl.parse_apps(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"2.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
   end
 
   describe "blank envs" do
@@ -229,7 +229,7 @@ describe "Eye::Dsl" do
           env nil
         end
       E
-      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
     end
 
     it "empty env" do
@@ -238,7 +238,7 @@ describe "Eye::Dsl" do
           env []
         end
       E
-      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
     end
 
     it "empty env" do
@@ -247,7 +247,7 @@ describe "Eye::Dsl" do
           env 'asdfsdf'
         end
       E
-      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
     end
 
   end
@@ -255,74 +255,74 @@ describe "Eye::Dsl" do
   describe "validation" do
     it "bad string" do
       conf = "Eye.app('bla'){ self.working_dir = {} }"
-      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
 
       conf = "Eye.app('bla'){ self.working_dir = [] }"      
-      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
 
       conf = "Eye.app('bla'){ self.working_dir = 5.6 }"
-      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
 
       conf = "Eye.app('bla'){ self.working_dir = false }"
-      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
     end
 
     it "good string" do
       conf = "Eye.app('bla'){ self.working_dir = nil }"
-      expect{Eye::Dsl.load(conf)}.not_to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Dsl::Error)
 
       conf = "Eye.app('bla'){ self.working_dir = 'bla' }"
-      expect{Eye::Dsl.load(conf)}.not_to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Dsl::Error)
     end
 
     it "bad bool" do
       conf = "Eye.app('bla'){ self.daemonize = {} }"
-      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
 
       conf = "Eye.app('bla'){ self.daemonize = [] }"      
-      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
 
       conf = "Eye.app('bla'){ self.daemonize = 5.6 }"
-      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
 
       conf = "Eye.app('bla'){ self.daemonize = 'false' }"
-      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
     end
 
     it "good bool" do
       conf = "Eye.app('bla'){ self.daemonize = nil }"
-      expect{Eye::Dsl.load(conf)}.not_to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Dsl::Error)
 
       conf = "Eye.app('bla'){ self.daemonize = true }"
-      expect{Eye::Dsl.load(conf)}.not_to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Dsl::Error)
 
       conf = "Eye.app('bla'){ self.daemonize = false }"
-      expect{Eye::Dsl.load(conf)}.not_to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Dsl::Error)
     end
 
     it "bad interval" do
       conf = "Eye.app('bla'){ self.daemonize = {} }"
-      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
 
       conf = "Eye.app('bla'){ self.start_timeout = [] }"      
-      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
 
       conf = "Eye.app('bla'){ self.start_timeout = false }"
-      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
 
       conf = "Eye.app('bla'){ self.start_timeout = 'false' }"
-      expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
     end
 
     it "good interval" do
       conf = "Eye.app('bla'){ self.start_timeout = nil }"
-      expect{Eye::Dsl.load(conf)}.not_to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Dsl::Error)
 
       conf = "Eye.app('bla'){ self.start_timeout = 10.seconds }"
-      expect{Eye::Dsl.load(conf)}.not_to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Dsl::Error)
 
       conf = "Eye.app('bla'){ self.start_timeout = 1.5.seconds }"
-      expect{Eye::Dsl.load(conf)}.not_to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Dsl::Error)
     end
 
   end

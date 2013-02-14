@@ -94,7 +94,7 @@ class Eye::Dsl::PureOpts
     self.instance_eval(&block) if cond && block
   end
 
-  def self.with_parsed_file(file_name)    
+  def self.with_parsed_file(file_name)
     saved_parsed_filename = Eye.parsed_filename
 
     require 'pathname'
