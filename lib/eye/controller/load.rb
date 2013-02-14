@@ -104,8 +104,12 @@ private
 
     if opts[:logger]
       # do not apply logger, if in stdout state
-      unless Eye::Logger.dev == 'stdout' || Eye::Logger.dev == 'stderr'
-        Eye::Logger.link_logger(opts[:logger])
+      if !%w{stdout stderr}.include?(Eye::Logger.dev)
+        if opts[:logger].blank?
+          Eye::Logger.link_logger(nil)
+        else
+          Eye::Logger.link_logger(opts[:logger])
+        end
       end
       
       Eye::Logger.log_level = opts[:logger_level] if opts[:logger_level]
