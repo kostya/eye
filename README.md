@@ -14,9 +14,7 @@ Config example, shows most of the options (examples/test.eye):
 
 ```ruby
 Eye.load("./eye/*.rb") # load submodules
-Eye.config do
-  logger "/tmp/eye.log" # eye logger
-end
+Eye.logger = "/tmp/eye.log" # eye logger
 
 Eye.app "test" do
   working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
