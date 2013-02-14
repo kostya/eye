@@ -105,6 +105,7 @@ describe "Eye::System" do
       Eye::System.pid_alive?(@pid).should == true
 
       Eye::System.send_signal(@pid, :term)[:status].should == :ok
+      sleep 0.2
 
       Eye::System.pid_alive?(@pid).should == false
     end
