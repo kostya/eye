@@ -21,6 +21,3 @@ module Eye
   autoload :Controller,     'eye/controller'
   autoload :Control,        'eye/control'
 end
-
-ROOT_BINDING  = binding
-ENV_LANG      = ENV['LANG'] # save original LANG, because ruby somehow rewrite it

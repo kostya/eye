@@ -11,13 +11,13 @@ class Eye::Utils::CelluloidChain
 
   def add(method_name, *args, &block)
     @calls << {:method_name => method_name, :args => args, :block => block}
-    process! unless @running
+    async.process unless @running
   end
 
   def add_wo_dups(method_name, *args, &block)
     h = {:method_name => method_name, :args => args, :block => block}
     @calls << h if @calls[-1] != h
-    process! unless @running
+    async.process unless @running
   end
 
   def list

@@ -29,9 +29,9 @@ module Eye::Process::Scheduler
   def scheduler_actions_list
     scheduler.list.map{|c| c[:args].first rescue nil }.compact
   end
-
-  def finalize
-    remove_scheduler
+  
+  def self.included(base)
+    base.finalizer :remove_scheduler
   end
 
   attr_accessor :current_scheduled_command
@@ -42,6 +42,8 @@ private
   def remove_scheduler
     @scheduler.terminate if @scheduler && @scheduler.alive?
   end
+  
+  public :remove_scheduler # bug of celluloid 0.13
 
   def scheduler
     @scheduler ||= Eye::Utils::CelluloidChain.new(current_actor)

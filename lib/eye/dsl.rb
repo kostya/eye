@@ -1,5 +1,7 @@
 require_relative 'dsl/helpers'
 
+Eye::BINDING  = binding
+
 class Eye::Dsl
 
   autoload :Main,                 'eye/dsl/main'
@@ -34,7 +36,7 @@ class Eye::Dsl
       content = File.read(filename) if content.blank?
       
       silence_warnings do
-        Kernel.eval(content, ROOT_BINDING, filename.to_s)
+        Kernel.eval(content, Eye::BINDING, filename.to_s)
       end
       
       validate(Eye.parsed_config)

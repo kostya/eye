@@ -1,9 +1,8 @@
 # mini bundler, for embedded server gem installation
 
-gem 'celluloid',     '~> 0.12.0'
-gem 'celluloid-io',  '~> 0.12.0'
+gem 'celluloid',     '~> 0.13.0.pre'
+gem 'celluloid-io',  '~> 0.13.0.pre'
 gem 'nio4r'
-gem 'facter'
 gem 'timers'
 
 gem 'state_machine'

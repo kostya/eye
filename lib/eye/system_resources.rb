@@ -67,7 +67,7 @@ class Eye::SystemResources
     end
 
     def get
-      set! if @at + UPDATE_INTERVAL < Time.now
+      async.set if @at + UPDATE_INTERVAL < Time.now
       @ps_aux
     end
 

@@ -47,7 +47,7 @@ end
 
 Eye::Control.set_proc_line
 
-server.run!
+server.async.run
 
 Kernel.trap("INT") do # for foregraund quit
   exit
