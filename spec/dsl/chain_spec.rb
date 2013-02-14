@@ -32,7 +32,7 @@ describe "Eye::Dsl::Chain" do
                 :group=>"__default__", 
                 :name=>"3"}}}}}}
 
-    Eye::Dsl.load(conf).should == h
+    Eye::Dsl.parse_apps(conf).should == h
   end
 
   it "1 inner group have" do
@@ -56,7 +56,7 @@ describe "Eye::Dsl::Chain" do
           "__default__"=>{:name => "__default__", :application => "bla",
             :processes=>{"p1"=>{:pid_file=>"1", :application=>"bla", :group=>"__default__", :name=>"p1"}}}}}}
 
-    Eye::Dsl.load(conf).should == h
+    Eye::Dsl.parse_apps(conf).should == h
   end
 
   it "1 group have, 1 not" do
@@ -82,7 +82,7 @@ describe "Eye::Dsl::Chain" do
             :processes=>{}}, 
           "gr2"=>{:working_dir=>"/tmp", :processes=>{}, :name => "gr2", :application => "bla"}}}}
 
-    Eye::Dsl.load(conf).should == h
+    Eye::Dsl.parse_apps(conf).should == h
   end
 
   it "one option" do
@@ -104,7 +104,7 @@ describe "Eye::Dsl::Chain" do
           :chain=>{:start=>{:grace=>5, :action=>:start, :type=>:async}}, 
           :processes=>{"3"=>{:chain=>{:start=>{:grace=>5, :action=>:start, :type=>:async}}, :pid_file=>"3", :application=>"bla", :group=>"__default__", :name=>"3"}}}}}}
 
-    Eye::Dsl.load(conf).should == h
+    Eye::Dsl.parse_apps(conf).should == h
   end
 
   it "group can rewrite part of options" do
@@ -133,7 +133,7 @@ describe "Eye::Dsl::Chain" do
             :restart=>{:grace=>5, :action=>:restart}}, 
         :processes=>{"3"=>{:chain=>{:start=>{:grace=>10, :action=>:start, :type=>:sync}, :restart=>{:grace=>5, :action=>:restart}}, :pid_file=>"3", :application=>"bla", :group=>"gr", :name=>"3"}}}}}}
 
-    Eye::Dsl.load(conf).should == h
+    Eye::Dsl.parse_apps(conf).should == h
   end
 
 

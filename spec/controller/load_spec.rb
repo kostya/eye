@@ -176,21 +176,35 @@ describe "Eye::Controller::Load" do
     subject.load(fixture("dsl/load_dup_ex_names.eye")).should include(error: false)
   end
 
-  describe "load logger" do
+  describe "configs" do
+    after(:each){ set_glogger }
+
     it "load logger" do
       subject.load(fixture("dsl/load_logger.eye")).should include(error: false)
       Eye::Logger.dev.should == "/tmp/1.log"
-      
-      # return global logger
-      set_glogger
     end
 
     it "set logger when load multiple configs" do
       subject.load(fixture("dsl/load_logger{,2}.eye")).should include(error: false)
       Eye::Logger.dev.should == "/tmp/1.log"
-      
-      # return global logger
-      set_glogger
+    end
+
+    it "should corrent load config section" do
+      subject.load(fixture("dsl/configs/{1,2}.eye")).should include(error: false)
+      Eye::Logger.dev.should == "/tmp/a.log"
+      subject.current_config[:config].should == {:logger=>"/tmp/a.log", :http=>{:enable=>true}}
+
+      subject.load(fixture("dsl/configs/3.eye")).should include(error: false)
+      Eye::Logger.dev.should == "/tmp/a.log"
+      subject.current_config[:config].should == {:logger=>"/tmp/a.log", :http=>{:enable=>false}}
+
+      subject.load(fixture("dsl/configs/4.eye")).should include(error: false)
+      Eye::Logger.dev.should == nil
+      subject.current_config[:config].should == {:logger=>'', :http=>{:enable=>false}}
+
+      subject.load(fixture("dsl/configs/2.eye")).should include(error: false)
+      Eye::Logger.dev.should == nil
+      subject.current_config[:config].should == {:logger=>'', :http=>{:enable=>true}}
     end
   end
 

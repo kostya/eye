@@ -13,7 +13,7 @@ describe "Eye::Dsl checks" do
         end        
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}, :cpu=>{:below=>100, :every=>20, :type=>:cpu}}, :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
+    Eye::Dsl.parse_apps(conf).should == {"bla" => {:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}, :cpu=>{:below=>100, :every=>20, :type=>:cpu}}, :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
   end
 
   it "inherit checks" do
@@ -33,7 +33,7 @@ describe "Eye::Dsl checks" do
         end
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:name => "bla", :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :processes=>{"1"=>{:checks=>{:memory=>{:below=>94371840, :every=>5, :type=>:memory}, :cpu=>{:below=>100, :every=>20, :type=>:cpu}}, :pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}, "2"=>{:checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :pid_file=>"2.pid", :application=>"bla", :group=>"__default__", :name=>"2"}}}}}}
+    Eye::Dsl.parse_apps(conf).should == {"bla" => {:name => "bla", :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :processes=>{"1"=>{:checks=>{:memory=>{:below=>94371840, :every=>5, :type=>:memory}, :cpu=>{:below=>100, :every=>20, :type=>:cpu}}, :pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}, "2"=>{:checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :pid_file=>"2.pid", :application=>"bla", :group=>"__default__", :name=>"2"}}}}}}
   end
 
   it "checks in monitor_children" do
@@ -47,10 +47,10 @@ describe "Eye::Dsl checks" do
         end        
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :monitor_children=>{:checks=>{:cpu=>{:below=>100, :every=>20, :type=>:cpu}}}, :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
+    Eye::Dsl.parse_apps(conf).should == {"bla" => {:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :monitor_children=>{:checks=>{:cpu=>{:below=>100, :every=>20, :type=>:cpu}}}, :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
   end
 
-  xit "child should inherit checks" do
+  it "child should not inherit checks" do
     conf = <<-E
       Eye.application("bla") do
         process("1") do
@@ -61,7 +61,7 @@ describe "Eye::Dsl checks" do
         end        
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:groups=>{"__default__"=>{:processes=>{"1"=>{:pid_file=>"1.pid", :monitor_children=>{:checks=>{:cpu=>{:below=>100, :every=>20, :type=>:cpu}}}, :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
+    Eye::Dsl.parse_apps(conf).should == {"bla" => {:name=>"bla", :groups=>{"__default__"=>{:name=>"__default__", :application=>"bla", :processes=>{"1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"1.pid", :checks=>{:cpu=>{:below=>100, :every=>20, :type=>:cpu}}, :monitor_children=>{}}}}}}}
   end
 
   it "no valid checks" do
@@ -73,7 +73,7 @@ describe "Eye::Dsl checks" do
         end        
       end
     E
-    expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Checker::Validation::Error)
+    expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Checker::Validation::Error)
   end
 
   it "ok trigger" do
@@ -86,7 +86,7 @@ describe "Eye::Dsl checks" do
         end        
       end
     E
-    Eye::Dsl.load(conf).should == {"bla" => {:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :triggers=>{:flapping=>{:times=>2, :within=>15, :type=>:flapping}}, :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
+    Eye::Dsl.parse_apps(conf).should == {"bla" => {:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :triggers=>{:flapping=>{:times=>2, :within=>15, :type=>:flapping}}, :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
   end
 
   it "no valid trigger" do
@@ -98,7 +98,7 @@ describe "Eye::Dsl checks" do
         end        
       end
     E
-    expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Checker::Validation::Error)
+    expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Checker::Validation::Error)
   end
 
   it "nochecks to remove inherit checks" do
@@ -116,7 +116,7 @@ describe "Eye::Dsl checks" do
         end
       end
     E
-    Eye::Dsl.load(conf).should == {
+    Eye::Dsl.parse_apps(conf).should == {
       "bla" => {:name => "bla", :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, 
       :groups=>{
         "__default__"=>{:name => "__default__", :application => "bla", 
@@ -145,7 +145,7 @@ describe "Eye::Dsl checks" do
         end
       end
     E
-    Eye::Dsl.load(conf).should == {
+    Eye::Dsl.parse_apps(conf).should == {
       "bla" => {:name => "bla", 
         :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, 
         :groups=>{
@@ -167,7 +167,7 @@ describe "Eye::Dsl checks" do
         end        
       end
     E
-    expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+    expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
   end
 
   it "process with unknown triggers type" do
@@ -180,7 +180,7 @@ describe "Eye::Dsl checks" do
         end        
       end
     E
-    expect{Eye::Dsl.load(conf)}.to raise_error(Eye::Dsl::Error)
+    expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
   end
 
   it "check with Proc" do
@@ -193,7 +193,7 @@ describe "Eye::Dsl checks" do
         end        
       end
     E
-    res = Eye::Dsl.load(conf)
+    res = Eye::Dsl.parse_apps(conf)
     proc = res['bla'][:groups]['__default__'][:processes]['1'][:checks][:socket][:expect_data]
     proc[0].should == false
     proc[1].should == true

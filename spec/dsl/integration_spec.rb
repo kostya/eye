@@ -78,7 +78,7 @@ describe "Eye::Dsl" do
                 :name=>"2"}}}}}
     }
 
-    res = Eye::Dsl.load(conf)
+    res = Eye::Dsl.parse_apps(conf)
     res.should == h    
   end
 
@@ -96,7 +96,7 @@ describe "Eye::Dsl" do
         end
       end
     E
-    res = Eye::Dsl.load(conf)
+    res = Eye::Dsl.parse_apps(conf)
     res["bla"][:environment].should == 
       {"RAILS_ENV" => "test", "LANG" => "ru_RU.UTF-8"}
 
@@ -152,7 +152,7 @@ describe "Eye::Dsl" do
                 :name=>"2"}}}}}
     }
 
-    Eye::Dsl.load(conf).should == h
+    Eye::Dsl.parse_apps(conf).should == h
   end
 
   it "should rewrite options" do
@@ -208,7 +208,7 @@ describe "Eye::Dsl" do
                 :group=>"__default__", 
                 :name=>"3"}}}}}
     }
-    Eye::Dsl.load(conf).should == h    
+    Eye::Dsl.parse_apps(conf).should == h    
   end
 
   describe "requires" do
@@ -240,19 +240,19 @@ describe "Eye::Dsl" do
     it "should require other files by require" do
       file = fixture('dsl/0.rb')
       conf = File.read(file)
-      Eye::Dsl.load(conf, file).should == @h
+      Eye::Dsl.parse_apps(conf, file).should == @h
     end
 
     it "should require other files by require" do
       file = fixture('dsl/0a.rb')
       conf = File.read(file)
-      Eye::Dsl.load(conf, file).should == @h
+      Eye::Dsl.parse_apps(conf, file).should == @h
     end    
 
     it "should load by load" do
       file = fixture('dsl/0c.rb')
       conf = File.read(file)
-      Eye::Dsl.load(conf, file).should == @h
+      Eye::Dsl.parse_apps(conf, file).should == @h
     end
   end
 
@@ -277,7 +277,7 @@ describe "Eye::Dsl" do
       end
     E
 
-    Eye::Dsl.load(conf).should == {
+    Eye::Dsl.parse_apps(conf).should == {
       "bla" => {:name => "bla", :working_dir=>"/tmp2", :environment=>{"A"=>"1", "B"=>"1"}, :groups=>{
         "bla"=>{:name => "bla", :application => "bla", :working_dir=>"/tmp", :environment=>{"A"=>"1", "C"=>"1", "D"=>"1"}, 
         :processes=>{
@@ -300,7 +300,7 @@ describe "Eye::Dsl" do
       end
     E
 
-    Eye::Dsl.load(conf).should == {
+    Eye::Dsl.parse_apps(conf).should == {
       "bla" => {:name => "bla", :groups=>{
         "blagr"=>{:name => "blagr", :application => "bla", :processes=>{
           "1"=>{:group=>"blagr", :application=>"bla", :name=>"1", :pid_file=>"1"}, 
