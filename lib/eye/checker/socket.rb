@@ -12,13 +12,13 @@ class Eye::Checker::Socket < Eye::Checker
   # :expect_data   after sending :send_data expect this response. Can be a string, Regexp or a Proc
   # :protocol      way of pack,unpack messages (default = socket default), example: :protocol => :em_object
 
-  param :addr, String, true
-  param :timeout, [Fixnum, Float]
-  param :open_timeout, [Fixnum, Float]
-  param :read_timeout, [Fixnum, Float]
+  param :addr,          String, true
+  param :timeout,       [Fixnum, Float]
+  param :open_timeout,  [Fixnum, Float]
+  param :read_timeout,  [Fixnum, Float]
   param :send_data
-  param :expect_data, [String, Regexp, Proc]
-  param :protocol, [String, Symbol]
+  param :expect_data,   [String, Regexp, Proc]
+  param :protocol,      [Symbol]
 
   def check_name
     'socket'

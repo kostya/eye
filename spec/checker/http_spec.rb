@@ -57,7 +57,19 @@ describe "Eye::Checker::Http" do
       subject.check.should == true
     end
 
+    it "good pattern is string" do
+      subject = chhttp(:pattern => "OK")
+      FakeWeb.register_uri(:get, "http://localhost:3000/", :body => "Somebody OK")
+      subject.check.should == true
+    end
+
     it "bad pattern" do
+      FakeWeb.register_uri(:get, "http://localhost:3000/", :body => "Somebody bad")
+      subject.check.should == false
+    end
+
+    it "bad pattern string" do
+      subject = chhttp(:pattern => "OK")
       FakeWeb.register_uri(:get, "http://localhost:3000/", :body => "Somebody bad")
       subject.check.should == false
     end

@@ -8,16 +8,16 @@ require 'thor'
 
 class Cli < Thor
 
-  desc "info [APP]", "show process statuses"
-  def info(app = nil)
-    res = cmd(:info, app)
+  desc "info [MASK]", "show process statuses"
+  def info(mask = nil)
+    res = cmd(:info, mask)
     puts res if res && !res.empty?
     puts
   end
 
   desc "status ", "show process statuses"
   def status
-    say "status is deprecated, use :info instead", :yellow
+    say ":status is deprecated, use :info instead", :yellow
     info
   end
 

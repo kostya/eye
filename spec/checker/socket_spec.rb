@@ -49,7 +49,7 @@ describe "Socket Checker" do
         if addr =~ /tcp/
           c.get_value.should == {:exception => "Connection refused - connect(2)"}
         else
-          c.get_value.should == {:exception => "No such file or directory - /tmp/em_test_sock_spe"}
+          c.get_value[:exception].should include("No such file or directory")
         end
         c.check.should == false
       end
@@ -65,7 +65,7 @@ describe "Socket Checker" do
         if addr =~ /tcp/
           c.get_value.should == {:exception => "Connection refused - connect(2)"}
         else
-          c.get_value.should == {:exception => "No such file or directory - /tmp/em_test_sock_spe"}
+          c.get_value[:exception].should include("No such file or directory")
         end
         c.check.should == false
       end

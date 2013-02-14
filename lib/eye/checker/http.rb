@@ -5,12 +5,12 @@ class Eye::Checker::Http < Eye::Checker
   # checks :http, :every => 5.seconds, :times => 1,
   #  :url => "http://127.0.0.1:3000/", :kind => :success, :pattern => /OK/, :timeout => 3.seconds
 
-  param :url, String, true
-  param :pattern, [String, Regexp]
+  param :url,           String, true
+  param :pattern,       [String, Regexp]
   param :kind
-  param :timeout, [Fixnum, Float]
-  param :open_timeout, [Fixnum, Float]
-  param :read_timeout, [Fixnum, Float]
+  param :timeout,       [Fixnum, Float]
+  param :open_timeout,  [Fixnum, Float]
+  param :read_timeout,  [Fixnum, Float]
 
   attr_reader :session, :uri
 
@@ -67,7 +67,11 @@ class Eye::Checker::Http < Eye::Checker
     return false unless value[:result].kind_of?(@kind)
 
     if @pattern
-      @pattern === value[:result].body
+      if @pattern.is_a?(Regexp)
+        @pattern === value[:result].body
+      else
+        value[:result].body.include?(@pattern.to_s)
+      end
     else
       true
     end
