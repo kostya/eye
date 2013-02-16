@@ -36,6 +36,7 @@ set_glogger
 
 $logger = Eye::Logger.new("spec")
 Celluloid.logger = $logger
+STDERR.reopen($logger_path)
 
 RSpec.configure do |config|
   config.mock_with :rr
