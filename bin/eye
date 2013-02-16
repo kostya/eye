@@ -162,13 +162,8 @@ private
       end
 
       if opts[:print_config]
-        begin
-          require 'awesome_print'
-          ap res[:config], :indent => 2
-        rescue LoadError
-          require 'pp'
-          pp res[:config]
-        end
+        require 'yaml'
+        puts YAML.dump(res[:config])
       end
     end
   end
