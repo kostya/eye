@@ -14,6 +14,9 @@ describe "Intergration" do
     @processes.size.should == 3
     @processes.map{|c| c.state_name}.uniq.should == [:up]
     @childs = @p3.childs.keys rescue []
+
+    @c.info_string.split("\n").size.should == 8
+    @c.info_string.strip.size.should > 100
   end
 
   after :each do
@@ -31,11 +34,6 @@ describe "Intergration" do
     (@childs || []).each do |pid|
       force_kill_pid(pid)
     end
-  end
-
-  it "status string" do
-    @c.status_string.split("\n").size.should == 8
-    @c.status_string.strip.size.should > 100
   end
 
   it "restart process group samples" do
