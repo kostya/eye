@@ -1,25 +1,29 @@
 module Eye::Controller::Status
 
-  def status_objects(mask = nil)
+  def info_objects(mask = nil)
     res = []
     return @applications unless mask
     matched_objects(mask){|obj| res << obj }    
     res
   end
 
-  def status_data(mask = nil)
-    {:subtree => status_objects(mask).map{|a| a.status_data } }
+  def info_data(mask = nil)
+    {:subtree => info_objects(mask).map{|a| a.status_data } }
   end
 
-  def status_data_debug(mask = nil)
-    {:subtree => status_objects(mask).map{|a| a.status_data(true) } }
+  def info_data_debug(mask = nil)
+    {:subtree => info_objects(mask).map{|a| a.status_data(true) } }
   end
 
-  def status_string(mask = nil)
-    make_str(status_data(mask)).to_s
+  def info_string(mask = nil)
+    make_str(info_data(mask)).to_s
   end
 
-  def status_string_debug(show_config = false)
+  def info_string_short
+    make_str({:subtree => @applications.map{|a| a.status_data_short } }).to_s
+  end
+
+  def info_string_debug(show_config = false)
     actors = Celluloid::Actor.all.map{|actor| actor.instance_variable_get(:@klass) }.group_by{|a| a}.map{|k,v| [k, v.size]}.sort_by{|a|a[1]}.reverse
 
     str = <<-S
@@ -30,7 +34,7 @@ Socket: #{Eye::Settings::socket_path}
 PidPath: #{Eye::Settings::pid_path}
 Actors: #{actors.inspect}
 
-#{make_str(status_data_debug)}
+#{make_str(info_data_debug)}
     S
 
     if show_config      

@@ -29,6 +29,13 @@ class Cli < Thor
     puts
   end
 
+  desc "oinfo", "onelined info"
+  def oinfo
+    res = cmd(:oinfo)
+    puts res if res && !res.empty?
+    puts
+  end
+
   desc "load [CONF]", "load config (and start server if needed) (-f for foregraund start)"
   method_option :foregraund, :type => :boolean, :aliases => "-f"
   method_option :logger, :type => :string, :aliases => "-l"

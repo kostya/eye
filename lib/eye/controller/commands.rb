@@ -15,11 +15,13 @@ module Eye::Controller::Commands
       when :load
         exclusive{ load(*args) }
       when :info
-        status_string(*args)
+        info_string(*args)
       when :object_info
-        status_data(*args)
+        info_data(*args)
       when :xinfo
-        status_string_debug(*args)
+        info_string_debug(*args)
+      when :oinfo
+        info_string_short
       when :quit
         quit
       when :check

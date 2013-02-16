@@ -142,7 +142,7 @@ describe "Eye::Controller::Load" do
 
     # terminate 1 action
     subject.process_by_name('p1').terminate
-    subject.status_string.should be_a(String)
+    subject.info_string.should be_a(String)
   end
 
   it "swap groups" do

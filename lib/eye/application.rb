@@ -30,6 +30,17 @@ class Eye::Application
     h
   end
 
+  def status_data_short
+    h = Hash.new 0
+    @groups.each do |c| 
+      c.processes.each do |p|
+        h[p.state] += 1
+      end
+    end
+    str = h.sort_by{|a,b| a}.map{|k, v| "#{k}:#{v}" } * ', '
+    { name: @name, type: :application, state: str}
+  end
+
   def debug_data
   end
 

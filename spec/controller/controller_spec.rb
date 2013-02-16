@@ -63,7 +63,7 @@ describe "Eye::Controller" do
     subject.load(fixture("dsl/bad.eye")).should include(:error => true, :message => "blank pid_file for: bad")
   end
 
-  it "status_string" do
+  it "info_string" do
     app1 = <<S
 app1                       
   gr1                               [monitor 1 of 2]
@@ -82,15 +82,20 @@ S
     r = %r{\033.*?m}im
 
     subject.load(fixture("dsl/load.eye"))
-    subject.status_string.gsub(r, '').should == (app1 + app2).chomp
-    subject.status_string('app1').gsub(r, '').should == app1.chomp
-    subject.status_string('app2').gsub(r, '').should == app2.chomp
-    subject.status_string('app3').gsub(r, '').should == ''
+    subject.info_string.gsub(r, '').should == (app1 + app2).chomp
+    subject.info_string('app1').gsub(r, '').should == app1.chomp
+    subject.info_string('app2').gsub(r, '').should == app2.chomp
+    subject.info_string('app3').gsub(r, '').should == ''
   end
 
-  it "status_string_debug should be" do
+  it "info_string_debug should be" do
     subject.load(fixture("dsl/load.eye"))
-    subject.status_string_debug.split("\n").size.should > 10
+    subject.info_string_debug.split("\n").size.should > 10
+  end
+
+  it "info_string_short should be" do
+    subject.load(fixture("dsl/load.eye"))
+    subject.info_string_short.split("\n").size.should == 2
   end
 
   describe "command" do
@@ -109,8 +114,8 @@ S
       Eye::Control.command('load', '/tmp/file')
     end
 
-    it "status" do
-      mock(Eye::Control).status_string
+    it "info" do
+      mock(Eye::Control).info_string
       Eye::Control.command('info')
     end
 
