@@ -44,11 +44,11 @@ class Eye::Application
   def debug_data
   end
 
-  def send_command(command)
-    debug "send_command #{command}"
+  def send_command(command, *args)
+    debug "send_command #{command} #{args}"
     
     @groups.each do |group|
-      group.send_command(command)
+      group.send_command(command, *args)
     end
   end
 

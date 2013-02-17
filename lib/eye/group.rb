@@ -65,13 +65,13 @@ class Eye::Group
     {:queue => scheduler_actions_list, :chain => chain_status}
   end
 
-  def send_command(command)
+  def send_command(command, *args)
     info "send_command: #{command}"
 
     if command == :delete
-      delete
+      delete *args
     else
-      schedule command
+      schedule command, *args, "user command #{command}"
     end
   end
 
@@ -110,11 +110,11 @@ class Eye::Group
 
 private
 
-  def async_schedule(command)
-    info "send to all processes #{command}"
+  def async_schedule(command, *args)
+    info "send to all processes #{command} #{args}"
     
     @processes.each do |process|
-      process.send_command(command)
+      process.send_command(command, *args)
     end    
   end
 

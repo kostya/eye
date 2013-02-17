@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 class Eye::Process
-  attr_reader :test1, :test2, :test1_call
+  attr_reader :test1, :test2, :test3, :test1_call
 
   def scheduler_test1(a)
     sleep 0.3
@@ -13,6 +13,10 @@ class Eye::Process
   def scheduler_test2(a, b)
     sleep 0.6
     @test2 = [a, b]
+  end
+
+  def scheduler_test3(*args)    
+    @test3 = args
   end
 
   public :scheduler
@@ -118,4 +122,29 @@ describe "Scheduler" do
     scheduler.alive?.should == false
   end
 
+  describe "reasons" do
+    it "1 param without reason" do
+      @process.schedule :scheduler_test3, 1
+      sleep 0.1
+      @process.last_scheduled_command.should == :scheduler_test3
+      @process.last_scheduled_reason.should == nil
+      @process.test3.should == [1]
+    end
+
+    it "1 param with reason" do
+      @process.schedule :scheduler_test3, 1, "reason"
+      sleep 0.1
+      @process.last_scheduled_command.should == :scheduler_test3
+      @process.last_scheduled_reason.should == 'reason'
+      @process.test3.should == [1]
+    end
+
+    it "many params with reason" do
+      @process.schedule :scheduler_test3, 1, :bla, 3, "reason"
+      sleep 0.1
+      @process.last_scheduled_command.should == :scheduler_test3
+      @process.last_scheduled_reason.should == 'reason'
+      @process.test3.should == [1, :bla, 3]
+    end
+  end
 end

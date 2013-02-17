@@ -84,10 +84,10 @@ private
     if down?
       if self[:keep_alive] && !@flapping
         warn 'check crushed: process is down'
-        schedule :start
+        schedule :start, 'crushed'
       else
         warn 'check crushed: process is down, and flapping happens (or not keep_alive option)'
-        schedule :unmonitor
+        schedule :unmonitor, 'flapping'
       end
     end
   end
