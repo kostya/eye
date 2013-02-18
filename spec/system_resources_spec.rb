@@ -4,13 +4,13 @@ require File.dirname(__FILE__) + '/spec_helper'
 describe "Eye::SystemResources" do
     
   it "should get memory" do
-    x = Eye::SystemResources.memory_usage($$)
+    x = Eye::SystemResources.memory($$)
     x.should > 100
     x.should < 300_000
   end
 
   it "should get cpu" do
-    x = Eye::SystemResources.cpu_usage($$)
+    x = Eye::SystemResources.cpu($$)
     x.should >= 0
     x.should < 100
   end
