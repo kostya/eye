@@ -128,15 +128,12 @@ private
   def _read_data(socket)
     case protocol
     when :em_object
-      msg_size = socket.recvfrom(4).first.unpack('N').first rescue 0
-      data = ""
-      while msg_size > 0
-        part = socket.recvfrom(msg_size).first
-        data += part
-        msg_size -= part.bytesize
+      content = ""
+      msg_size = socket.recv(4).unpack('N')[0] rescue 0
+      content << socket.recv(msg_size - content.length) while content.length < msg_size
+      if content.present?
+        Marshal.load(content) rescue 'corrupted_marshal'
       end
-      data = data.present? ? (Marshal.load(data) rescue 'corrupted_marshal') : nil
-      
     else
       socket.readline.chop
     end

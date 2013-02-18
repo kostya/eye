@@ -65,8 +65,8 @@ describe "ChildProcess" do
         dont_allow(child).schedule :restart
       end
 
-      stub(Eye::SystemResources).cpu_usage(crazy.pid){ 55 }
-      stub(Eye::SystemResources).cpu_usage(anything){ 5 }
+      stub(Eye::SystemResources).cpu(crazy.pid){ 55 }
+      stub(Eye::SystemResources).cpu(anything){ 5 }
 
 
       crazy.watchers.keys.should == [:check_memory, :check_cpu]

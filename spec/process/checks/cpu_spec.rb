@@ -27,11 +27,11 @@ describe "Process Cpu check" do
     it "when memory exceed limit process should restart" do
       start_ok_process(@c.merge(:checks => @check))
 
-      stub(Eye::SystemResources).cpu_usage(@process.pid){ 5 }
+      stub(Eye::SystemResources).cpu(@process.pid){ 5 }
 
       sleep 3
 
-      stub(Eye::SystemResources).cpu_usage(@process.pid){ 20 }
+      stub(Eye::SystemResources).cpu(@process.pid){ 20 }
       mock(@process).schedule(:restart, anything)
 
       sleep 1
@@ -40,11 +40,11 @@ describe "Process Cpu check" do
     it "else should not restart" do
       start_ok_process(@c.merge(:checks => @check))
 
-      stub(Eye::SystemResources).cpu_usage(@process.pid){ 5 }
+      stub(Eye::SystemResources).cpu(@process.pid){ 5 }
 
       sleep 3
 
-      stub(Eye::SystemResources).cpu_usage(@process.pid){ 7 }
+      stub(Eye::SystemResources).cpu(@process.pid){ 7 }
       dont_allow(@process).schedule(:restart)
 
       sleep 1
@@ -58,11 +58,11 @@ describe "Process Cpu check" do
 
     it "when memory exceed limit process should restart" do
       start_ok_process(@c.merge(:checks => @check))
-      stub(Eye::SystemResources).cpu_usage(@process.pid){ 5 }
+      stub(Eye::SystemResources).cpu(@process.pid){ 5 }
 
       sleep 3
 
-      stub(Eye::SystemResources).cpu_usage(@process.pid){ 15 }
+      stub(Eye::SystemResources).cpu(@process.pid){ 15 }
       mock(@process).schedule(:restart, anything)
 
       sleep 6
@@ -70,11 +70,11 @@ describe "Process Cpu check" do
 
     it "else should not restart" do
       start_ok_process(@c.merge(:checks => @check))
-      stub(Eye::SystemResources).cpu_usage(@process.pid){ 5 }
+      stub(Eye::SystemResources).cpu(@process.pid){ 5 }
 
       sleep 3
 
-      stub(Eye::SystemResources).cpu_usage(@process.pid){ 7 }
+      stub(Eye::SystemResources).cpu(@process.pid){ 7 }
       dont_allow(@process).schedule(:restart)
 
       sleep 6
@@ -88,11 +88,11 @@ describe "Process Cpu check" do
 
     it "when memory exceed limit process should restart" do
       start_ok_process(@c.merge(:checks => @check))
-      stub(Eye::SystemResources).cpu_usage(@process.pid){ 5 }
+      stub(Eye::SystemResources).cpu(@process.pid){ 5 }
 
       sleep 5
 
-      stub(Eye::SystemResources).cpu_usage(@process.pid){ 15 }
+      stub(Eye::SystemResources).cpu(@process.pid){ 15 }
       mock(@process).schedule(:restart, anything)
 
       sleep 6
@@ -100,11 +100,11 @@ describe "Process Cpu check" do
 
     it "else should not restart" do
       start_ok_process(@c.merge(:checks => @check))
-      stub(Eye::SystemResources).cpu_usage(@process.pid){ 5 }
+      stub(Eye::SystemResources).cpu(@process.pid){ 5 }
 
       sleep 5
 
-      stub(Eye::SystemResources).cpu_usage(@process.pid){ 7 }
+      stub(Eye::SystemResources).cpu(@process.pid){ 7 }
       dont_allow(@process).schedule(:restart)
 
       sleep 6   

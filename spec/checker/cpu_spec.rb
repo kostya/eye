@@ -11,7 +11,7 @@ describe "Eye::Checker::Cpu" do
     subject{ chcpu }
 
     it "get_value" do
-      mock(Eye::SystemResources).cpu_usage(123){ 65 }
+      mock(Eye::SystemResources).cpu(123){ 65 }
       subject.get_value.should == 65
     end
 

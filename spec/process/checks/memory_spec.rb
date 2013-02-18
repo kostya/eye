@@ -26,11 +26,11 @@ describe "Process Memory check" do
 
     it "when memory exceed limit process should restart" do
       start_ok_process(@c.merge(:checks => @check))
-      stub(Eye::SystemResources).memory_usage(@process.pid){ 20_000 }
+      stub(Eye::SystemResources).memory(@process.pid){ 20_000 }
 
       sleep 3
 
-      stub(Eye::SystemResources).memory_usage(@process.pid){ 50_000 }      
+      stub(Eye::SystemResources).memory(@process.pid){ 50_000 }      
       mock(@process).notify(:crit, anything)
       mock(@process).schedule(:restart, anything)
 
@@ -40,10 +40,10 @@ describe "Process Memory check" do
     it "else should not restart" do
       start_ok_process(@c.merge(:checks => @check))
 
-      stub(Eye::SystemResources).memory_usage(@process.pid){ 20_000 }
+      stub(Eye::SystemResources).memory(@process.pid){ 20_000 }
       sleep 3
 
-      stub(Eye::SystemResources).memory_usage(@process.pid){ 25_000 }
+      stub(Eye::SystemResources).memory(@process.pid){ 25_000 }
       dont_allow(@process).schedule(:restart)
 
       sleep 1
@@ -58,10 +58,10 @@ describe "Process Memory check" do
     it "when memory exceed limit process should restart" do
       start_ok_process(@c.merge(:checks => @check))
 
-      stub(Eye::SystemResources).memory_usage(@process.pid){ 20_000 }
+      stub(Eye::SystemResources).memory(@process.pid){ 20_000 }
       sleep 3
 
-      stub(Eye::SystemResources).memory_usage(@process.pid){ 50_000 }      
+      stub(Eye::SystemResources).memory(@process.pid){ 50_000 }      
       mock(@process).schedule(:restart, anything)
 
       sleep 6
@@ -70,10 +70,10 @@ describe "Process Memory check" do
     it "else should not restart" do
       start_ok_process(@c.merge(:checks => @check))
 
-      stub(Eye::SystemResources).memory_usage(@process.pid){ 20_000 }
+      stub(Eye::SystemResources).memory(@process.pid){ 20_000 }
       sleep 3
 
-      stub(Eye::SystemResources).memory_usage(@process.pid){ 25_000 }      
+      stub(Eye::SystemResources).memory(@process.pid){ 25_000 }      
       dont_allow(@process).schedule(:restart)
 
       sleep 6
@@ -88,10 +88,10 @@ describe "Process Memory check" do
     it "when memory exceed limit process should restart" do
       start_ok_process(@c.merge(:checks => @check))
 
-      stub(Eye::SystemResources).memory_usage(@process.pid){ 20_000 }
+      stub(Eye::SystemResources).memory(@process.pid){ 20_000 }
       sleep 5
 
-      stub(Eye::SystemResources).memory_usage(@process.pid){ 50_000 }
+      stub(Eye::SystemResources).memory(@process.pid){ 50_000 }
       mock(@process).schedule(:restart, anything)
 
       sleep 6
@@ -100,10 +100,10 @@ describe "Process Memory check" do
     it "else should not restart" do
       start_ok_process(@c.merge(:checks => @check))
 
-      stub(Eye::SystemResources).memory_usage(@process.pid){ 20_000 }
+      stub(Eye::SystemResources).memory(@process.pid){ 20_000 }
       sleep 5
 
-      stub(Eye::SystemResources).memory_usage(@process.pid){ 25_000 }
+      stub(Eye::SystemResources).memory(@process.pid){ 25_000 }
       dont_allow(@process).schedule(:restart)
 
       sleep 6   

@@ -5,11 +5,11 @@ class Eye::SystemResources
   # cached system resources
   class << self
 
-    def memory_usage(pid)
+    def memory(pid)
       ps_aux[pid].try :[], :rss
     end
 
-    def cpu_usage(pid)
+    def cpu(pid)
       ps_aux[pid].try :[], :cpu
     end
 
@@ -35,8 +35,8 @@ class Eye::SystemResources
     def resources(pid)
       return {} unless ps_aux[pid]
 
-      { :memory => memory_usage(pid), 
-        :cpu => cpu_usage(pid), 
+      { :memory => memory(pid), 
+        :cpu => cpu(pid), 
         :start_time => start_time(pid),
         :cmd => cmd(pid),
         :pid => pid

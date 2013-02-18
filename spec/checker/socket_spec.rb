@@ -73,7 +73,7 @@ describe "Socket Checker" do
 
   end
 
-  describe "em binary protocol" do
+  describe "em object protocol" do
     before :each do
       start_ok_process(C.p4)
     end

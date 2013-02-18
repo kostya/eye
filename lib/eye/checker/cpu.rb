@@ -9,7 +9,7 @@ class Eye::Checker::Cpu < Eye::Checker
   end
 
   def get_value
-    Eye::SystemResources.cpu_usage(@pid).to_i # nil => 0
+    Eye::SystemResources.cpu(@pid).to_i # nil => 0
   end
 
   def human_value(value)
