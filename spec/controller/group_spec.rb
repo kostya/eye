@@ -85,6 +85,12 @@ describe "Eye::Group" do
       @g.start
     end
 
+    it "with params" do
+      @g = Eye::Group.new('gr', {})
+      mock(@g).async_schedule(:signal, 15)
+      @g.signal(15)
+    end
+
     describe "monitor using chain as start" do
       it "monitor call chain" do
         @g = Eye::Group.new('gr', {:chain => {:start => {:command => :start, :grace => 3}}})

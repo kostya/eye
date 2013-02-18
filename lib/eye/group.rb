@@ -115,7 +115,7 @@ class Eye::Group
 private
 
   def async_schedule(command, *args)
-    info "send to all processes #{command} #{args}"
+    info "send to all processes #{command} #{args.present? ? args*',' : nil}"
     
     @processes.each do |process|
       process.send_command(command, *args)

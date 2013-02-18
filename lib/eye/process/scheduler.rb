@@ -14,7 +14,7 @@ module Eye::Process::Scheduler
 
   def scheduled_action(command, h = {}, &block)
     reason = h.delete(:reason)
-    info "=> #{command} #{h[:args]} (#{reason})"
+    info "=> #{command} #{h[:args].present? ? "#{h[:args]*',' }" : nil}(#{reason})"
 
     @current_scheduled_command = command
     @last_scheduled_command = command
