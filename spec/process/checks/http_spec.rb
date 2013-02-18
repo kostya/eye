@@ -25,7 +25,7 @@ describe "Process Http check" do
     start_ok_process(@c)
     sleep 2
 
-    mock(@process).schedule(:restart)
+    mock(@process).schedule(:restart, anything)
     FakeWeb.register_uri(:get, "http://localhost:3000/bla", :body => "Somebody BAD")
     sleep 2
   end
@@ -34,7 +34,7 @@ describe "Process Http check" do
     start_ok_process(@c)
     sleep 2
 
-    mock(@process).schedule(:restart)
+    mock(@process).schedule(:restart, anything)
     FakeWeb.register_uri(:get, "http://localhost:3000/bla", :body => "Somebody OK", :status => [500, 'err'])
     sleep 2
   end
@@ -43,7 +43,7 @@ describe "Process Http check" do
     start_ok_process(@c)
     sleep 2
 
-    mock(@process).schedule(:restart)
+    mock(@process).schedule(:restart, anything)
     FakeWeb.clean_registry
     FakeWeb.allow_net_connect = false
     sleep 2

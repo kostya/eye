@@ -71,7 +71,7 @@ describe "ChildProcess" do
 
       crazy.watchers.keys.should == [:check_memory, :check_cpu]
       mock(crazy).notify(:crit, "Bounded cpu(50%): [*55%, *55%]")
-      mock(crazy).schedule :restart
+      mock(crazy).schedule :restart, anything
 
       sleep 4
     end
