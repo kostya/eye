@@ -155,4 +155,19 @@ describe "Process Controller" do
     end
   end
 
+  describe "signal" do
+    before :each do
+      @process = process(C.p1)
+      @process.pid = 122345
+    end
+
+    it "mock send_signal" do
+      mock(@process).send_signal(9)
+      @process.signal(9)
+
+      mock(@process).send_signal('9')
+      @process.signal('9')
+    end
+  end
+
 end

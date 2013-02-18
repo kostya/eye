@@ -15,6 +15,10 @@ module Eye::System
     # Send signal to process (uses for kill)
     # code: TERM(15), KILL(9), QUIT(3), ...
     def send_signal(pid, code = :TERM)
+      if code.to_s.to_i != 0
+        code = code.to_i
+        code = -code if code < 0
+      end
       code = code.to_s.upcase if code.is_a?(String) || code.is_a?(Symbol)
 
       ::Process.kill(code, pid) if pid

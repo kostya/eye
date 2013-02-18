@@ -12,6 +12,8 @@ module Eye::Controller::Commands
         send_command(cmd, *args)
       when :delete
         exclusive{ send_command(cmd, *args) }
+      when :signal
+        signal(*args)
       when :load
         exclusive{ load(*args) }
       when :info

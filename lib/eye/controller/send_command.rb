@@ -16,6 +16,12 @@ module Eye::Controller::SendCommand
     matched_objects(*obj_strs)
   end  
 
+  def signal(sig, *obj_strs)
+    matched_objects(*obj_strs) do |obj|
+      obj.send_command :signal, sig || 0
+    end
+  end
+
 private
 
   def matched_objects(*obj_strs, &block)

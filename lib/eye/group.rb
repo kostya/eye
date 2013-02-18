@@ -100,6 +100,10 @@ class Eye::Group
     async_schedule :unmonitor
   end
 
+  def signal(sig)
+    async_schedule :signal, sig
+  end
+
   def clear
     @processes.clear
   end

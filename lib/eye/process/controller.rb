@@ -61,5 +61,12 @@ module Eye::Process::Controller
 
     terminate
   end
+
+  def signal(sig = 0)
+    if self.pid
+      info "send signal #{sig} to #{self.pid}"
+      send_signal(sig) 
+    end
+  end
   
 end
