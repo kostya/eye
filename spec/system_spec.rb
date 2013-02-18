@@ -148,6 +148,9 @@ describe "Eye::System" do
 
       mock(Process).kill(9, 123)
       Eye::System.send_signal(123, -9)
+      
+      mock(Process).kill(0, 123)
+      Eye::System.send_signal(123, '0')                  
     end
   end
 
