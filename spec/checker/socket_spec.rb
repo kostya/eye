@@ -96,6 +96,11 @@ describe "Socket Checker" do
       res.size.should == 9_999_999
     end
 
+    it "when raised in proc, good? == false" do
+      c = chsockb(:send_data => {:command => 'ping'}, :expect_data => lambda{|r| raise 'haha'})
+      c.check.should == false
+    end
+
     it "bad answer" do
       c = chsockb(:send_data => {:command => 'bad'}, :expect_data => 'pong')
       c.get_value.should == {:result => 'what'}

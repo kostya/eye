@@ -79,8 +79,14 @@ class Eye::Checker::Socket < Eye::Checker
     return false if !value[:result]
 
     if expect_data
-      if expect_data.is_a?(Proc)        
-        match = !!expect_data[value[:result]] 
+      if expect_data.is_a?(Proc)                
+        match = begin
+          !!expect_data[value[:result]] 
+        rescue Timeout::Error, Exception => ex
+          error "proc match failed with #{ex.message}"
+          return false
+        end
+        
         warn "proc #{expect_data} not matched (#{value[:result].truncate(30)}) answer" unless match
         return match
       end
