@@ -2,14 +2,14 @@ module Eye::Group::Chain
 
 private
 
-  def chain_schedule(type, command, grace = 0)
-    info "start #{type} chain #{command} with #{grace}s"
+  def chain_schedule(type, grace, command, *args)
+    info "start #{type} with #{grace}s chain #{command} #{args}"
 
     @chain_processes_count = @processes.size
     @chain_processes_current = 0
 
     @processes.each do | process |
-      chain_schedule_process(process, type, command)
+      chain_schedule_process(process, type, command, *args)
 
       @chain_processes_current = @chain_processes_current.to_i + 1
 
@@ -24,13 +24,13 @@ private
     @chain_processes_current = nil
   end
 
-  def chain_schedule_process(process, type, command)
+  def chain_schedule_process(process, type, command, *args)
     if type == :sync
       # sync command, with waiting
-      process.send(command)
+      process.send(command, *args)
     else
       # async command
-      process.send_command(command)
+      process.send_command(command, *args)
     end
   end
 
@@ -40,9 +40,9 @@ private
     end
   end
 
-  def chain_command(command)
+  def chain_command(command, *args)
     chain_opts = chain_options(command)
-    chain_schedule(chain_opts[:type], command, chain_opts[:grace])
+    chain_schedule(chain_opts[:type], chain_opts[:grace], command, *args)
   end
 
   # with such delay will chained processes by default

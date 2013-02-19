@@ -200,6 +200,22 @@ describe "Intergration" do
     Eye::System.pid_alive?(@old_pid3).should == true
   end
 
+  it "send signal to process throught all schedules" do
+    mock(@p1).signal('usr2')
+    mock(@p2).signal('usr2')
+    mock(@p3).signal('usr2')
+
+    @c.signal('usr2', "int").should == ["int"]
+    sleep 3 # while they gettings
+
+    @p1.last_scheduled_command.should == :signal
+    @p1.last_scheduled_reason.should == 'user command signal'
+
+    mock(@p1).signal('usr1')
+    @c.signal('usr1', 'sample1')
+    sleep 0.5
+  end
+
   describe "delete" do
     it "delete group not monitoring anymore" do
       @old_pid1 = @p1.pid

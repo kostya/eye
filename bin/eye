@@ -72,6 +72,11 @@ class Cli < Thor
     end
   end
 
+  desc "signal SIG, MASK[,...]", "send signal to matched app,group or process (ex: `eye sig USR2 some_app`)"
+  def signal(sig, *targets)
+    send_command(:signal, sig, *targets)
+  end
+
   desc "trace [TARGET]", "tracing log for app,group or process"
   def trace(target = "")
     log_trace(target)

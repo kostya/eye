@@ -123,6 +123,35 @@ describe "Eye::System" do
       data = File.read(@log)
       data.should include("USR1 sig")
     end
+
+    it "signals transformation" do
+      mock(Process).kill('USR1', 123)
+      Eye::System.send_signal(123, :usr1)
+
+      mock(Process).kill('KILL', 123)
+      Eye::System.send_signal(123, :KILL)
+
+      mock(Process).kill('USR1', 123)
+      Eye::System.send_signal(123, 'usr1')
+
+      mock(Process).kill('KILL', 123)
+      Eye::System.send_signal(123, 'KILL')
+
+      mock(Process).kill(9, 123)
+      Eye::System.send_signal(123, 9)
+
+      mock(Process).kill(9, 123)
+      Eye::System.send_signal(123, '9')
+
+      mock(Process).kill(9, 123)
+      Eye::System.send_signal(123, '-9')
+
+      mock(Process).kill(9, 123)
+      Eye::System.send_signal(123, -9)
+      
+      mock(Process).kill(0, 123)
+      Eye::System.send_signal(123, '0')                  
+    end
   end
 
   it "normalized_file" do

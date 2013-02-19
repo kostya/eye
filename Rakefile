@@ -8,6 +8,7 @@ RSpec::Core::RakeTask.new(:spec)
 task :env do
   require 'bundler/setup'
   require 'eye'
+  Eye::Control
   Eye::Process # preload
 end
 

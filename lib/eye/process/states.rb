@@ -61,7 +61,7 @@ class Eye::Process
   end
 
   def on_crushed
-    schedule :check_crush
+    schedule :check_crush, 'crushed'
   end
 
   def on_unmonitored
