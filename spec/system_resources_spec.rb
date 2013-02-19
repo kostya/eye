@@ -17,7 +17,7 @@ describe "Eye::SystemResources" do
 
   it "should get start time" do
     x = Eye::SystemResources.start_time($$)
-    x.length.should == 5
+    x.length.should >= 5
   end
 
   it "should get childs" do

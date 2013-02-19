@@ -19,7 +19,7 @@ describe "Eye::System" do
     x[:ppid].should > 1 # parent pid
     x[:cpu].should >= 0 # proc
     x[:rss].should > 1000 # memory
-    x[:start_time].length.should == 5
+    x[:start_time].length.should >= 5
   end
 
   it "prepare env" do
