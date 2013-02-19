@@ -73,6 +73,9 @@ describe "Intergration" do
     @p1.pid.should == @old_pid1
     @p2.pid.should == @old_pid2
     @p3.pid.should_not == @old_pid3
+
+    @p1.last_scheduled_reason.should == 'user command monitor'
+    @p3.last_scheduled_reason.should == 'user command restart'
   end
 
   it "restart missing" do
