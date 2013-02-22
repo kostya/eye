@@ -8,20 +8,21 @@ describe "Eye::Process::StatesHistory" do
 
   it "should work" do
     @h << :up
-    @h.push :down
+    @h.push :down, 'bla'
 
     @h.states.should == [:up, :down]
     @h.last_state.should == :down
     @h.last_state_changed_at.should be_within(2.seconds).of(Time.now)
+    @h.last[:reason].should == 'bla'
   end
 
   it "states for period" do
-    @h.push :up,    5.minutes.ago
-    @h.push :down,  4.minutes.ago
-    @h.push :start, 3.minutes.ago
-    @h.push :stop,  2.minutes.ago
-    @h.push :up,    1.minutes.ago
-    @h.push :down,  0.minutes.ago
+    @h.push :up,    nil, 5.minutes.ago
+    @h.push :down,  nil, 4.minutes.ago
+    @h.push :start, nil, 3.minutes.ago
+    @h.push :stop,  nil, 2.minutes.ago
+    @h.push :up,    nil, 1.minutes.ago
+    @h.push :down,  nil, 0.minutes.ago
 
     @h.states_for_period(1.5.minutes).should == [:up, :down]
     @h.states_for_period(2.5.minutes).should == [:stop, :up, :down]

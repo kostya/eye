@@ -74,8 +74,8 @@ describe "Intergration" do
     @p2.pid.should == @old_pid2
     @p3.pid.should_not == @old_pid3
 
-    @p1.last_scheduled_reason.should == 'user command monitor'
-    @p3.last_scheduled_reason.should == 'user command restart'
+    @p1.last_scheduled_reason.should == 'monitor by user'
+    @p3.last_scheduled_reason.should == 'restart by user'
   end
 
   it "restart missing" do
@@ -167,6 +167,10 @@ describe "Intergration" do
     Eye::System.pid_alive?(@old_pid1).should == false
     Eye::System.pid_alive?(@old_pid2).should == false
     Eye::System.pid_alive?(@old_pid3).should == true
+
+    sth = @p1.states_history.last
+    sth[:reason].should == 'stop by user'
+    sth[:state].should == :unmonitored
   end
 
   it "stop process" do

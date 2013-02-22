@@ -4,7 +4,8 @@ require 'state_machine'
 class Eye::Process
 
   # do transition
-  def switch(name)
+  def switch(name, reason = nil)
+    @state_reason = reason || last_scheduled_reason
     self.send("#{name}!")
   end
 
@@ -80,8 +81,8 @@ class Eye::Process
   end
 
   def log_transition(transition)
-    @states_history << transition.to_name
-    info "switch :#{transition.event} [:#{transition.from_name} => :#{transition.to_name}]"
+    @states_history.push transition.to_name, @state_reason
+    info "switch :#{transition.event} [:#{transition.from_name} => :#{transition.to_name}] #{@state_reason ? "(#{@state_reason})" : nil}"
   end
 
   def upd_for_triggers(transition)

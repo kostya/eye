@@ -1,5 +1,11 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
+class String
+  def clean_info
+    self.gsub(%r{\033.*?m}im, '').gsub(%r[\(.*?\)], '')
+  end
+end
+
 def app_check(app, name, gr_size)
   app.name.should == name
   app.class.should == Eye::Application
@@ -67,11 +73,11 @@ describe "Eye::Controller" do
     app1 = <<S
 app1                       
   gr1                               [monitor 1 of 2]
-    p1 ............................ unmonitored
+    p1 ............................ unmonitored 
     p2 ............................ unmonitored
   gr2                              
-    q3 ............................ unmonitored
-  g4 .............................. unmonitored
+    q3 ............................ unmonitored 
+  g4 .............................. unmonitored 
   g5 .............................. unmonitored
 S
     app2 = <<S
@@ -79,13 +85,11 @@ app2
   z1 .............................. unmonitored
 S
 
-    r = %r{\033.*?m}im
-
     subject.load(fixture("dsl/load.eye"))
-    subject.info_string.gsub(r, '').should == (app1 + app2).chomp
-    subject.info_string('app1').gsub(r, '').should == app1.chomp
-    subject.info_string('app2').gsub(r, '').should == app2.chomp
-    subject.info_string('app3').gsub(r, '').should == ''
+    subject.info_string.clean_info.should == (app1 + app2).chomp
+    subject.info_string('app1').clean_info.should == app1.chomp
+    subject.info_string('app2').clean_info.strip.should == app2.strip
+    subject.info_string('app3').clean_info.should == ''
   end
 
   it "info_string_debug should be" do

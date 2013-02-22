@@ -1,7 +1,7 @@
 class Eye::Process::StatesHistory < Eye::Utils::Tail
 
-  def push(state, tm = Time.now)
-    super(state: state, at: tm)
+  def push(state, reason = nil, tm = Time.now)
+    super(state: state, at: tm, reason: reason)
   end
 
   def states

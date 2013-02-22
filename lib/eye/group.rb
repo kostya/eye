@@ -71,7 +71,7 @@ class Eye::Group
     if command == :delete
       delete *args
     else
-      schedule command, *args, "user command #{command}"
+      schedule command, *args, "#{command} by user"
     end
   end
 
