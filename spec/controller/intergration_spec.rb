@@ -216,7 +216,7 @@ describe "Intergration" do
     sleep 3 # while they gettings
 
     @p1.last_scheduled_command.should == :signal
-    @p1.last_scheduled_reason.should == 'user command signal'
+    @p1.last_scheduled_reason.should == 'signal by user'
 
     mock(@p1).signal('usr1')
     @c.signal('usr1', 'sample1')

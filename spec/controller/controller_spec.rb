@@ -86,7 +86,7 @@ app2
 S
 
     subject.load(fixture("dsl/load.eye"))
-    subject.info_string.clean_info.should == (app1 + app2).chomp
+    subject.info_string.clean_info.strip.should == (app1 + app2).strip
     subject.info_string('app1').clean_info.should == app1.chomp
     subject.info_string('app2').clean_info.strip.should == app2.strip
     subject.info_string('app3').clean_info.should == ''
