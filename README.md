@@ -10,8 +10,9 @@ Recommended installation on the server (system wide):
     $ sudo ln -sf /usr/local/ruby/1.9.3/bin/eye /usr/local/bin/eye
 
 
-Config example, shows some typical processes and most of the options (examples/test.eye):
+Config example, shows some typical processes and most of the options (see in exampes/ folder):
 
+examples/test.eye
 ```ruby
 Eye.load("./eye/*.rb") # load submodules
 
@@ -20,7 +21,7 @@ Eye.config do
   logger_level Logger::DEBUG
 end
 
-Eye.app "test" do
+Eye.application "test" do
   working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
   stdall "trash.log" # logs for processes by default
   env "APP_ENV" => "production" # global env for each processes
@@ -73,8 +74,8 @@ Eye.app "test" do
     p.stdout          = 'em.log'
     p.daemonize       = true
     
-    p.checks :socket, :addr => "tcp://127.0.0.1:33221", :send_data => "ping", 
-                      :expect_data => /pong/, :every => 10.seconds, :times => 2, :timeout => 1.second
+    p.checks :socket, :addr => "tcp://127.0.0.1:33221", :every => 10.seconds, :times => 2, 
+                      :timeout => 1.second, :send_data => "ping", :expect_data => /pong/
   end
 
   process :thin do
@@ -84,6 +85,10 @@ Eye.app "test" do
 
     checks :http, :url => "http://127.0.0.1:33233/hello", :pattern => /World/, :every => 5.seconds, 
                   :times => [2, 3], :timeout => 1.second
+  end
+
+  # way to disable process or group, add 'x' before
+  xgroup :some_disabled_group do 
   end
 
 end
