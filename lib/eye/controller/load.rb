@@ -24,7 +24,7 @@ module Eye::Controller::Load
 private
 
   # regexp for clean backtrace to show for user
-  BT_REGX = %r[/lib/eye/|lib/celluloid|internal:prelude|logger.rb:].freeze
+  BT_REGX = %r[/lib/eye/|lib/celluloid|internal:prelude|logger.rb:|active_support/core_ext].freeze
 
   def catch_load_error(filename, &block)
     res = block.call
@@ -34,7 +34,8 @@ private
     error "load: config error <#{filename}>: #{ex.message}"
 
     # filter backtrace for user output
-    bt = (ex.backtrace || []).reject{|line| line.to_s =~ BT_REGX }
+    bt = (ex.backtrace || [])
+    bt = bt.reject{|line| line.to_s =~ BT_REGX }
     error bt.join("\n")
 
     res = {:error => true, :message => ex.message}

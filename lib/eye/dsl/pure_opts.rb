@@ -49,7 +49,7 @@ class Eye::Dsl::PureOpts
 
     if parent
       @parent = parent
-      @config = Marshal.load(Marshal.dump(parent.config)) # O_o ruby recommended deep clone
+      @config = Eye::Utils::deep_clone(parent.config)
       @full_name = "#{parent.full_name}:#{@full_name}"
     else
       @config = {}

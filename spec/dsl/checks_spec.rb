@@ -191,10 +191,27 @@ describe "Eye::Dsl checks" do
 
           checks :socket, :addr => "unix:/tmp/1", :expect_data => Proc.new{|data| data == 1}
         end        
+
+        process("3") do
+          pid_file "3.pid"
+
+          checks :socket, :addr => "unix:/tmp/3", :expect_data => /regexp/
+        end        
+
+        process("2") do
+          pid_file "2.pid"
+
+          checks :socket, :addr => "unix:/tmp/2", :expect_data => Proc.new{|data| data == 1}
+        end        
+
       end
     E
     res = Eye::Dsl.parse_apps(conf)
     proc = res['bla'][:groups]['__default__'][:processes]['1'][:checks][:socket][:expect_data]
+    proc[0].should == false
+    proc[1].should == true
+
+    proc = res['bla'][:groups]['__default__'][:processes]['2'][:checks][:socket][:expect_data]
     proc[0].should == false
     proc[1].should == true
   end
