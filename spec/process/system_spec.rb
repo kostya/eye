@@ -72,7 +72,7 @@ describe "Eye::Process::System" do
   [C.p1, C.p2].each do |cfg|
     it "blocking execute should not block process actor mailbox #{cfg[:name]}" do
       @process = Eye::Process.new(cfg.merge(:start_command => "sleep 5", :start_timeout => 10.seconds))
-      should_spend(2) do
+      should_spend(1) do
         @process.start!    
         sleep 1
 

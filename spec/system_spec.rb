@@ -79,7 +79,7 @@ describe "Eye::System" do
 
   describe "execute" do
     it "sleep and exit" do
-      should_spend(1) do
+      should_spend(1.1) do
         Eye::System.execute("sleep 1")
       end
     end
