@@ -308,7 +308,6 @@ describe "Eye::Controller::Load" do
 
   describe "load is exclusive" do
     it "run double in time" do
-      t = Time.now
       Eye::Control.async.command(:load, fixture("dsl/long_load.eye"))
       Eye::Control.async.command(:load, fixture("dsl/long_load.eye"))
       sleep 2.5      

@@ -10,5 +10,5 @@ module Eye::Utils
       else value
     end
   end
-  
+    
 end

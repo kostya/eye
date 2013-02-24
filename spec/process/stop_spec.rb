@@ -112,6 +112,12 @@ describe "Process Stop" do
 
     @process.stop_process!
     sleep 1.5
+
+    # not blocking actor
+    should_spend(0) do
+      @process.name.should == 'blocking process'
+    end
+
     Eye::System.pid_alive?(@pid).should == true
     sleep 1.5
     Eye::System.pid_alive?(@pid).should == true

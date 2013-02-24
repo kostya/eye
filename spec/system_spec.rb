@@ -79,11 +79,9 @@ describe "Eye::System" do
 
   describe "execute" do
     it "sleep and exit" do
-      tm = Time.now
-      Eye::System.execute("sleep 1")
-      tm2 = Time.now
-
-      (tm2 - tm).should > 1.second
+      should_spend(1) do
+        Eye::System.execute("sleep 1")
+      end
     end
   end
 

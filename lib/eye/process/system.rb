@@ -47,14 +47,27 @@ module Eye::Process::System
     res[:status] == :ok
   end
 
-  def with_timeout(time, &block)
-    Timeout.timeout(time.to_f, &block)
-  rescue Timeout::Error
-    :timeout
+  # non blocking actor timeout
+  def wait_for_condition(timeout, step = 0.1, &block)
+    defer{ wait_for_condition_sync(timeout, step, &block) }
   end
 
   def execute(cmd, cfg = {})
     defer{ Eye::System::execute cmd, cfg }
   end
-  
+
+private
+
+  def wait_for_condition_sync(timeout, step, &block)
+    res = nil
+
+    Timeout::timeout(timeout.to_f) do
+      sleep step.to_f until res = yield
+    end
+
+    res
+  rescue Timeout::Error
+    false
+  end
+
 end

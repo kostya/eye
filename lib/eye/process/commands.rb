@@ -122,7 +122,7 @@ private
       sleep self[:stop_grace].to_f
 
     elsif self[:stop_signals]
-      info "executing signals `#{self[:stop_signals].inspect}`"
+      info "executing stop_signals #{self[:stop_signals].inspect}"
       stop_signals = self[:stop_signals].clone
 
       signal = stop_signals.shift
@@ -132,8 +132,7 @@ private
         delay = stop_signals.shift
         signal = stop_signals.shift
 
-        sleep(delay.to_f)
-        unless process_realy_running?
+        if wait_for_condition(delay.to_f, 0.1){ !process_realy_running? }
           info 'has terminated'
           break
         end

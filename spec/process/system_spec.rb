@@ -69,32 +69,46 @@ describe "Eye::Process::System" do
     (Time.now - @process.pid_file_ctime).should < 0.1.second
   end
 
-  it "with_timeout" do
-    res = @process.with_timeout(0.5) do
-      sleep 0.3
-      11
-    end
-
-    res.should == 11
-
-    res = @process.with_timeout(0.5) do
-      sleep 0.7
-      11
-    end
-    res.should == :timeout
-  end
-  
   [C.p1, C.p2].each do |cfg|
     it "blocking execute should not block process actor mailbox #{cfg[:name]}" do
       @process = Eye::Process.new(cfg.merge(:start_command => "sleep 5", :start_timeout => 10.seconds))
-      tm1 = Time.now
-      @process.start!    
-      sleep 1
+      should_spend(2) do
+        @process.start!    
+        sleep 1
 
-      # here mailbox should anwser without blocks
-      @process.name.should == cfg[:name]
-      (Time.now - tm1).should < 2 # seconds
+        # here mailbox should anwser without blocks
+        @process.name.should == cfg[:name]
+      end
     end
   end
+
+  context "#wait_for_condition" do
+    subject{ Eye::Process.new(C.p1) }
+
+    it "success" do
+      should_spend(0) do
+        subject.wait_for_condition(1){ 15 }.should == 15
+      end      
+    end
+
+    it "success with sleep" do
+      should_spend(0.3) do
+        subject.wait_for_condition(1){ sleep 0.3; :a }.should == :a
+      end      
+    end
+
+    it "fail by timeout" do
+      should_spend(1) do
+        subject.wait_for_condition(1){ sleep 4; true }.should == false
+      end      
+    end
+
+    it "fail with bad result" do
+      should_spend(1) do
+        subject.wait_for_condition(1){ nil }.should == false
+      end      
+    end
+  end
+
 
 end

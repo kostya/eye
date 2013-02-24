@@ -118,3 +118,9 @@ def join(*args)
 
   result
 end
+
+def should_spend(timeout = 0, delta = 0.05, &block)
+  tm1 = Time.now
+  yield
+  (Time.now - tm1).should be_within(delta).of(timeout)
+end
