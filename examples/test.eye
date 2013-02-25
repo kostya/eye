@@ -57,6 +57,7 @@ Eye.application "test" do
     p.start_command   = 'ruby em.rb'
     p.stdout          = 'em.log'
     p.daemonize       = true
+    p.stop_signals    = [:QUIT, 2.seconds, :KILL]
     
     p.checks :socket, :addr => "tcp://127.0.0.1:33221", :every => 10.seconds, :times => 2, 
                       :timeout => 1.second, :send_data => "ping", :expect_data => /pong/

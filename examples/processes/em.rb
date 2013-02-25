@@ -44,7 +44,8 @@ class EchoObj < EM::Connection
   end  
 end
 
-trap "TERM" do
+trap "QUIT" do
+  puts "quit signal, stopping"
   EM.stop
 end
 
