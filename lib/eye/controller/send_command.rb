@@ -79,6 +79,12 @@ private
     @applications.each do |a|
       a.groups.each do |gr|
         res += gr.processes.select{|p| p.name =~ r || p.full_name =~ r }
+
+        # child processes
+        gr.processes.each do |p|
+          next unless p.childs.present?
+          res += p.childs.values.select{|ch| ch.name =~ r || ch.full_name =~ r }
+        end
       end
     end
 

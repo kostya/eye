@@ -34,7 +34,7 @@ class Eye::ChildProcess
 
     @pid = pid
     @config = prepare_config(config)
-    @name = '=child='
+    @name = "child-#{pid}"
 
     @logger = Eye::Logger.new("#{logger_prefix} child:#{pid}")
     
@@ -47,6 +47,14 @@ class Eye::ChildProcess
 
   def state
     :up
+  end
+
+  def full_name
+    @full_name ||= [name] * ':'
+  end
+
+  def send_command(command, *args)
+    schedule command, *args, "#{command} by user"
   end
 
   def stop
