@@ -30,7 +30,7 @@ Eye.application "test" do
     process("sample2") do
       pid_file "2.pid"
       start_command "ruby ./sample.rb -d --pid 2.pid --log sample2.log"
-      stop_command "kill -9 {{PID}}"
+      stop_command "kill -9 {PID}"
 
       checks :memory, :below => 300.megabytes, :times => 3
     end
@@ -47,7 +47,7 @@ Eye.application "test" do
     stop_grace 5.seconds
   
     monitor_children do
-      restart_command "kill -2 {{PID}}" # for this child process
+      restart_command "kill -2 {PID}" # for this child process
       checks :memory, :below => 300.megabytes, :times => 3
     end
   end
@@ -70,10 +70,6 @@ Eye.application "test" do
 
     checks :http, :url => "http://127.0.0.1:33233/hello", :pattern => /World/, :every => 5.seconds, 
                   :times => [2, 3], :timeout => 1.second
-  end
-
-  # way to disable process or group, add 'x' before
-  xgroup :some_disabled_group do 
   end
 
 end
