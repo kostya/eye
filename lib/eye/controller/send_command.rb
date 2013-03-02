@@ -2,13 +2,12 @@ module Eye::Controller::SendCommand
 
   def send_command(command, *obj_strs)
     matched_objects(*obj_strs) do |obj|
-      obj.send_command(command)
-      
       if command.to_sym == :delete
         remove_object_from_tree(obj) 
         set_proc_line # to sync proc line if was delete application
-        GC.start
       end
+
+      obj.send_command(command)
     end
   end
 
@@ -32,9 +31,29 @@ private
   end
 
   def remove_object_from_tree(obj)
-    @applications.delete(obj)
-    @applications.each{|app| app.groups.delete(obj) }
-    @applications.each{|app| app.groups.each{|gr| gr.processes.delete(obj) }}
+    klass = obj.class
+
+    if klass == Eye::Application
+      @applications.delete(obj)
+      @current_config[:applications].delete(obj.name)
+    end
+
+    if klass == Eye::Group
+      @applications.each{|app| app.groups.delete(obj) }
+      @current_config[:applications].each do |app_name, app_cfg|
+        app_cfg[:groups].delete(obj.name)
+      end
+    end
+
+    if klass == Eye::Process
+      @applications.each{|app| app.groups.each{|gr| gr.processes.delete(obj) }}
+
+      @current_config[:applications].each do |app_name, app_cfg|
+        app_cfg[:groups].each do |gr_name, gr_cfg|
+          gr_cfg[:processes].delete(obj.name)
+        end
+      end
+    end    
   end
 
   # find object to action, restart ... (app, group or process)
