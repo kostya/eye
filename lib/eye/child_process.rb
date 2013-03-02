@@ -57,6 +57,9 @@ class Eye::ChildProcess
     schedule command, *args, "#{command} by user"
   end
 
+  def start
+  end
+
   def stop
     kill_process
   end
@@ -74,6 +77,13 @@ class Eye::ChildProcess
   def delete
     remove_watchers
     terminate
+  end
+
+  def signal(sig)
+    if self.pid
+      res = send_signal(sig)
+      info "send signal #{sig} to #{self.pid} = #{res}"
+    end
   end
 
   def status_data(debug = false)
