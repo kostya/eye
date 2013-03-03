@@ -74,7 +74,10 @@ class Eye::ChildProcess
   def unmonitor
   end
 
-  def delete
+  def delete 
+  end
+
+  def destroy
     remove_watchers
     terminate
   end
