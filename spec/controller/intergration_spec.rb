@@ -78,6 +78,21 @@ describe "Intergration" do
     @p3.last_scheduled_reason.should == 'restart by user'
   end
 
+  it "restart forking named child" do
+    @p3.childs.size.should == 3
+    dead_pid = @p3.childs.keys.sample
+
+    @c.send_command(:restart, "child-#{dead_pid}").should == ["int:forking:child-#{dead_pid}"]
+    sleep 11 # while it
+
+    new_childs = @p3.childs.keys
+    new_childs.size.should == 3
+    new_childs.should_not include(dead_pid)
+    (@childs - [dead_pid]).each do |pid|
+      new_childs.should include(pid)
+    end
+  end
+
   it "restart missing" do
     @old_pid1 = @p1.pid
     @old_pid2 = @p2.pid
