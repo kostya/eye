@@ -72,21 +72,7 @@ module Eye::Process::Commands
     switch :restarting
 
     if self[:restart_command]
-      cmd = prepare_command(self[:restart_command])
-      info "executing: `#{cmd}` with restart_timeout: #{self[:restart_timeout].to_f}s and restart_grace: #{self[:restart_grace].to_f}s"
-
-      res = execute(cmd, config.merge(:timeout => self[:restart_timeout]))
-
-      if res[:error]
-        error "restart raised with #{res[:error].inspect}"
-
-        if res[:error].class == Timeout::Error
-          error 'you should tune restart_timeout setting'
-        end
-      end
-
-      sleep self[:restart_grace].to_f
-
+      execute_restart_command
       result = check_alive_with_refresh_pid_if_needed
       switch(result ? :restarted : :crushed)
     else
@@ -155,6 +141,23 @@ private
         sleep 0.1 # little grace
       end
     end
+  end
+
+  def execute_restart_command
+    cmd = prepare_command(self[:restart_command])
+    info "executing: `#{cmd}` with restart_timeout: #{self[:restart_timeout].to_f}s and restart_grace: #{self[:restart_grace].to_f}s"
+
+    res = execute(cmd, config.merge(:timeout => self[:restart_timeout]))
+
+    if res[:error]
+      error "restart raised with #{res[:error].inspect}"
+
+      if res[:error].class == Timeout::Error
+        error 'you should tune restart_timeout setting'
+      end
+    end
+
+    res
   end
   
   def daemonize_process

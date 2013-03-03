@@ -62,7 +62,11 @@ class Eye::ChildProcess
   end
 
   def restart
-    stop
+    if self[:restart_command]
+      execute_restart_command
+    else
+      stop
+    end    
   end
 
   def monitor
