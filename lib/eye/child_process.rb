@@ -27,7 +27,7 @@ class Eye::ChildProcess
   # scheduler
   include Eye::Process::Scheduler
 
-  attr_reader :pid, :name, :config, :watchers
+  attr_reader :pid, :name, :full_name, :config, :watchers
 
   def initialize(pid, config = {}, logger_prefix = nil)
     raise 'Empty pid' unless pid
@@ -35,8 +35,9 @@ class Eye::ChildProcess
     @pid = pid
     @config = prepare_config(config)
     @name = "child-#{pid}"
+    @full_name = [logger_prefix, @name] * ':'
 
-    @logger = Eye::Logger.new("#{logger_prefix} child:#{pid}")
+    @logger = Eye::Logger.new(@full_name)
     
     @watchers = {}
 
@@ -47,10 +48,6 @@ class Eye::ChildProcess
 
   def state
     :up
-  end
-
-  def full_name
-    @full_name ||= [name] * ':'
   end
 
   def send_command(command, *args)
