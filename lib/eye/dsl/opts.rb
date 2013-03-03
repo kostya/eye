@@ -2,22 +2,17 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
 
   STR_OPTIONS = [ :pid_file, :working_dir, :stdout, :stderr, :stdall, :start_command, 
     :stop_command, :restart_command ]
-
   create_options_methods(STR_OPTIONS, String)
 
   BOOL_OPTIONS = [ :daemonize, :keep_alive, :control_pid, :auto_start, :stop_on_delete]
-
   create_options_methods(BOOL_OPTIONS, [TrueClass, FalseClass])
 
   INTERVAL_OPTIONS = [ :check_alive_period, :start_timeout, :restart_timeout, :stop_timeout, :start_grace,
     :restart_grace, :stop_grace, :childs_update_period ]
-
   create_options_methods(INTERVAL_OPTIONS, [Fixnum, Float])
 
   OTHER_OPTIONS = [ :environment, :stop_signals ]
-
   create_options_methods(OTHER_OPTIONS)
-
 
 
   def initialize(name = nil, parent = nil)
@@ -68,6 +63,18 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     type = type.to_sym
     raise Eye::Dsl::Error, "unknown trigger type #{type}" unless Eye::Trigger::TYPES[type]
     @config[:triggers].try :delete, type
+  end
+
+  def notify(contact, level = :crit)
+    raise Eye::Dsl::Error, "level should be in #{[:warn, :crit]}" unless Eye::Process::Notify::LEVELS[level]
+
+    @config[:notify] ||= {}
+    @config[:notify][contact.to_s] = level
+  end
+
+  def nonotify(contact)
+    @config[:notify] ||= {}
+    @config[:notify].delete(contact.to_s)
   end
 
   def set_environment(value)

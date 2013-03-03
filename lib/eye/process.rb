@@ -24,7 +24,7 @@ class Eye::Process
 
     @config = prepare_config(config)
     @logger = Eye::Logger.new(full_name)
-    
+
     @watchers = {}
     @childs = {}
     @triggers = []

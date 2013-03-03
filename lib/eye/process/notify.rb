@@ -1,17 +1,32 @@
 module Eye::Process::Notify
 
   # notify to user:
-  # 1) process crushed by itself, and we restart it
-  # 2) checker fire to restart process +
-  # 3) flapping + switch to unmonitored
+  # 1) process crushed by itself, and we restart it [:warn]
+  # 2) checker bounded to restart process [:crit]
+  # 3) flapping + switch to unmonitored [:crit]
 
-  # level = [:warn, :crit]
+  LEVELS = {:warn => 0, :crit => 1}
 
-  # TODO: add mail, jabber here
   def notify(level, msg)
-    if level != :warn
-      warn "!!!!!!!! NOTIFY: #{level}, #{msg} !!!!!!!!!!!"
+    # logging it
+    error "NOTIFY: #{msg}" if ilevel(level) > 0
+
+    # send notifies
+    if self[:notify].present?
+      message = {:message => msg, :name => name, 
+        :full_name => full_name, :pid => pid, :host => Eye::System.host, :level => level,
+        :at => Time.now }
+
+      self[:notify].each do |contact, not_level|
+        Eye::Notify.notify(contact, message) if ilevel(not_level) >= ilevel(level)
+      end
     end
+  end
+
+private
+
+  def ilevel(level)
+    LEVELS[level].to_i
   end
 
 end
