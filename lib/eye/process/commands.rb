@@ -73,6 +73,7 @@ module Eye::Process::Commands
 
     if self[:restart_command]
       execute_restart_command
+      sleep self[:restart_timeout].to_f
       result = check_alive_with_refresh_pid_if_needed
       switch(result ? :restarted : :crushed)
     else
