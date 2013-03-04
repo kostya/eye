@@ -310,15 +310,49 @@ describe "Eye::Controller::Load" do
     it "run double in time" do
       Eye::Control.async.command(:load, fixture("dsl/long_load.eye"))
       Eye::Control.async.command(:load, fixture("dsl/long_load.eye"))
-      sleep 2.5      
-      Eye::Control.command(:info).should be_a(String) # actor should free here
+      sleep 2.5   
+      should_spend(0, 0.2) do
+        Eye::Control.command(:info).should be_a(String)
+      end
     end
 
     it "load with subloads" do
       silence_warnings{ 
         Eye::Control.command(:load, fixture("dsl/subfolder2.eye"))
       }
-      Eye::Control.command(:info).should be_a(String) # actor should free here
+      should_spend(0, 0.2) do
+        Eye::Control.command(:info).should be_a(String)
+      end
+    end
+  end
+
+  describe "cleanup configs on delete" do
+    it "load config, delete 1 process, load another config" do
+      subject.load(fixture('dsl/load.eye')) 
+      subject.process_by_name('p1').should be
+
+      subject.command(:delete, "p1"); sleep 0.1
+      subject.process_by_name('p1').should be_nil
+
+      subject.load(fixture('dsl/load2.eye')) 
+      subject.process_by_name('p1').should be_nil      
+    end
+
+    it "load config, delete 1 group, load another config" do
+      subject.load(fixture('dsl/load.eye')) 
+      subject.group_by_name('gr1').should be
+
+      subject.command(:delete, "gr1"); sleep 0.1
+      subject.group_by_name('p1').should be_nil
+
+      subject.load(fixture('dsl/load2.eye')) 
+      subject.group_by_name('gr1').should be_nil      
+    end
+
+    it "load config, then delete app, and load it with changed app-name" do
+      subject.load(fixture('dsl/load3.eye')) 
+      subject.command(:delete, "app3"); sleep 0.1
+      subject.load(fixture('dsl/load4.eye')).should include(error: false)
     end
   end
 
