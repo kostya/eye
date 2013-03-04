@@ -27,7 +27,8 @@ class Eye::Notify
     create_proc = lambda do |nh|
       type = nh[:type]
       config = (current_config[type] || {}).merge(nh[:opts] || {}).merge(:contact => nh[:contact])
-      get_class(type).new(config, message_h)
+      klass = get_class(type)
+      klass.new(config, message_h)      
     end
 
     if needed_hash.is_a?(Array)
@@ -44,16 +45,20 @@ class Eye::Notify
     debug "created notifier #{options}"
 
     @message_h = message_h
-    @message = @message_h[:message]
     @options = options
+
+    async_notify
+  end
+
+  def async_notify
     async.notify
     after(TIMEOUT){ terminate }
   end
 
   def notify
-    debug "start notify #{@message}"
+    debug "start notify #{@message_h}"
     execute
-    debug "end notify #{@message}"
+    debug "end notify #{@message_h}"
     terminate
   end
 
@@ -63,14 +68,20 @@ class Eye::Notify
 
   param :contact, [String]
 
-private
-
-  def subject
-    "[#{Eye::System.host}] #{@msg.truncate(30)}"
+  def message_subject
+    "Eye [#{msg_host}] #{msg_message.truncate(30)}"
   end
   
-  def message
-    "[#{Eye::System.host}] #{@msg} at #{Time.now.to_s(:short)}"
+  def message_body
+    "[#{msg_host}] #{msg_message} at #{msg_at.to_s(:short)}"
+  end
+
+private
+
+  %w{at host message name full_name pid level}.each do |name|
+    define_method("msg_#{name}") do
+      @message_h[name.to_sym]
+    end
   end
 
 end

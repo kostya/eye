@@ -9,11 +9,14 @@ class Eye::Notify::Mail < Eye::Notify
 
   param :host, String, true
   param :port, [String, Fixnum], true
+
+  param :domain, String
   param :user, String
   param :password, String
-  param :domain, String
-  param :from, String
-
+  param :auth, Symbol # :plain, :login, :cram_md5
+  
+  param :from_mail, String
+  
   def execute
     smtp
   end
@@ -21,20 +24,18 @@ class Eye::Notify::Mail < Eye::Notify
 private  
 
   def message
-    <<-M
-From: #{from_name} <#{from_email}>
-To: #{to_name || name} <#{to_email}>
-Subject: [Eye] #{subject}
-Date: #{@message_h[:at].httpdate}
-Message-Id: <#{rand(1000000000).to_s(36)}.#{$$}.#{from_email}>
-
-#{super}
-    M
+    h = []
+    h << "From: <#{from_mail || user}>" if from_mail || user
+    h << "To: <#{contact}>"
+    h << "Subject: <#{message_subject}>"
+    h << "Date: #{msg_at.httpdate}"
+    h << "Message-Id: <#{rand(1000000000).to_s(36)}.#{$$}.#{contact}>"
+    "#{h * "\n"}\n#{message_body}"
   end
 
   def smtp
-    Net::SMTP.start(host, port) do |smtp|
-      smtp.send_message(message, from || user, contact)
+    Net::SMTP.start(host, port, domain, user, password, auth) do |smtp|
+      smtp.send_message(message, from_mail || user, contact)
     end
   end
 

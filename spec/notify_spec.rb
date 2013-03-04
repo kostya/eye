@@ -1,13 +1,23 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-describe "Eye::Notify" do
+class Not1 < Eye::Notify
+  param :port, Fixnum
 
-  context "create notify class" do
-    before :each do
-      @message = {:message=>"something", :name=>"blocking process", 
+  def execute
+    $wo = wrapped_object
+  end
+end
+
+describe "Eye::Notify" do
+  before :each do
+    @message = {:message=>"something", :name=>"blocking process", 
         :full_name=>"main:default:blocking process", :pid=>123, 
         :host=>'host1', :level=>:crit, :at => Time.now}
 
+  end
+
+  context "create notify class" do
+    before :each do
       @config = {
         :mail=>{:host=>"mx.mail.ru", :type => :mail, :port => 25, :domain => "some.host"}, 
         :contacts=>{
@@ -50,6 +60,26 @@ describe "Eye::Notify" do
       h = {:host=>"jabber.some.host", :port=>1111, :user=>"some_user", :contact=>"idiot3@mail.ru"}
       mock(Eye::Notify::Jabber).new(h, @message)
       Eye::Notify.notify('idiot3', @message)
+    end
+  end
+
+  context "initialize" do
+    before :each do
+      @h = {:host=>"mx.mail.ru", :type=>:mail, :port=>25, :domain=>"some.host", :contact=>"vasya@mail.ru"}
+    end
+
+    it "create and intall async task" do
+      $wo = nil
+      n = Eye::Notify::Not1.new(@h, @message)
+      sleep 0.5
+      
+      $wo.contact.should == 'vasya@mail.ru'
+      $wo.port.should == 25
+
+      $wo.message_subject.should == 'Eye [host1] something'
+      $wo.message_body.should start_with('[host1] something at')
+
+      n.alive?.should == false
     end
   end
 
