@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "Eye::Utils::Tail" do
