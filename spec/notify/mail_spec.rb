@@ -1,0 +1,27 @@
+require File.dirname(__FILE__) + '/../spec_helper'
+
+describe "Eye::Notify::Mail" do
+  before :each do
+    @message = {:message=>"something", :name=>"blocking process", 
+        :full_name=>"main:default:blocking process", :pid=>123, 
+        :host=>'host1', :level=>:crit, :at => Time.now}
+    @h = {:host=>"mx.some.host.ru", :type=>:mail, :port=>25, :domain=>"some.host", :contact=>"vasya@mail.ru"}
+  end
+
+  it "should send mail" do
+    @m = Eye::Notify::Mail.new(@h, @message)
+
+    ob = ""
+    mock(Net::SMTP).start('mx.some.host.ru', 25, 'some.host', nil, nil, nil){ ob }
+
+    @m.execute
+
+    @m.message_subject.should == "Eye [host1] something"
+    @m.contact.should == "vasya@mail.ru"
+
+    m = @m.message.split("\n")
+    m.should include("To: <vasya@mail.ru>")
+    m.should include("Subject: <Eye [host1] something>")    
+    m.should include("Subject: <Eye [host1] something>")
+  end
+end

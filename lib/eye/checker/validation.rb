@@ -42,7 +42,7 @@ module Eye::Checker::Validation
     end
 
     should_bes.each do |param|
-      raise Error, "#{self.name} bad param :#{param}, value should be" unless options[param.to_sym] || defaults[param.to_sym]
+      raise Error, "#{self.name} for param :#{param} value should be" unless options[param.to_sym] || defaults[param.to_sym]
     end
   end
 

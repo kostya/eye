@@ -43,13 +43,13 @@ class Eye::Dsl::PureOpts
   attr_reader :name, :full_name
   attr_reader :config, :parent
 
-  def initialize(name = nil, parent = nil)
+  def initialize(name = nil, parent = nil, merge_parent_config = true)
     @name = name.to_s    
     @full_name = @name
 
     if parent
       @parent = parent
-      @config = Eye::Utils::deep_clone(parent.config)
+      @config = merge_parent_config ? Eye::Utils::deep_clone(parent.config) : {}
       @full_name = "#{parent.full_name}:#{@full_name}"
     else
       @config = {}

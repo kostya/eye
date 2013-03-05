@@ -16,6 +16,7 @@ module Eye
   autoload :Settings,       'eye/settings'
   autoload :Client,         'eye/client'
   autoload :Utils,          'eye/utils'
+  autoload :Notify,         'eye/notify'
   
   autoload :Controller,     'eye/controller'
   autoload :Control,        'eye/control'
