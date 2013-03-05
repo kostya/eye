@@ -4,7 +4,7 @@ describe "Eye::Dsl notify" do
   it "integration" do
     conf = <<-E
       Eye.config do
-        mail :host => "mx.mail.ru", :port => 25
+        mail :host => "mx.some.host.ru", :port => 25
 
         contact :vasya, :mail, "vasya@mail.ru"
         contact :petya, :mail, "petya@mail.ru", :port => 1111
@@ -34,7 +34,7 @@ describe "Eye::Dsl notify" do
           :groups=>{"gr1"=>{:name=>"gr1", 
             :notify=>{"vasya"=>:crit, "idiots"=>:crit, "petya"=>:crit, "idiot1"=>:warn}, :application=>"bla", :processes=>{}}}}},
       :config => {
-        :mail=>{:host=>"mx.mail.ru", :port => 25, :type => :mail}, 
+        :mail=>{:host=>"mx.some.host.ru", :port => 25, :type => :mail}, 
         :contacts=>{
           "vasya"=>{:name=>"vasya", :type=>:mail, :contact=>"vasya@mail.ru", :opts=>{}}, 
           "petya"=>{:name=>"petya", :type=>:mail, :contact=>"petya@mail.ru", :opts=>{:port=>1111}}, 

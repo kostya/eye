@@ -28,7 +28,8 @@ class Eye::Notify
       type = nh[:type]
       config = (current_config[type] || {}).merge(nh[:opts] || {}).merge(:contact => nh[:contact])
       klass = get_class(type)
-      klass.new(config, message_h)      
+      notify = klass.new(config, message_h)
+      notify.async_notify if notify
     end
 
     if needed_hash.is_a?(Array)
@@ -41,13 +42,11 @@ class Eye::Notify
   TIMEOUT = 1.minute
 
   def initialize(options = {}, message_h = {})
-    @logger = Eye::Logger.new(self.class.name.downcase)
+    @logger = Eye::Logger.new("#{self.class.name.downcase} - #{options[:contact]}")
     debug "created notifier #{options}"
 
     @message_h = message_h
     @options = options
-
-    async_notify
   end
 
   def async_notify

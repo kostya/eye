@@ -4,7 +4,6 @@ class Not1 < Eye::Notify
   param :port, Fixnum
 
   def execute
-    $wo = wrapped_object
   end
 end
 
@@ -19,7 +18,7 @@ describe "Eye::Notify" do
   context "create notify class" do
     before :each do
       @config = {
-        :mail=>{:host=>"mx.mail.ru", :type => :mail, :port => 25, :domain => "some.host"}, 
+        :mail=>{:host=>"mx.some.host.ru", :type => :mail, :port => 25, :domain => "some.host"}, 
         :contacts=>{
           "vasya"=>{:name=>"vasya", :type=>:mail, :contact=>"vasya@mail.ru", :opts=>{}}, 
           "petya"=>{:name=>"petya", :type=>:mail, :contact=>"petya@mail.ru", :opts=>{:port=>1111}}, 
@@ -32,20 +31,20 @@ describe "Eye::Notify" do
     end
 
     it "should create right class" do
-      h = {:host=>"mx.mail.ru", :type=>:mail, :port=>25, :domain=>"some.host", :contact=>"vasya@mail.ru"}
+      h = {:host=>"mx.some.host.ru", :type=>:mail, :port=>25, :domain=>"some.host", :contact=>"vasya@mail.ru"}
       mock(Eye::Notify::Mail).new(h, @message)
       Eye::Notify.notify('vasya', @message)
     end
 
     it "should create right class with additional options" do
-      h = {:host=>"mx.mail.ru", :type=>:mail, :port=>1111, :domain=>"some.host", :contact=>"petya@mail.ru"}
+      h = {:host=>"mx.some.host.ru", :type=>:mail, :port=>1111, :domain=>"some.host", :contact=>"petya@mail.ru"}
       mock(Eye::Notify::Mail).new(h, @message)
       Eye::Notify.notify('petya', @message)
     end
 
     it "should create right class with group of contacts" do
-      h1 = {:host=>"mx.mail.ru", :type=>:mail, :port=>25, :domain=>"some.host", :contact=>"idiot1@mail.ru"}
-      h2 = {:host=>"mx.mail.ru", :type=>:mail, :port=>1111, :domain=>"some.host", :contact=>"idiot2@mail.ru"}
+      h1 = {:host=>"mx.some.host.ru", :type=>:mail, :port=>25, :domain=>"some.host", :contact=>"idiot1@mail.ru"}
+      h2 = {:host=>"mx.some.host.ru", :type=>:mail, :port=>1111, :domain=>"some.host", :contact=>"idiot2@mail.ru"}
       mock(Eye::Notify::Mail).new(h1, @message)
       mock(Eye::Notify::Mail).new(h2, @message)
       Eye::Notify.notify('idiots', @message)
@@ -65,21 +64,26 @@ describe "Eye::Notify" do
 
   context "initialize" do
     before :each do
-      @h = {:host=>"mx.mail.ru", :type=>:mail, :port=>25, :domain=>"some.host", :contact=>"vasya@mail.ru"}
+      @h = {:host=>"mx.some.host.ru", :type=>:mail, :port=>25, :domain=>"some.host", :contact=>"vasya@mail.ru"}
     end
 
     it "create and intall async task" do
-      $wo = nil
       n = Eye::Notify::Not1.new(@h, @message)
+
+      $wo = nil
+      mock(n).execute do
+        $wo = n.wrapped_object
+      end
+
+      n.async_notify
       sleep 0.5
-      
+      n.alive?.should == false
+
       $wo.contact.should == 'vasya@mail.ru'
       $wo.port.should == 25
 
       $wo.message_subject.should == 'Eye [host1] something'
       $wo.message_body.should start_with('[host1] something at')
-
-      n.alive?.should == false
     end
   end
 

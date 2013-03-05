@@ -21,7 +21,14 @@ class Eye::Notify::Mail < Eye::Notify
     smtp
   end
 
-private  
+  def smtp
+    args = [host, port, domain, user, password, auth]
+    debug "called smtp with #{args}"
+
+    Net::SMTP.start(*args) do |smtp|
+      smtp.send_message(message, from_mail || user, contact)
+    end
+  end
 
   def message
     h = []
@@ -31,12 +38,6 @@ private
     h << "Date: #{msg_at.httpdate}"
     h << "Message-Id: <#{rand(1000000000).to_s(36)}.#{$$}.#{contact}>"
     "#{h * "\n"}\n#{message_body}"
-  end
-
-  def smtp
-    Net::SMTP.start(host, port, domain, user, password, auth) do |smtp|
-      smtp.send_message(message, from_mail || user, contact)
-    end
   end
 
 end

@@ -10,18 +10,14 @@ class Eye::Dsl::ConfigOpts < Eye::Dsl::PureOpts
 
   # ==== contact options ==============================
 
-  create_options_methods([:mail, :jabber], Hash)
+  Eye::Notify::TYPES.keys.each do |not_system|
+    create_options_methods([not_system], Hash)
 
-  def set_mail(value)
-    value = value.merge(:type => :mail)
-    super
-    Eye::Notify.validate!(value)
-  end
-
-  def set_jabber(value)
-    value = value.merge(:type => :jabber)
-    super
-    Eye::Notify.validate!(value)
+    define_method("set_#{not_system}") do |value|
+      value = value.merge(:type => not_system)
+      super(value)
+      Eye::Notify.validate!(value)
+    end
   end
 
   def contact(contact_name, contact_type, contact, contact_opts = {})

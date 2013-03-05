@@ -13,12 +13,14 @@ class Eye::Notify::Jabber < Eye::Notify
   def execute
     require 'xmpp4r'
 
-    mes = Jabber::Message.new(contact, message)
+    debug "send jabber #{[host, port, user, password]} - #{[contact, message_body]}"
+
+    mes = ::Jabber::Message.new(contact, message_body)
     mes.set_type(:normal)
     mes.set_id('1')
-    mes.set_subject(subject)
+    mes.set_subject(message_subject)
 
-    client = Jabber::Client.new(Jabber::JID.new("#{user}/Eye"))
+    client = ::Jabber::Client.new(::Jabber::JID.new("#{user}/Eye"))
     client.connect(host, port)
     client.auth(password)
     client.send(mes)
