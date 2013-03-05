@@ -23,7 +23,7 @@ module Eye::Controller::Status
     make_str({:subtree => @applications.map{|a| a.status_data_short } }).to_s
   end
 
-  def info_string_debug(show_config = false)
+  def info_string_debug(show_config = false, show_processes = false)
     actors = Celluloid::Actor.all.map{|actor| actor.instance_variable_get(:@klass) }.group_by{|a| a}.map{|k,v| [k, v.size]}.sort_by{|a|a[1]}.reverse
 
     str = <<-S
@@ -34,10 +34,11 @@ Socket: #{Eye::Settings::socket_path}
 PidPath: #{Eye::Settings::pid_path}
 Actors: #{actors.inspect}
 
-#{make_str(info_data_debug)}
     S
 
-    if show_config      
+    str += make_str(info_data_debug) + "\n" if show_processes.present?
+
+    if show_config.present?
       str += "\nCurrent config: \n"
       str += YAML.dump(current_config)
     end

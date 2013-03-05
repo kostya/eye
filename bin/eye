@@ -23,8 +23,9 @@ class Cli < Thor
 
   desc "xinfo", "extended eye info, debug data"
   method_option :config, :type => :boolean, :aliases => "-c"
+  method_option :show_processes, :type => :boolean, :aliases => "-p"
   def xinfo    
-    res = cmd(:xinfo, options[:config])
+    res = cmd(:xinfo, options[:config], options[:show_processes])
     puts res if res && !res.empty?
     puts
   end
