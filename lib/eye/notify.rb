@@ -68,7 +68,7 @@ class Eye::Notify
   param :contact, [String]
 
   def message_subject
-    "[eye] [#{msg_host}] [#{msg_full_name}] #{msg_message}"
+    "[#{msg_host}] [#{msg_full_name}] #{msg_message}"
   end
   
   def message_body
