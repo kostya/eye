@@ -82,8 +82,8 @@ describe "Eye::Notify" do
       $wo.contact.should == 'vasya@mail.ru'
       $wo.port.should == 25
 
-      $wo.message_subject.should == 'Eye [host1] something'
-      $wo.message_body.should start_with('[host1] something at')
+      $wo.message_subject.should == '[eye] [host1] [main:default:blocking process] something'
+      $wo.message_body.should start_with('[eye] [host1] [main:default:blocking process] something at')
     end
   end
 

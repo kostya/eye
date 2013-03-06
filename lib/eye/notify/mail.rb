@@ -16,6 +16,7 @@ class Eye::Notify::Mail < Eye::Notify
   param :auth, Symbol # :plain, :login, :cram_md5
   
   param :from_mail, String
+  param :from_name, String, nil, 'eye'
   
   def execute
     smtp
@@ -32,7 +33,7 @@ class Eye::Notify::Mail < Eye::Notify
 
   def message
     h = []
-    h << "From: <#{from_mail || user}>" if from_mail || user
+    h << "From: #{from_name} <#{from_mail || user}>" if from_mail || user
     h << "To: <#{contact}>"
     h << "Subject: <#{message_subject}>"
     h << "Date: #{msg_at.httpdate}"

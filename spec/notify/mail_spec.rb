@@ -16,12 +16,11 @@ describe "Eye::Notify::Mail" do
 
     @m.execute
 
-    @m.message_subject.should == "Eye [host1] something"
+    @m.message_subject.should == "[eye] [host1] [main:default:blocking process] something"
     @m.contact.should == "vasya@mail.ru"
 
     m = @m.message.split("\n")
     m.should include("To: <vasya@mail.ru>")
-    m.should include("Subject: <Eye [host1] something>")    
-    m.should include("Subject: <Eye [host1] something>")
+    m.should include("Subject: <[eye] [host1] [main:default:blocking process] something>")
   end
 end
