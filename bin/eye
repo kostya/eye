@@ -168,8 +168,8 @@ private
       end
 
       if opts[:print_config]
-        require 'yaml'
-        puts YAML.dump(res[:config])
+        require 'pp'
+        PP.pp res[:config]
       end
     end
   end
