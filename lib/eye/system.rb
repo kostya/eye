@@ -67,12 +67,12 @@ module Eye::System
       {:pid => pid}
 
     rescue Timeout::Error => ex      
-      Process.detach(pid) if pid
-      send_signal(pid, 9)
+      send_signal(pid, 9) if pid
       {:error => ex}
 
     rescue Errno::ENOENT, Errno::EACCES => ex
       {:error => ex}
+
     ensure 
       Process.detach(pid) if pid
     end
