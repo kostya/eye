@@ -37,6 +37,8 @@ $logger = Eye::Logger.new("spec")
 Celluloid.logger = $logger
 STDERR.reopen($logger_path)
 
+$logger.info "specs started in process #{$$}"
+
 RSpec.configure do |config|
   config.mock_with :rr
 
