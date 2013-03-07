@@ -18,7 +18,7 @@ module Eye::Process::Notify
         :at => Time.now }
 
       self[:notify].each do |contact, not_level|
-        Eye::Notify.notify(contact, message) if ilevel(not_level) >= ilevel(level)
+        Eye::Notify.notify(contact, message) if ilevel(level) >= ilevel(not_level)
       end
     end
   end
