@@ -25,6 +25,8 @@ private
   end
 
   def chain_schedule_process(process, type, command, *args)
+    debug "chain_schedule_process #{process.name} #{type} #{command}"
+    
     if type == :sync
       # sync command, with waiting
       process.send(command, *args)
