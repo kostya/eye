@@ -70,27 +70,28 @@ private
 
     raise Eye::Dsl::Error, "config file '#{mask}' not found!" if configs.blank?
 
-    new_cfg = @current_config
+    @loaded_config = Eye::Dsl.initial_config
     configs.each do |cfg| 
-      new_cfg = merge_configs(new_cfg, cfg)
+      @loaded_config = merge_configs(@loaded_config, cfg)
     end
 
+    new_cfg = merge_configs(@current_config, @loaded_config)
     validate(new_cfg)
-
     new_cfg
   end
 
   def _load(filename)
     new_cfg = parse_set_of_configs(filename)
-
-    load_config(new_cfg)
+    
+    load_config(new_cfg, @loaded_config[:applications].keys)
+    @loaded_config = nil
 
     GC.start
   end
 
-  def load_config(new_config)
+  def load_config(new_config, changed_apps = [])
     load_options(new_config[:config])
-    create_objects(new_config[:applications])
+    create_objects(new_config[:applications], changed_apps)
     @current_config = new_config
   end
 
@@ -118,10 +119,10 @@ private
   end
 
   # create objects as diff, from configs
-  def create_objects(apps_config)
+  def create_objects(apps_config, changed_apps = [])
     debug 'create objects'
     apps_config.each do |app_name, app_cfg|
-      update_or_create_application(app_name, app_cfg.clone)
+      update_or_create_application(app_name, app_cfg.clone) if changed_apps.include?(app_name)
     end
 
     # sorting applications

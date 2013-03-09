@@ -356,4 +356,16 @@ describe "Eye::Controller::Load" do
     end
   end
 
+  it "should update only changed apps" do
+    mock(subject).update_or_create_application('app1', is_a(Hash))
+    mock(subject).update_or_create_application('app2', is_a(Hash))
+    subject.load(fixture('dsl/load.eye'))
+
+    mock(subject).update_or_create_application('app3', is_a(Hash))
+    subject.load(fixture('dsl/load2.eye'))    
+
+    mock(subject).update_or_create_application('app3', is_a(Hash))
+    subject.load(fixture('dsl/load3.eye'))
+  end
+
 end
