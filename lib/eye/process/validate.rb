@@ -1,15 +1,23 @@
+require 'shellwords'
+
 module Eye::Process::Validate
 
   class Error < Exception; end
 
   def validate(config)
-    if config[:daemonize]
-      if (str = config[:start_command])
-        if str =~ %r[&&|;|sh \-c]
+    if (str = config[:start_command])
+      # it should parse with Shellwords and not raise
+      spl = Shellwords.shellwords(str) * '#'
+
+      if config[:daemonize]
+        if spl =~ %r[sh#\-c|#&&#|;#]
           raise Error, "#{config[:name]}, start_command in daemonize not supported shell concats like '&&'"
         end
       end
     end
+
+    Shellwords.shellwords(config[:stop_command]) if config[:stop_command]
+    Shellwords.shellwords(config[:restart_command]) if config[:restart_command]
   end
 
 end
