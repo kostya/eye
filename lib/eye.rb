@@ -22,4 +22,4 @@ module Eye
   autoload :Control,        'eye/control'
 end
 
-ENV_LANG      = ENV['LANG'] # save original LANG, bug of celluloid 0.12
+ENV_LANG = ENV['LANG'] # save original LANG, bug of celluloid 0.12

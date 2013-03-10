@@ -18,7 +18,7 @@ describe "Eye::Checker::Http" do
     it "initialize" do
       subject.instance_variable_get(:@kind).should == Net::HTTPSuccess
       subject.instance_variable_get(:@pattern).should == /OK/
-      subject.instance_variable_get(:@open_timeout).should == 2
+      subject.instance_variable_get(:@open_timeout).should == 3
       subject.instance_variable_get(:@read_timeout).should == 2
     end
 
