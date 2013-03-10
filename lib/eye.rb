@@ -22,5 +22,4 @@ module Eye
   autoload :Control,        'eye/control'
 end
 
-ROOT_BINDING  = binding
-ENV_LANG      = ENV['LANG'] # save original LANG, because ruby somehow rewrite it
+ENV_LANG      = ENV['LANG'] # save original LANG, bug of celluloid 0.12

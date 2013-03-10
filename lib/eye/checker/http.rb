@@ -29,8 +29,8 @@ class Eye::Checker::Http < Eye::Checker
             else
               Net::HTTPSuccess
             end
-    @open_timeout = (open_timeout || timeout || 5).to_i
-    @read_timeout = (read_timeout || timeout || 30).to_i
+    @open_timeout = (open_timeout || 3).to_i
+    @read_timeout = (read_timeout || timeout || 15).to_i
 
     @session = Net::HTTP.new(@uri.host, @uri.port)
     if @uri.scheme == 'https'

@@ -266,13 +266,10 @@ private
     true
   end
 
-  def wait_server
-    Timeout.timeout(15) do
-      while !server_started?
-        sleep 0.3
-      end
+  def wait_server(timeout = 15)
+    Timeout.timeout(timeout) do
+      sleep 0.3 while !server_started?
     end
-
     true
   rescue Timeout::Error
     false
