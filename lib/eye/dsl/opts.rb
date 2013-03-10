@@ -92,4 +92,13 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     set_stderr value
   end
 
+  def scoped(&block)
+    h = self.class.new(self.name, self)
+    h.instance_eval(&block)
+    groups = h.config.delete :groups
+    processes = h.config.delete :processes
+    self.config[:groups].merge!(groups) if groups.present?
+    self.config[:processes].merge!(processes) if processes.present?
+  end
+
 end
