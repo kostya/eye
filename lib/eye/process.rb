@@ -58,7 +58,7 @@ class Eye::Process
   # add_watchers, remove_watchers:
   include Eye::Process::Watchers
   
-  # check alive, crush methods:
+  # check alive, crash methods:
   include Eye::Process::Monitor
 
   # system methods:

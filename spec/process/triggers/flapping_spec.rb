@@ -64,7 +64,7 @@ describe "Flapping" do
     @process.start!
 
     proxy(@process).schedule(:start, anything)
-    proxy(@process).schedule(:check_crush, anything)
+    proxy(@process).schedule(:check_crash, anything)
     dont_allow(@process).schedule(:unmonitor)
 
 

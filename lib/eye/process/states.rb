@@ -25,7 +25,7 @@ class Eye::Process
       transition :starting => :up
     end
 
-    event :crushed do
+    event :crashed do
       transition [:starting, :restarting, :up] => :down
     end
 
@@ -53,7 +53,7 @@ class Eye::Process
       transition any => :unmonitored
     end
 
-    after_transition :on => :crushed, :do => :on_crushed
+    after_transition :on => :crashed, :do => :on_crashed
     after_transition any => :unmonitored, :do => :on_unmonitored
     after_transition any-:up => :up, :do => :on_up
     after_transition :up => any-:up, :do => :from_up
@@ -61,8 +61,8 @@ class Eye::Process
     after_transition any => any, :do => :upd_for_triggers
   end
 
-  def on_crushed
-    schedule :check_crush, 'crushed'
+  def on_crashed
+    schedule :check_crash, 'crashed'
   end
 
   def on_unmonitored

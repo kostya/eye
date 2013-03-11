@@ -25,7 +25,7 @@ module Eye::Process::Commands
       end
 
       self.pid = nil
-      switch :crushed
+      switch :crashed
     end
 
     result
@@ -75,7 +75,7 @@ module Eye::Process::Commands
       execute_restart_command
       sleep self[:restart_timeout].to_f
       result = check_alive_with_refresh_pid_if_needed
-      switch(result ? :restarted : :crushed)
+      switch(result ? :restarted : :crashed)
     else
       stop_process
       start_process
@@ -189,7 +189,7 @@ private
     sleep self[:start_grace].to_f
 
     unless process_realy_running?
-      error "process with pid (#{self.pid}) not found, may be crushed (#{check_logs_str})"
+      error "process with pid (#{self.pid}) not found, may be crashed (#{check_logs_str})"
       return {:error => :not_realy_running}
     end
 
@@ -232,7 +232,7 @@ private
     end
 
     unless process_realy_running?
-      error "process in pid_file(#{self[:pid_file]})(#{self.pid}) not found, maybe process do not write there actual pid, or just crushed (#{check_logs_str})"
+      error "process in pid_file(#{self[:pid_file]})(#{self.pid}) not found, maybe process do not write there actual pid, or just crashed (#{check_logs_str})"
       return {:error => :not_realy_running}
     end
 

@@ -1,7 +1,7 @@
 module Eye::Process::Config
 
   DEFAULTS = {
-    :keep_alive => true, # restart when crushed
+    :keep_alive => true, # restart when crashed
     :check_alive_period => 5.seconds,
 
     :start_timeout => 15.seconds,

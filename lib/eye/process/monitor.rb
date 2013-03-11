@@ -39,8 +39,8 @@ private
       # check that process runned
       unless process_realy_running?
         warn 'check_alive: process not found'
-        notify :warn, 'crushed!'
-        switch :crushed
+        notify :warn, 'crashed!'
+        switch :crashed
       else
         # check that pid_file still here
         ppid = failsafe_load_pid
@@ -80,18 +80,18 @@ private
     pid
   end
 
-  def check_crush
+  def check_crash
     if down?
       if self[:keep_alive] && !@flapping
-        warn 'check crushed: process is down'
-        schedule :start, 'crushed'
+        warn 'check crashed: process is down'
+        schedule :start, 'crashed'
       else
-        warn 'check crushed: process is down, and flapping happens (or not keep_alive option)'
+        warn 'check crashed: process is down, and flapping happens (or not keep_alive option)'
         schedule :unmonitor, 'flapping'
       end
     end
   end
 
-  public :check_crush # bug of celluloid 0.12
+  public :check_crash # bug of celluloid 0.12
 
 end
