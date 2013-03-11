@@ -1,7 +1,7 @@
 Eye
 ===
 
-Process monitoring tool. Alternative for God and Bluepill. With Bluepill like config syntax. Requires MRI Ruby >= 1.9.2. Uses Celluloid and Celluloid::IO.
+Process monitoring tool. An alternative to God and Bluepill. With Bluepill like config syntax. Requires MRI Ruby >= 1.9.2. Uses Celluloid and Celluloid::IO.
 
 
 Recommended installation on the server (system wide):
