@@ -1,6 +1,10 @@
+# Example: how to run sidekiq daemon
+
 def sidekiq_process(proxy, name)
+  rails_env = proxy.env['RAILS_ENV']
+
   proxy.process(name) do
-    start_command "ruby ./bin/sidekiq -e #{proxy.env['RAILS_ENV']} -C ./config/sidekiq.#{proxy.env['RAILS_ENV']}.yml"
+    start_command "ruby ./bin/sidekiq -e #{rails_env} -C ./config/sidekiq.#{rails_env}.yml"
     pid_file "tmp/pids/#{name}.pid"
     stdall "log/#{name}.log"
     daemonize true

@@ -1,3 +1,5 @@
+# Example: now to run unicorn, and monitor its childs processes
+
 RUBY = '/usr/local/ruby/1.9.3/bin/ruby' # ruby on the server
 RAILS_ENV = 'production'
 
