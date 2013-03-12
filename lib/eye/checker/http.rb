@@ -68,7 +68,7 @@ class Eye::Checker::Http < Eye::Checker
 
     if @pattern
       if @pattern.is_a?(Regexp)
-        @pattern.match(value[:result].body)
+        @pattern === value[:result].body
       else
         value[:result].body.include?(@pattern.to_s)
       end
