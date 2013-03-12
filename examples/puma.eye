@@ -1,10 +1,9 @@
-RUBY    = '/usr/local/ruby/1.9.3-p392/bin/ruby'
-E       = 'production'
-ROOT    = '/var/www/super_app'
-CURRENT = File.expand_path(File.join(ROOT, %w{current}))
-SHARED  = File.expand_path(File.join(ROOT, %w{shared}))
-LOGS    = File.expand_path(File.join(ROOT, %w{shared log}))
-PIDS    = File.expand_path(File.join(ROOT, %w{shared pids}))
+RUBY      = '/usr/local/ruby/1.9.3-p392/bin/ruby'
+RAILS_ENV = 'production'
+ROOT      = '/var/www/super_app'
+CURRENT   = File.expand_path(File.join(ROOT, %w{current}))
+LOGS      = File.expand_path(File.join(ROOT, %w{shared log}))
+PIDS      = File.expand_path(File.join(ROOT, %w{shared pids}))
 
 Eye.config do
   logger "#{LOGS}/eye.log"
@@ -12,16 +11,16 @@ Eye.config do
 end
 
 Eye.application :super_app do
-  env 'RAILS_ENV' => E
+  env 'RAILS_ENV' => RAILS_ENV
   working_dir CURRENT
   triggers :flapping, :times => 10, :within => 1.minute
 
   process :puma do
     daemonize true
     pid_file "#{PIDS}/puma.pid"
-    stdall "#{LOGS}/#{E}.log"
+    stdall "#{LOGS}/#{RAILS_ENV}.log"
 
-    start_command "#{RUBY} #{CURRENT}/bin/puma --port 80 --pidfile #{PIDS}/puma.pid --environment #{E} #{CURRENT}/config.ru"
+    start_command "#{RUBY} bin/puma --port 80 --pidfile #{PIDS}/puma.pid --environment #{RAILS_ENV} config.ru"
     stop_command "kill -TERM {{PID}}"
     restart_command "kill -USR2 {{PID}}"
 
