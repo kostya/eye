@@ -153,3 +153,8 @@ Quit monitoring:
 Config explain (for debug):
 
     $ eye explain examples/test.eye
+
+
+### Config api:
+
+  Waiting for pull requests ..., until that you can read `spec/dsl` folder.
