@@ -157,4 +157,4 @@ Config explain (for debug):
 
 ### Config api:
 
-  Waiting for pull requests ..., until that you can read `spec/dsl` folder.
+  Waiting for pull requests ..., until that you can read `examples` and `spec/dsl` folders.
