@@ -5,11 +5,7 @@ module Eye::Settings
   module_function
   
   def dir
-    if Process::UID.eid == 0 # root
-      '/var/run/eye'
-    else
-      File.expand_path(File.join(ENV['HOME'], '.eye'))
-    end    
+    "/tmp/eye.#{Process.uid}"
   end
   
   def path(path)
