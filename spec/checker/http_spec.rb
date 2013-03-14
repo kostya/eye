@@ -33,7 +33,9 @@ describe "Eye::Checker::Http" do
       subject.human_value(subject.get_value).should == "200=0Kb"      
     end
 
-    it "get_value exception" do
+    it "get_value exception" do      
+      a = ""
+      stub(subject).session{ a }
       stub(subject.session).start{ raise Timeout::Error, "timeout" }
       subject.get_value.should == {:exception => :timeout}
 
@@ -41,6 +43,8 @@ describe "Eye::Checker::Http" do
     end
 
     it "get_value raised" do
+      a = ""
+      stub(subject).session{ a }
       stub(subject.session).start{ raise "something" }
       subject.get_value.should == {:exception => "something"}
 

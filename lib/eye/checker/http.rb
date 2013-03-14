@@ -12,7 +12,7 @@ class Eye::Checker::Http < Eye::Checker
   param :open_timeout,  [Fixnum, Float]
   param :read_timeout,  [Fixnum, Float]
 
-  attr_reader :session, :uri
+  attr_reader :uri
 
   def check_name
     'http'
@@ -30,34 +30,27 @@ class Eye::Checker::Http < Eye::Checker
               Net::HTTPSuccess
             end
     @open_timeout = (open_timeout || 3).to_i
-    @read_timeout = (read_timeout || timeout || 15).to_i
-
-    @session = Net::HTTP.new(@uri.host, @uri.port)
-    if @uri.scheme == 'https'
-      require 'net/https'
-      @session.use_ssl=true
-      @session.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    end
-    @session.open_timeout = @open_timeout
-    @session.read_timeout = @read_timeout
+    @read_timeout = (read_timeout || timeout || 15).to_i    
   end
-
+  
   def get_value
     Celluloid::Future.new{ get_value_sync }.value
   end
 
   def get_value_sync
-    res = @session.start do |http|
+    res = session.start do |http|
       http.get(@uri.path)
     end
 
     {:result => res}
 
   rescue Timeout::Error
+    @session = nil
     debug 'Timeout error'
     {:exception => :timeout}
 
   rescue => ex
+    @session = nil
     error "Exception #{ex.message}"
     {:exception => ex.message}
   end
@@ -88,6 +81,18 @@ class Eye::Checker::Http < Eye::Checker
       end
     else
       "#{value[:result].code}=#{value[:result].body.size/ 1024}Kb"
+    end
+  end  
+
+  def session
+    @session ||= Net::HTTP.new(@uri.host, @uri.port).tap do |session|
+      if @uri.scheme == 'https'
+        require 'net/https'
+        session.use_ssl=true
+        session.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      end
+      session.open_timeout = @open_timeout
+      session.read_timeout = @read_timeout
     end
   end
 
