@@ -10,10 +10,12 @@ def app_check(app, name, gr_size)
   app.name.should == name
   app.class.should == Eye::Application
   app.groups.size.should == gr_size
+  app.groups.class.should == Eye::Utils::AliveArray
 end
 
 def gr_check(gr, name, p_size, hidden = false)
   gr.class.should == Eye::Group
+  gr.processes.class.should == Eye::Utils::AliveArray
   gr.processes.size.should == p_size
   gr.name.should == name
   gr.hidden.should == hidden
