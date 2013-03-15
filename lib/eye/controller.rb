@@ -38,6 +38,8 @@ class Eye::Controller
     Celluloid::logger = Eye.logger
 
     Eye::SystemResources.setup
+    
+    info "starting #{Eye::ABOUT}"
   end
 
 end
