@@ -24,6 +24,11 @@ class Eye::Application
     @groups << group
   end
 
+  # sort processes in name order
+  def resort_groups
+    @groups = @groups.sort_by{|gr| gr.name == '__default__' ? 'zzzzz' : gr.name }
+  end
+
   def status_data(debug = false)
     h = { name: @name, type: :application, subtree: @groups.map{|gr| gr.status_data(debug) }}
     h.merge!(debug: debug_data) if debug

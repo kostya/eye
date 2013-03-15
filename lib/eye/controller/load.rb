@@ -183,6 +183,8 @@ private
     @added_groups = nil
     @added_processes = nil
 
+    app.resort_groups
+
     app
   end
 
