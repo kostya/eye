@@ -47,7 +47,7 @@ class Eye::Checker::Socket < Eye::Checker
     sock = begin
       Timeout::timeout(@open_timeout){ open_socket }
     rescue Timeout::Error
-      return { :exception => "OpenTimeout(#{@open_timeout})" }
+      return { :exception => "OpenTimeout<#{@open_timeout}>" }
     end
 
     if send_data
@@ -60,14 +60,14 @@ class Eye::Checker::Socket < Eye::Checker
           { :result => result }
         end
       rescue Timeout::Error
-        return { :exception => "ReadTimeout(#{@read_timeout})" }
+        return { :exception => "ReadTimeout<#{@read_timeout}>" }
       end
     else
       { :result => :listen }
     end
 
   rescue Exception => e
-    { :exception => "Error(#{e.message})" }
+    { :exception => "Error<#{e.message}>" }
 
   ensure
     sock.close if sock
@@ -89,7 +89,7 @@ class Eye::Checker::Socket < Eye::Checker
         
         unless match
           warn "proc #{expect_data} not matched (#{value[:result].truncate(30)}) answer" 
-          value[:notice] = "not matched"
+          value[:notice] = "missing proc validation"
         end
 
         return match
@@ -99,7 +99,7 @@ class Eye::Checker::Socket < Eye::Checker
       return true if value[:result].to_s == expect_data.to_s
 
       warn "#{expect_data} not matched (#{value[:result].truncate(30)}) answer"
-      value[:notice] = "not matched"
+      value[:notice] = "missing '#{expect_data.to_s}'"
       return false
     end
 
@@ -116,7 +116,7 @@ class Eye::Checker::Socket < Eye::Checker
         "listen"
       else
         res = "#{value[:result].to_s.size}b"
-        res += "(#{value[:notice]})" if value[:notice]
+        res += "<#{value[:notice]}>" if value[:notice]
         res 
       end
     end
