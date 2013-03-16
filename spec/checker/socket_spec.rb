@@ -30,7 +30,7 @@ describe "Socket Checker" do
 
       it "timeouted" do
         c = chsock(:addr => addr, :send_data => "timeout")
-        c.get_value.should == {:exception => "ReadTimeout<2>"}
+        c.get_value.should == {:exception => "ReadTimeout<2.0>"}
         c.check.should == false
       end
 

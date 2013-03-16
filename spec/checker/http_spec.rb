@@ -37,7 +37,7 @@ describe "Eye::Checker::Http" do
       a = ""
       stub(subject).session{ a }
       stub(subject.session).start{ raise Timeout::Error, "timeout" }
-      mes = RUBY_VERSION < '2.0' ? "Timeout<3,2>" : "ReadTimeout<2>"
+      mes = RUBY_VERSION < '2.0' ? "Timeout<3.0,2.0>" : "ReadTimeout<2.0>"
 
       subject.get_value.should == {:exception => mes}
       subject.human_value(subject.get_value).should == mes

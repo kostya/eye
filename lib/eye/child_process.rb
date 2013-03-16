@@ -50,6 +50,10 @@ class Eye::ChildProcess
     :up
   end
 
+  def up?
+    state == :up
+  end
+
   def send_command(command, *args)
     schedule command, *args, "#{command} by user"
   end
