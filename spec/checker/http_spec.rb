@@ -33,22 +33,23 @@ describe "Eye::Checker::Http" do
       subject.human_value(subject.get_value).should == "200=0Kb"      
     end
 
-    it "get_value exception" do      
+    it "get_value exception" do
       a = ""
       stub(subject).session{ a }
       stub(subject.session).start{ raise Timeout::Error, "timeout" }
-      subject.get_value.should == {:exception => :timeout}
+      mes = RUBY_VERSION < '2.0' ? "Timeout<3,2>" : "ReadTimeout<2>"
 
-      subject.human_value(subject.get_value).should == "T-out"
+      subject.get_value.should == {:exception => mes}
+      subject.human_value(subject.get_value).should == mes
     end
 
     it "get_value raised" do
       a = ""
       stub(subject).session{ a }
       stub(subject.session).start{ raise "something" }
-      subject.get_value.should == {:exception => "something"}
+      subject.get_value.should == {:exception => "Error<something>"}
 
-      subject.human_value(subject.get_value).should == "Err"
+      subject.human_value(subject.get_value).should == "Error<something>"
     end
 
   end
