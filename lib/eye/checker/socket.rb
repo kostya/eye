@@ -55,7 +55,6 @@ class Eye::Checker::Socket < Eye::Checker
         Timeout::timeout(@read_timeout) do
           _write_data(sock, send_data)
           result = _read_data(sock)
-          debug "socket result - #{result}"
 
           { :result => result }
         end
