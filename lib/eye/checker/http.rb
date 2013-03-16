@@ -54,9 +54,7 @@ class Eye::Checker::Http < Eye::Checker
     end
 
   rescue => ex
-    mes = "Error<#{ex.message}>"
-    error(mes)
-    {:exception => mes}
+    {:exception => "Error<#{ex.message}>"}
   end
 
   def good?(value)
