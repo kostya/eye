@@ -29,8 +29,8 @@ class Eye::Checker::Http < Eye::Checker
             else
               Net::HTTPSuccess
             end
-    @open_timeout = (open_timeout || 3).to_i
-    @read_timeout = (read_timeout || timeout || 15).to_i    
+    @open_timeout = (open_timeout || 3).to_f
+    @read_timeout = (read_timeout || timeout || 15).to_f
   end
   
   def get_value

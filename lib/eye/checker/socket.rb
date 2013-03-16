@@ -26,8 +26,8 @@ class Eye::Checker::Socket < Eye::Checker
 
   def initialize(*args)
     super
-    @open_timeout = (open_timeout || 1).to_i
-    @read_timeout = (read_timeout || timeout || 5).to_i
+    @open_timeout = (open_timeout || 1).to_f
+    @read_timeout = (read_timeout || timeout || 5).to_f
 
     if addr =~ %r[\Atcp://(.*?):(.*?)\z]
       @socket_family = :tcp
