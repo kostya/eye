@@ -43,8 +43,6 @@ private
     @scheduler.terminate if @scheduler && @scheduler.alive?
   end
   
-  public :remove_scheduler # bug of celluloid 0.13
-
   def scheduler
     @scheduler ||= Eye::Utils::CelluloidChain.new(current_actor)
   end
