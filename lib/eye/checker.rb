@@ -51,6 +51,7 @@ class Eye::Checker
   end
 
   def check
+    tm1 = Time.now
     @value = get_value
     @values << {:value => @value, :good => good?(value)}
 
@@ -61,7 +62,7 @@ class Eye::Checker
       result = false if bad_count >= min_tries
     end
 
-    info "#{last_human_values} => #{result ? 'OK' : 'Fail'}"
+    info "#{last_human_values} => #{result ? 'OK' : 'Fail'} (#{Time.now - tm1}s)"
     result
   end
 
