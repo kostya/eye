@@ -1,6 +1,6 @@
 require_relative 'dsl/helpers'
 
-Eye::BINDING  = binding
+Eye::BINDING = binding
 
 class Eye::Dsl
 

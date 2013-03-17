@@ -68,11 +68,11 @@ class Eye::Notify
   param :contact, [String]
 
   def message_subject
-    "Eye [#{msg_host}] #{msg_message.truncate(30)}"
+    "[#{msg_host}] [#{msg_full_name}] #{msg_message}"
   end
   
   def message_body
-    "[#{msg_host}] #{msg_message} at #{msg_at.to_s(:short)}"
+    "#{message_subject} at #{msg_at.to_s(:short)}"
   end
 
 private

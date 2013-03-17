@@ -7,10 +7,9 @@ end
 
 Eye.application "test" do
   working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
-  stdall "trash.log" # logs for processes by default
+  stdall "trash.log" # stdout,err logs for processes by default
   env "APP_ENV" => "production" # global env for each processes
   triggers :flapping, :times => 10, :within => 1.minute
-  stop_on_delete true # process will stopped before delete
 
   group "samples" do
     env "A" => "1" # merging to app env 

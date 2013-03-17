@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "Process Monitoring" do
 
   [C.p1, C.p2].each do |cfg|
-    it "process crushed, should restart #{cfg[:name]}" do
+    it "process crashed, should restart #{cfg[:name]}" do
       start_ok_process(cfg)
       old_pid = @pid
 

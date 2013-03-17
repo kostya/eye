@@ -308,4 +308,69 @@ describe "Eye::Dsl" do
         :environment=>{"P"=>"1"}}}}}
   end
 
+  
+  describe "scoped" do
+    it "scoped" do
+      conf = <<-E
+        Eye.application("bla") do
+          group :gr do
+            env "A" => '1', "B" => '2'
+    
+            process :a do
+              pid_file "1.pid"
+            end
+
+            scoped do
+              env "A" => '2'
+
+              process :b do
+                pid_file "2.pid"
+              end
+            end
+
+            process :c do
+              pid_file "3.pid"
+            end
+          end
+        end
+      E
+      
+      Eye::Dsl.parse_apps(conf).should == {
+        "bla" => {:name=>"bla", :groups=>{
+          "gr"=>{:name=>"gr", :application=>"bla", :environment=>{"A"=>"1", "B"=>"2"}, 
+            :processes=>{
+              "a"=>{:name=>"a", :application=>"bla", :environment=>{"A"=>"1", "B"=>"2"}, :group=>"gr", :pid_file=>"1.pid"}, 
+              "b"=>{:name=>"b", :application=>"bla", :environment=>{"A"=>"2", "B"=>"2"}, :group=>"gr", :pid_file=>"2.pid"}, 
+              "c"=>{:name=>"c", :application=>"bla", :environment=>{"A"=>"1", "B"=>"2"}, :group=>"gr", :pid_file=>"3.pid"}}}}}}
+    end
+
+    it "scoped" do
+      conf = <<-E
+        Eye.application("bla") do
+          start_timeout 10.seconds
+
+          group(:a){}
+
+          scoped do
+            start_timeout 15.seconds
+            group(:b){
+              scoped do
+
+              end
+            }
+          end
+
+          group(:c){}
+        end
+      E
+      
+      Eye::Dsl.parse_apps(conf).should == {
+        "bla" => {:name=>"bla", :start_timeout=>10, :groups=>{
+          "a"=>{:name=>"a", :start_timeout=>10, :application=>"bla", :processes=>{}}, 
+          "b"=>{:name=>"b", :start_timeout=>15, :application=>"bla", :processes=>{}}, 
+          "c"=>{:name=>"c", :start_timeout=>10, :application=>"bla", :processes=>{}}}}}
+    end
+
+  end
+
 end

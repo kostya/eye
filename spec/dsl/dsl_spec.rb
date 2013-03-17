@@ -69,5 +69,5 @@ describe "Eye::Dsl" do
     cfg['bla'][:groups]['__default__'][:some].should == nil
     cfg['bla'][:groups]['__default__'][:processes][:some].should == nil
   end
-
+  
 end

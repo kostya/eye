@@ -40,7 +40,7 @@ describe "Process Stop" do
   it "stop process by default command" do
     start_ok_process
 
-    dont_allow(@process).check_crush
+    dont_allow(@process).check_crash
     @process.stop_process
 
     Eye::System.pid_alive?(@pid).should == false    
@@ -54,7 +54,7 @@ describe "Process Stop" do
     start_ok_process(C.p2.merge(:start_command => C.p2[:start_command] + " -T"))
     Eye::System.pid_alive?(@pid).should == true
 
-    dont_allow(@process).check_crush
+    dont_allow(@process).check_crash
     @process.stop_process
 
     Eye::System.pid_alive?(@pid).should == false    
@@ -67,7 +67,7 @@ describe "Process Stop" do
   it "stop process by specific command" do
     start_ok_process(C.p1.merge(:stop_command => "kill -9 {{PID}}"))
 
-    dont_allow(@process).check_crush
+    dont_allow(@process).check_crash
     @process.stop_process
 
     Eye::System.pid_alive?(@pid).should == false

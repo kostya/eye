@@ -39,16 +39,16 @@ private
       # check that process runned
       unless process_realy_running?
         warn 'check_alive: process not found'
-        notify :warn, 'crushed!'
-        switch :crushed
+        notify :warn, 'crashed!'
+        switch :crashed
       else
         # check that pid_file still here
         ppid = failsafe_load_pid
         
         if ppid != self.pid
-          msg = "check_alive: pid_file(#{self[:pid_file]}) changes by itself (#{self.pid}) => (#{ppid})"
+          msg = "check_alive: pid_file(#{self[:pid_file]}) changes by itself (pid:#{self.pid}) => (pid:#{ppid})"
           if control_pid?
-            msg += ", not correct, pid_file is under eye control, so rewrited back #{self.pid}"
+            msg += ", not correct, pid_file is under eye control, so rewrited back pid:#{self.pid}"
             save_pid_to_file rescue msg += ', (Can`t rewrite pid_file O_o)'
           else
             if ppid == nil
@@ -80,13 +80,13 @@ private
     pid
   end
 
-  def check_crush
+  def check_crash
     if down?
       if self[:keep_alive] && !@flapping
-        warn 'check crushed: process is down'
-        schedule :start, 'crushed'
+        warn 'check crashed: process is down'
+        schedule :start, 'crashed'
       else
-        warn 'check crushed: process is down, and flapping happens (or not keep_alive option)'
+        warn 'check crashed: process is down, and flapping happens (or not keep_alive option)'
         schedule :unmonitor, 'flapping'
       end
     end

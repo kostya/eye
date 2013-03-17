@@ -25,7 +25,7 @@ module Eye::Process::Commands
       end
 
       self.pid = nil
-      switch :crushed
+      switch :crashed
     end
 
     result
@@ -75,7 +75,7 @@ module Eye::Process::Commands
       execute_restart_command
       sleep self[:restart_timeout].to_f
       result = check_alive_with_refresh_pid_if_needed
-      switch(result ? :restarted : :crushed)
+      switch(result ? :restarted : :crashed)
     else
       stop_process
       start_process
@@ -166,8 +166,7 @@ private
     res = Eye::System.daemonize(self[:start_command], config)
     start_time = Time.now - time_before
 
-    info "daemonizing: `#{self[:start_command]}` with start_grace: #{self[:start_grace].to_f}s, env: #{self[:environment].inspect}, working_dir: #{self[:working_dir]}"
-    
+    info "daemonizing: `#{self[:start_command]}` with start_grace: #{self[:start_grace].to_f}s, env: #{self[:environment].inspect}, working_dir: #{self[:working_dir]} (pid:#{res[:pid]})"
 
     if res[:error]
       error "raised with #{res[:error].inspect}"
@@ -189,7 +188,7 @@ private
     sleep self[:start_grace].to_f
 
     unless process_realy_running?
-      error "process with pid (#{self.pid}) not found, may be crushed (#{check_logs_str})"
+      error "process with pid (#{self.pid}) not found, may be crashed (#{check_logs_str})"
       return {:error => :not_realy_running}
     end
 
@@ -232,11 +231,12 @@ private
     end
 
     unless process_realy_running?
-      error "process in pid_file(#{self[:pid_file]})(#{self.pid}) not found, maybe process do not write there actual pid, or just crushed (#{check_logs_str})"
+      error "process in pid_file(#{self[:pid_file]})(#{self.pid}) not found, maybe process do not write there actual pid, or just crashed (#{check_logs_str})"
       return {:error => :not_realy_running}
     end
 
     res[:pid] = self.pid
+    info "process get pid:#{res[:pid]}"
     res
   end
 

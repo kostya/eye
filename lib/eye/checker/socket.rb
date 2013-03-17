@@ -26,8 +26,8 @@ class Eye::Checker::Socket < Eye::Checker
 
   def initialize(*args)
     super
-    @open_timeout = (open_timeout || 1).to_i
-    @read_timeout = (read_timeout || timeout || 5).to_i
+    @open_timeout = (open_timeout || 1).to_f
+    @read_timeout = (read_timeout || timeout || 5).to_f
 
     if addr =~ %r[\Atcp://(.*?):(.*?)\z]
       @socket_family = :tcp
@@ -44,32 +44,29 @@ class Eye::Checker::Socket < Eye::Checker
   end
 
   def get_value_sync
-    sock = Timeout::timeout(@open_timeout) do
-      if @socket_family == :tcp      
-        TCPSocket.open(@socket_addr, @socket_port)
-      elsif @socket_family == :unix
-        UNIXSocket.open(@socket_path)
-      else
-        raise "Unknown socket addr #{addr}"
-      end
+    sock = begin
+      Timeout::timeout(@open_timeout){ open_socket }
+    rescue Timeout::Error
+      return { :exception => "OpenTimeout<#{@open_timeout}>" }
     end
 
     if send_data
-      Timeout::timeout(@read_timeout) do
-        _write_data(sock, send_data)
-        { :result => _read_data(sock) }
+      begin
+        Timeout::timeout(@read_timeout) do
+          _write_data(sock, send_data)
+          result = _read_data(sock)
+
+          { :result => result }
+        end
+      rescue Timeout::Error
+        return { :exception => "ReadTimeout<#{@read_timeout}>" }
       end
     else
       { :result => :listen }
     end
 
-  rescue Timeout::Error
-    debug 'Timeout error'
-    { :exception => :timeout }
-
   rescue Exception => e
-    warn "Exception #{e.message}"
-    { :exception => e.message }
+    { :exception => "Error<#{e.message}>" }
 
   ensure
     sock.close if sock
@@ -83,18 +80,25 @@ class Eye::Checker::Socket < Eye::Checker
         match = begin
           !!expect_data[value[:result]] 
         rescue Timeout::Error, Exception => ex
-          error "proc match failed with #{ex.message}"
+          mes = "proc match failed with '#{ex.message}'"
+          error(mes)
+          value[:notice] = mes
           return false
         end
         
-        warn "proc #{expect_data} not matched (#{value[:result].truncate(30)}) answer" unless match
+        unless match
+          warn "proc #{expect_data} not matched (#{value[:result].truncate(30)}) answer" 
+          value[:notice] = "missing proc validation"
+        end
+
         return match
       end
 
       return true if expect_data.is_a?(Regexp) && expect_data.match(value[:result])
       return true if value[:result].to_s == expect_data.to_s
 
-      warn "#{expect_data} not matched (#{value[:result].truncate(30)}) answer"      
+      warn "#{expect_data} not matched (#{value[:result].truncate(30)}) answer"
+      value[:notice] = "missing '#{expect_data.to_s}'"
       return false
     end
 
@@ -105,21 +109,29 @@ class Eye::Checker::Socket < Eye::Checker
     if !value.is_a?(Hash)
       '-'
     elsif value[:exception]
-      if value[:exception] == :timeout
-        'T-out'
-      else
-        "Err(#{value[:exception]})"
-      end
+      value[:exception]
     else
       if value[:result] == :listen
         "listen"
       else
-        "#{value[:result].to_s.size}b"
+        res = "#{value[:result].to_s.size}b"
+        res += "<#{value[:notice]}>" if value[:notice]
+        res 
       end
     end
   end
 
 private
+
+  def open_socket
+    if @socket_family == :tcp      
+      TCPSocket.open(@socket_addr, @socket_port)
+    elsif @socket_family == :unix
+      UNIXSocket.open(@socket_path)
+    else
+      raise "Unknown socket addr #{addr}"
+    end
+  end
 
   def _write_data(socket, data)
     case protocol

@@ -327,4 +327,54 @@ describe "Eye::Dsl" do
 
   end
 
+  describe "process validations" do
+    it "validate daemonize command" do
+      conf = <<-E
+        Eye.application("bla") do
+          process("1") do
+            pid_file "1.pid"
+            daemonize true
+            start_command "sh -c 'echo some; ruby 1.rb'"
+          end        
+        end
+      E
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Process::Validate::Error)
+
+      conf = <<-E
+        Eye.application("bla") do
+          process("1") do
+            pid_file "1.pid"
+            daemonize true
+            start_command "echo some && ruby 1.rb"
+          end        
+        end
+      E
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Process::Validate::Error)
+
+      conf = <<-E
+        Eye.application("bla") do
+          process("1") do
+            pid_file "1.pid"
+            daemonize true
+            start_command "ruby 1.rb"
+          end        
+        end
+      E
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Process::Validate::Error)
+    end
+
+    it "not validate non-daemonize command" do
+      conf = <<-E
+        Eye.application("bla") do
+          process("1") do
+            pid_file "1.pid"
+            start_command "sh -c 'echo some && ruby 1.rb'"
+          end        
+        end
+      E
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Process::Validate::Error)
+    end
+
+  end
+
 end

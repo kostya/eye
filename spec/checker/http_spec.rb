@@ -18,7 +18,7 @@ describe "Eye::Checker::Http" do
     it "initialize" do
       subject.instance_variable_get(:@kind).should == Net::HTTPSuccess
       subject.instance_variable_get(:@pattern).should == /OK/
-      subject.instance_variable_get(:@open_timeout).should == 2
+      subject.instance_variable_get(:@open_timeout).should == 3
       subject.instance_variable_get(:@read_timeout).should == 2
     end
 
@@ -34,17 +34,22 @@ describe "Eye::Checker::Http" do
     end
 
     it "get_value exception" do
+      a = ""
+      stub(subject).session{ a }
       stub(subject.session).start{ raise Timeout::Error, "timeout" }
-      subject.get_value.should == {:exception => :timeout}
+      mes = RUBY_VERSION < '2.0' ? "Timeout<3.0,2.0>" : "ReadTimeout<2.0>"
 
-      subject.human_value(subject.get_value).should == "T-out"
+      subject.get_value.should == {:exception => mes}
+      subject.human_value(subject.get_value).should == mes
     end
 
     it "get_value raised" do
+      a = ""
+      stub(subject).session{ a }
       stub(subject.session).start{ raise "something" }
-      subject.get_value.should == {:exception => "something"}
+      subject.get_value.should == {:exception => "Error<something>"}
 
-      subject.human_value(subject.get_value).should == "Err"
+      subject.human_value(subject.get_value).should == "Error<something>"
     end
 
   end

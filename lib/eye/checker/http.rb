@@ -12,7 +12,7 @@ class Eye::Checker::Http < Eye::Checker
   param :open_timeout,  [Fixnum, Float]
   param :read_timeout,  [Fixnum, Float]
 
-  attr_reader :session, :uri
+  attr_reader :uri
 
   def check_name
     'http'
@@ -29,49 +29,49 @@ class Eye::Checker::Http < Eye::Checker
             else
               Net::HTTPSuccess
             end
-    @open_timeout = (open_timeout || timeout || 5).to_i
-    @read_timeout = (read_timeout || timeout || 30).to_i
-
-    @session = Net::HTTP.new(@uri.host, @uri.port)
-    if @uri.scheme == 'https'
-      require 'net/https'
-      @session.use_ssl=true
-      @session.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    end
-    @session.open_timeout = @open_timeout
-    @session.read_timeout = @read_timeout
+    @open_timeout = (open_timeout || 3).to_f
+    @read_timeout = (read_timeout || timeout || 15).to_f
   end
-
+  
   def get_value
     Celluloid::Future.new{ get_value_sync }.value
   end
 
   def get_value_sync
-    res = @session.start do |http|
-      http.get(@uri.path)
-    end
-
+    _session = session
+    res = _session.start{ |http| http.get(@uri.path) }
     {:result => res}
 
-  rescue Timeout::Error
-    debug 'Timeout error'
-    {:exception => :timeout}
+  rescue Timeout::Error => ex
+    debug ex.inspect
+
+    if defined?(Net::OpenTimeout) # for ruby 2.0
+      mes = ex.class.is_a?(Net::OpenTimeout) ? "OpenTimeout<#{@open_timeout}>" : "ReadTimeout<#{@read_timeout}>"
+      {:exception => mes}
+    else
+      error "#{ex.message}"
+      {:exception => "Timeout<#{@open_timeout},#{@read_timeout}>"}
+    end
 
   rescue => ex
-    error "Exception #{ex.message}"
-    {:exception => ex.message}
+    {:exception => "Error<#{ex.message}>"}
   end
 
   def good?(value)
     return false unless value[:result]
-    return false unless value[:result].kind_of?(@kind)
+
+    unless value[:result].kind_of?(@kind)
+      return false 
+    end
 
     if @pattern
-      if @pattern.is_a?(Regexp)
+      matched = if @pattern.is_a?(Regexp)
         @pattern === value[:result].body
       else
         value[:result].body.include?(@pattern.to_s)
       end
+      value[:notice] = "missing '#{@pattern.to_s}'" unless matched
+      matched
     else
       true
     end
@@ -81,13 +81,26 @@ class Eye::Checker::Http < Eye::Checker
     if !value.is_a?(Hash)
       '-'
     elsif value[:exception]
-      if value[:exception] == :timeout
-        'T-out'
-      else
-        'Err'
-      end
+      value[:exception]
     else
-      "#{value[:result].code}=#{value[:result].body.size/ 1024}Kb"
+      body_size = value[:result].body.size / 1024
+      msg = "#{value[:result].code}=#{body_size}Kb"
+      msg += "<#{value[:notice]}>" if value[:notice]
+      msg
+    end
+  end  
+
+private
+
+  def session
+    Net::HTTP.new(@uri.host, @uri.port).tap do |session|
+      if @uri.scheme == 'https'
+        require 'net/https'
+        session.use_ssl=true
+        session.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      end
+      session.open_timeout = @open_timeout
+      session.read_timeout = @read_timeout
     end
   end
 

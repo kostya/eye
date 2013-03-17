@@ -36,6 +36,11 @@ module Eye::Dsl::Validate
     if dubl_names.present?
       raise Eye::Dsl::Error, "dublicate names: #{dubl_names.inspect}"
     end
+
+    # validate processes with their own validate
+    all_processes.each do |process_cfg|
+      Eye::Process.validate process_cfg
+    end
   end
 
 end

@@ -124,7 +124,7 @@ describe "Process Controller" do
     end
   end
 
-  describe "process cant start, crush each time" do
+  describe "process cant start, crash each time" do
     before :each do
       @process = process(C.p2.merge(:start_command => C.p2[:start_command] + " -r" ))
       @process.send_command :start

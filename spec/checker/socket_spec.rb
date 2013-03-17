@@ -30,7 +30,7 @@ describe "Socket Checker" do
 
       it "timeouted" do
         c = chsock(:addr => addr, :send_data => "timeout")
-        c.get_value.should == {:exception => :timeout}
+        c.get_value.should == {:exception => "ReadTimeout<2.0>"}
         c.check.should == false
       end
 
@@ -47,7 +47,7 @@ describe "Socket Checker" do
         @process.stop
         c = chsock(:addr => addr.chop)
         if addr =~ /tcp/
-          c.get_value.should == {:exception => "Connection refused - connect(2)"}
+          c.get_value.should == {:exception => "Error<Connection refused - connect(2)>"}
         else
           c.get_value[:exception].should include("No such file or directory")
         end
@@ -63,7 +63,7 @@ describe "Socket Checker" do
       it "check responding without send_data" do
         c = chsock(:addr => addr.chop, :send_data => nil, :expect_data => nil)
         if addr =~ /tcp/
-          c.get_value.should == {:exception => "Connection refused - connect(2)"}
+          c.get_value.should == {:exception => "Error<Connection refused - connect(2)>"}
         else
           c.get_value[:exception].should include("No such file or directory")
         end

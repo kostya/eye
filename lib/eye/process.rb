@@ -15,6 +15,7 @@ class Eye::Process
   autoload :Trigger,          'eye/process/trigger'
   autoload :Notify,           'eye/process/notify'
   autoload :Scheduler,        'eye/process/scheduler'
+  autoload :Validate,         'eye/process/validate'
 
   attr_accessor :pid, :watchers, :config, :states_history, 
                 :childs, :triggers, :flapping, :name
@@ -57,7 +58,7 @@ class Eye::Process
   # add_watchers, remove_watchers:
   include Eye::Process::Watchers
   
-  # check alive, crush methods:
+  # check alive, crash methods:
   include Eye::Process::Monitor
 
   # system methods:
@@ -77,6 +78,9 @@ class Eye::Process
 
   # scheduler
   include Eye::Process::Scheduler
+
+  # validate
+  extend Eye::Process::Validate
 end
 
 # include state_machine states

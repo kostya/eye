@@ -105,7 +105,7 @@ class Eye::Group
   end
 
   def clear
-    @processes.clear
+    @processes = Eye::Utils::AliveArray.new
   end
 
   def sub_object?(obj)

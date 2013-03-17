@@ -1,7 +1,7 @@
 module Eye::Process::Notify
 
   # notify to user:
-  # 1) process crushed by itself, and we restart it [:warn]
+  # 1) process crashed by itself, and we restart it [:warn]
   # 2) checker bounded to restart process [:crit]
   # 3) flapping + switch to unmonitored [:crit]
 
@@ -18,7 +18,7 @@ module Eye::Process::Notify
         :at => Time.now }
 
       self[:notify].each do |contact, not_level|
-        Eye::Notify.notify(contact, message) if ilevel(not_level) >= ilevel(level)
+        Eye::Notify.notify(contact, message) if ilevel(level) >= ilevel(not_level)
       end
     end
   end

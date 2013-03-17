@@ -69,7 +69,7 @@ describe "Process Start" do
       @process.state_name.should == :up
     end
 
-    it "process crushed, with config #{c[:name]}" do
+    it "process crashed, with config #{c[:name]}" do
       @process = process(c.merge(:start_command => c[:start_command] + " -r" ))
       @process.start.should == {:error=>:not_realy_running}
 
@@ -89,7 +89,7 @@ describe "Process Start" do
 
     it "start with invalid command" do
       @process = process(c.merge(:start_command => "asdf asdf1 r f324 f324f 32f44f"))
-      mock(@process).check_crush
+      mock(@process).check_crash
       res = @process.start
       res.should == {:error=>"#<Errno::ENOENT: No such file or directory - asdf>"}
 
@@ -103,7 +103,7 @@ describe "Process Start" do
 
     it "start PROBLEM with stdout permissions" do
       @process = process(c.merge(:stdout => "/var/run/1.log"))
-      mock(@process).check_crush
+      mock(@process).check_crash
       res = @process.start
       res.should == {:error=>"#<Errno::EACCES: Permission denied - open>"}
 
@@ -117,7 +117,7 @@ describe "Process Start" do
 
     it "start PROBLEM binary permissions" do
       @process = process(c.merge(:start_command => "./sample.rb"))
-      mock(@process).check_crush
+      mock(@process).check_crash
       res = @process.start
       res.should == {:error=>"#<Errno::EACCES: Permission denied - ./sample.rb>"}
 
