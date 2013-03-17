@@ -166,8 +166,7 @@ private
     res = Eye::System.daemonize(self[:start_command], config)
     start_time = Time.now - time_before
 
-    info "daemonizing: `#{self[:start_command]}` with start_grace: #{self[:start_grace].to_f}s, env: #{self[:environment].inspect}, working_dir: #{self[:working_dir]}"
-    
+    info "daemonizing: `#{self[:start_command]}` with start_grace: #{self[:start_grace].to_f}s, env: #{self[:environment].inspect}, working_dir: #{self[:working_dir]} (pid:#{res[:pid]})"
 
     if res[:error]
       error "raised with #{res[:error].inspect}"
@@ -237,6 +236,7 @@ private
     end
 
     res[:pid] = self.pid
+    info "process get pid:#{res[:pid]}"
     res
   end
 

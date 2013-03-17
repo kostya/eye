@@ -46,9 +46,9 @@ private
         ppid = failsafe_load_pid
         
         if ppid != self.pid
-          msg = "check_alive: pid_file(#{self[:pid_file]}) changes by itself (#{self.pid}) => (#{ppid})"
+          msg = "check_alive: pid_file(#{self[:pid_file]}) changes by itself (pid:#{self.pid}) => (pid:#{ppid})"
           if control_pid?
-            msg += ", not correct, pid_file is under eye control, so rewrited back #{self.pid}"
+            msg += ", not correct, pid_file is under eye control, so rewrited back pid:#{self.pid}"
             save_pid_to_file rescue msg += ', (Can`t rewrite pid_file O_o)'
           else
             if ppid == nil
