@@ -29,7 +29,7 @@ Eye.application "test" do
 
   group "samples" do
     env "A" => "1" # merging to app env 
-    chain :grace => 5.seconds, :action => :restart # restarting with 5s interval, one by one.
+    chain :grace => 5.seconds # starting, restarting with 5s interval, one by one.
 
     # eye daemonized process
     process("sample1") do
