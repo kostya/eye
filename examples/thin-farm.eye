@@ -1,33 +1,10 @@
 RUBY = 'ruby'
 BUNDLE = 'bundle'
 
-def thin(proxy, port)
-  name = "thin-#{port}"
+Eye.load("process_thin.rb")
 
-  opts = [
-    "-l thins.log",
-    "-p #{port}",
-    "-P #{name}.pid",
-    "-d",
-    "-R thin.ru",
-    "--tag #{proxy.app.name}.#{proxy.name}",
-    "-t 60",
-    "-e #{proxy.env["RAILS_ENV"]}",
-    "-c #{proxy.working_dir}",
-    "-a 127.0.0.1"
-  ]
-
-  proxy.process(name) do
-    pid_file "#{name}.pid"
-
-    start_command "#{BUNDLE} exec thin start #{opts * ' '}"
-    stop_signals [:QUIT, 2.seconds, :TERM, 1.seconds, :KILL]
-
-    stdall "thin.stdall.log"
-
-    checks :http, :url => "http://127.0.0.1:#{port}/hello", :pattern => /World/, 
-                  :every => 5.seconds, :times => [2, 3], :timeout => 1.second
-  end
+Eye.config do
+  logger "/tmp/eye.log"
 end
 
 Eye.app 'thin-farm' do
