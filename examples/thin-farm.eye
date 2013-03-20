@@ -41,7 +41,8 @@ Eye.app 'thin-farm' do
   checks :memory, :below => 60.megabytes, :every => 30.seconds, :times => 5
 
   group :web do
-    chain :grace => 5.seconds
+    chain :action => :restart, :grace => 5.seconds
+    chain :action => :start, :grace => 0.2.seconds
 
     (5555..5560).each do |port|
       thin self, port
