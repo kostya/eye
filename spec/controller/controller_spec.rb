@@ -104,6 +104,12 @@ S
     subject.info_string_short.split("\n").size.should == 2
   end
 
+  it "should delete all apps" do
+    subject.load(fixture("dsl/load.eye")).should include(error: false)
+    subject.send_command(:delete, 'all')
+    subject.applications.should be_empty
+  end
+
   describe "command" do
     it "should send_command" do
       mock(Eye::Control).send_command(:restart, 'samples')
