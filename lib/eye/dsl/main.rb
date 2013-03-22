@@ -41,18 +41,5 @@ module Eye::Dsl::Main
 
     Eye::Dsl.debug "<= config"
   end
-
-  def logger=(log_path)
-    STDERR.puts "Eye.logger= is deprecated!"
-    @parsed_config ||= {}
-    @parsed_config[:config] ||= {}
-    @parsed_config[:config][:logger] = log_path
-  end
   
-  def logger_level=(log_level)
-    STDERR.puts "Eye.logger_level= is deprecated!"
-    @parsed_config ||= {}
-    @parsed_config[:config] ||= {}
-    @parsed_config[:config][:logger_level] = log_level
-  end
 end
