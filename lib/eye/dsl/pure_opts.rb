@@ -66,47 +66,8 @@ class Eye::Dsl::PureOpts
     []
   end
 
-  # execute part of config on particular server
-  # array of strings
-  # regexp
-  # string
-  def with_server(glob = nil, &block)
-    on_server = true
-
-    if glob.present? 
-      host = Eye::System.host
-
-      if glob.is_a?(Array)
-        on_server = !!glob.any?{|elem| elem == host}
-      elsif glob.is_a?(Regexp)
-        on_server = !!host.match(glob)
-      elsif glob.is_a?(String) || glob.is_a?(Symbol)
-        on_server = (host == glob.to_s)
-      end
-    end
-
-    with_condition(on_server, &block)
-
-    on_server
-  end
-
   def with_condition(cond = true, &block)
     self.instance_eval(&block) if cond && block
-  end
-
-  def self.with_parsed_file(file_name)
-    saved_parsed_filename = Eye.parsed_filename
-
-    require 'pathname'
-
-    real_filename = Eye.parsed_filename && File.symlink?(Eye.parsed_filename) ? File.readlink(Eye.parsed_filename) : Eye.parsed_filename
-    dirname = File.dirname(real_filename) rescue nil
-    path = Pathname.new(file_name).expand_path(dirname).to_s
-
-    Eye.parsed_filename = path
-    yield path
-  ensure
-    Eye.parsed_filename = saved_parsed_filename
   end
 
   def include(proc, *args)
@@ -127,6 +88,23 @@ class Eye::Dsl::PureOpts
 
       self.instance_eval(&ie)
     end
+  end
+
+private
+
+  def self.with_parsed_file(file_name)
+    saved_parsed_filename = Eye.parsed_filename
+
+    require 'pathname'
+
+    real_filename = Eye.parsed_filename && File.symlink?(Eye.parsed_filename) ? File.readlink(Eye.parsed_filename) : Eye.parsed_filename
+    dirname = File.dirname(real_filename) rescue nil
+    path = Pathname.new(file_name).expand_path(dirname).to_s
+
+    Eye.parsed_filename = path
+    yield path
+  ensure
+    Eye.parsed_filename = saved_parsed_filename
   end
 
 end

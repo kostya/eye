@@ -97,8 +97,42 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     h.instance_eval(&block)
     groups = h.config.delete :groups
     processes = h.config.delete :processes
-    self.config[:groups].merge!(groups) if groups.present?
-    self.config[:processes].merge!(processes) if processes.present?
+
+    if groups.present?
+      config[:groups] ||= {}
+      config[:groups].merge!(groups)
+    end
+
+    if processes.present?
+      config[:processes] ||= {}
+      config[:processes].merge!(processes)
+    end
+  end
+
+  # execute part of config on particular server
+  # array of strings
+  # regexp
+  # string
+  def with_server(glob = nil, &block)
+    on_server = true
+
+    if glob.present? 
+      host = Eye::System.host
+
+      if glob.is_a?(Array)
+        on_server = !!glob.any?{|elem| elem == host}
+      elsif glob.is_a?(Regexp)
+        on_server = !!host.match(glob)
+      elsif glob.is_a?(String) || glob.is_a?(Symbol)
+        on_server = (host == glob.to_s)
+      end
+    end
+
+    scoped do
+      with_condition(on_server, &block)
+    end
+
+    on_server
   end
 
 end
