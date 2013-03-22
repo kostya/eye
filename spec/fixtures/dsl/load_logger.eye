@@ -1,4 +1,6 @@
-Eye.logger = "/tmp/1.log"
+Eye.config do
+  logger "/tmp/1.log"
+end
 
 Eye.application "app1" do
   working_dir "/tmp"
