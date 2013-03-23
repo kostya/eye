@@ -60,7 +60,7 @@ private
   # nil if not found
   def find_objects(*obj_strs)
     return [] if obj_strs.blank?
-    return @applications if obj_strs.size == 1 && obj_strs[0].strip == 'all'
+    return @applications.dup if obj_strs.size == 1 && obj_strs[0].strip == 'all'
 
     res = obj_strs.map{|c| c.split(",").map{|mask| find_objects_by_mask(mask) }}.flatten
 
@@ -76,7 +76,7 @@ private
       res = final
     end
 
-    res.present? ? Eye::Utils::AliveArray.new(res) : res
+    res.present? ? Eye::Utils::AliveArray.new(res) : []
   end
 
   def find_objects_by_mask(mask)

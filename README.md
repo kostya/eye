@@ -17,23 +17,25 @@ examples/test.eye
 Eye.load("./eye/*.rb") # load submodules
 
 Eye.config do
-  logger "/tmp/eye.log" # eye logger
-  logger_level Logger::DEBUG
+  logger "/tmp/eye.log" # self-eye logger
 end
 
 Eye.application "test" do
+  # All options inherits down to the config leafs.
+
   working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
   stdall "trash.log" # stdout,err logs for processes by default
   env "APP_ENV" => "production" # global env for each processes
-  triggers :flapping, :times => 10, :within => 1.minute
+  triggers :flapping, :times => 10, :within => 1.minute # 
+  checks :cpu, :below => 100, :times => 3 # global check for all processes
 
   group "samples" do
-    env "A" => "1" # merging to app env 
-    chain :grace => 5.seconds, :action => :restart # restarting with 5s interval, one by one.
+    env "A" => "1" # env declarations merging (not rewrited)
+    chain :grace => 5.seconds # chained start-restart with 5s interval, one by one.
 
     # eye daemonized process
     process("sample1") do
-      pid_file "1.pid" # will be expanded with working_dir
+      pid_file "1.pid" # pid_path will be expanded with the working_dir
       start_command "ruby ./sample.rb"
       daemonize true
       stdall "sample1.log"

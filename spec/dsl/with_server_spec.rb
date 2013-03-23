@@ -38,6 +38,28 @@ describe "with_server feature" do
     Eye::Dsl.parse_apps(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
   end
 
+  it "should behaves like scoped" do
+    stub(Eye::System).host{ "server1" }
+
+    conf = <<-E
+      Eye.application("bla") do
+        env "A" => "B"
+        with_server /server1/ do
+          env "A" => "C"
+          group(:a){}
+        end
+
+        group(:b){}
+      end
+    E
+
+    Eye::Dsl.parse_apps(conf).should == {
+      "bla" => {:name=>"bla", :environment=>{"A"=>"B"}, 
+        :groups=>{
+          "a"=>{:name=>"a", :environment=>{"A"=>"C"}, :application=>"bla", :processes=>{}}, 
+          "b"=>{:name=>"b", :environment=>{"A"=>"B"}, :application=>"bla", :processes=>{}}}}}
+  end
+
   describe "matches" do
     subject{ Eye::Dsl::Opts.new }
 
@@ -80,11 +102,13 @@ describe "with_server feature" do
       conf = <<-E
         Eye.application("bla"){ 
           with_server('mega_server') do
-            working_dir "/tmp"
+            group :blo do
+              working_dir "/tmp"
+            end            
           end
         }
       E
-      Eye::Dsl.parse_apps(conf).should == {"bla" => {:working_dir=>"/tmp", :name => "bla"}}
+      Eye::Dsl.parse_apps(conf).should == {"bla" => {:name=>"bla", :groups=>{"blo"=>{:name=>"blo", :application=>"bla", :working_dir=>"/tmp", :processes=>{}}}}}
     end
 
     it "hostname work" do

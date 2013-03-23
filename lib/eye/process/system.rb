@@ -39,7 +39,7 @@ module Eye::Process::System
   end
 
   def send_signal(code)
-    debug "send signal #{code}"
+    debug "send signal #{self.pid} => #{code}"
 
     res = Eye::System.send_signal(self.pid, code)
     error(res[:message]) if res[:status] != :ok
