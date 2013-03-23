@@ -53,7 +53,7 @@ module Eye::Process::Commands
       switch :stopped
 
       if control_pid?
-        info "delete pid_file: #{self[:pid_file]}"
+        info "delete pid_file: #{self[:pid_file_ex]}"
         clear_pid_file 
       end
       
