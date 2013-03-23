@@ -12,14 +12,14 @@ module Eye::Process::Scheduler
         args.pop
       end
 
-      info "schedule :#{command} (reason: #{reason})"
+      info "schedule :#{command} #{reason ? "(reason: #{reason})" : nil}"
       scheduler.add_wo_dups(:scheduled_action, command, {:args => args, :reason => reason}, &block)
     end
   end
 
   def scheduled_action(command, h = {}, &block)
     reason = h.delete(:reason)
-    info "=> #{command} #{h[:args].present? ? "#{h[:args]*',' }" : nil}(#{reason})"
+    info "=> #{command} #{h[:args].present? ? "#{h[:args]*',' }" : nil} #{reason ? "(reason: #{reason})" : nil}"
 
     @current_scheduled_command = command
     @last_scheduled_command = command
