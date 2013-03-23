@@ -39,7 +39,9 @@ module Eye::Dsl::Validation
       end
 
       if self.variants[param]
-        raise Error, "#{value.inspect} should within #{self.variants[param].inspect}" if value && !self.variants[param].include?(value)
+        if value && !value.is_a?(Proc) && !self.variants[param].include?(value)
+          raise Error, "#{value.inspect} should within #{self.variants[param].inspect}" 
+        end
       end
 
       next if types.blank?
