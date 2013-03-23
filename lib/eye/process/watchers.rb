@@ -61,8 +61,9 @@ private
     unless subject.check
       return unless up?
       
-      notify :crit, "Bounded #{subject.check_name}: #{subject.last_human_values}"
-      schedule :restart, "bounded #{subject.check_name}"
+      action = subject.fire || :restart
+      notify :crit, "Bounded #{subject.check_name}: #{subject.last_human_values} send to #{action}"
+      schedule action, "bounded #{subject.check_name}"
     end
   end
 
