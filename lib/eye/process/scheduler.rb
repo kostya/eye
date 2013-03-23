@@ -3,6 +3,11 @@ module Eye::Process::Scheduler
   # ex: schedule :update_config, config, "reason: update_config"
   def schedule(command, *args, &block)
     if scheduler.alive?
+      unless self.respond_to?(command)
+        warn "object not support :#{command} to schedule"
+        return
+      end
+
       reason = if args.present? && [String, Symbol].include?(args[-1].class)
         args.pop
       end
