@@ -12,7 +12,7 @@ module Eye::Process::Scheduler
         args.pop
       end
 
-      info "schedule :#{command} (#{reason})"
+      info "schedule :#{command} (reason: #{reason})"
       scheduler.add_wo_dups(:scheduled_action, command, {:args => args, :reason => reason}, &block)
     end
   end
