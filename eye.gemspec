@@ -32,7 +32,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'ruby-graphviz'
   gem.add_development_dependency 'forking'
   gem.add_development_dependency 'fakeweb'
-  gem.add_development_dependency 'eventmachine'
+  gem.add_development_dependency 'eventmachine', ">= 1.0.3"
   gem.add_development_dependency 'sinatra'
   gem.add_development_dependency 'thin'
   gem.add_development_dependency 'xmpp4r'
