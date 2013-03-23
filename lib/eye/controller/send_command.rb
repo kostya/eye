@@ -21,6 +21,12 @@ module Eye::Controller::SendCommand
     end
   end
 
+  def break_chain(*obj_strs)
+    matched_objects(*obj_strs) do |obj|
+      obj.send_command(:break_chain)
+    end
+  end
+
 private
 
   def matched_objects(*obj_strs, &block)

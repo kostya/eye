@@ -166,6 +166,30 @@ describe "Intergration" do
       # nothing happens
       @samples.alive?.should == true
     end
+
+    it "chain breaker breaks current chain and all pending requests" do
+      @samples.config.merge!(:chain => C.restart_async)
+
+      @c.send_command(:restart, "samples")
+      @c.send_command(:stop, "samples")
+      sleep 0.5
+
+      @samples.current_scheduled_command.should == :restart
+      @samples.scheduler_actions_list.should == [:stop]
+
+      @c.send_command(:break_chain, "samples")
+      sleep 3
+      @samples.current_scheduled_command.should == :restart
+      sleep 2
+      @samples.current_scheduled_command.should == nil
+      @samples.scheduler_actions_list.should == []
+
+      sleep 1
+
+      # only first process should be restarted
+      @p1.last_scheduled_command.should == :restart
+      @p2.last_scheduled_command.should == :monitor
+    end
   end
 
   it "stop group" do
