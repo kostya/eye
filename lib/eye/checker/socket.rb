@@ -18,7 +18,7 @@ class Eye::Checker::Socket < Eye::Checker
   param :read_timeout,  [Fixnum, Float]
   param :send_data
   param :expect_data,   [String, Regexp, Proc]
-  param :protocol,      [Symbol]
+  param :protocol,      [Symbol], nil, nil, [:default, :em_object]
 
   def check_name
     'socket'
