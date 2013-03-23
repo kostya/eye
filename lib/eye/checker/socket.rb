@@ -5,7 +5,7 @@ class Eye::Checker::Socket < Eye::Checker
   #
   # Available parameters:
   # :addr          the socket addr to open. The format is tcp://<host>:<port> or unix:<path>
-  # :timeout       generic timeout for opening the socket or reading data
+  # :timeout       generic timeout for reading data from socket
   # :open_timeout  override generic timeout for the connection
   # :read_timeout  override generic timeout for data read/write
   # :send_data     after connection send this data

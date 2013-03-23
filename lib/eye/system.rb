@@ -7,7 +7,13 @@ module Eye::System
     # Check that pid realy exits
     # very fast
     def pid_alive?(pid)
-      pid ? ::Process.kill(0, pid) && true : false
+      if pid 
+        ::Process.kill(0, pid)
+        true
+      else
+        false
+      end
+      
     rescue Errno::ESRCH, Errno::EPERM
       false
     end
@@ -60,14 +66,18 @@ module Eye::System
       opts = spawn_options(cfg)
       pid  = Process::spawn(prepare_env(cfg), *Shellwords.shellwords(cmd), opts)
 
-      Timeout.timeout(cfg[:timeout] || 1.second) do
+      timeout = cfg[:timeout] || 1.second
+      Timeout.timeout(timeout) do
         Process.waitpid(pid)
       end
 
       {:pid => pid}
 
-    rescue Timeout::Error => ex      
-      send_signal(pid, 9) if pid
+    rescue Timeout::Error => ex
+      if pid
+        Eye.warn "[#{cfg[:name]}] send signal 9 to #{pid} (because of timeouted<#{timeout}> execution)"
+        send_signal(pid, 9)
+      end
       {:error => ex}
 
     rescue Errno::ENOENT, Errno::EACCES => ex

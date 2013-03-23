@@ -1,4 +1,3 @@
-gem 'state_machine'
 require 'state_machine'
 
 class Eye::Process
