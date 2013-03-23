@@ -68,7 +68,7 @@ describe "Eye::Dsl notify" do
         contact :vasya, :mail, "vasya@mail.ru", :bla => 1
       end
     E
-    expect{ Eye::Dsl.parse(conf) }.to raise_error(Eye::Checker::Validation::Error)
+    expect{ Eye::Dsl.parse(conf) }.to raise_error(Eye::Dsl::Validation::Error)
   end
 
   it "set notify inherited" do

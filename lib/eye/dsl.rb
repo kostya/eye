@@ -14,6 +14,7 @@ class Eye::Dsl
   autoload :Validate,             'eye/dsl/validate'
   autoload :Chain,                'eye/dsl/chain'
   autoload :ConfigOpts,           'eye/dsl/config_opts'
+  autoload :Validation,           'eye/dsl/validation'
 
   class Error < Exception; end
   extend Eye::Dsl::Validate

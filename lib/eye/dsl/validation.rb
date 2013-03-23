@@ -1,4 +1,4 @@
-module Eye::Checker::Validation
+module Eye::Dsl::Validation
   class Error < Exception; end
 
   def inherited(subclass)

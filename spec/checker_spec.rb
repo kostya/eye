@@ -138,7 +138,7 @@ describe "Eye::Checker" do
     end
 
     it "validate by default" do
-      expect{ Checker1.validate({:times => "jopa"}) }.to raise_error(Eye::Checker::Validation::Error)
+      expect{ Checker1.validate({:times => "jopa"}) }.to raise_error(Eye::Dsl::Validation::Error)
     end
   end
 

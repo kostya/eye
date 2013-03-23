@@ -73,7 +73,7 @@ describe "Eye::Dsl checks" do
         end        
       end
     E
-    expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Checker::Validation::Error)
+    expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Validation::Error)
   end
 
   it "ok trigger" do
@@ -98,7 +98,7 @@ describe "Eye::Dsl checks" do
         end        
       end
     E
-    expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Checker::Validation::Error)
+    expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Validation::Error)
   end
 
   it "nochecks to remove inherit checks" do
