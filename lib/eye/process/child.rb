@@ -47,8 +47,6 @@ module Eye::Process::Child
   def remove_childs
     if childs.present?
       childs.keys.each{|child_pid| remove_child(child_pid) }
-    else
-      debug 'No childs to clear'
     end
   end
 

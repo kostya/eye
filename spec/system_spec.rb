@@ -9,6 +9,13 @@ describe "Eye::System" do
     Eye::System.pid_alive?(nil).should == false
   end
 
+  it "check_pid_alive" do
+    Eye::System.check_pid_alive($$).should == {:result => true}
+    Eye::System.check_pid_alive(123456)[:error].class.should == Errno::ESRCH
+    Eye::System.check_pid_alive(-122)[:error].class.should == Errno::ESRCH
+    Eye::System.check_pid_alive(nil).should == {:result => false}
+  end
+
   it "ps_aux" do
     h = Eye::System.ps_aux
     h.size.should > 10
