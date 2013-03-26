@@ -18,9 +18,10 @@ module Eye::Process::System
       File.open(self[:pid_file_ex], 'w') do |f|
         f.write self.pid
       end
+      true
+    else
+      false
     end
-
-    true
   end
 
   def clear_pid_file

@@ -192,13 +192,10 @@ private
       return {:error => :not_realy_running}
     end
 
-    begin
-      save_pid_to_file
-    rescue => ex
-      error "save pid to file raised with #{ex.inspect}"
-      return {:error => :cant_write_pid}
+    unless failsafe_save_pid
+      return {:error => :cant_write_pid} 
     end
-
+    
     res
   end
 
@@ -226,17 +223,17 @@ private
     sleep self[:start_grace].to_f
 
     unless set_pid_from_file
-      error "pid_file(#{self[:pid_file]}) does not appears after start_grace #{self[:start_grace].to_f}, check start_command, or tune start_grace (eye dont know what to monitor without pid)"
+      error "pid_file(#{self[:pid_file_ex]}) does not appears after start_grace #{self[:start_grace].to_f}, check start_command, or tune start_grace (eye dont know what to monitor without pid)"
       return {:error => :pid_not_found}
     end
 
     unless process_realy_running?
-      error "process in pid_file(#{self[:pid_file]})(#{self.pid}) not found, maybe process do not write there actual pid, or just crashed (#{check_logs_str})"
+      error "process in pid_file(#{self[:pid_file_ex]})(#{self.pid}) not found, maybe process do not write there actual pid, or just crashed (#{check_logs_str})"
       return {:error => :not_realy_running}
     end
 
     res[:pid] = self.pid
-    info "process get pid:#{res[:pid]}"
+    info "process get pid:#{res[:pid]}, pid_file #{self[:pid_file_ex]}"
     res
   end
 

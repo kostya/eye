@@ -49,14 +49,20 @@ private
           msg = "check_alive: pid_file(#{self[:pid_file]}) changes by itself (pid:#{self.pid}) => (pid:#{ppid})"
           if control_pid?
             msg += ", not correct, pid_file is under eye control, so rewrited back pid:#{self.pid}"
-            save_pid_to_file rescue msg += ', (Can`t rewrite pid_file O_o)'
+            unless failsafe_save_pid
+              msg += ', (Can`t rewrite pid_file O_o)'
+            end
           else
             if ppid == nil
               msg += ', rewrited because empty'
-              save_pid_to_file rescue msg += ', (Can`t rewrite pid_file O_o)'
+              unless failsafe_save_pid
+                msg += ', (Can`t rewrite pid_file O_o)'
+              end
             elsif (Time.now - pid_file_ctime > REWRITE_FACKUP_PIDFILE_PERIOD)
               msg += ", > #{REWRITE_FACKUP_PIDFILE_PERIOD.inspect} ago, so rewrited (even if pid_file not under eye control)"
-              save_pid_to_file rescue msg += ', (Can`t rewrite pid_file O_o)'
+              unless failsafe_save_pid
+                msg += ', (Can`t rewrite pid_file O_o)'
+              end
             else
               msg += ', not under eye control, so ignored'
             end
@@ -78,6 +84,14 @@ private
     end
 
     pid
+  end
+
+  def failsafe_save_pid
+    save_pid_to_file 
+    true
+  rescue => ex
+    error "failsafe_save_pid: #{ex.message}"
+    false
   end
 
   def check_crash
