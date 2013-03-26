@@ -46,7 +46,7 @@ describe "Eye::Process::System" do
     @process.process_realy_running?.should == nil
 
     @process.pid = -123434
-    @process.process_realy_running?.should == false
+    @process.process_realy_running?.should == nil
   end
 
   it "send_signal ok" do

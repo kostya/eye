@@ -3,19 +3,31 @@ require 'pathname'
 
 module Eye::System
   class << self
-
     # Check that pid realy exits
     # very fast
-    def pid_alive?(pid)
-      if pid 
+    # return result hash
+    def check_pid_alive(pid)
+      res = if pid 
         ::Process.kill(0, pid)
         true
       else
         false
       end
-      
-    rescue Errno::ESRCH, Errno::EPERM
-      false
+      {:result => res}
+    rescue Errno::ESRCH => ex
+      {:error => ex}
+    rescue Errno::EPERM => ex
+      {:error => ex}
+    rescue Exception => ex
+      {:error => ex}
+    end
+
+    # Check that pid realy exits
+    # very fast
+    # return true/false
+    def pid_alive?(pid)
+      res = check_pid_alive(pid)
+      !!res[:result]
     end
 
     # Send signal to process (uses for kill)

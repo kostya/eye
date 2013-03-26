@@ -35,7 +35,16 @@ module Eye::Process::System
   end
 
   def process_realy_running?
-    Eye::System.pid_alive?(self.pid) if self.pid
+    if self.pid
+      res = Eye::System.check_pid_alive(self.pid)
+      if res[:error] && res[:error].class != Errno::ESRCH
+        error "process_realy_running?: check_pid_alive returns '#{res[:error].message}'" 
+      end
+      res[:result]
+    else
+      debug "process_realy_running?: called without pid"
+      nil
+    end
   end
 
   def send_signal(code)

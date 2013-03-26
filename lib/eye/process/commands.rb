@@ -17,8 +17,8 @@ module Eye::Process::Commands
       debug "process (#{self.pid}) ok started"
       switch :started
     else
-      debug "process (#{self.pid}) failed to start (#{result[:error].inspect})"
-      if self.pid && Eye::System.pid_alive?(self.pid)
+      error "process (#{self.pid}) failed to start (#{result[:error].inspect})"
+      if process_realy_running?
         warn "kill, what remains from process (#{self.pid}), because its failed to start (without pid_file impossible to monitoring)"
         send_signal(:KILL)
         sleep 0.2 # little grace
@@ -188,7 +188,7 @@ private
     sleep self[:start_grace].to_f
 
     unless process_realy_running?
-      error "process with pid (#{self.pid}) not found, may be crashed (#{check_logs_str})"
+      error "process with pid(#{self.pid}) not found, may be crashed (#{check_logs_str})"
       return {:error => :not_realy_running}
     end
 
