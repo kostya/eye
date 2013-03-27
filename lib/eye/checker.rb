@@ -112,6 +112,6 @@ class Eye::Checker
   extend Eye::Dsl::Validation
   param :every, [Fixnum, Float], false, 5
   param :times, [Fixnum, Array]
-  param :fire, Symbol, nil, nil, [:stop, :restart, :unmonitor]
+  param :fire, Symbol, nil, nil, [:stop, :restart, :unmonitor, :nothing]
 
 end
