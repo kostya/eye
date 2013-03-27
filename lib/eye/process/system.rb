@@ -66,6 +66,26 @@ module Eye::Process::System
     defer{ Eye::System::execute cmd, cfg }
   end
 
+  def failsafe_load_pid
+    pid = load_pid_from_file
+
+    if !pid 
+      # this is can be symlink changed case
+      sleep 0.1
+      pid = load_pid_from_file
+    end
+
+    pid
+  end
+
+  def failsafe_save_pid
+    save_pid_to_file 
+    true
+  rescue => ex
+    error "failsafe_save_pid: #{ex.message}"
+    false
+  end
+
 private
 
   def wait_for_condition_sync(timeout, step, &block)
