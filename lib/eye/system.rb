@@ -13,12 +13,9 @@ module Eye::System
       else
         false
       end
+
       {:result => res}
-    rescue Errno::ESRCH => ex
-      {:error => ex}
-    rescue Errno::EPERM => ex
-      {:error => ex}
-    rescue Exception => ex
+    rescue => ex
       {:error => ex}
     end
 
@@ -40,17 +37,15 @@ module Eye::System
       end
       code = code.to_s.upcase if code.is_a?(String) || code.is_a?(Symbol)
 
-      ::Process.kill(code, pid) if pid
-      {:status => :ok}
+      if pid
+        ::Process.kill(code, pid) 
+        {:result => :ok}
+      else
+        {:error => Exception.new('no_pid')}
+      end
 
-    rescue Errno::ESRCH    
-      {:status => :error, :message => 'process not found'}
-
-    rescue Errno::EPERM
-      {:status => :error, :message => 'wrong permissions to kill'}
-
-    rescue => e
-      {:status => :error, :message => "failed signal #{code}: #{e.message}"}
+    rescue => ex
+      {:error => ex}
     end
 
     # Daemonize cmd, and detach

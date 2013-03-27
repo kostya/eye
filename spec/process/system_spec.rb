@@ -73,12 +73,12 @@ describe "Eye::Process::System" do
   end
 
   it "send_signal ok" do
-    mock(Eye::System).send_signal(@process.pid, :TERM){ {:status => :ok} }
+    mock(Eye::System).send_signal(@process.pid, :TERM){ {:result => :ok} }
     @process.send_signal(:TERM).should == true
   end
 
   it "send_signal not ok" do
-    mock(Eye::System).send_signal(@process.pid, :TERM){ {:status => :error} }
+    mock(Eye::System).send_signal(@process.pid, :TERM){ {:error => Exception.new('bla')} }
     @process.send_signal(:TERM).should == false
   end
 

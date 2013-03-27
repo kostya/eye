@@ -93,13 +93,13 @@ describe "Eye::System" do
 
   describe "send signal" do
     it "send_signal to spec" do
-      Eye::System.send_signal($$, 0)[:status].should == :ok    
+      Eye::System.send_signal($$, 0)[:result].should == :ok
     end
 
     it "send_signal to unexisted process" do
       res = Eye::System.send_signal(-12234)
-      res[:status].should == :error
-      res[:message].should include("not found")
+      res[:status].should == nil
+      res[:error].message.should include("No such process")
     end
 
     it "send_signal to daemon" do
@@ -108,7 +108,7 @@ describe "Eye::System" do
       # process should be alive
       Eye::System.pid_alive?(@pid).should == true
 
-      Eye::System.send_signal(@pid, :term)[:status].should == :ok
+      Eye::System.send_signal(@pid, :term)[:result].should == :ok
       sleep 0.2
 
       Eye::System.pid_alive?(@pid).should == false
@@ -120,7 +120,7 @@ describe "Eye::System" do
 
       sleep 4
 
-      Eye::System.send_signal(@pid, :usr1)[:status].should == :ok
+      Eye::System.send_signal(@pid, :usr1)[:result].should == :ok
       
       sleep 0.5
 

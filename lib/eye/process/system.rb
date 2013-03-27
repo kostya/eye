@@ -49,12 +49,13 @@ module Eye::Process::System
   end
 
   def send_signal(code)
-    info "send signal #{code} to #{self.pid}"
-
     res = Eye::System.send_signal(self.pid, code)
-    error(res[:message]) if res[:status] != :ok
 
-    res[:status] == :ok
+    msg = "send_signal #{code} to #{self.pid}"
+    msg += ", error<#{res[:error]}>" if res[:error]
+    info msg
+
+    res[:result] == :ok
   end
 
   # non blocking actor timeout

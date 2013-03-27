@@ -135,7 +135,7 @@ private
       
       sleep self[:stop_grace].to_f
 
-      # if process not die here, by default we kill it force
+      # if process not die here, by default we force kill it
       if process_realy_running?
         warn "process not die after TERM and stop_grace #{self[:stop_grace].to_f}s, so send KILL"
         send_signal(:KILL)
