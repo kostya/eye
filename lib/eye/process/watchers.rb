@@ -9,7 +9,6 @@ module Eye::Process::Watchers
       # default watcher :check_alive
       add_watcher(:check_alive, self[:check_alive_period]) do 
         check_alive
-        GC.start if rand(1000) == 0
       end
 
       # monitor childs pids
