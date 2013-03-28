@@ -8,7 +8,7 @@ module Eye::Settings
     if Process::UID.eid == 0 # root
       '/var/run/eye'
     else
-      File.expand_path(File.join(ENV['HOME'], '.eye'))
+      File.expand_path(File.join(ENV['EYE_HOME'] || ENV['HOME'], '.eye'))
     end    
   end
   
