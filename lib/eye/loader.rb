@@ -6,7 +6,7 @@ gem 'nio4r'
 gem 'facter'
 gem 'timers'
 
-gem 'state_machine'
+gem 'state_machine', '< 1.2'
 gem 'activesupport', '~> 3.2.0'
 
 gem 'i18n' # for as
