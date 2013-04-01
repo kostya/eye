@@ -16,9 +16,11 @@ module Eye::Process::Trigger
     return if unmonitored?
 
     self.triggers.each do |trigger|
-      if !trigger.check(self.states_history)
-        notify :crit, 'flapping!'
-        @flapping = true        
+      unless trigger.check(self.states_history)
+        if trigger.class == Eye::Trigger::Flapping
+          notify :crit, 'flapping!'
+          schedule :unmonitoring, "flapping"
+        end
       end
     end
   end
