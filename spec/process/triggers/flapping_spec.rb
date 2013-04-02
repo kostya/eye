@@ -42,6 +42,7 @@ describe "Flapping" do
 
     @process.state_name.should == :unmonitored
     @process.watchers.keys.should == []
+    @process.states_history.states.last(2).should == [:down, :unmonitored]
   end
 
   it "process flapping emulate with kill" do
@@ -49,14 +50,37 @@ describe "Flapping" do
 
     @process.start
 
-    # 4 times because, flapping flag, check on next switch
-    4.times do
+    3.times do
       die_process!(@process.pid)
       sleep 3
     end
 
     @process.state_name.should == :unmonitored
     @process.watchers.keys.should == []
+
+    # ! should switched to unmonitored from down status
+    @process.states_history.states.last(2).should == [:down, :unmonitored]
+  end
+
+  it "process flapping, and then send to start and fast kill, should ok started" do
+    @process = process(@c.merge(:triggers => C.flapping(:times => 3, :within => 15)))
+
+    @process.start
+
+    3.times do
+      die_process!(@process.pid)
+      sleep 3
+    end
+
+    @process.state_name.should == :unmonitored
+    @process.watchers.keys.should == []
+
+    @process.start
+    @process.state_name.should == :up
+
+    die_process!(@process.pid)
+    sleep 4
+    @process.state_name.should == :up
   end
 
   it "flapping not happens" do
@@ -68,12 +92,14 @@ describe "Flapping" do
     dont_allow(@process).schedule(:unmonitor)
 
 
-    sleep 5
+    sleep 2
 
-    # even if process die in middle
-    die_process!(@process.pid)
+    2.times do
+      die_process!(@process.pid)
+      sleep 3
+    end
 
-    sleep 5
+    sleep 2
 
     @process.state_name.should == :up    
   end

@@ -14,11 +14,9 @@ class Eye::Trigger::Flapping < Eye::Trigger
 
   def good?
     states = @states_history.states_for_period( within, @last_at )
-
-    starting_count = states.count{|st| st == :starting }
     down_count = states.count{|st| st == :down }
 
-    if (starting_count >= times) && (down_count >= times)
+    if down_count >= times
       @last_at = @states_history.last_state_changed_at
       false
     else

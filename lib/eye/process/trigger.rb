@@ -20,7 +20,7 @@ module Eye::Process::Trigger
 
         if trigger.class == Eye::Trigger::Flapping
           notify :crit, 'flapping!'
-          schedule :unmonitoring, "flapping"
+          schedule :unmonitor, "flapping"
         end
       end
     end
