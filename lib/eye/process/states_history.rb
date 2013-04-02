@@ -8,11 +8,11 @@ class Eye::Process::StatesHistory < Eye::Utils::Tail
     self.map{|c| c[:state] }
   end
 
-  def states_for_period(period)
+  def states_for_period(period, from_time = nil)
     tm = Time.now - period
-    self.select do |s|
-      s[:at] >= tm
-    end.map{|c| c[:state] }
+    tm = [tm, from_time].max if from_time
+
+    self.select{|s| s[:at] >= tm }.map{|c| c[:state] }
   end
 
   def last_state

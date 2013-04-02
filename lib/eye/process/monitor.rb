@@ -76,13 +76,12 @@ private
 
   def check_crash
     if down?
-      if self[:keep_alive] && !@flapping
+      if self[:keep_alive]
         warn 'check crashed: process is down'
         schedule :start, 'crashed'
-#      else
-        #warn 'check crashed: process is down, and flapping happens (or not keep_alive option)'
-        #schedule :unmonitor, 'flapping'
       end
+    else
+      debug 'check crashed: skipped, process is not in down'
     end
   end
 

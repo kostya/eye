@@ -17,6 +17,7 @@ module Eye::Process::Trigger
 
     self.triggers.each do |trigger|
       unless trigger.check(self.states_history)
+
         if trigger.class == Eye::Trigger::Flapping
           notify :crit, 'flapping!'
           schedule :unmonitoring, "flapping"
@@ -28,7 +29,8 @@ module Eye::Process::Trigger
 private
 
   def add_trigger(cfg = {})
-    self.triggers << Eye::Trigger.create(cfg, logger.prefix)
+    trigger = Eye::Trigger.create(cfg, logger.prefix)
+    self.triggers << trigger
   end
 
 end
