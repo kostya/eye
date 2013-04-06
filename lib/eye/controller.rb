@@ -39,7 +39,7 @@ class Eye::Controller
 
     Eye::SystemResources.setup
     
-    info "starting #{Eye::ABOUT}"
+    info "starting #{Eye::ABOUT} (#{$$})"
   end
 
 end
