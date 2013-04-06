@@ -122,6 +122,14 @@ describe "Scheduler" do
     scheduler.alive?.should == false
   end
 
+  it "schedule unexisted method should not raise and break anything" do
+    scheduler = @process.scheduler
+    @process.schedule :hahhaha
+    sleep 0.2
+    @process.alive?.should == true
+    scheduler.alive?.should == true
+  end
+
   describe "reasons" do
     it "1 param without reason" do
       @process.schedule :scheduler_test3, 1

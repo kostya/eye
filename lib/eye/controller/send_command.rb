@@ -21,6 +21,12 @@ module Eye::Controller::SendCommand
     end
   end
 
+  def break_chain(*obj_strs)
+    matched_objects(*obj_strs) do |obj|
+      obj.send_command(:break_chain)
+    end
+  end
+
 private
 
   def matched_objects(*obj_strs, &block)
@@ -60,7 +66,7 @@ private
   # nil if not found
   def find_objects(*obj_strs)
     return [] if obj_strs.blank?
-    return @applications.dup if obj_strs.size == 1 && obj_strs[0].strip == 'all'
+    return @applications.dup if obj_strs.size == 1 && (obj_strs[0].strip == 'all' || obj_strs[0].strip == '*')
 
     res = obj_strs.map{|c| c.split(",").map{|mask| find_objects_by_mask(mask) }}.flatten
 

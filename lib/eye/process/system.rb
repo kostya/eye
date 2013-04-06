@@ -18,9 +18,10 @@ module Eye::Process::System
       File.open(self[:pid_file_ex], 'w') do |f|
         f.write self.pid
       end
+      true
+    else
+      false
     end
-
-    true
   end
 
   def clear_pid_file
@@ -35,16 +36,26 @@ module Eye::Process::System
   end
 
   def process_realy_running?
-    Eye::System.pid_alive?(self.pid) if self.pid
+    if self.pid
+      res = Eye::System.check_pid_alive(self.pid)
+      if res[:error] && res[:error].class != Errno::ESRCH
+        error "process_realy_running?: check_pid_alive returns '#{res[:error].message}'" 
+      end
+      res[:result]
+    else
+      debug "process_realy_running?: called without pid"
+      nil
+    end
   end
 
   def send_signal(code)
-    debug "send signal #{self.pid} => #{code}"
-
     res = Eye::System.send_signal(self.pid, code)
-    error(res[:message]) if res[:status] != :ok
 
-    res[:status] == :ok
+    msg = "send_signal #{code} to #{self.pid}"
+    msg += ", error<#{res[:error]}>" if res[:error]
+    info msg
+
+    res[:result] == :ok
   end
 
   # non blocking actor timeout
@@ -54,6 +65,26 @@ module Eye::Process::System
 
   def execute(cmd, cfg = {})
     defer{ Eye::System::execute cmd, cfg }
+  end
+
+  def failsafe_load_pid
+    pid = load_pid_from_file
+
+    if !pid 
+      # this is can be symlink changed case
+      sleep 0.1
+      pid = load_pid_from_file
+    end
+
+    pid
+  end
+
+  def failsafe_save_pid
+    save_pid_to_file 
+    true
+  rescue => ex
+    error "failsafe_save_pid: #{ex.message}"
+    false
   end
 
 private

@@ -68,10 +68,13 @@ class Eye::Group
   def send_command(command, *args)
     info "send_command: #{command}"
 
-    if command == :delete
-      delete *args
-    else
-      schedule command, *args, "#{command} by user"
+    case command
+      when :delete
+        delete *args
+      when :break_chain 
+        break_chain *args
+      else 
+        schedule command, *args, "#{command} by user"
     end
   end
 
@@ -102,6 +105,12 @@ class Eye::Group
 
   def signal(sig)
     async_schedule :signal, sig
+  end
+
+  def break_chain
+    info "break chain"
+    scheduler.clear_pending_list
+    @chain_breaker = true    
   end
 
   def clear

@@ -5,7 +5,7 @@ class Eye::Checker::Socket < Eye::Checker
   #
   # Available parameters:
   # :addr          the socket addr to open. The format is tcp://<host>:<port> or unix:<path>
-  # :timeout       generic timeout for opening the socket or reading data
+  # :timeout       generic timeout for reading data from socket
   # :open_timeout  override generic timeout for the connection
   # :read_timeout  override generic timeout for data read/write
   # :send_data     after connection send this data
@@ -18,7 +18,7 @@ class Eye::Checker::Socket < Eye::Checker
   param :read_timeout,  [Fixnum, Float]
   param :send_data
   param :expect_data,   [String, Regexp, Proc]
-  param :protocol,      [Symbol]
+  param :protocol,      [Symbol], nil, nil, [:default, :em_object]
 
   def check_name
     'socket'

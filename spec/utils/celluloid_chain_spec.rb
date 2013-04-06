@@ -78,4 +78,12 @@ describe "Eye::Utils::CelluloidChain" do
     @t.m.should == [:a, :b, :c, :a, :c]
   end
 
+  it "#clear_pending_list" do
+    10.times{ @c.add :a }
+    sleep 0.5
+    @c.clear_pending_list
+    sleep 0.5
+    @t.m.size.should < 6
+  end
+
 end

@@ -1,8 +1,6 @@
 class Eye::Checker
   include Eye::Logger::Helpers
 
-  autoload :Validation, 'eye/checker/validation'
-
   autoload :Memory,     'eye/checker/memory'
   autoload :Cpu,        'eye/checker/cpu'
   autoload :Http,       'eye/checker/http'
@@ -111,8 +109,9 @@ class Eye::Checker
     @values[-1][:value] if @values.present?
   end
 
-  extend Eye::Checker::Validation
+  extend Eye::Dsl::Validation
   param :every, [Fixnum, Float], false, 5
   param :times, [Fixnum, Array]
+  param :fire, Symbol, nil, nil, [:stop, :restart, :unmonitor, :nothing]
 
 end

@@ -7,6 +7,9 @@ private
 
     @chain_processes_count = @processes.size
     @chain_processes_current = 0
+    @chain_breaker = false
+
+    started_at = Time.now
 
     @processes.each do | process |
       chain_schedule_process(process, type, command, *args)
@@ -15,10 +18,15 @@ private
 
       # to skip last sleep
       break if @chain_processes_current.to_i == @chain_processes_count.to_i 
+      break if @chain_breaker
 
       # wait next process
       sleep grace.to_f
+
+      break if @chain_breaker
     end
+
+    debug "chain finished #{Time.now - started_at}s"
 
     @chain_processes_count = nil
     @chain_processes_current = nil
@@ -29,6 +37,9 @@ private
     
     if type == :sync
       # sync command, with waiting
+      # this is very hackety, because call method of the process without its scheduler
+      # need to provide some scheduler future
+      process.last_scheduled_reason = self.last_scheduled_reason
       process.send(command, *args)
     else
       # async command

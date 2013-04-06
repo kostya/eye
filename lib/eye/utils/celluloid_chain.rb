@@ -32,6 +32,8 @@ class Eye::Utils::CelluloidChain
     @calls = []
   end
 
+  alias :clear_pending_list :clear
+
   # need, because of https://github.com/celluloid/celluloid/issues/22
   def inspect
     "Celluloid::Chain(#{@target.class}: #{@calls.inspect})"

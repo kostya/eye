@@ -56,7 +56,7 @@ describe "Eye::Dsl notify" do
   it "raise on unknown contact type" do
     conf = <<-E
       Eye.config do
-        contact :vasya, :dddd, "vasya@mail.ru"
+        contact :vasya, :dddd, "vasya@mail.ru", :host => "localhost", :port => 12
       end
     E
     expect{ Eye::Dsl.parse(conf) }.to raise_error(Eye::Dsl::Error)
@@ -65,10 +65,19 @@ describe "Eye::Dsl notify" do
   it "raise on unknown additional_options" do
     conf = <<-E
       Eye.config do
-        contact :vasya, :mail, "vasya@mail.ru", :bla => 1
+        contact :vasya, :mail, "vasya@mail.ru", :host => "localhost", :port => 12, :bla => 1
       end
     E
-    expect{ Eye::Dsl.parse(conf) }.to raise_error(Eye::Checker::Validation::Error)
+    expect{ Eye::Dsl.parse(conf) }.to raise_error(Eye::Dsl::Validation::Error)
+  end
+
+  it "raise on not including on list of values" do
+    conf = <<-E
+      Eye.config do
+        contact :vasya, :mail, "vasya@mail.ru", :host => "localhost", :port => 12, :auth => :ply
+      end
+    E
+    expect{ Eye::Dsl.parse(conf) }.to raise_error(Eye::Dsl::Validation::Error)
   end
 
   it "set notify inherited" do

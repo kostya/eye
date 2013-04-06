@@ -48,6 +48,6 @@ class Eye::Trigger
     raise 'realize me'
   end
 
-  extend Eye::Checker::Validation
+  extend Eye::Dsl::Validation
 
 end

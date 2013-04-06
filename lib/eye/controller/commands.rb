@@ -14,6 +14,8 @@ module Eye::Controller::Commands
         exclusive{ send_command(cmd, *args) }
       when :signal
         signal(*args)
+      when :break_chain
+        break_chain(*args)
       when :load
         exclusive{ load(*args) }
       when :info

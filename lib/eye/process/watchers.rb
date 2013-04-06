@@ -9,7 +9,6 @@ module Eye::Process::Watchers
       # default watcher :check_alive
       add_watcher(:check_alive, self[:check_alive_period]) do 
         check_alive
-        GC.start if rand(1000) == 0
       end
 
       # monitor childs pids
@@ -61,8 +60,9 @@ private
     unless subject.check
       return unless up?
       
-      notify :crit, "Bounded #{subject.check_name}: #{subject.last_human_values}"
-      schedule :restart, "bounded #{subject.check_name}"
+      action = subject.fire || :restart
+      notify :crit, "Bounded #{subject.check_name}: #{subject.last_human_values} send to :#{action}"
+      schedule action, "bounded #{subject.check_name}"
     end
   end
 

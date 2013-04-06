@@ -38,7 +38,7 @@ private
 
       # check that process runned
       unless process_realy_running?
-        warn 'check_alive: process not found'
+        warn "check_alive: process(#{self.pid}) not found!"
         notify :warn, 'crashed!'
         switch :crashed
       else
@@ -49,14 +49,20 @@ private
           msg = "check_alive: pid_file(#{self[:pid_file]}) changes by itself (pid:#{self.pid}) => (pid:#{ppid})"
           if control_pid?
             msg += ", not correct, pid_file is under eye control, so rewrited back pid:#{self.pid}"
-            save_pid_to_file rescue msg += ', (Can`t rewrite pid_file O_o)'
+            unless failsafe_save_pid
+              msg += ', (Can`t rewrite pid_file O_o)'
+            end
           else
             if ppid == nil
               msg += ', rewrited because empty'
-              save_pid_to_file rescue msg += ', (Can`t rewrite pid_file O_o)'
+              unless failsafe_save_pid
+                msg += ', (Can`t rewrite pid_file O_o)'
+              end
             elsif (Time.now - pid_file_ctime > REWRITE_FACKUP_PIDFILE_PERIOD)
               msg += ", > #{REWRITE_FACKUP_PIDFILE_PERIOD.inspect} ago, so rewrited (even if pid_file not under eye control)"
-              save_pid_to_file rescue msg += ', (Can`t rewrite pid_file O_o)'
+              unless failsafe_save_pid
+                msg += ', (Can`t rewrite pid_file O_o)'
+              end
             else
               msg += ', not under eye control, so ignored'
             end
@@ -66,18 +72,6 @@ private
         end
       end
     end
-  end
-
-  def failsafe_load_pid
-    pid = load_pid_from_file
-
-    if !pid 
-      # this is can be symlink changed case
-      sleep 0.1
-      pid = load_pid_from_file
-    end
-
-    pid
   end
 
   def check_crash

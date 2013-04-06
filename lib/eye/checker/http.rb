@@ -38,8 +38,7 @@ class Eye::Checker::Http < Eye::Checker
   end
 
   def get_value_sync
-    _session = session
-    res = _session.start{ |http| http.get(@uri.path) }
+    res = session.start{ |http| http.get(@uri.request_uri) }
     {:result => res}
 
   rescue Timeout::Error => ex

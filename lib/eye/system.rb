@@ -3,13 +3,28 @@ require 'pathname'
 
 module Eye::System
   class << self
+    # Check that pid realy exits
+    # very fast
+    # return result hash
+    def check_pid_alive(pid)
+      res = if pid 
+        ::Process.kill(0, pid)
+        true
+      else
+        false
+      end
+
+      {:result => res}
+    rescue => ex
+      {:error => ex}
+    end
 
     # Check that pid realy exits
     # very fast
+    # return true/false
     def pid_alive?(pid)
-      pid ? ::Process.kill(0, pid) && true : false
-    rescue Errno::ESRCH, Errno::EPERM
-      false
+      res = check_pid_alive(pid)
+      !!res[:result]
     end
 
     # Send signal to process (uses for kill)
@@ -22,17 +37,15 @@ module Eye::System
       end
       code = code.to_s.upcase if code.is_a?(String) || code.is_a?(Symbol)
 
-      ::Process.kill(code, pid) if pid
-      {:status => :ok}
+      if pid
+        ::Process.kill(code, pid) 
+        {:result => :ok}
+      else
+        {:error => Exception.new('no_pid')}
+      end
 
-    rescue Errno::ESRCH    
-      {:status => :error, :message => 'process not found'}
-
-    rescue Errno::EPERM
-      {:status => :error, :message => 'wrong permissions to kill'}
-
-    rescue => e
-      {:status => :error, :message => "failed signal #{code}: #{e.message}"}
+    rescue => ex
+      {:error => ex}
     end
 
     # Daemonize cmd, and detach
@@ -60,14 +73,18 @@ module Eye::System
       opts = spawn_options(cfg)
       pid  = Process::spawn(prepare_env(cfg), *Shellwords.shellwords(cmd), opts)
 
-      Timeout.timeout(cfg[:timeout] || 1.second) do
+      timeout = cfg[:timeout] || 1.second
+      Timeout.timeout(timeout) do
         Process.waitpid(pid)
       end
 
       {:pid => pid}
 
-    rescue Timeout::Error => ex      
-      send_signal(pid, 9) if pid
+    rescue Timeout::Error => ex
+      if pid
+        Eye.warn "[#{cfg[:name]}] send signal 9 to #{pid} (because of timeouted<#{timeout}> execution)"
+        send_signal(pid, 9)
+      end
       {:error => ex}
 
     rescue Errno::ENOENT, Errno::EACCES => ex

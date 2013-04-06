@@ -101,13 +101,13 @@ describe "Eye::Checker::Http" do
     it "without param url" do
       expect{ Eye::Checker.validate!({:type => :http, :every => 5.seconds, 
         :times => 1, :kind => :success,
-        :pattern => /OK/, :timeout => 2}) }.to raise_error(Eye::Checker::Validation::Error)
+        :pattern => /OK/, :timeout => 2}) }.to raise_error(Eye::Dsl::Validation::Error)
     end
 
     it "bad param timeout" do
       expect{ Eye::Checker.validate!({:type => :http, :every => 5.seconds, 
         :times => 1, :kind => :success, :url => "http://localhost:3000/",
-        :pattern => /OK/, :timeout => :fix}) }.to raise_error(Eye::Checker::Validation::Error)
+        :pattern => /OK/, :timeout => :fix}) }.to raise_error(Eye::Dsl::Validation::Error)
     end
   end
 

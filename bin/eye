@@ -78,6 +78,11 @@ class Cli < Thor
     send_command(:signal, sig, *targets)
   end
 
+  desc "break TARGET[,...]", "break group chain executing"
+  def break(*targets)
+    send_command(:break_chain, *targets)
+  end
+
   desc "trace [TARGET]", "tracing log for app,group or process"
   def trace(target = "")
     log_trace(target)

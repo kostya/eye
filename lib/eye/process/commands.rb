@@ -17,8 +17,8 @@ module Eye::Process::Commands
       debug "process (#{self.pid}) ok started"
       switch :started
     else
-      debug "process (#{self.pid}) failed to start (#{result[:error].inspect})"
-      if self.pid && Eye::System.pid_alive?(self.pid)
+      error "process (#{self.pid}) failed to start (#{result[:error].inspect})"
+      if process_realy_running?
         warn "kill, what remains from process (#{self.pid}), because its failed to start (without pid_file impossible to monitoring)"
         send_signal(:KILL)
         sleep 0.2 # little grace
@@ -53,7 +53,7 @@ module Eye::Process::Commands
       switch :stopped
 
       if control_pid?
-        info "delete pid_file: #{self[:pid_file]}"
+        info "delete pid_file: #{self[:pid_file_ex]}"
         clear_pid_file 
       end
       
@@ -135,7 +135,7 @@ private
       
       sleep self[:stop_grace].to_f
 
-      # if process not die here, by default we kill it force
+      # if process not die here, by default we force kill it
       if process_realy_running?
         warn "process not die after TERM and stop_grace #{self[:stop_grace].to_f}s, so send KILL"
         send_signal(:KILL)
@@ -188,17 +188,14 @@ private
     sleep self[:start_grace].to_f
 
     unless process_realy_running?
-      error "process with pid (#{self.pid}) not found, may be crashed (#{check_logs_str})"
+      error "process with pid(#{self.pid}) not found, may be crashed (#{check_logs_str})"
       return {:error => :not_realy_running}
     end
 
-    begin
-      save_pid_to_file
-    rescue => ex
-      error "save pid to file raised with #{ex.inspect}"
-      return {:error => :cant_write_pid}
+    unless failsafe_save_pid
+      return {:error => :cant_write_pid} 
     end
-
+    
     res
   end
 
@@ -226,17 +223,17 @@ private
     sleep self[:start_grace].to_f
 
     unless set_pid_from_file
-      error "pid_file(#{self[:pid_file]}) does not appears after start_grace #{self[:start_grace].to_f}, check start_command, or tune start_grace (eye dont know what to monitor without pid)"
+      error "pid_file(#{self[:pid_file_ex]}) does not appears after start_grace #{self[:start_grace].to_f}, check start_command, or tune start_grace (eye dont know what to monitor without pid)"
       return {:error => :pid_not_found}
     end
 
     unless process_realy_running?
-      error "process in pid_file(#{self[:pid_file]})(#{self.pid}) not found, maybe process do not write there actual pid, or just crashed (#{check_logs_str})"
+      error "process in pid_file(#{self[:pid_file_ex]})(#{self.pid}) not found, maybe process do not write there actual pid, or just crashed (#{check_logs_str})"
       return {:error => :not_realy_running}
     end
 
     res[:pid] = self.pid
-    info "process get pid:#{res[:pid]}"
+    info "process get pid:#{res[:pid]}, pid_file #{self[:pid_file_ex]}"
     res
   end
 
