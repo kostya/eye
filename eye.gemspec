@@ -8,7 +8,7 @@ Gem::Specification.new do |gem|
     %q{Process monitoring tool. An alternative to God and Bluepill. With Bluepill like config syntax. Requires MRI Ruby >= 1.9.2. Uses Celluloid and Celluloid::IO.}
   gem.homepage      = "http://github.com/kostya/eye"
 
-  gem.files         = `git ls-files`.split($\)
+  gem.files         = `git ls-files`.split($\).reject{|n| n =~ %r[png|gif\z]}
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.name          = "eye"
