@@ -95,7 +95,7 @@ private
     Net::HTTP.new(@uri.host, @uri.port).tap do |session|
       if @uri.scheme == 'https'
         require 'net/https'
-        session.use_ssl=true
+        session.use_ssl = true
         session.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end
       session.open_timeout = @open_timeout
