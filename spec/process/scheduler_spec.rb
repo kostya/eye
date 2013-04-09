@@ -155,4 +155,14 @@ describe "Scheduler" do
       @process.test3.should == [1, :bla, 3]
     end
   end
+
+  describe "schedule_in" do
+    it "should schedule to future" do
+      @process.schedule_in(1.second, :scheduler_test3, 1, 2, 3)
+      sleep 0.5
+      @process.test3.should == nil
+      sleep 0.6
+      @process.test3.should == [1,2,3]
+    end
+  end
 end

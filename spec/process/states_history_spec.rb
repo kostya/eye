@@ -26,6 +26,12 @@ describe "Eye::Process::StatesHistory" do
     @h.states_for_period(1.5.minutes).should == [:up, :down]
     @h.states_for_period(2.5.minutes).should == [:stop, :up, :down]
     @h.states_for_period(6.minutes).should == [:up, :down, :start, :stop, :up, :down]
+
+    # with start_point
+    @h.states_for_period(2.5.minutes, 5.minutes.ago).should == [:stop, :up, :down]
+    @h.states_for_period(2.5.minutes, nil).should == [:stop, :up, :down]
+    @h.states_for_period(2.5.minutes, 1.5.minutes.ago).should == [:up, :down]
+    @h.states_for_period(2.5.minutes, Time.now).should == []
   end
 
   it "seq?" do

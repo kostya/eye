@@ -14,7 +14,7 @@ Eye.application "test" do
   working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
   stdall "trash.log" # stdout,err logs for processes by default
   env "APP_ENV" => "production" # global env for each processes
-  triggers :flapping, :times => 10, :within => 1.minute # 
+  triggers :flapping, :times => 10, :within => 1.minute, :retry_in => 10.minutes
   checks :cpu, :below => 100, :times => 3 # global check for all processes
 
   group "samples" do
