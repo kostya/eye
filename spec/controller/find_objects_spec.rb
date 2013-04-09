@@ -77,6 +77,26 @@ describe "find_objects" do
     subject.find_objects("asdfasdf").should == []
   end
 
+  describe "submatching without * " do
+    it "match by start symbols, apps" do
+      objs = subject.find_objects("app")
+      objs.map{|c| c.class}.should == [Eye::Application, Eye::Application]
+      objs.map{|c| c.name}.sort.should == %w{app1 app2}
+    end
+
+    it "match by start symbols, groups" do
+      objs = subject.find_objects("gr")
+      objs.map{|c| c.class}.should == [Eye::Group, Eye::Group]
+      objs.map{|c| c.name}.sort.should == %w{gr1 gr2}
+    end
+
+    it "match by start symbols, process" do
+      objs = subject.find_objects("z")
+      objs.map{|c| c.class}.should == [Eye::Process]
+      objs.map{|c| c.name}.sort.should == %w{z1}
+    end
+  end
+
   describe "find by routes" do
     it "group" do
       objs = subject.find_objects("app1:gr2")
@@ -102,7 +122,7 @@ describe "find_objects" do
       subject{ c = Eye::Controller.new; c.load(fixture("dsl/load_dubls.eye")); c }
 
       it "not found" do
-        subject.find_objects("z").should == []
+        subject.find_objects("zu").should == []
       end
 
       it "found 2 processed" do
@@ -139,11 +159,11 @@ describe "find_objects" do
 
   describe "missing" do
     it "should not found" do
-      subject.find_objects("app1:gr2:q").should == []
-      subject.find_objects("gr1:p1").should == []
+      subject.find_objects("app1:gr4").should == []
+      subject.find_objects("gr:p").should == []
       subject.find_objects("pp1").should == []
       subject.find_objects("app1::").should == []
-      subject.find_objects("app1:").should == []
+      subject.find_objects("app1:=").should == []
     end
   end
 
