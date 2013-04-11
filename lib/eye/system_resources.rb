@@ -74,7 +74,7 @@ class Eye::SystemResources
   private
 
     def set
-      @ps_aux = Eye::System.ps_aux
+      @ps_aux = defer{ Eye::System.ps_aux }
       @at = Time.now
     end
 
