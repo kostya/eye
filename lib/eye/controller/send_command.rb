@@ -90,7 +90,7 @@ private
 
     res = []
     str = Regexp.escape(mask).gsub('\*', '.*?')
-    r = %r{\A#{str}\z}
+    r = %r{\A#{str}}
 
     # find app
     res = @applications.select{|a| a.name =~ r || a.full_name =~ r }

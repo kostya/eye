@@ -39,7 +39,8 @@ module Eye::Process::Data
   end
 
   def sub_object?(obj)
-    # we not recognize childs
+    return false if self.class == Eye::ChildProcess
+    self.childs.each { |_, child| return true if child == obj }
     false
   end
 
