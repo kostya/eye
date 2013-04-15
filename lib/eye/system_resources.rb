@@ -67,7 +67,10 @@ class Eye::SystemResources
     end
 
     def get
-      set! if @at + UPDATE_INTERVAL < Time.now
+      if @at + UPDATE_INTERVAL < Time.now
+        @at = Time.now # for minimize races
+        set!
+      end
       @ps_aux
     end
 
