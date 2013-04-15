@@ -49,6 +49,11 @@ class Eye::SystemResources
     end
     
   private
+
+    def reset!
+      setup.terminate
+      @actor = nil
+    end
   
     def ps_aux
       setup
