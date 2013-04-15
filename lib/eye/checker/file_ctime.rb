@@ -6,10 +6,6 @@ class Eye::Checker::FileCTime < Eye::Checker
 
   param :file, [String], true
 
-  def check_name
-    'ctime'
-  end
-
   def get_value
     File.ctime(file) rescue nil
   end

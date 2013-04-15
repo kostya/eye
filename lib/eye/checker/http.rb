@@ -1,6 +1,6 @@
 require 'net/http'
 
-class Eye::Checker::Http < Eye::Checker
+class Eye::Checker::Http < Eye::Checker::Defer
 
   # checks :http, :every => 5.seconds, :times => 1,
   #  :url => "http://127.0.0.1:3000/", :kind => :success, :pattern => /OK/, :timeout => 3.seconds
@@ -13,10 +13,6 @@ class Eye::Checker::Http < Eye::Checker
   param :read_timeout,  [Fixnum, Float]
 
   attr_reader :uri
-
-  def check_name
-    'http'
-  end
 
   def initialize(*args)
     super
@@ -33,11 +29,7 @@ class Eye::Checker::Http < Eye::Checker
     @read_timeout = (read_timeout || timeout || 15).to_f
   end
   
-  def get_value
-    Celluloid::Future.new{ get_value_sync }.value
-  end
-
-  def get_value_sync
+  def get_value_deferred
     res = session.start{ |http| http.get(@uri.request_uri) }
     {:result => res}
 

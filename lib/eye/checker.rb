@@ -78,7 +78,7 @@ class Eye::Checker
   end
 
   def check_name
-    self.class.to_s
+    @type.to_s
   end
 
   def max_tries
@@ -114,4 +114,9 @@ class Eye::Checker
   param :times, [Fixnum, Array]
   param :fire, Symbol, nil, nil, [:stop, :restart, :unmonitor, :nothing]
 
+  class Defer < Eye::Checker
+    def get_value
+      Celluloid::Future.new{ get_value_deferred }.value
+    end
+  end
 end

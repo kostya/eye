@@ -1,4 +1,4 @@
-class Eye::Checker::Socket < Eye::Checker
+class Eye::Checker::Socket < Eye::Checker::Defer
 
   # checks :socket, :every => 5.seconds, :times => 1,
   #  :addr => "unix:/var/run/daemon.sock", :timeout => 3.seconds,
@@ -20,10 +20,6 @@ class Eye::Checker::Socket < Eye::Checker
   param :expect_data,   [String, Regexp, Proc]
   param :protocol,      [Symbol], nil, nil, [:default, :em_object]
 
-  def check_name
-    'socket'
-  end
-
   def initialize(*args)
     super
     @open_timeout = (open_timeout || 1).to_f
@@ -39,11 +35,7 @@ class Eye::Checker::Socket < Eye::Checker
     end
   end
 
-  def get_value
-    Celluloid::Future.new{ get_value_sync }.value
-  end
-
-  def get_value_sync
+  def get_value_deferred
     sock = begin
       Timeout::timeout(@open_timeout){ open_socket }
     rescue Timeout::Error
