@@ -49,6 +49,11 @@ class Eye::SystemResources
     end
     
   private
+
+    def reset!
+      setup.terminate
+      @actor = nil
+    end
   
     def ps_aux
       setup
@@ -67,7 +72,10 @@ class Eye::SystemResources
     end
 
     def get
-      async.set if @at + UPDATE_INTERVAL < Time.now
+      if @at + UPDATE_INTERVAL < Time.now
+        @at = Time.now # for minimize races
+        async.set
+      end
       @ps_aux
     end
 

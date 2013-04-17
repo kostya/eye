@@ -9,10 +9,6 @@ class Eye::Checker::FileSize < Eye::Checker
   param :below, [Fixnum, Float]
   param :above, [Fixnum, Float]
 
-  def check_name
-    'fsize'
-  end
-
   def get_value
     File.size(file) rescue nil
   end
