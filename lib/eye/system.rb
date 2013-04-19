@@ -137,7 +137,7 @@ module Eye::System
   private
 
     def spawn_options(config = {})
-      o = {}
+      o = {pgroup: true}
       o = {chdir: config[:working_dir]} if config[:working_dir]
       o.update(out: [config[:stdout], 'a']) if config[:stdout]
       o.update(err: [config[:stderr], 'a']) if config[:stderr]
