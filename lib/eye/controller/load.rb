@@ -81,6 +81,7 @@ private
   end
 
   def _load(filename)
+    info "load: #{filename} in #{Eye::VERSION}"
     new_cfg = parse_set_of_configs(filename)
     
     load_config(new_cfg, @loaded_config[:applications].keys)
