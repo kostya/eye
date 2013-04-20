@@ -7,9 +7,8 @@ module Eye::System
     # very fast
     # return result hash
     def check_pid_alive(pid)
-      res = if pid 
+      res = if pid
         ::Process.kill(0, pid)
-        true
       else
         false
       end

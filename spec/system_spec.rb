@@ -10,7 +10,7 @@ describe "Eye::System" do
   end
 
   it "check_pid_alive" do
-    Eye::System.check_pid_alive($$).should == {:result => true}
+    Eye::System.check_pid_alive($$).should == {:result => 1}
     Eye::System.check_pid_alive(123456)[:error].class.should == Errno::ESRCH
     Eye::System.check_pid_alive(-122)[:error].class.should == Errno::ESRCH
     Eye::System.check_pid_alive(nil).should == {:result => false}
