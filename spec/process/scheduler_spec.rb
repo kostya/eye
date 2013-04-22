@@ -161,7 +161,7 @@ describe "Scheduler" do
       @process.schedule_in(1.second, :scheduler_test3, 1, 2, 3)
       sleep 0.5
       @process.test3.should == nil
-      sleep 0.6
+      sleep 0.7
       @process.test3.should == [1,2,3]
     end
   end
