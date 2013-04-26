@@ -40,7 +40,7 @@ private
       unless process_realy_running?
         warn "check_alive: process(#{self.pid}) not found!"
         notify :warn, 'crashed!'
-        switch :crashed
+        switch :crashed, 'crashed'
       else
         # check that pid_file still here
         ppid = failsafe_load_pid
