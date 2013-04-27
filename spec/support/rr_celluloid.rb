@@ -1,36 +1,15 @@
 require 'rr'
 require 'rspec/core/mocking/with_rr'
 
-module RR
-
-  module Celluloid
-    def mock(subject=DoubleDefinitions::DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
-      s = subject.respond_to?(:wrapped_object) ? subject.wrapped_object : subject
-      super(s, method_name, &definition_eval_block)
-    end
-
-    def stub(subject=DoubleDefinitions::DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
-      s = subject.respond_to?(:wrapped_object) ? subject.wrapped_object : subject
-      super(s, method_name, &definition_eval_block)
-    end
-    
-    def dont_allow(subject=DoubleDefinitions::DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
-      s = subject.respond_to?(:wrapped_object) ? subject.wrapped_object : subject
-      super(s, method_name, &definition_eval_block)
-    end
-    
-    def proxy(subject=DoubleDefinitions::DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
-      s = subject.respond_to?(:wrapped_object) ? subject.wrapped_object : subject
-      super(s, method_name, &definition_eval_block)
-    end
-    
-    def strong(subject=DoubleDefinitions::DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
-      s = subject.respond_to?(:wrapped_object) ? subject.wrapped_object : subject
-      super(s, method_name, &definition_eval_block)
-    end
-
+module RR::CelluloidExt
+  %w{mock stub dont_allow proxy strong}.each do |_method|
+    module_eval <<-Q
+      def #{_method}(*args)
+        args[0] = args[0].wrapped_object if args[0].respond_to?(:wrapped_object)
+        super
+      end
+    Q
   end
-  
 end
 
-RSpec::Core::MockFrameworkAdapter.send(:include, RR::Celluloid)
+RSpec::Core::MockFrameworkAdapter.send(:include, RR::CelluloidExt)
