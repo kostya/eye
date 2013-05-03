@@ -2,7 +2,7 @@ class Eye::Utils::AliveArray
   extend Forwardable
   include Enumerable
 
-  def_delegators :@arr, :[], :<<, :clear, :delete, :size, :empty?
+  def_delegators :@arr, :[], :<<, :clear, :delete, :size, :empty?, :push, :flatten
 
   def initialize(arr = [])
     @arr = arr

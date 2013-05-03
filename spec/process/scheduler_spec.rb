@@ -154,6 +154,16 @@ describe "Scheduler" do
       @process.last_scheduled_reason.should == 'reason'
       @process.test3.should == [1, :bla, 3]
     end
+
+    it "save history" do
+      @process.schedule :scheduler_test3, 1, :bla, 3, "reason"
+      sleep 0.1
+      h = @process.schedule_history
+      h.size.should == 1
+      h = h[0]
+      h[:state].should == :scheduler_test3
+      h[:reason].should == "reason"
+    end
   end
 
   describe "schedule_in" do

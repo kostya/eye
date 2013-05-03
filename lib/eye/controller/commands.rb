@@ -20,12 +20,12 @@ module Eye::Controller::Commands
         exclusive{ load(*args) }
       when :info
         info_string(*args)
-      when :object_info
-        info_data(*args)
       when :xinfo
         info_string_debug(*args)
       when :oinfo
         info_string_short
+      when :history
+        history_string(*args)
       when :quit
         quit
       when :check
@@ -38,6 +38,13 @@ module Eye::Controller::Commands
         :pong
       when :logger_dev
         Eye::Logger.dev
+
+      # object commands, for api
+      when :raw_info
+        info_data(*args)
+      when :raw_history
+        history_data(*args)
+
       else
         :unknown_command
     end   

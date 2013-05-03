@@ -37,6 +37,8 @@ module Eye::Process::Scheduler
     send(command, *h[:args], &block)
     @current_scheduled_command = nil
     info "<= #{command}"
+
+    schedule_history.push(command, reason, @last_scheduled_at.to_i)
   end
 
   def scheduler_actions_list
@@ -49,6 +51,10 @@ module Eye::Process::Scheduler
 
   attr_accessor :current_scheduled_command
   attr_accessor :last_scheduled_command, :last_scheduled_reason, :last_scheduled_at
+
+  def schedule_history
+    @schedule_history ||= Eye::Process::StatesHistory.new(50)
+  end
 
 private
 

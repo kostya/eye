@@ -83,6 +83,13 @@ class Cli < Thor
     send_command(:break_chain, *targets)
   end
 
+  desc "history TARGET[,...]", "show process states history"
+  def history(*targets)
+    res = cmd(:history, *targets)
+    puts res if res && !res.empty?
+    puts
+  end
+
   desc "trace [TARGET]", "tracing log for app,group or process"
   def trace(target = "")
     log_trace(target)

@@ -38,6 +38,8 @@ describe "Eye::Controller" do
 
     app1 = apps.first
     app_check(app1, 'app1', 3)
+    app1.processes.map(&:name).sort.should == ["g4", "g5", "p1", "p2", "q3"]
+
     app2 = apps.last
     app_check(app2, 'app2', 1)
 
@@ -102,6 +104,20 @@ S
   it "info_string_short should be" do
     subject.load(fixture("dsl/load.eye"))
     subject.info_string_short.split("\n").size.should == 2
+  end
+
+  it "history_string" do
+    subject.load(fixture("dsl/load.eye"))
+    str = subject.history_string('*')
+    str.should be_a(String)
+    str.size.should > 100
+  end
+
+  it "history_data" do
+    subject.load(fixture("dsl/load.eye"))
+    h = subject.history_data('app1')
+    h.size.should == 5
+    h.keys.sort.should == ["app1:g4", "app1:g5", "app1:gr1:p1", "app1:gr1:p2", "app1:gr2:q3"]
   end
 
   it "should delete all apps" do

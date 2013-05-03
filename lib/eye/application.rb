@@ -67,4 +67,8 @@ class Eye::Application
     res
   end
 
+  def processes
+    Eye::Utils::AliveArray.new(@groups.map{|gr| gr.processes.to_a }.flatten)
+  end
+
 end
