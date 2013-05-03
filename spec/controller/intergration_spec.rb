@@ -124,7 +124,7 @@ describe "Intergration" do
       r2 = @p2.states_history.detect{|c| c[:state] == :restarting}[:at]
 
       # >8 because, grace start, and grace stop added
-      (r2 - r1).should > 8
+      (r2 - r1).should >= 8
     end
 
     it "restart group with chain async" do
