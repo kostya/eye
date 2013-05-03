@@ -97,8 +97,6 @@ private
     end
   end
 
-  REV_REGX = /r:([a-z0-9]{5,})/i
-
   def resources_str(r, mb = true)
     return '' if r.blank?
     
@@ -107,11 +105,6 @@ private
     if r[:memory]
       mem = mb ? "#{r[:memory] / 1024}Mb" : "#{r[:memory]}Kb"
       res += ", #{mem}"
-    end
-
-    # show process revision, as parse from procline part: 'r:12345678'
-    if r[:cmd] && r[:cmd].to_s =~ REV_REGX
-      res += ", #{$1.to_s[0..5]}"
     end
 
     res += ", <#{r[:pid]}>"

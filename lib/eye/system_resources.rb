@@ -24,10 +24,6 @@ class Eye::SystemResources
       childs
     end
 
-    def cmd(pid)
-      ps_aux[pid].try :[], :cmd
-    end
-
     def start_time(pid)
       ps_aux[pid].try :[], :start_time
     end
@@ -38,7 +34,6 @@ class Eye::SystemResources
       { :memory => memory(pid), 
         :cpu => cpu(pid), 
         :start_time => start_time(pid),
-        :cmd => cmd(pid),
         :pid => pid
       }
     end
