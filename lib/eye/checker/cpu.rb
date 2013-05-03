@@ -5,7 +5,7 @@ class Eye::Checker::Cpu < Eye::Checker
   param :below, [Fixnum, Float], true
 
   def check_name
-    "cpu(#{human_value(below)})"
+    @check_name ||= "cpu(#{human_value(below)})"
   end
 
   def get_value

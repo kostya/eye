@@ -5,7 +5,7 @@ class Eye::Checker::Memory < Eye::Checker
   param :below, [Fixnum, Float], true
   
   def check_name
-    "memory(#{human_value(below)})"
+    @check_name ||= "memory(#{human_value(below)})"
   end
 
   def get_value

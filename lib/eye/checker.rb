@@ -78,7 +78,7 @@ class Eye::Checker
   end
 
   def check_name
-    @type.to_s
+    @check_name ||= @type.to_s
   end
 
   def max_tries
