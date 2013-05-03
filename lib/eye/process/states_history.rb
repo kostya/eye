@@ -1,7 +1,7 @@
 class Eye::Process::StatesHistory < Eye::Utils::Tail
 
   def push(state, reason = nil, tm = Time.now)
-    super(state: state, at: tm, reason: reason)
+    super(state: state, at: tm.to_i, reason: reason)
   end
 
   def states
@@ -11,7 +11,7 @@ class Eye::Process::StatesHistory < Eye::Utils::Tail
   def states_for_period(period, from_time = nil)
     tm = Time.now - period
     tm = [tm, from_time].max if from_time
-
+    tm = tm.to_f
     self.select{|s| s[:at] >= tm }.map{|c| c[:state] }
   end
 
@@ -20,7 +20,7 @@ class Eye::Process::StatesHistory < Eye::Utils::Tail
   end
 
   def last_state_changed_at
-    last[:at]
+    Time.at(last[:at])
   end
 
   def seq?(*seq)

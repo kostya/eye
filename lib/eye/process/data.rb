@@ -24,7 +24,7 @@ module Eye::Process::Data
           resources: Eye::SystemResources.resources(pid) }
 
     if @states_history
-      h.merge!( state_changed_at: @states_history.last[:at],
+      h.merge!( state_changed_at: @states_history.last_state_changed_at,
                 state_reason: @states_history.last[:reason] )
     end
 
