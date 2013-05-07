@@ -12,7 +12,7 @@ describe "Eye::System" do
   it "check_pid_alive" do
     Eye::System.check_pid_alive($$).should == {:result => true}
     Eye::System.check_pid_alive(123456)[:error].class.should == Errno::ESRCH
-    Eye::System.check_pid_alive(-122)[:error].class.should == Errno::ESRCH
+    Eye::System.check_pid_alive(-122)[:error].should be
     Eye::System.check_pid_alive(nil).should == {:result => false}
   end
 
@@ -25,7 +25,7 @@ describe "Eye::System" do
     x[:ppid].should > 1 # parent pid
     x[:cpu].should >= 0 # proc
     x[:rss].should > 1000 # memory
-    x[:start_time].length.should >= 5
+    x[:start_time].length.should >= 4
   end
 
   it "prepare env" do
