@@ -19,6 +19,10 @@ class Eye::Process::StatesHistory < Eye::Utils::Tail
     last[:state]
   end
 
+  def last_reason
+    last[:reason]
+  end
+
   def last_state_changed_at
     Time.at(last[:at])
   end
