@@ -27,9 +27,8 @@ private
   BT_REGX = %r[/lib/eye/|lib/celluloid|internal:prelude|logger.rb:|active_support/core_ext|shellwords.rb].freeze
 
   def catch_load_error(filename, &block)
-    res = block.call
+    {:error => false, :config => yield }
 
-    {:error => false, :config => res}
   rescue Eye::Dsl::Error, Exception, NoMethodError => ex
     error "load: config error <#{filename}>: #{ex.message}"
 
@@ -86,8 +85,6 @@ private
     
     load_config(new_cfg, @loaded_config[:applications].keys)
     @loaded_config = nil
-
-    GC.start
   end
 
   def load_config(new_config, changed_apps = [])
