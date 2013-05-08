@@ -28,6 +28,10 @@ module Eye::Process::Controller
   end
 
   def restart
+    unless pid # unmonitored case
+      try_update_pid_from_file
+    end
+
     restart_process
   end
 

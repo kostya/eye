@@ -127,6 +127,19 @@ describe "Process Restart" do
     end
   end
 
+  it "restart eye-daemonized lock-process from unmonitored status, and process realy running (WAS a problem)" do
+    start_ok_process(C.p4)
+    @pid = @process.pid
+    @process.unmonitor
+    Eye::System.pid_alive?(@pid).should == true
+
+    @process.restart
+    @process.state_name.should == :up
+
+    Eye::System.pid_alive?(@pid).should == false
+    @process.load_pid_from_file.should_not == @pid
+  end
+
   [:down, :unmonitored, :up].each do |st|
     it "ok restart from #{st}" do
       start_ok_process(C.p1)
@@ -169,6 +182,5 @@ describe "Process Restart" do
     sleep 1
     @process.unmonitored?.should == true
   end
-
 
 end
