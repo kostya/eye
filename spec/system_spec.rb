@@ -10,7 +10,7 @@ describe "Eye::System" do
   end
 
   it "check_pid_alive" do
-    Eye::System.check_pid_alive($$).should == {:result => true}
+    Eye::System.check_pid_alive($$).should == {:result => 1}
     Eye::System.check_pid_alive(123456)[:error].class.should == Errno::ESRCH
     Eye::System.check_pid_alive(-122)[:error].should be
     Eye::System.check_pid_alive(nil).should == {:result => false}
@@ -73,13 +73,6 @@ describe "Eye::System" do
 
       data = File.read(@log)
       data.should == "some\n"
-    end
-
-    it "should add LANG env varible" do
-      mock(Process).spawn({"BLA"=>"1", "LANG"=>ENV_LANG}, 'echo', 'some', anything)
-      stub(Process).detach
-
-      @pid = Eye::System.daemonize("echo 'some'", {:stdout => @log, :environment => {"BLA" => "1"}})[:pid]
     end
   end
 

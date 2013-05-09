@@ -69,7 +69,7 @@ class Eye::SystemResources
     def get
       if @at + UPDATE_INTERVAL < Time.now
         @at = Time.now # for minimize races
-        set!
+        async.set
       end
       @ps_aux
     end

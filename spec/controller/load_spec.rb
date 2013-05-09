@@ -264,7 +264,7 @@ describe "Eye::Controller::Load" do
 
   it "raised load" do
     subject.load(fixture("dsl/load_error.eye")).should == {error: true, message: "No such file or directory - /asd/fasd/fas/df/asd/fas/df/d"}
-    Eye.logger = $logger_path
+    set_glogger
   end
 
   describe "synchronize groups" do

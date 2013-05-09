@@ -1,5 +1,5 @@
 module Eye  
-  VERSION   = "0.2.4"
+  VERSION   = "0.3.beta2"
   ABOUT     = "Eye v#{VERSION} (c) 2012-2013 @kostya"
 
   autoload :Process,        'eye/process'
@@ -21,5 +21,3 @@ module Eye
   autoload :Controller,     'eye/controller'
   autoload :Control,        'eye/control'
 end
-
-ENV_LANG = ENV['LANG'] # save original LANG, bug of celluloid 0.12

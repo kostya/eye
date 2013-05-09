@@ -93,17 +93,14 @@ def force_kill_process(process)
     pid = process.pid
 
     process.terminate
-
-    if pid && Eye::System.pid_alive?(pid)
-      Eye::System.send_signal(pid, 9) 
-    end
-
+    force_kill_pid(pid)
+    
     process = nil
   end
 end
 
 def force_kill_pid(pid)
-  if pid && Eye::System.pid_alive?(pid)
+  if pid && pid != $$ && Eye::System.pid_alive?(pid)
     Eye::System.send_signal(pid, 9) 
   end
 end

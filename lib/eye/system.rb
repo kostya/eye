@@ -7,9 +7,8 @@ module Eye::System
     # very fast
     # return result hash
     def check_pid_alive(pid)
-      res = if pid 
+      res = if pid
         ::Process.kill(0, pid)
-        true
       else
         false
       end
@@ -131,8 +130,7 @@ module Eye::System
     end
 
     def spawn_options(config = {})
-      o = {}
-      o = {chdir: config[:working_dir]} if config[:working_dir]
+      o = {pgroup: true, chdir: config[:working_dir] || '/'}
       o.update(out: [config[:stdout], 'a']) if config[:stdout]
       o.update(err: [config[:stderr], 'a']) if config[:stderr]
       o.update(in: config[:stdin]) if config[:stdin]
@@ -145,9 +143,6 @@ module Eye::System
       (config[:environment] || {}).each do |k,v|
         env[k.to_s] = v.to_s if v
       end
-
-      # return original LANG env, because ruby loose it (needs for unicorn)
-      env['LANG'] = ENV_LANG unless env['LANG']
 
       # set PWD for unicorn respawn
       env['PWD'] = config[:working_dir] if config[:working_dir]

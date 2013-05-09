@@ -88,6 +88,4 @@ private
     end
   end
 
-  public :check_crash # bug of celluloid 0.12
-
 end
