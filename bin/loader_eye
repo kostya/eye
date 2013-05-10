@@ -40,6 +40,9 @@ Eye::Logger.link_logger(options[:logger]) if options[:logger]
 
 config = options[:config]
 config = File.expand_path(config) if config && !config.empty?
+
+Eye::Control # preload
+
 if config
   res = server.command('load', config)
   exit if res[:error]
