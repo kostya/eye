@@ -44,4 +44,8 @@ class Eye::Controller
     info "starting #{Eye::ABOUT} (#{$$})"
   end
 
+  def self_config
+    current_config[:config]
+  end
+
 end
