@@ -78,7 +78,7 @@ private
     if down?
       if self[:keep_alive]
         warn 'check crashed: process is down'
-        schedule :start, 'crashed'
+        schedule :restore, 'crashed'
       else
         warn 'check crashed: process without keep_alive'
         schedule :unmonitor, 'crashed'
@@ -86,6 +86,10 @@ private
     else
       debug 'check crashed: skipped, process is not in down'
     end
+  end
+
+  def restore
+    start if down?
   end
 
 end
