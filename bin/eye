@@ -132,6 +132,12 @@ class Cli < Thor
     end
   end
 
+  desc "watch [MASK]", "interactive process info"
+  def watch(*args)
+    pid = Process.spawn("watch -n 1 --color #{$0} i #{args * ' '}")
+    Process.waitpid(pid)
+  end
+
 private
 
   def client
