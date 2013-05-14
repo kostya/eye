@@ -10,7 +10,7 @@ Eye.application :some do
   notify :errors
 
   process :some_process do
-    notify :dev, :warn
+    notify :dev, :info
 
     ...
   end

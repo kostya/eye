@@ -39,7 +39,7 @@ private
       # check that process runned
       unless process_realy_running?
         warn "check_alive: process(#{self.pid}) not found!"
-        notify :warn, 'crashed!'
+        notify :info, 'crashed!'
         switch :crashed, 'crashed'
       else
         # check that pid_file still here

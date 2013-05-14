@@ -30,7 +30,7 @@ private
   end
 
   def on_flapping(trigger)
-    notify :crit, 'flapping!'
+    notify :error, 'flapping!'
     schedule :unmonitor, "flapping"
 
     @retry_times ||= 0
