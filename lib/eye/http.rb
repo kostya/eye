@@ -23,7 +23,7 @@ class Eye::Http < Sinatra::Base
   end
 
   get "/api/info" do
-    res = Eye::Control.command :object_info, params[:filter].to_s
+    res = Eye::Control.command :raw_info, params[:filter].to_s
     json_body(res)
   end
 
