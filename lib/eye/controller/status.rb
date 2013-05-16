@@ -89,7 +89,7 @@ private
 
       if data[:subtree].nil?
         str
-      elsif data[:subtree].blank?
+      elsif data[:subtree].blank? && data[:type] != :application
         nil
       else
         [str, make_str(data[:subtree], level + 1)].compact * "\n"
