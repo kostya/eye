@@ -136,6 +136,7 @@ class Cli < Thor
   def watch(*args)
     pid = Process.spawn("watch -n 1 --color #{$0} i #{args * ' '}")
     Process.waitpid(pid)
+  rescue Interrupt
   end
 
 private
