@@ -6,9 +6,7 @@ module Eye::Dsl::Main
     opts = Eye::Dsl::ApplicationOpts.new(name)
     opts.instance_eval(&block)
 
-    @parsed_config ||= {}
-    @parsed_config[:applications] ||= {}
-    @parsed_config[:applications][name.to_s] = opts.config if opts.config
+    @parsed_config.applications[name.to_s] = opts.config if opts.config
 
     Eye::Dsl.debug "<= app: #{name}"
   end
@@ -32,12 +30,9 @@ module Eye::Dsl::Main
   def config(&block)
     Eye::Dsl.debug "=> config"
 
-    @parsed_config ||= {}
-    @parsed_config[:config] ||= {}
-
     opts = Eye::Dsl::ConfigOpts.new
     opts.instance_eval(&block)
-    @parsed_config[:config].merge!(opts.config)
+    @parsed_config.config.merge!(opts.config)
 
     Eye::Dsl.debug "<= config"
   end

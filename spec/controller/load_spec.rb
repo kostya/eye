@@ -192,19 +192,19 @@ describe "Eye::Controller::Load" do
     it "should corrent load config section" do
       subject.load(fixture("dsl/configs/{1,2}.eye")).should include(error: false)
       Eye::Logger.dev.should == "/tmp/a.log"
-      subject.current_config[:config].should == {:logger=>"/tmp/a.log", :http=>{:enable=>true}}
+      subject.current_config.config.should == {:logger=>"/tmp/a.log", :http=>{:enable=>true}}
 
       subject.load(fixture("dsl/configs/3.eye")).should include(error: false)
       Eye::Logger.dev.should == "/tmp/a.log"
-      subject.current_config[:config].should == {:logger=>"/tmp/a.log", :http=>{:enable=>false}}
+      subject.current_config.config.should == {:logger=>"/tmp/a.log", :http=>{:enable=>false}}
 
       subject.load(fixture("dsl/configs/4.eye")).should include(error: false)
       Eye::Logger.dev.should == nil
-      subject.current_config[:config].should == {:logger=>'', :http=>{:enable=>false}}
+      subject.current_config.config.should == {:logger=>'', :http=>{:enable=>false}}
 
       subject.load(fixture("dsl/configs/2.eye")).should include(error: false)
       Eye::Logger.dev.should == nil
-      subject.current_config[:config].should == {:logger=>'', :http=>{:enable=>true}}
+      subject.current_config.config.should == {:logger=>'', :http=>{:enable=>true}}
     end
   end
 

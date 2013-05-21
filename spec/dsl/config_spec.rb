@@ -8,7 +8,7 @@ describe "Eye::Dsl::Config" do
         logger "/tmp/1.log"
       end
     E
-    Eye::Dsl.parse(conf).should == {:applications => {}, :config => {:logger => "/tmp/1.log"}} 
+    Eye::Dsl.parse(conf).to_h.should == {:applications => {}, :config => {:logger => "/tmp/1.log"}} 
   end
 
   it "should merge sections" do
@@ -23,7 +23,7 @@ describe "Eye::Dsl::Config" do
       end
 
     E
-    Eye::Dsl.parse(conf).should == {:applications => {}, :config => {:logger => "/tmp/2.log",
+    Eye::Dsl.parse(conf).to_h.should == {:applications => {}, :config => {:logger => "/tmp/2.log",
       :logger_level => 2}} 
   end
 

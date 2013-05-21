@@ -11,13 +11,11 @@ class Eye::Dsl
   autoload :ChildProcessOpts,     'eye/dsl/child_process_opts'
   autoload :Opts,                 'eye/dsl/opts'
   autoload :PureOpts,             'eye/dsl/pure_opts'
-  autoload :Validate,             'eye/dsl/validate'
   autoload :Chain,                'eye/dsl/chain'
   autoload :ConfigOpts,           'eye/dsl/config_opts'
   autoload :Validation,           'eye/dsl/validation'
 
   class Error < Exception; end
-  extend Eye::Dsl::Validate
 
   class << self
     attr_accessor :verbose
@@ -26,12 +24,8 @@ class Eye::Dsl
       puts msg if verbose
     end
 
-    def initial_config
-      {:config => {}, :applications => {}}
-    end
-
     def parse(content = nil, filename = nil)
-      Eye.parsed_config = initial_config
+      Eye.parsed_config = Eye::Config.new
       Eye.parsed_filename = filename
       
       content = File.read(filename) if content.blank?
@@ -40,13 +34,12 @@ class Eye::Dsl
         Kernel.eval(content, Eye::BINDING, filename.to_s)
       end
       
-      validate(Eye.parsed_config)
-
+      Eye.parsed_config.validate!
       Eye.parsed_config
     end
 
     def parse_apps(*args)
-      parse(*args)[:applications] || {}
+      parse(*args).applications
     end
   end
 end
