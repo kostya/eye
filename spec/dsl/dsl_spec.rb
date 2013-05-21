@@ -6,7 +6,7 @@ describe "Eye::Dsl" do
     conf = <<-E
       # haha
     E
-    Eye::Dsl.parse(conf).should == {:applications => {}, :config => {}}
+    Eye::Dsl.parse(conf).to_h.should == {:applications => {}, :settings => {}}
     Eye::Dsl.parse_apps(conf).should == {}
   end
 

@@ -27,7 +27,7 @@ describe "Eye::Notify" do
           "idiot2"=>{:name=>"idiot2", :type=>:mail, :contact=>"idiot2@mail.ru", :opts=>{:port=>1111}},
           "idiot3"=>{:name=>"idiot3", :type=>:jabber, :contact=>"idiot3@mail.ru", :opts=>{:host => "jabber.some.host", :port=>1111, :user => "some_user"}}}}
 
-      stub(Eye::Control).current_config{ {:config => @config} }
+      stub(Eye::Control).current_config{ Eye::Config.new(@config, {}) }
     end
 
     it "should create right class" do

@@ -40,7 +40,7 @@ Actors: #{actors.inspect}
 
     if show_config.present?
       str += "\nCurrent config: \n"
-      str += YAML.dump(current_config)
+      str += YAML.dump(current_config.to_h)
     end
 
     GC.start

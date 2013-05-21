@@ -3,6 +3,15 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "Eye::Controller::Load" do
   subject{ Eye::Controller.new }
 
+  it "should set :current_config as Eye::Config class" do
+    subject.load(fixture("dsl/load.eye"))
+
+    cfg = subject.current_config
+    cfg.class.should == Eye::Config
+    cfg.applications.should_not be_empty
+    cfg.settings.should == {}
+  end
+
   it "blank" do
     subject.load.should == {:error => true, :message => "config file '' not found!"}
   end
@@ -192,19 +201,19 @@ describe "Eye::Controller::Load" do
     it "should corrent load config section" do
       subject.load(fixture("dsl/configs/{1,2}.eye")).should include(error: false)
       Eye::Logger.dev.should == "/tmp/a.log"
-      subject.current_config[:config].should == {:logger=>"/tmp/a.log", :http=>{:enable=>true}}
+      subject.current_config.settings.should == {:logger=>"/tmp/a.log", :http=>{:enable=>true}}
 
       subject.load(fixture("dsl/configs/3.eye")).should include(error: false)
       Eye::Logger.dev.should == "/tmp/a.log"
-      subject.current_config[:config].should == {:logger=>"/tmp/a.log", :http=>{:enable=>false}}
+      subject.current_config.settings.should == {:logger=>"/tmp/a.log", :http=>{:enable=>false}}
 
       subject.load(fixture("dsl/configs/4.eye")).should include(error: false)
       Eye::Logger.dev.should == nil
-      subject.current_config[:config].should == {:logger=>'', :http=>{:enable=>false}}
+      subject.current_config.settings.should == {:logger=>'', :http=>{:enable=>false}}
 
       subject.load(fixture("dsl/configs/2.eye")).should include(error: false)
       Eye::Logger.dev.should == nil
-      subject.current_config[:config].should == {:logger=>'', :http=>{:enable=>true}}
+      subject.current_config.settings.should == {:logger=>'', :http=>{:enable=>true}}
     end
   end
 

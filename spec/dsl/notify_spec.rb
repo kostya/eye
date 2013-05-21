@@ -25,7 +25,7 @@ describe "Eye::Dsl notify" do
         end
       end
     E
-    res = Eye::Dsl.parse(conf)
+    res = Eye::Dsl.parse(conf).to_h
 
     res.should == {
       :applications => {
@@ -33,7 +33,7 @@ describe "Eye::Dsl notify" do
           :notify=>{"vasya"=>:warn, "idiots"=>:fatal}, 
           :groups=>{"gr1"=>{:name=>"gr1", 
             :notify=>{"vasya"=>:warn, "idiots"=>:fatal, "petya"=>:warn, "idiot1"=>:info}, :application=>"bla", :processes=>{}}}}},
-      :config => {
+      :settings => {
         :mail=>{:host=>"mx.some.host.ru", :port => 25, :type => :mail}, 
         :contacts=>{
           "vasya"=>{:name=>"vasya", :type=>:mail, :contact=>"vasya@mail.ru", :opts=>{}}, 
@@ -49,7 +49,7 @@ describe "Eye::Dsl notify" do
         contact :vasya, :mail, "vasya@mail.ru", :port => 25, :host => "localhost"
       end
     E
-    Eye::Dsl.parse(conf)[:config].should == {:contacts=>{
+    Eye::Dsl.parse(conf).settings.should == {:contacts=>{
       "vasya"=>{:name=>"vasya", :type=>:mail, :contact=>"vasya@mail.ru", :opts=>{:port => 25, :host => "localhost"}}}}
   end
 
