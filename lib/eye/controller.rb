@@ -45,7 +45,7 @@ class Eye::Controller
   end
 
   def self_config
-    current_config.config
+    current_config.settings
   end
 
 end

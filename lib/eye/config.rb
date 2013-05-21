@@ -1,23 +1,23 @@
 class Eye::Config
 
-  attr_reader :config, :applications
+  attr_reader :settings, :applications
 
-  def initialize(config = {}, applications = {})
-    @config = config
+  def initialize(settings = {}, applications = {})
+    @settings = settings
     @applications = applications
   end
 
   def merge(other_config)
-    Eye::Config.new(@config.merge(other_config.config), @applications.merge(other_config.applications))
+    Eye::Config.new(@settings.merge(other_config.settings), @applications.merge(other_config.applications))
   end
 
   def merge!(other_config)
-    @config.merge!(other_config.config)
+    @settings.merge!(other_config.settings)
     @applications.merge!(other_config.applications)
   end
 
   def to_h
-    {:config => @config, :applications => @applications}
+    {:settings => @settings, :applications => @applications}
   end
 
   # raise an error if config wrong

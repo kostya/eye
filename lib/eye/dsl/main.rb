@@ -32,7 +32,7 @@ module Eye::Dsl::Main
 
     opts = Eye::Dsl::ConfigOpts.new
     opts.instance_eval(&block)
-    @parsed_config.config.merge!(opts.config)
+    @parsed_config.settings.merge!(opts.config)
 
     Eye::Dsl.debug "<= config"
   end

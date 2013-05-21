@@ -84,7 +84,7 @@ private
   end
 
   def load_config(new_config, changed_apps = [])
-    load_options(new_config.config)
+    load_options(new_config.settings)
     create_objects(new_config.applications, changed_apps)
     @current_config = new_config
   end
