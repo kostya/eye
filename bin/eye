@@ -216,8 +216,13 @@ private
   end
   
   def loader_path
-    Gem.bin_path('eye', 'loader_eye')
-  rescue Gem::GemNotFoundException, Gem::Exception
+    if RUBY_VERSION < '1.9'
+      begin
+        return Gem.bin_path('eye', 'loader_eye')
+      rescue Gem::GemNotFoundException, Gem::Exception
+      end
+    end
+
     filename = File.expand_path(File.join(File.dirname(__FILE__), %w[loader_eye]))
     File.exists?(filename) ? filename : nil
   end  
