@@ -29,6 +29,7 @@ module Eye::Controller::Status
     str = <<-S
 About:  #{Eye::ABOUT}
 Info:   #{resources_str(Eye::SystemResources.resources($$), false)}
+Ruby: #{RUBY_DESCRIPTION}
 Logger: #{Eye::Logger.dev}
 Socket: #{Eye::Settings::socket_path}
 PidPath: #{Eye::Settings::pid_path}
