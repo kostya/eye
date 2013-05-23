@@ -25,7 +25,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'activesupport', '~> 3.2.0'
   gem.add_dependency 'thor'
   gem.add_dependency 'reel',          '~> 0.3.0'
-  gem.add_dependency 'sinatra'
+  gem.add_dependency 'rack'
 
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rspec'
@@ -35,7 +35,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'forking'
   gem.add_development_dependency 'fakeweb'
   gem.add_development_dependency 'eventmachine', ">= 1.0.3"
-  gem.add_development_dependency 'sinatra'
   gem.add_development_dependency 'thin'
   gem.add_development_dependency 'xmpp4r'
 end
