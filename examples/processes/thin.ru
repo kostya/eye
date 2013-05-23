@@ -1,11 +1,7 @@
-require 'bundler/setup'
-require 'sinatra'
-
-class Test < Sinatra::Base
-
-  get '/hello' do
+class Test
+  def call(env)
     sleep 0.5
-    "Hello World!"
+    [200, {}, ["Hello World!"]]
   end
 end
 

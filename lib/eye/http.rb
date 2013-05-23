@@ -1,30 +1,29 @@
-require 'reel'
-require 'sinatra'
 require 'json'
 
-class Eye::Http < Sinatra::Base
+class Eye::Http
 
-  helpers do
-    def json_body(result)
-      @response['Content-Type'] = 'application/json; charset=utf-8'
-      JSON.generate(result: result)
+  def call(env)
+    if env['REQUEST_METHOD'] == 'GET'
+      if env['REQUEST_PATH'] == '/'
+        return [200, {}, [Eye::ABOUT]]
+      elsif env['REQUEST_PATH'] =~ /\A\/api\/(\w+)\Z/
+        req = Rack::Request.new(env)
+        act = $1.to_sym
+        if act == :api
+          res = Eye::Control.command :raw_info, req.params[:filter].to_s
+          return json_response(res)
+        elsif [:start, :stop, :restart, :delete, :unmonitor, :monitor].include? act
+          res = Eye::Control.command act, req.params[:filter].to_s
+          return json_response(res)
+        end
+      end
     end
+    [404, {}, ['PAGE NOT FOUND']]
   end
 
-  get '/' do
-    Eye::ABOUT
-  end
-
-  [:start, :stop, :restart, :delete, :unmonitor, :monitor].each do |act|
-    get "/api/#{act}" do
-      res = Eye::Control.command act, params[:filter].to_s
-      json_body(res)
-    end
-  end
-
-  get "/api/info" do
-    res = Eye::Control.command :raw_info, params[:filter].to_s
-    json_body(res)
+  def json_response(result)
+    headers = { 'Content-Type' => 'application/json; charset=utf-8' }
+    [200, headers, [JSON.generate(result: result)]]
   end
 
 end
