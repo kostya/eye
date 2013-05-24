@@ -71,6 +71,16 @@ module C
     )
   end
 
+  # thin
+  def p5
+    base.merge(
+      :pid_file => "thin.pid",
+      :name => "thin",
+      :start_command => "bundle exec thin start -R thin.ru -p 33233 -l thin.log -P thin.pid",
+      :daemonize => true,
+    )
+  end
+
   def check_mem(a = {})
     {:memory => {:type => :memory, :every => 2.seconds, :below => 100.megabytes, :times => [3,5]}.merge(a)}
   end
@@ -93,6 +103,13 @@ module C
       :url => "http://localhost:3000/bla", :kind => :sucess, 
       :pattern => /OK/, :timeout => 3.seconds
     }.merge(a)
+    }
+  end
+
+  def check_sock(a = {})
+    {:socket => {:type => :socket, :every => 5.seconds, 
+     :times => 1, :addr => 'tcp://127.0.0.1:33231', :send_data => "ping",
+     :expect_data => /pong/, :timeout => 2}.merge(a)
     }
   end
 

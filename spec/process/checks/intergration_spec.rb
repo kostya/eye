@@ -29,4 +29,51 @@ describe "Process Integration checks" do
     sleep 10
   end
 
+  it "timeouted http, should not lock actor-mailbox" do
+    cfg = C.p5.merge(
+      :checks => join(C.check_http(
+          :url => "http://127.0.0.1:33233/timeout", :timeout => 6.seconds, :every => 5.seconds,
+          :times => 3),
+         C.check_cpu(:every => 1.second)
+       )
+    )
+
+    start_ok_process(cfg)
+
+    should_spend(10, 0.5) do
+      10.times do
+        @process.name.should be_a(String) # actor should be free here
+        sleep 1
+      end
+    end
+
+    w_http = @process.watchers[:check_http][:subject]
+    w_cpu = @process.watchers[:check_cpu][:subject]
+    w_http.check_count.should <= 2
+    w_cpu.check_count.should >= 9
+  end
+
+  it "timeouted socket, should not lock actor-mailbox" do
+    cfg = C.p4.merge(
+      :checks => join(C.check_sock(:timeout => 6.seconds, :every => 5.seconds,
+          :times => 3, :send_data => "timeout"),
+         C.check_cpu(:every => 1.second)
+       )
+    )
+
+    start_ok_process(cfg)
+
+    should_spend(10, 0.5) do
+      10.times do
+        @process.name.should be_a(String) # actor should be free here
+        sleep 1
+      end
+    end
+
+    w_socket = @process.watchers[:check_socket][:subject]
+    w_cpu = @process.watchers[:check_cpu][:subject]
+    w_socket.check_count.should <= 2
+    w_cpu.check_count.should >= 9
+  end
+
 end

@@ -11,7 +11,7 @@ class Eye::Checker
   TYPES = {:memory => "Memory", :cpu => "Cpu", :http => "Http", 
            :ctime => "FileCTime", :fsize => "FileSize", :socket => "Socket"}
 
-  attr_accessor :value, :values, :options, :pid, :type
+  attr_accessor :value, :values, :options, :pid, :type, :check_count
 
   def self.get_class(type)
     klass = eval("Eye::Checker::#{TYPES[type]}") rescue nil
@@ -37,6 +37,7 @@ class Eye::Checker
     
     @value = nil
     @values = Eye::Utils::Tail.new(max_tries)
+    @check_count = 0
   end
 
   def last_human_values
@@ -53,6 +54,7 @@ class Eye::Checker
     @values << {:value => @value, :good => good?(value)}
 
     result = true
+    @check_count += 1
 
     if @values.size == max_tries
       bad_count = @values.count{|v| !v[:good] }
