@@ -35,7 +35,7 @@ class Eye::Checker::Socket < Eye::Checker::Defer
     end
   end
 
-  def get_value_deferred
+  def get_value
     sock = begin
       Timeout::timeout(@open_timeout){ open_socket }
     rescue Timeout::Error

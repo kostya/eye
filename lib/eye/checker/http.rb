@@ -29,7 +29,7 @@ class Eye::Checker::Http < Eye::Checker::Defer
     @read_timeout = (read_timeout || timeout || 15).to_f
   end
   
-  def get_value_deferred
+  def get_value
     res = session.start{ |http| http.get(@uri.request_uri) }
     {:result => res}
 

@@ -63,6 +63,10 @@ class Eye::Checker
     result
   end
 
+  def get_value_safe
+    get_value
+  end
+
   def get_value
     raise 'Realize me'
   end
@@ -115,8 +119,8 @@ class Eye::Checker
   param :fire, Symbol, nil, nil, [:stop, :restart, :unmonitor, :nothing]
 
   class Defer < Eye::Checker
-    def get_value
-      Celluloid::Future.new{ get_value_deferred }.value
+    def get_value_safe
+      Celluloid::Future.new{ get_value }.value
     end
   end
 
