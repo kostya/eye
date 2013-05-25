@@ -19,14 +19,14 @@ class Eye::Notify
   end
 
   def self.notify(contact, message_h)
-    self_config = Eye::Control.self_config
-    needed_hash = (self_config[:contacts] || {})[contact.to_s]
+    settings = Eye::Control.settings
+    needed_hash = (settings[:contacts] || {})[contact.to_s]
 
     return if needed_hash.blank?
 
     create_proc = lambda do |nh|
       type = nh[:type]
-      config = (self_config[type] || {}).merge(nh[:opts] || {}).merge(:contact => nh[:contact])
+      config = (settings[type] || {}).merge(nh[:opts] || {}).merge(:contact => nh[:contact])
       klass = get_class(type)
       notify = klass.new(config, message_h)
       notify.async_notify if notify
