@@ -49,7 +49,7 @@ class Eye::Checker
   end
 
   def check
-    @value = get_value
+    @value = get_value_safe
     @values << {:value => @value, :good => good?(value)}
 
     result = true
