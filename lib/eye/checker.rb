@@ -119,4 +119,14 @@ class Eye::Checker
       Celluloid::Future.new{ get_value_deferred }.value
     end
   end
+
+  class Custom < Defer
+    def self.inherited(base)
+      super
+      name = base.to_s
+      type = name.underscore.to_sym
+      Eye::Checker::TYPES[type] = name
+      Eye::Checker.const_set(name, base)
+    end
+  end
 end
