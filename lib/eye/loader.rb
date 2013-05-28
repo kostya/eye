@@ -8,15 +8,18 @@ gem 'timers'
 gem 'state_machine', '< 1.2'
 
 # activesupport
-gem 'activesupport', '~> 3.2'
-gem 'i18n' # for as
-gem 'multi_json' # for as
+gem 'activesupport', '~> 3.2.0'
+gem 'i18n'
+gem 'multi_json'
 
 # reel
+gem 'reel', '~> 0.4.0.pre'
+gem 'rack'
 gem 'http'
 gem 'http_parser.rb'
-gem 'rack'
+gem 'certified'
+gem 'websocket_parser'
+
+gem 'sinatra'
 gem 'rack-protection'
 gem 'tilt'
-gem 'reel', '~> 0.3.0'
-gem 'sinatra'

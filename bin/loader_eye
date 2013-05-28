@@ -55,9 +55,7 @@ server.async.run
 trap("INT"){ exit }
 trap("USR2"){ GC.start }
 
-# start http server
-Celluloid::Future.new do 
-  app = Eye::Http.new
-  Rack::Handler::Reel.run app, Port: 9292
-end
+http = Eye::Http.new "127.0.0.1", 12345
+http.start
+
 sleep
