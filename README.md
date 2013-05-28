@@ -1,7 +1,7 @@
 Eye [![Build Status](https://secure.travis-ci.org/kostya/eye.png?branch=master)](http://travis-ci.org/kostya/eye)
 ===
 
-Process monitoring tool. An alternative to God and Bluepill. With Bluepill like config syntax. Requires MRI Ruby >= 1.9.2. Uses Celluloid and Celluloid::IO.
+Process monitoring tool. An alternative to God and Bluepill. With Bluepill like config syntax. Requires MRI Ruby >= 1.9.3-p194. Uses Celluloid and Celluloid::IO.
 
 Little demo, shows general commands and how chain works:
 

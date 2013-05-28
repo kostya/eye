@@ -52,9 +52,8 @@ Eye::Control.set_proc_line
 
 server.async.run
 
-Kernel.trap("INT") do # for foregraund quit
-  exit
-end
+trap("INT"){ exit }
+trap("USR2"){ GC.start }
 
 # start http server
 Celluloid::Future.new do 

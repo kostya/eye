@@ -33,7 +33,7 @@ class Eye::Controller
 
   def initialize
     @applications = []
-    @current_config = Eye::Dsl.initial_config
+    @current_config = Eye::Config.new
 
     Eye.instance_variable_set(:@logger, Eye::Logger.new('eye'))
     @logger = Eye.logger 
@@ -44,8 +44,8 @@ class Eye::Controller
     info "starting #{Eye::ABOUT} (#{$$})"
   end
 
-  def self_config
-    current_config[:config]
+  def settings
+    current_config.settings
   end
 
 end

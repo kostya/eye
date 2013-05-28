@@ -216,4 +216,43 @@ describe "Eye::Dsl checks" do
     proc[1].should == true
   end
 
+  it "define custom check" do
+    conf = <<-E
+      class Cpu2 < Eye::Checker::Custom
+        # checks :cpu2, :every => 3.seconds, :below => 80, :times => [3,5]
+        param :below, [Fixnum, Float], true
+
+        def check_name
+          @check_name ||= "cpu2(\#{human_value(below)})"
+        end
+
+        def get_value
+          `top -b -p \#{@pid} -n 1 | grep '\#{@pid}'| awk '{print $9}'`.chomp.to_i
+        end
+
+        def human_value(value)
+          "\#{value}%"
+        end
+
+        def good?(value)
+          value < below
+        end
+      end
+
+      Eye.application("bla") do
+        process("1") do
+          pid_file "1.pid"
+
+          checks :cpu2, :times => 2, :below => 80, :every => 30
+        end
+      end
+    E
+
+    res = Eye::Dsl.parse_apps(conf)
+    res.should == {"bla"=>{:name=>"bla", :groups=>{
+      "__default__"=>{:name=>"__default__", :application=>"bla", :processes=>{
+        "1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"1.pid",
+          :checks=>{:cpu2=>{:times=>2, :below=>80, :every=>30, :type=>:cpu2}}}}}}}}
+  end
+
 end

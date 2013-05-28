@@ -29,9 +29,10 @@ module Eye::Controller::Status
     str = <<-S
 About:  #{Eye::ABOUT}
 Info:   #{resources_str(Eye::SystemResources.resources($$), false)}
+Ruby:   #{RUBY_DESCRIPTION}
 Logger: #{Eye::Logger.dev}
 Socket: #{Eye::Settings::socket_path}
-PidPath: #{Eye::Settings::pid_path}
+Pid:    #{Eye::Settings::pid_path}
 Actors: #{actors.inspect}
 
     S
@@ -40,7 +41,7 @@ Actors: #{actors.inspect}
 
     if show_config.present?
       str += "\nCurrent config: \n"
-      str += YAML.dump(current_config)
+      str += YAML.dump(current_config.to_h)
     end
 
     GC.start
@@ -89,7 +90,7 @@ private
 
       if data[:subtree].nil?
         str
-      elsif data[:subtree].blank?
+      elsif data[:subtree].blank? && data[:type] != :application
         nil
       else
         [str, make_str(data[:subtree], level + 1)].compact * "\n"

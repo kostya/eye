@@ -29,3 +29,4 @@ experiments
 *sublime*
 examples/work*.eye
 script
+[0-9].rb

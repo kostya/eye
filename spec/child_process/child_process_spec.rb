@@ -33,8 +33,8 @@ describe "Eye::ChildProcess" do
       Eye::System.pid_alive?(@pid).should == false
     end
 
-    it "try to snd URS1" do
-      @process = Eye::ChildProcess.new(@pid, {:stop_command => "kill -USR1 {{PID}}"})
+    it "should not restart with wrong command" do
+      @process = Eye::ChildProcess.new(@pid, {:stop_command => "kill -0 {{PID}}"})
       @process.schedule :restart
 
       sleep 0.5

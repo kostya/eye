@@ -132,6 +132,13 @@ class Cli < Thor
     end
   end
 
+  desc "watch [MASK]", "interactive process info"
+  def watch(*args)
+    pid = Process.spawn("watch -n 1 --color #{$0} i #{args * ' '}")
+    Process.waitpid(pid)
+  rescue Interrupt
+  end
+
 private
 
   def client
@@ -209,8 +216,13 @@ private
   end
   
   def loader_path
-    Gem.bin_path('eye', 'loader_eye')
-  rescue Gem::GemNotFoundException, Gem::Exception
+    if RUBY_VERSION < '1.9'
+      begin
+        return Gem.bin_path('eye', 'loader_eye')
+      rescue Gem::GemNotFoundException, Gem::Exception
+      end
+    end
+
     filename = File.expand_path(File.join(File.dirname(__FILE__), %w[loader_eye]))
     File.exists?(filename) ? filename : nil
   end  

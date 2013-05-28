@@ -41,24 +41,17 @@ private
 
     if klass == Eye::Application
       @applications.delete(obj)
-      @current_config[:applications].delete(obj.name)
+      @current_config.delete_app(obj.name)
     end
 
     if klass == Eye::Group
       @applications.each{|app| app.groups.delete(obj) }
-      @current_config[:applications].each do |app_name, app_cfg|
-        app_cfg[:groups].delete(obj.name)
-      end
+      @current_config.delete_group(obj.name)
     end
 
     if klass == Eye::Process
       @applications.each{|app| app.groups.each{|gr| gr.processes.delete(obj) }}
-
-      @current_config[:applications].each do |app_name, app_cfg|
-        app_cfg[:groups].each do |gr_name, gr_cfg|
-          gr_cfg[:processes].delete(obj.name)
-        end
-      end
+      @current_config.delete_process(obj.name)
     end    
   end
 

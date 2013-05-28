@@ -65,8 +65,10 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     @config[:triggers].try :delete, type
   end
 
-  def notify(contact, level = :crit)
-    raise Eye::Dsl::Error, "level should be in #{[:warn, :crit]}" unless Eye::Process::Notify::LEVELS[level]
+  def notify(contact, level = :warn)
+    unless Eye::Process::Notify::LEVELS[level]
+      raise Eye::Dsl::Error, "level should be in #{Eye::Process::Notify::LEVELS.keys}" 
+    end
 
     @config[:notify] ||= {}
     @config[:notify][contact.to_s] = level

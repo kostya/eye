@@ -70,7 +70,6 @@ describe "Socket Checker" do
         c.check.should == false
       end
     end
-
   end
 
   describe "em object protocol" do

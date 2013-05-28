@@ -11,7 +11,7 @@ class Eye::Checker
   TYPES = {:memory => "Memory", :cpu => "Cpu", :http => "Http", 
            :ctime => "FileCTime", :fsize => "FileSize", :socket => "Socket"}
 
-  attr_accessor :value, :values, :options, :pid, :type
+  attr_accessor :value, :values, :options, :pid, :type, :check_count
 
   def self.get_class(type)
     klass = eval("Eye::Checker::#{TYPES[type]}") rescue nil
@@ -37,6 +37,7 @@ class Eye::Checker
     
     @value = nil
     @values = Eye::Utils::Tail.new(max_tries)
+    @check_count = 0
   end
 
   def last_human_values
@@ -49,10 +50,11 @@ class Eye::Checker
   end
 
   def check
-    @value = get_value
+    @value = get_value_safe
     @values << {:value => @value, :good => good?(value)}
 
     result = true
+    @check_count += 1
 
     if @values.size == max_tries
       bad_count = @values.count{|v| !v[:good] }
@@ -61,6 +63,10 @@ class Eye::Checker
 
     info "#{last_human_values} => #{result ? 'OK' : 'Fail'}"
     result
+  end
+
+  def get_value_safe
+    get_value
   end
 
   def get_value
@@ -115,8 +121,18 @@ class Eye::Checker
   param :fire, Symbol, nil, nil, [:stop, :restart, :unmonitor, :nothing]
 
   class Defer < Eye::Checker
-    def get_value
-      Celluloid::Future.new{ get_value_deferred }.value
+    def get_value_safe
+      Celluloid::Future.new{ get_value }.value
+    end
+  end
+
+  class Custom < Defer
+    def self.inherited(base)
+      super
+      name = base.to_s
+      type = name.underscore.to_sym
+      Eye::Checker::TYPES[type] = name
+      Eye::Checker.const_set(name, base)
     end
   end
 end

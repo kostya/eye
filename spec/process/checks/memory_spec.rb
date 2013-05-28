@@ -30,8 +30,8 @@ describe "Process Memory check" do
 
       sleep 3
 
-      stub(Eye::SystemResources).memory(@process.pid){ 50_000 }      
-      mock(@process).notify(:crit, anything)
+      stub(Eye::SystemResources).memory(@process.pid){ 50_000 }
+      mock(@process).notify(:warn, anything)
       mock(@process).schedule(:restart, anything)
 
       sleep 1
@@ -45,7 +45,7 @@ describe "Process Memory check" do
       sleep 3
 
       stub(Eye::SystemResources).memory(@process.pid){ 50_000 }      
-      mock(@process).notify(:crit, anything)
+      mock(@process).notify(:warn, anything)
       mock(@process).schedule(:stop, anything)
 
       sleep 1

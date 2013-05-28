@@ -16,6 +16,9 @@ describe "ChildProcess" do
       @process.childs.keys.should_not == []
       @process.childs.keys.size.should == 3
       @process.watchers.keys.should == [:check_alive, :check_childs]
+
+      child = @process.childs.values.first
+      child.watchers.keys.should == []
     end
 
     it "should not monitoring when process has childs and disable option" do

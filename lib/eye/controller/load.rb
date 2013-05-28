@@ -1,5 +1,4 @@
 module Eye::Controller::Load
-  include Eye::Dsl::Validate
 
   def check(filename = '')
     catch_load_error(filename) do
@@ -9,7 +8,7 @@ module Eye::Controller::Load
 
   def explain(filename)
     catch_load_error(filename) do
-      parse_set_of_configs(filename)
+      parse_set_of_configs(filename).to_h
     end
   end
 
@@ -47,8 +46,7 @@ private
     raise Eye::Dsl::Error, "config file '#{filename}' not found!" unless File.exists?(filename)
 
     cfg = Eye::Dsl.parse(nil, filename)
-    validate( merge_configs(@current_config, cfg) )
-
+    @current_config.merge(cfg).validate! # just validate summary config here
     cfg
   end
 
@@ -69,13 +67,11 @@ private
 
     raise Eye::Dsl::Error, "config file '#{mask}' not found!" if configs.blank?
 
-    @loaded_config = Eye::Dsl.initial_config
-    configs.each do |cfg| 
-      @loaded_config = merge_configs(@loaded_config, cfg)
-    end
+    @loaded_config = Eye::Config.new
+    configs.each { |cfg| @loaded_config.merge!(cfg) }
 
-    new_cfg = merge_configs(@current_config, @loaded_config)
-    validate(new_cfg)
+    new_cfg = @current_config.merge(@loaded_config)
+    new_cfg.validate!
     new_cfg
   end
 
@@ -83,19 +79,14 @@ private
     info "load: #{filename} in #{Eye::VERSION}"
     new_cfg = parse_set_of_configs(filename)
     
-    load_config(new_cfg, @loaded_config[:applications].keys)
+    load_config(new_cfg, @loaded_config.application_names)
     @loaded_config = nil
   end
 
   def load_config(new_config, changed_apps = [])
-    load_options(new_config[:config])
-    create_objects(new_config[:applications], changed_apps)
+    load_options(new_config.settings)
+    create_objects(new_config.applications, changed_apps)
     @current_config = new_config
-  end
-
-  def merge_configs(old_config, new_config)
-    {:config => old_config[:config].merge(new_config[:config]),
-     :applications => old_config[:applications].merge(new_config[:applications])}
   end
 
   # load global config options
