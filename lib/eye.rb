@@ -1,7 +1,7 @@
 module Eye  
   VERSION   = "0.3.1"
-  ABOUT     = "Eye v#{VERSION} (c) 2012-2013 @kostya"
-  PROCLINE  = "eye monitoring v#{VERSION}"
+  ABOUT     = "ReelEye v#{VERSION} (c) 2012-2013 @kostya"
+  PROCLINE  = "reel-eye monitoring v#{VERSION}"
 
   autoload :Process,        'eye/process'
   autoload :ChildProcess,   'eye/child_process'
