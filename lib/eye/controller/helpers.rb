@@ -1,7 +1,7 @@
 module Eye::Controller::Helpers
 
   def set_proc_line
-    str = "eye monitoring v#{Eye::VERSION}"
+    str = Eye::PROCLINE
     str += " (#{@applications.map(&:name) * ', '})" if @applications.present?
     $0 = str
   end
