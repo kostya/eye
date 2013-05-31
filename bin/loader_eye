@@ -55,7 +55,8 @@ server.async.run
 trap("INT"){ exit }
 trap("USR2"){ GC.start }
 
-http = Eye::Http.new "127.0.0.1", 12345
+# TODO: move to config
+http = Eye::Http.new "0.0.0.0", 12345
 http.start
 
 sleep
