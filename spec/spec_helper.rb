@@ -1,11 +1,12 @@
 require 'rubygems'
-require "bundler/setup"
+require 'bundler/setup'
 require 'celluloid'
+require 'reel'
 
 if ENV['COV']
   require 'simplecov'
   SimpleCov.start do
-    add_filter "/bundle/"
+    add_filter '/bundle/'
   end
 end
 
