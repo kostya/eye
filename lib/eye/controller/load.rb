@@ -93,17 +93,8 @@ private
   def load_options(opts)
     return if opts.blank?
 
-    if opts[:logger]
-      # do not apply logger, if in stdout state
-      if !%w{stdout stderr}.include?(Eye::Logger.dev)
-        if opts[:logger].blank?
-          Eye::Logger.link_logger(nil)
-        else
-          Eye::Logger.link_logger(opts[:logger])
-        end
-      end
-      
-      Eye::Logger.log_level = opts[:logger_level] if opts[:logger_level]
+    opts.each do |key, value|
+      send("set_opt_#{key}", value) if value
     end
   end
 
