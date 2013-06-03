@@ -3,11 +3,11 @@ require 'reel'
 class Eye::Http
   autoload :Router,   'eye/http/router'
 
-  attr_reader :server
+  attr_reader :server, :host, :port
 
   def initialize(host, port)
     @host = host
-    @port = port
+    @port = port.to_i
     @router = Router.new
   end
 
