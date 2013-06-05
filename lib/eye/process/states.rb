@@ -61,7 +61,7 @@ class Eye::Process
   end
 
   def on_crashed
-    schedule :check_crash, 'crashed'
+    schedule :check_crash, Eye::Reason.new(:crashed)
   end
 
   def on_unmonitored

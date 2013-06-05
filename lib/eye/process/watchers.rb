@@ -62,7 +62,7 @@ private
       
       action = subject.fire || :restart
       notify :warn, "Bounded #{subject.check_name}: #{subject.last_human_values} send to :#{action}"
-      schedule action, "bounded #{subject.check_name}"
+      schedule action, Eye::Reason.new("bounded #{subject.check_name}")
     end
   end
 

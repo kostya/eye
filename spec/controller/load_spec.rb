@@ -76,7 +76,7 @@ describe "Eye::Controller::Load" do
     p = subject.process_by_name('e1')
     p[:daemonize].should == false
 
-    proxy(p).schedule :update_config, is_a(Hash), is_a(String)
+    proxy(p).schedule :update_config, is_a(Hash), is_a(Eye::Reason)
     dont_allow(p).schedule :monitor
 
     subject.load(fixture("dsl/load3.eye")).should include(error: false)

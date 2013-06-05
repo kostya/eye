@@ -8,7 +8,7 @@ module Eye::Process::Scheduler
         return
       end
 
-      reason = if args.present? && [String, Symbol].include?(args[-1].class)
+      reason = if args.present? && args[-1].kind_of?(Eye::Reason)
         args.pop
       end
 

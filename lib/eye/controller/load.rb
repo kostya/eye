@@ -172,7 +172,7 @@ private
     group = if @old_groups[group_name]
       debug "update group #{group_name}"
       group = @old_groups.delete(group_name)
-      group.schedule :update_config, group_config, 'load config'
+      group.schedule :update_config, group_config, Eye::Reason::User.new(:'load config')
       group.clear
       group
     else
@@ -195,7 +195,7 @@ private
     if @old_processes[process_name]
       debug "update process #{process_name}"
       process = @old_processes.delete(process_name)
-      process.schedule :update_config, process_cfg, 'load config'
+      process.schedule :update_config, process_cfg, Eye::Reason::User.new(:'load config')
       process      
     else
       debug "create process #{process_name}"
