@@ -22,7 +22,7 @@ class Eye::Utils::CelluloidChain
 
   def add_wo_dups_current(method_name, *args, &block)
     h = {:method_name => method_name, :args => args, :block => block}
-    @calls << h if !@calls.include?(h) != h && @call != h
+    @calls << h if !@calls.include?(h) && @call != h
     async.process unless @running
   end
 
