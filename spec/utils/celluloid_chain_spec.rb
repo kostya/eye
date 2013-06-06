@@ -78,6 +78,16 @@ describe "Eye::Utils::CelluloidChain" do
     @t.m.should == [:a, :b, :c, :a, :c]
   end
 
+  it "should remove dups and current" do
+    @c.add_wo_dups_current :a, 0.6
+    sleep 0.3
+    @c.add_wo_dups_current :a, 0.6
+    @c.add_wo_dups_current :b
+
+    sleep 0.4
+    @t.m.should == [:a, :b]
+  end 
+
   it "#clear_pending_list" do
     10.times{ @c.add :a }
     sleep 0.5

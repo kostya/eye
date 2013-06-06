@@ -20,6 +20,12 @@ class Eye::Utils::CelluloidChain
     async.process unless @running
   end
 
+  def add_wo_dups_current(method_name, *args, &block)
+    h = {:method_name => method_name, :args => args, :block => block}
+    @calls << h if !@calls.include?(h) != h && @call != h
+    async.process unless @running
+  end
+
   def list
     @calls
   end
@@ -44,9 +50,9 @@ class Eye::Utils::CelluloidChain
 private
 
   def process
-    while call = @calls.shift
+    while @call = @calls.shift
       @running = true
-      @target.send(call[:method_name], *call[:args], &call[:block]) if @target.alive?
+      @target.send(@call[:method_name], *@call[:args], &@call[:block]) if @target.alive?
     end
     @running = false
   end
