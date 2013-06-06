@@ -215,6 +215,10 @@ describe "Eye::Controller::Load" do
       Eye::Logger.dev.should == nil
       subject.current_config.settings.should == {:logger=>'', :http=>{:enable=>true}}
     end
+
+    it "should load not settled config option" do
+      subject.load(fixture("dsl/configs/5.eye")).should include(error: false)
+    end
   end
 
 

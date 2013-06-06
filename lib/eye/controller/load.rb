@@ -94,7 +94,8 @@ private
     return if opts.blank?
 
     opts.each do |key, value|
-      send("set_opt_#{key}", value) if value
+      method = "set_opt_#{key}"
+      send(method, value) if value && respond_to?(method)
     end
   end
 
