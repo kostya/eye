@@ -31,7 +31,7 @@ describe "Flapping" do
 
   it "process flapping" do
     @process = process(@c.merge(:start_command => @c[:start_command] + " -r"))
-    @process.start!
+    @process.async.start
 
     stub(@process).notify(:info, anything)
     mock(@process).notify(:error, anything)
@@ -85,7 +85,7 @@ describe "Flapping" do
 
   it "flapping not happens" do
     @process = process(@c)
-    @process.start!
+    @process.async.start
 
     proxy(@process).schedule(:restore, anything)
     proxy(@process).schedule(:check_crash, anything)
@@ -116,7 +116,7 @@ describe "Flapping" do
     it "flapping than wait for interval and try again" do
       @process = process(@c.merge(:triggers => C.flapping(:times => 2, :within => 3, 
         :retry_in => 5.seconds)))
-      @process.start!
+      @process.async.start
 
       sleep 18
 
@@ -151,7 +151,7 @@ describe "Flapping" do
     it "flapping retry 1 times with retry_times = 1" do
       @process = process(@c.merge(:triggers => C.flapping(:times => 2, :within => 3, 
         :retry_in => 5.seconds, :retry_times => 1)))
-      @process.start!
+      @process.async.start
 
       sleep 18
 
@@ -186,7 +186,7 @@ describe "Flapping" do
     it "flapping than manually doing something, should not retry" do
       @process = process(@c.merge(:triggers => C.flapping(:times => 2, :within => 3, 
         :retry_in => 5.seconds)))
-      @process.start!
+      @process.async.start
 
       sleep 6
       @process.send_command :unmonitor
@@ -216,7 +216,7 @@ describe "Flapping" do
 
     it "without retry_in" do
       @process = process(@c.merge(:triggers => C.flapping(:times => 2, :within => 3)))
-      @process.start!
+      @process.async.start
 
       sleep 10
 
