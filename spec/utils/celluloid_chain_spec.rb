@@ -93,7 +93,7 @@ describe "Eye::Utils::CelluloidChain" do
     sleep 0.5
     @c.clear_pending_list
     sleep 0.5
-    @t.m.size.should < 6
+    @t.m.size.should <= 6
   end
 
 end
