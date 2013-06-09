@@ -16,14 +16,18 @@ class Eye::Utils::CelluloidChain
 
   def add_wo_dups(method_name, *args, &block)
     h = {:method_name => method_name, :args => args, :block => block}
-    @calls << h if @calls[-1] != h
-    ensure_process
+    if @calls[-1] != h
+      @calls << h
+      ensure_process
+    end
   end
 
   def add_wo_dups_current(method_name, *args, &block)
     h = {:method_name => method_name, :args => args, :block => block}
-    @calls << h if !@calls.include?(h) && @call != h
-    ensure_process
+    if !@calls.include?(h) && @call != h
+      @calls << h
+      ensure_process
+    end
   end
 
   def list
