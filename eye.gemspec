@@ -26,7 +26,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'thor'
 
   gem.add_dependency 'reel',          '~> 0.4.0.pre'
-  gem.add_dependency 'sinatra'
+  gem.add_dependency 'cuba'
 
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rspec'

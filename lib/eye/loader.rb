@@ -20,6 +20,4 @@ gem 'http_parser.rb'
 gem 'certified'
 gem 'websocket_parser'
 
-gem 'sinatra'
-gem 'rack-protection'
-gem 'tilt'
+gem 'cuba'

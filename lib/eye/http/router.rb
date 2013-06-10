@@ -1,30 +1,25 @@
-require 'sinatra'
+require 'cuba'
 require 'json'
 
-class Eye::Http::Router < Sinatra::Base
-  helpers do
-    def json_body(result)
-      @response['Content-Type'] = 'application/json; charset=utf-8'
-      { result: result }.to_json
-    end
+Eye::Http::Router = Cuba.new do
+
+  def json(result)
+    res.headers['Content-Type'] = 'application/json; charset=utf-8'
+    res.write({ result: result }.to_json)
   end
 
-  get '/' do
-    Eye::ABOUT
+  on root do
+    res.write Eye::ABOUT
   end
-
+  
+  on "api/info", param("filter") do |filter|
+    json Eye::Control.command(:raw_info, filter)
+  end
+  
   [:start, :stop, :restart, :delete, :unmonitor, :monitor].each do |act|
-    put "/api/#{act}" do
-      res = Eye::Control.command act, params[:filter].to_s
-      json_body(res)
+    on put, "api/#{act}", param("filter") do |filter|
+      json Eye::Control.command(act, filter)
     end
   end
 
-  get "/api/info" do
-    res = Eye::Control.command :raw_info, params[:filter].to_s
-    json_body(res)
-  end
-
-  not_found { halt 404, 'Page not found' }
-  error { halt 404, 'Page not found' }
 end

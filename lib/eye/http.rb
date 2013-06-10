@@ -8,7 +8,7 @@ class Eye::Http
   def initialize(host, port)
     @host = host
     @port = port.to_i
-    @router = Router.new
+    @router = Router
   end
 
   def start
