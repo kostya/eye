@@ -32,7 +32,7 @@ describe "Eye::Controller" do
   subject{ Eye::Controller.new }
 
   it "should ok load config" do
-    subject.load(fixture("dsl/load.eye")).should include(error: false)
+    subject.load(fixture("dsl/load.eye")).should_be_ok
 
     apps = subject.applications
 
@@ -70,7 +70,7 @@ describe "Eye::Controller" do
   end
 
   it "raise when load config" do
-    subject.load(fixture("dsl/bad.eye")).should include(:error => true, :message => "blank pid_file for: bad")
+    subject.load(fixture("dsl/bad.eye")).res.should include(:error => true, :message => "blank pid_file for: bad")
   end
 
   it "info_string" do
@@ -121,7 +121,7 @@ S
   end
 
   it "should delete all apps" do
-    subject.load(fixture("dsl/load.eye")).should include(error: false)
+    subject.load(fixture("dsl/load.eye")).should_be_ok
     subject.send_command(:delete, 'all')
     subject.applications.should be_empty
   end

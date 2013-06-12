@@ -1,23 +1,28 @@
 module Eye::Controller::Load
+  class Result < Hash; end
 
-  def check(filename = '')
-    catch_load_error(filename) do
-      parse_config(filename)
-    end
+  def check(filename)
+    Result[filename => catch_load_error(filename) { parse_config(filename).to_h }]
   end
 
   def explain(filename)
-    catch_load_error(filename) do
-      parse_set_of_configs(filename).to_h
-    end
+    Result[filename => catch_load_error(filename) { parse_config(filename).to_h }]
   end
 
-  # filename is a path, or folder, or mask
-  def load(filename = '')
-    catch_load_error(filename) do
-      _load(filename)
-      set_proc_line
+  def load(*obj_strs)
+    info "load: #{obj_strs}"
+
+    res = Result.new
+    globbing(*obj_strs).each do |filename|
+      res[filename] = catch_load_error(filename) do
+        cfg = parse_config(filename)
+        load_config(filename, cfg)
+      end
     end
+
+    set_proc_line
+
+    res
   end
 
 private
@@ -25,8 +30,8 @@ private
   # regexp for clean backtrace to show for user
   BT_REGX = %r[/lib/eye/|lib/celluloid|internal:prelude|logger.rb:|active_support/core_ext|shellwords.rb].freeze
 
-  def catch_load_error(filename, &block)
-    {:error => false, :config => yield }
+  def catch_load_error(filename = nil, &block)
+    { :error => false, :config => yield }
 
   rescue Eye::Dsl::Error, Exception, NoMethodError => ex
     error "load: config error <#{filename}>: #{ex.message}"
@@ -36,57 +41,55 @@ private
     bt = bt.reject{|line| line.to_s =~ BT_REGX }
     error bt.join("\n")
 
-    res = {:error => true, :message => ex.message}
+    res = { :error => true, :message => ex.message }
     res.merge!(:backtrace => bt) if bt.present?
     res
   end
 
+  def globbing(*obj_strs)
+    res = []
+    return res if obj_strs.empty?
+
+    obj_strs.each do |filename|
+      mask = if File.directory?(filename)
+        File.join filename, '{*.eye}'
+      else
+        filename
+      end
+
+      debug "load: globbing mask #{mask}"
+
+      sub = []
+      Dir[mask].each do |config_path|
+        sub << config_path
+      end
+      sub = [mask] if sub.empty?
+      
+      res += sub
+    end
+
+    res
+  end
+
   # return: result, config
-  def parse_config(filename = '', &block)
+  def parse_config(filename)    
     raise Eye::Dsl::Error, "config file '#{filename}' not found!" unless File.exists?(filename)
+    debug "parse #{filename}"
 
     cfg = Eye::Dsl.parse(nil, filename)
     @current_config.merge(cfg).validate! # just validate summary config here
     cfg
   end
 
-  def parse_set_of_configs(filename)
-    mask = if File.directory?(filename)
-      File.join filename, '{*.eye}'
-    else
-      filename
-    end
-
-    debug "load: globbing mask #{mask}"
-    configs = []
-
-    Dir[mask].each do |config_path|
-      info "load: config #{config_path}"
-      configs << parse_config(config_path)
-    end
-
-    raise Eye::Dsl::Error, "config file '#{mask}' not found!" if configs.blank?
-
-    @loaded_config = Eye::Config.new
-    configs.each { |cfg| @loaded_config.merge!(cfg) }
-
-    new_cfg = @current_config.merge(@loaded_config)
+  # !!! exclusive operation
+  def load_config(filename, config)
+    info "load #{filename}"
+    new_cfg = @current_config.merge(config)
     new_cfg.validate!
-    new_cfg
-  end
-
-  def _load(filename)
-    info "load: #{filename} in #{Eye::VERSION}"
-    new_cfg = parse_set_of_configs(filename)
     
-    load_config(new_cfg, @loaded_config.application_names)
-    @loaded_config = nil
-  end
-
-  def load_config(new_config, changed_apps = [])
-    load_options(new_config.settings)
-    create_objects(new_config.applications, changed_apps)
-    @current_config = new_config
+    load_options(new_cfg.settings)
+    create_objects(new_cfg.applications, config.application_names)
+    @current_config = new_cfg
   end
 
   # load global config options
@@ -102,6 +105,7 @@ private
   # create objects as diff, from configs
   def create_objects(apps_config, changed_apps = [])
     debug 'create objects'
+
     apps_config.each do |app_name, app_cfg|
       update_or_create_application(app_name, app_cfg.clone) if changed_apps.include?(app_name)
     end
