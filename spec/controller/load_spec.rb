@@ -114,7 +114,7 @@ describe "Eye::Controller::Load" do
 
   it "load + 1 app, and pid_file crossed" do
     subject.load(fixture("dsl/load2.eye")).should_be_ok
-    subject.load(fixture("dsl/load4.eye")).res.should include(:error => true, :message => "dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}")
+    subject.load(fixture("dsl/load4.eye")).only_value.should include(:error => true, :message => "dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}")
 
     subject.short_tree.should == {
       "app3"=>{"__default__"=>{"e1"=>"/tmp/app3-e1.pid"}}}
@@ -122,11 +122,11 @@ describe "Eye::Controller::Load" do
 
   it "check syntax" do
     subject.load(fixture("dsl/load2.eye")).should_be_ok
-    subject.check(fixture("dsl/load4.eye")).res.should include(:error => true, :message => "dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}")
+    subject.check(fixture("dsl/load4.eye")).only_value.should include(:error => true, :message => "dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}")
   end
 
   it "check explain" do
-    res = subject.explain(fixture("dsl/load2.eye")).res
+    res = subject.explain(fixture("dsl/load2.eye")).only_value
     res[:error].should == false
     res[:config].is_a?(Hash).should == true
   end
@@ -172,7 +172,7 @@ describe "Eye::Controller::Load" do
     res = subject.load(fixture("dsl/load2*.eye"))
     res.ok_count.should == 2
     res.errors_count.should == 1
-    res.match(/load2_dup_pid\.eye/).should == {:error => true, :message=>"dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}"}
+    res.only_match(/load2_dup_pid\.eye/).should == {:error => true, :message=>"dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}"}
   end
 
   it "two configs with same pids (should validate final config)" do
@@ -181,7 +181,7 @@ describe "Eye::Controller::Load" do
     res = subject.load(fixture("dsl/load2_*.eye"))
     res.size.should > 1
     res.errors_count.should == 1
-    res.match(/load2_dup_pid\.eye/).should == {:error => true, :message=>"dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}"}
+    res.only_match(/load2_dup_pid\.eye/).should == {:error => true, :message=>"dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}"}
   end
 
   it "dups of pid_files, but they different with expand" do
@@ -283,7 +283,7 @@ describe "Eye::Controller::Load" do
   end
 
   it "raised load" do
-    subject.load(fixture("dsl/load_error.eye")).res.should == {:error=>true, :message=>"No such file or directory - /asd/fasd/fas/df/asd/fas/df/d"}
+    subject.load(fixture("dsl/load_error.eye")).only_value.should == {:error=>true, :message=>"No such file or directory - /asd/fasd/fas/df/asd/fas/df/d"}
     set_glogger
   end
 

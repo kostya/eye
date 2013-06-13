@@ -2,17 +2,18 @@ module Eye::Controller::Load
   class Result < Hash; end
 
   def check(filename)
-    Result[filename => catch_load_error(filename) { parse_config(filename).to_h }]
+    { filename => catch_load_error(filename) { parse_config(filename).to_h } }
   end
 
   def explain(filename)
-    Result[filename => catch_load_error(filename) { parse_config(filename).to_h }]
+    { filename => catch_load_error(filename) { parse_config(filename).to_h } }
   end
 
   def load(*obj_strs)
     info "load: #{obj_strs}"
 
-    res = Result.new
+    res = Hash.new
+
     globbing(*obj_strs).each do |filename|
       res[filename] = catch_load_error(filename) do
         cfg = parse_config(filename)

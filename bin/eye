@@ -37,7 +37,7 @@ class Cli < Thor
     puts
   end
 
-  desc "load [CONF]", "load config (and start server if needed) (-f for foregraund start)"
+  desc "load [CONF, ...]", "load config (and start server if needed) (-f for foregraund start)"
   method_option :foregraund, :type => :boolean, :aliases => "-f"
   method_option :logger, :type => :string, :aliases => "-l"
   def load(*configs)
