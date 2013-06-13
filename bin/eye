@@ -176,54 +176,35 @@ private
   
   def say_load_result(res = {}, opts = {})
     if res.has_key?(:error) # TODO: remove that case, outdated
-      if res[:error]
-        say "config error: ", :red
-        say res[:message]
-
-        res[:backtrace].to_a.each{|line| say line}
-
-        exit 1
-      else 
-        if opts[:started]
-          say "started and loaded!", :yellow if !res[:empty]
-        elsif opts[:syntax]
-          say "config ok!", :yellow if !res[:empty]
-        else
-          say "config loaded!", :yellow if !res[:empty]        
-        end
-
-        if opts[:print_config]
-          require 'pp'
-          PP.pp res[:config]
-        end
-      end
+      show_load_message(res, opts)
+      exit 1 if res[:error]
     else
-      has_error = false
-      result = res
-      result.each do |filename, res|
-        if res[:error]
-          say "config error: ", :red
-          say res[:message]
-
-          res[:backtrace].to_a.each{|line| say line}
-
-          has_error = true
-        else 
-          if opts[:started]
-            say "started and loaded!", :yellow if !res[:empty]
-          elsif opts[:syntax]
-            say "config ok!", :yellow if !res[:empty]
-          else
-            say "config loaded!", :yellow if !res[:empty]        
-          end
-
-          if opts[:print_config]
-            require 'pp'
-            PP.pp res[:config]
-          end
-        end
+      say_filename = (res.size > 1)
+      res.each do |filename, _res|
+        say "#{filename}: ", nil, true if say_filename
+        show_load_message(_res, opts)
       end
-      exit 1 if has_error
+    end
+  end
+
+  def show_load_message(res, opts = {})
+    if res[:error]
+      say res[:message], :red
+      res[:backtrace].to_a.each{|line| say line, :red }
+    else
+      all_error = false
+      if opts[:started]
+        say "started and loaded!", :green if !res[:empty]
+      elsif opts[:syntax]
+        say "config ok!", :green if !res[:empty]
+      else
+        say "config loaded!", :green if !res[:empty]
+      end
+
+      if opts[:print_config]
+        require 'pp'
+        PP.pp res[:config]
+      end
     end
   end
  
@@ -312,7 +293,7 @@ private
     if !configs.empty?
       say_load_result cmd(:load, *configs), :started => true
     else
-      say "started!", :yellow
+      say "started!", :green
     end
   end
 
