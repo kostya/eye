@@ -55,7 +55,7 @@ class Eye::ChildProcess
   end
 
   def send_command(command, *args)
-    schedule command, *args, "#{command} by user"
+    schedule command, *args, Eye::Reason::User.new(command)
   end
 
   def start

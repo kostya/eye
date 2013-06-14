@@ -54,13 +54,18 @@ describe "comamnd spec" do
   end
 
   describe "send_command" do
+    it "command load" do
+      res = subject.command(:load, fixture("dsl/load.eye"))
+      res.class.should == Hash
+    end
+
     it "nothing" do
-      subject.load(fixture("dsl/load.eye")).should include(error: false)
+      subject.load(fixture("dsl/load.eye")).should_be_ok
       subject.send_command(:start, "2341234").should == []
     end
 
     it "unknown" do
-      subject.load(fixture("dsl/load.eye")).should include(error: false)
+      subject.load(fixture("dsl/load.eye")).should_be_ok
       subject.send_command(:st33art, "2341234").should == []
     end
 

@@ -74,8 +74,8 @@ describe "Intergration" do
     @p2.pid.should == @old_pid2
     @p3.pid.should_not == @old_pid3
 
-    @p1.last_scheduled_reason.should == 'monitor by user'
-    @p3.last_scheduled_reason.should == 'restart by user'
+    @p1.last_scheduled_reason.to_s.should == 'monitor by user'
+    @p3.last_scheduled_reason.to_s.should == 'restart by user'
   end
 
   it "restart forking named child" do
@@ -208,7 +208,7 @@ describe "Intergration" do
     Eye::System.pid_alive?(@old_pid3).should == true
 
     sth = @p1.states_history.last
-    sth[:reason].should == 'stop by user'
+    sth[:reason].to_s.should == 'stop by user'
     sth[:state].should == :unmonitored
   end
 
@@ -255,7 +255,7 @@ describe "Intergration" do
     sleep 3 # while they gettings
 
     @p1.last_scheduled_command.should == :signal
-    @p1.last_scheduled_reason.should == 'signal by user'
+    @p1.last_scheduled_reason.to_s.should == 'signal by user'
 
     mock(@p1).signal('usr1')
     @c.signal('usr1', 'sample1')

@@ -8,12 +8,21 @@ module Eye::Process::Scheduler
         return
       end
 
-      reason = if args.present? && [String, Symbol].include?(args[-1].class)
+      reason = if args.present? && args[-1].kind_of?(Eye::Reason)
         args.pop
       end
 
       info "schedule :#{command} #{reason ? "(reason: #{reason})" : nil}"
-      scheduler.add_wo_dups(:scheduled_action, command, {:args => args, :reason => reason}, &block)
+
+      if reason.class == Eye::Reason
+        # for auto reasons
+        # skip already running commands and all in chain
+        scheduler.add_wo_dups_current(:scheduled_action, command, {:args => args, :reason => reason}, &block)  
+      else
+        # for manual, or without reason
+        # skip only for last in chain
+        scheduler.add_wo_dups(:scheduled_action, command, {:args => args, :reason => reason}, &block)
+      end
     end
   end
 

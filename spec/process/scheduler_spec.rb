@@ -140,29 +140,29 @@ describe "Scheduler" do
     end
 
     it "1 param with reason" do
-      @process.schedule :scheduler_test3, 1, "reason"
+      @process.schedule :scheduler_test3, 1, Eye::Reason.new("reason")
       sleep 0.1
       @process.last_scheduled_command.should == :scheduler_test3
-      @process.last_scheduled_reason.should == 'reason'
+      @process.last_scheduled_reason.to_s.should == 'reason'
       @process.test3.should == [1]
     end
 
     it "many params with reason" do
-      @process.schedule :scheduler_test3, 1, :bla, 3, "reason"
+      @process.schedule :scheduler_test3, 1, :bla, 3, Eye::Reason.new("reason")
       sleep 0.1
       @process.last_scheduled_command.should == :scheduler_test3
-      @process.last_scheduled_reason.should == 'reason'
+      @process.last_scheduled_reason.to_s.should == 'reason'
       @process.test3.should == [1, :bla, 3]
     end
 
     it "save history" do
-      @process.schedule :scheduler_test3, 1, :bla, 3, "reason"
+      @process.schedule :scheduler_test3, 1, :bla, 3, Eye::Reason.new("reason")
       sleep 0.1
       h = @process.schedule_history
       h.size.should == 1
       h = h[0]
       h[:state].should == :scheduler_test3
-      h[:reason].should == "reason"
+      h[:reason].to_s.should == "reason"
     end
   end
 

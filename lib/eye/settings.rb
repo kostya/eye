@@ -1,15 +1,26 @@
 require 'fileutils'
 
 module Eye::Settings
-
   module_function
   
   def dir
     if Process::UID.eid == 0 # root
       '/var/run/eye'
     else
-      File.expand_path(File.join(ENV['EYE_HOME'] || ENV['HOME'], '.eye'))
-    end    
+      File.expand_path(File.join(home, '.eye'))
+    end
+  end
+
+  def eyeconfig
+    if Process::UID.eid == 0 # root
+      '/etc/eye.conf'
+    else
+      File.expand_path(File.join(home, '.eyeconfig'))
+    end
+  end
+
+  def home
+    ENV['EYE_HOME'] || ENV['HOME']
   end
   
   def path(path)

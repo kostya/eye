@@ -74,7 +74,7 @@ class Eye::Group
       when :break_chain 
         break_chain *args
       else 
-        schedule command, *args, "#{command} by user"
+        schedule command, *args, Eye::Reason::User.new(command)
     end
   end
 

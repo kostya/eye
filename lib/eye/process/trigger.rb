@@ -31,7 +31,7 @@ private
 
   def on_flapping(trigger)
     notify :error, 'flapping!'
-    schedule :unmonitor, "flapping"
+    schedule :unmonitor, Eye::Reason.new(:flapping)
 
     @retry_times ||= 0
     retry_in = trigger.retry_in
@@ -47,7 +47,7 @@ private
     return unless unmonitored?
     return unless state_reason.to_s.include?('flapping') # TODO: remove hackety
 
-    schedule :start, "retry start after flapping"
+    schedule :start, Eye::Reason.new(:'retry start after flapping')
     @retry_times += 1
   end
 

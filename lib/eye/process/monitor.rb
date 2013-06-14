@@ -40,7 +40,7 @@ private
       unless process_realy_running?
         warn "check_alive: process(#{self.pid}) not found!"
         notify :info, 'crashed!'
-        switch :crashed, 'crashed'
+        switch :crashed, Eye::Reason.new(:crashed)
       else
         # check that pid_file still here
         ppid = failsafe_load_pid
@@ -78,10 +78,10 @@ private
     if down?
       if self[:keep_alive]
         warn 'check crashed: process is down'
-        schedule :restore, 'crashed'
+        schedule :restore, Eye::Reason.new(:crashed)
       else
         warn 'check crashed: process without keep_alive'
-        schedule :unmonitor, 'crashed'
+        schedule :unmonitor, Eye::Reason.new(:crashed)
       end
     else
       debug 'check crashed: skipped, process is not in down'

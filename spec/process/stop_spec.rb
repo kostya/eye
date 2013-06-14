@@ -102,7 +102,7 @@ describe "Process Stop" do
   it "stop process by stop_signals" do
     start_ok_process(C.p1.merge(:stop_signals => [9, 2.seconds]))
 
-    @process.stop_process!
+    @process.async.stop_process
     sleep 1
     Eye::System.pid_alive?(@pid).should == false
   end
@@ -110,7 +110,7 @@ describe "Process Stop" do
   it "stop process by stop_signals" do
     start_ok_process(C.p1.merge(:stop_signals => ['usr1', 3.seconds, :TERM, 2.seconds]))
 
-    @process.stop_process!
+    @process.async.stop_process
     sleep 1.5
 
     # not blocking actor

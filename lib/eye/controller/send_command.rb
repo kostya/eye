@@ -61,7 +61,10 @@ private
     return [] if obj_strs.blank?
     return @applications.dup if obj_strs.size == 1 && (obj_strs[0].strip == 'all' || obj_strs[0].strip == '*')
 
-    res = obj_strs.map{|c| c.split(",").map{|mask| find_objects_by_mask(mask) }}.flatten
+    res = []
+    obj_strs.map{|c| c.split(",")}.flatten.each do |mask|
+      res += find_objects_by_mask(mask)
+    end
 
     if res.size > 1
       # remove inherited targets
@@ -100,7 +103,7 @@ private
           res << p if p.name =~ r || p.full_name =~ r
 
           if p.childs.present?
-            res += p.childs.values.select{|ch| ch.name =~ r || ch.full_name =~ r }
+            res += p.childs.values.select{|ch| ch.alive? && (ch.name =~ r || ch.full_name =~ r) }
           end
         end
       end

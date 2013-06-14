@@ -1,7 +1,7 @@
 module Eye::Process::Controller
 
   def send_command(command, *args)
-    schedule command, *args, "#{command} by user"
+    schedule command, *args, Eye::Reason::User.new(command)
   end
 
   def start
@@ -44,7 +44,7 @@ module Eye::Process::Controller
         switch :already_running
       else
         warn "process not found, so :unmonitor"
-        schedule :unmonitor, 'not found'
+        schedule :unmonitor, Eye::Reason.new(:'not found')
       end
     end
   end
