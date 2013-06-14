@@ -1,5 +1,4 @@
 module Eye::Controller::Load
-  class Result < Hash; end
 
   def check(filename)
     { filename => catch_load_error(filename) { parse_config(filename).to_h } }

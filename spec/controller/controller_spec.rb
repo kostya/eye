@@ -70,7 +70,7 @@ describe "Eye::Controller" do
   end
 
   it "raise when load config" do
-    subject.load(fixture("dsl/bad.eye")).res.should include(:error => true, :message => "blank pid_file for: bad")
+    subject.load(fixture("dsl/bad.eye")).only_value.should include(:error => true, :message => "blank pid_file for: bad")
   end
 
   it "info_string" do
