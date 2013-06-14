@@ -24,6 +24,7 @@ require 'rspec/mocks'
 require 'fakeweb'
 
 require File.join(File.dirname(__FILE__), %w{support spec_support})
+require File.join(File.dirname(__FILE__), %w{support load_result})
 
 $logger_path = File.join(File.dirname(__FILE__), %w{spec.log})
 

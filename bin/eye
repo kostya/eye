@@ -37,21 +37,26 @@ class Cli < Thor
     puts
   end
 
-  desc "load [CONF]", "load config (and start server if needed) (-f for foregraund start)"
+  desc "load [CONF, ...]", "load config (and start server if needed) (-f for foregraund start)"
   method_option :foregraund, :type => :boolean, :aliases => "-f"
   method_option :logger, :type => :string, :aliases => "-l"
-  def load(conf = "")
-    conf = File.expand_path(conf) if !conf.empty?
+  def load(*configs)
+    configs.map!{ |c| File.expand_path(c) } if !configs.empty?
 
     if options[:foregraund]
       # in foregraund we stop another server, and run just 1 current config version
-      server_start_foregraund(conf)
+      if configs.size != 1
+        say "foregraund expected only one config", :red
+        exit 1
+      end
+
+      server_start_foregraund(configs.first)
 
     elsif server_started?
-      say_load_result cmd(:load, conf)
+      say_load_result cmd(:load, *configs)
 
     else
-      server_start(conf)
+      server_start(configs)
 
     end
   end
@@ -170,20 +175,30 @@ private
   end
   
   def say_load_result(res = {}, opts = {})
+    if res.has_key?(:error) # TODO: remove that case, outdated
+      show_load_message(res, opts)
+      exit 1 if res[:error]
+    else
+      say_filename = (res.size > 1)
+      res.each do |filename, _res|
+        say "#{filename}: ", nil, true if say_filename
+        show_load_message(_res, opts)
+      end
+    end
+  end
+
+  def show_load_message(res, opts = {})
     if res[:error]
-      say "config error: ", :red
-      say res[:message]
-
-      res[:backtrace].to_a.each{|line| say line}
-
-      exit 1
-    else 
+      say res[:message], :red
+      res[:backtrace].to_a.each{|line| say line, :red }
+    else
+      all_error = false
       if opts[:started]
-        say "started and loaded!", :yellow if !res[:empty]
+        say "started and loaded!", :green if !res[:empty]
       elsif opts[:syntax]
-        say "config ok!", :yellow if !res[:empty]
+        say "config ok!", :green if !res[:empty]
       else
-        say "config loaded!", :yellow if !res[:empty]        
+        say "config loaded!", :green if !res[:empty]
       end
 
       if opts[:print_config]
@@ -192,7 +207,7 @@ private
       end
     end
   end
-
+ 
   def send_command(_cmd, *args)
     res = cmd(_cmd, *args)
     if res == :unknown_command
@@ -254,7 +269,7 @@ private
     Process.exec(ruby_path, loader_path, *args)
   end
 
-  def server_start(conf = nil)
+  def server_start(configs)
     ensure_loader_path
     Eye::Settings.ensure_eye_dir
 
@@ -273,10 +288,12 @@ private
       exit 1
     end
 
-    if conf && !conf.empty?
-      say_load_result cmd(:load, conf), :started => true
+    configs.unshift(Eye::Settings.eyeconfig) if File.exists?(Eye::Settings.eyeconfig)
+
+    if !configs.empty?
+      say_load_result cmd(:load, *configs), :started => true
     else
-      say "started!", :yellow
+      say "started!", :green
     end
   end
 
