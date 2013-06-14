@@ -169,7 +169,7 @@ describe "Eye::Controller::Load" do
 
   it "two configs with same pids (should validate final config)" do
     subject.load(fixture("dsl/load.eye")).should_be_ok
-    res = subject.load(fixture("dsl/load2*.eye"))
+    res = subject.load(fixture("dsl/load2{,_dup_pid,_dup2}.eye"))
     res.ok_count.should == 2
     res.errors_count.should == 1
     res.only_match(/load2_dup_pid\.eye/).should == {:error => true, :message=>"dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}"}
