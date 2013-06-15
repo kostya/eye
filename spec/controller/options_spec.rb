@@ -31,7 +31,7 @@ describe "options spec" do
     end
 
     it "load error should catch" do
-      subject.load(fixture("dsl/http/http4.eye")).should include(:error => true)
+      subject.load(fixture("dsl/http/http4.eye")).errors_count.should == 1
     end
   end
 
