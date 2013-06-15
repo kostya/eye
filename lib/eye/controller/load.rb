@@ -17,6 +17,7 @@ module Eye::Controller::Load
       res[filename] = catch_load_error(filename) do
         cfg = parse_config(filename)
         load_config(filename, cfg)
+        nil
       end
     end
 

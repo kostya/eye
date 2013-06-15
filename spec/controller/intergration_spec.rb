@@ -3,7 +3,8 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "Intergration" do
   before :each do
     @c = Eye::Controller.new
-    @c.load(fixture("dsl/integration.eye"))
+    res = @c.load(fixture("dsl/integration.eye"))
+    Marshal.dump(res).should_not include("ActiveSupport")
     @processes = @c.all_processes
     @p1 = @processes.detect{|c| c.name == 'sample1'}
     @p2 = @processes.detect{|c| c.name == 'sample2'}

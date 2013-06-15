@@ -21,14 +21,18 @@ describe "Eye::Controller::Load" do
     subject.load("/asdf/asd/fasd/fas/df/sfd").should == {"/asdf/asd/fasd/fas/df/sfd" => {:error=>true, :message=>"config file '/asdf/asd/fasd/fas/df/sfd' not found!"}}
   end
 
-  it "load 1 app" do
-    subject.load(fixture("dsl/load.eye")).should_be_ok
+  it "load 1 ok app" do
+    res = subject.load(fixture("dsl/load.eye"))
+    res.should_be_ok
+
     subject.short_tree.should == {
       "app1"=>{
         "gr1"=>{"p1"=>"/tmp/app1-gr1-p1.pid", "p2"=>"/tmp/app1-gr1-p2.pid"}, 
         "gr2"=>{"q3"=>"/tmp/app1-gr2-q3.pid"}, 
         "__default__"=>{"g4"=>"/tmp/app1-g4.pid", "g5"=>"/tmp/app1-g5.pid"}}, 
       "app2"=>{"__default__"=>{"z1"=>"/tmp/app2-z1.pid"}}}
+
+    res.only_value.should == { :error => false, :config => nil }
   end
 
   it "load correctly application, groups for full_names processes" do
