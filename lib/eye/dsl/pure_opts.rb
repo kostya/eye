@@ -49,7 +49,12 @@ class Eye::Dsl::PureOpts
 
     if parent
       @parent = parent
-      @config = merge_parent_config ? Eye::Utils::deep_clone(parent.config) : {}
+      if merge_parent_config
+        @config = Eye::Utils::deep_clone(parent.config)
+        parent.not_seed_options.each { |opt| @config.delete(opt) }
+      else
+        @config = {}
+      end
       @full_name = "#{parent.full_name}:#{@full_name}"
     else
       @config = {}
@@ -63,6 +68,10 @@ class Eye::Dsl::PureOpts
   end
 
   def disallow_options
+    []
+  end
+
+  def not_seed_options
     []
   end
 

@@ -18,10 +18,6 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   def initialize(name = nil, parent = nil)
     super(name, parent)
 
-    # ensure delete subobjects which can appears from parent config
-    @config.delete :groups
-    @config.delete :processes
-
     @config[:application] = parent.name if parent.is_a?(Eye::Dsl::ApplicationOpts)
     @config[:group] = parent.name if parent.is_a?(Eye::Dsl::GroupOpts)
 

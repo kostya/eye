@@ -6,6 +6,10 @@ class Eye::Dsl::GroupOpts < Eye::Dsl::Opts
     [:pid_file, :start_command]
   end
 
+  def not_seed_options
+    [:processes, :chain]
+  end
+
   def process(name, &block)
     Eye::Dsl.debug "=> process #{name}"
 

@@ -6,6 +6,10 @@ class Eye::Dsl::ApplicationOpts < Eye::Dsl::Opts
     [:pid_file, :start_command]
   end
 
+  def not_seed_options
+    [:groups]
+  end
+
   def group(name, &block) 
     Eye::Dsl.debug "=> group #{name}"
     
