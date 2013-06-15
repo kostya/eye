@@ -175,18 +175,16 @@ private
   end
   
   def say_load_result(res = {}, opts = {})
-    say(res) unless res.is_a?(Hash)
+    unless res.is_a?(Hash)
+      say(res)
+      exit 1
+    end
 
-    if res.has_key?(:error) # TODO: remove that case, outdated
-      show_load_message(res, opts)
-      exit 1 if res[:error]
-    else
-      say_filename = (res.size > 1)
-      say "eye started!", :green if opts[:started]
-      res.each do |filename, _res|
-        say "#{filename}: ", nil, true if say_filename
-        show_load_message(_res, opts)
-      end
+    say_filename = (res.size > 1)
+    say "eye started!", :green if opts[:started]
+    res.each do |filename, _res|
+      say "#{filename}: ", nil, true if say_filename
+      show_load_message(_res, opts)
     end
   end
 
