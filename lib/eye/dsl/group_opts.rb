@@ -21,11 +21,8 @@ class Eye::Dsl::GroupOpts < Eye::Dsl::Opts
     Eye::Dsl.debug "<= process #{name}"
   end
 
-  def xprocess(name, &block); end
-
-  def application
-    parent
-  end
-  alias :app :application
+  alias xprocess nop
+  alias application parent
+  alias app application
 
 end

@@ -99,6 +99,8 @@ class Eye::Dsl::PureOpts
     end
   end
 
+  def nop(*args, &block); end
+
 private
 
   def self.with_parsed_file(file_name)

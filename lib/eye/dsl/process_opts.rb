@@ -7,15 +7,12 @@ class Eye::Dsl::ProcessOpts < Eye::Dsl::Opts
     @config[:monitor_children].merge!(opts.config)
   end
 
-  def xmonitor_children(&block); end
+  alias xmonitor_children nop
 
   def application
     parent.try(:parent)
   end
-  alias :app :application
-
-  def group
-    parent
-  end
+  alias app application
+  alias group parent
 
 end

@@ -11,7 +11,7 @@ module Eye::Dsl::Main
     Eye::Dsl.debug "<= app: #{name}"
   end
 
-  alias :app :application 
+  alias app application
 
   def load(glob = '')
     return if glob.blank?
