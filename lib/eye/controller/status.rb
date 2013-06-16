@@ -32,6 +32,7 @@ Info:   #{resources_str(Eye::SystemResources.resources($$), false)}
 Ruby:   #{RUBY_DESCRIPTION}
 Logger: #{Eye::Logger.dev}
 Socket: #{Eye::Settings::socket_path}
+Http:   #{@http ? "#{@http.host}:#{@http.port}" : '-'}
 Pid:    #{Eye::Settings::pid_path}
 Actors: #{actors.inspect}
 

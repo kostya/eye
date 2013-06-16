@@ -18,7 +18,7 @@ module Eye::Controller::Options
   def set_opt_http(params = {})
     if params[:enable]
       if @http
-        if params[:host] != @http.host || params[:host].to_i != @http.host
+        if params[:host] != @http.host || params[:port].to_i != @http.port
           stop_http
           start_http(params[:host], params[:port])
         end
