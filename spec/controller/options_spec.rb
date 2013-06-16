@@ -30,6 +30,16 @@ describe "options spec" do
       Net::HTTP.get(uri2).should == Eye::ABOUT
     end
 
+    it "should not reconnect when load the same config" do
+      subject.load(fixture("dsl/http/http1.eye")).should_be_ok
+      Net::HTTP.get(uri).should == Eye::ABOUT
+
+      dont_allow(subject).stop_http
+
+      subject.load(fixture("dsl/http/http1.eye")).should_be_ok
+      Net::HTTP.get(uri).should == Eye::ABOUT
+    end
+
     it "load error should catch" do
       subject.load(fixture("dsl/http/http4.eye")).errors_count.should == 1
     end
