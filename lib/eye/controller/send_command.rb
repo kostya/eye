@@ -102,9 +102,17 @@ private
         gr.processes.each do |p|
           res << p if p.name =~ r || p.full_name =~ r
 
+          # child matching
           if p.childs.present?
-            res += p.childs.values.select{|ch| ch.alive? && (ch.name =~ r || ch.full_name =~ r) }
+            childs = p.childs.values
+            res += childs.select do |ch|
+              if ch.alive?
+                name, full_name = ch.name, ch.full_name
+                name =~ r || full_name =~ r
+              end
+            end
           end
+
         end
       end
     end

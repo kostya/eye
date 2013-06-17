@@ -50,7 +50,7 @@ class Eye::Application
   end
 
   def send_command(command, *args)
-    debug "send_command #{command} #{args}"
+    info "send_command #{command}"
     
     @groups.each do |group|
       group.send_command(command, *args)
