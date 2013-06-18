@@ -69,5 +69,23 @@ describe "Eye::Dsl" do
     cfg['bla'][:groups]['__default__'][:some].should == nil
     cfg['bla'][:groups]['__default__'][:processes][:some].should == nil
   end
+
+  it "set uid option" do
+    conf = <<-E
+      Eye.application("bla") do
+        uid "vasya"
+
+        process("11") do
+          pid_file "1"
+        end
+      end
+    E
+
+    if RUBY_VERSION >= '2.0'
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Dsl::Error)
+    else
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
+    end
+  end
   
 end

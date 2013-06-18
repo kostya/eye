@@ -41,6 +41,12 @@ describe "Eye::System" do
     r['E'].should == '2'
   end
 
+  it "set spawn_options" do
+    stub(Eye::Settings).root? { true }
+    Eye::System.send(:spawn_options, {}).should == {:pgroup => true, :chdir => "/"}
+    Eye::System.send(:spawn_options, {:uid => "root", :gid => "root"}).should include({:uid => 0, :gid => 0})
+  end
+
   describe "daemonize" do
     it "daemonize default" do
       @pid = Eye::System.daemonize("ruby sample.rb", {:environment => {"ENV1" => "SECRET1", 'BLA' => {}}, 

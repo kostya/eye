@@ -1,3 +1,7 @@
+~dev
+----
+* add uid,gid options (only for ruby 2.0)
+
 0.3.1
 -----
 * load multiple configs (folder,...) now not breaks on first error (each config loads separately)

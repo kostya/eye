@@ -1,4 +1,5 @@
 require 'shellwords'
+require 'etc'
 
 module Eye::Process::Validate
 
@@ -18,6 +19,9 @@ module Eye::Process::Validate
 
     Shellwords.shellwords(config[:stop_command]) if config[:stop_command]
     Shellwords.shellwords(config[:restart_command]) if config[:restart_command]
+
+    Etc.getpwnam(config[:uid]) if config[:uid]
+    Etc.getpwnam(config[:gid]) if config[:gid]
   end
 
 end
