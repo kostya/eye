@@ -43,4 +43,8 @@ module Eye::Settings
     5
   end
 
+  def supported_setsid?
+    RUBY_VERSION >= '2.0'
+  end
+
 end

@@ -1,7 +1,7 @@
 class Eye::Dsl::Opts < Eye::Dsl::PureOpts
 
   STR_OPTIONS = [ :pid_file, :working_dir, :stdout, :stderr, :stdall, :start_command, 
-    :stop_command, :restart_command ]
+    :stop_command, :restart_command, :uid, :gid ]
   create_options_methods(STR_OPTIONS, String)
 
   BOOL_OPTIONS = [ :daemonize, :keep_alive, :control_pid, :auto_start, :stop_on_delete]
@@ -88,6 +88,16 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
 
     set_stdout value
     set_stderr value
+  end
+
+  def uid(value)
+    raise Eye:::Dsl::Error, ":uid not support by ruby" unless Eye::Settings::supported_setsid?
+    super
+  end
+
+  def gid(value)
+    raise Eye:::Dsl::Error, ":gid not support by ruby" unless Eye::Settings::supported_setsid?
+    super
   end
 
   def scoped(&block)
