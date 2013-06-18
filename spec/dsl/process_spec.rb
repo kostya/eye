@@ -385,7 +385,11 @@ describe "Eye::Dsl" do
             end
           end
         E
-        expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(ArgumentError)
+        if RUBY_VERSION >= '2.0'
+          expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error
+        else
+          expect{Eye::Dsl.parse_apps(conf)}.to raise_error
+        end
 
         conf = <<-E
           Eye.application("bla") do
@@ -395,7 +399,7 @@ describe "Eye::Dsl" do
             end
           end
         E
-        expect{Eye::Dsl.parse_apps(conf)}.to raise_error(ArgumentError)
+        expect{Eye::Dsl.parse_apps(conf)}.to raise_error
       end
     end
 
