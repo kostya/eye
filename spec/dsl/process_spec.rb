@@ -375,6 +375,30 @@ describe "Eye::Dsl" do
       expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Process::Validate::Error)
     end
 
+    [:uid, :gid].each do |s|
+      it "validate user #{s}" do
+        conf = <<-E
+          Eye.application("bla") do
+            process("1") do
+              pid_file "1.pid"
+              #{s} "root"
+            end
+          end
+        E
+        expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(ArgumentError)
+
+        conf = <<-E
+          Eye.application("bla") do
+            process("1") do
+              pid_file "1.pid"
+              #{s} "asdfasdff23rf234f323f"
+            end
+          end
+        E
+        expect{Eye::Dsl.parse_apps(conf)}.to raise_error(ArgumentError)
+      end
+    end
+
   end
 
 end
