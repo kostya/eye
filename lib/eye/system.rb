@@ -1,5 +1,6 @@
 require 'shellwords'
 require 'pathname'
+require 'etc'
 
 module Eye::System
   class << self
@@ -134,6 +135,12 @@ module Eye::System
       o.update(out: [config[:stdout], 'a']) if config[:stdout]
       o.update(err: [config[:stderr], 'a']) if config[:stderr]
       o.update(in: config[:stdin]) if config[:stdin]
+
+      if Eye::Settings.root?
+        o.update(uid: Etc.getpwnam(config[:uid]).uid) if config[:uid]
+        o.update(gid: Etc.getpwnam(config[:gid]).gid) if config[:gid]
+      end
+
       o
     end
 
