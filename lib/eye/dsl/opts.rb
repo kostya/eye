@@ -91,12 +91,12 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   end
 
   def set_uid(value)
-    raise Eye::Dsl::Error, ":uid not supported by ruby" unless Eye::Settings.supported_setsid?
+    raise Eye::Dsl::Error, ":uid not supported by ruby (needed 2.0)" unless Eye::Settings.supported_setsid?
     super
   end
 
   def set_gid(value)
-    raise Eye::Dsl::Error, ":gid not supported by ruby" unless Eye::Settings.supported_setsid?
+    raise Eye::Dsl::Error, ":gid not supported by ruby (needed 2.0)" unless Eye::Settings.supported_setsid?
     super
   end
 
