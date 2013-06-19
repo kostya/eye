@@ -1,5 +1,5 @@
-~dev
-----
+0.3.2.dev
+---------
 * add uid,gid options (only for ruby 2.0)
 
 0.3.1
