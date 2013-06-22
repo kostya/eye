@@ -375,6 +375,28 @@ describe "Eye::Dsl" do
       expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Process::Validate::Error)
     end
 
+    it "validate correct working_dir" do
+      conf = <<-E
+        Eye.application("bla") do
+          process("1") do
+            pid_file "1.pid"
+            working_dir "/tmp"
+          end
+        end
+      E
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Process::Validate::Error)
+
+      conf = <<-E
+        Eye.application("bla") do
+          process("1") do
+            pid_file "1.pid"
+            working_dir "/tmp/asdfsdf//sdf/asdf/asd/f/asdf"
+          end
+        end
+      E
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Process::Validate::Error)
+    end
+
     [:uid, :gid].each do |s|
       it "validate user #{s}" do
         conf = <<-E

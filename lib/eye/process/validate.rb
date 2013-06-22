@@ -22,6 +22,10 @@ module Eye::Process::Validate
 
     Etc.getpwnam(config[:uid]) if config[:uid]
     Etc.getpwnam(config[:gid]) if config[:gid]
+
+    if config[:working_dir]
+      raise Error, "working_dir '#{config[:working_dir]}' is invalid" unless File.directory?(config[:working_dir])
+    end
   end
 
 end
