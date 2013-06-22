@@ -13,6 +13,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
 
   OTHER_OPTIONS = [ :environment, :stop_signals ]
   create_options_methods(OTHER_OPTIONS)
+  create_options_methods([:umask], Fixnum)
 
 
   def initialize(name = nil, parent = nil)

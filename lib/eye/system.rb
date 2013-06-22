@@ -141,6 +141,8 @@ module Eye::System
         o.update(gid: Etc.getpwnam(config[:gid]).gid) if config[:gid]
       end
 
+      o.update(umask: config[:umask]) if config[:umask]
+
       o
     end
 
