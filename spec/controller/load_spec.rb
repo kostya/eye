@@ -280,10 +280,10 @@ describe "Eye::Controller::Load" do
   it "load multiple apps with cross constants" do
     subject.load(fixture('dsl/subfolder{2,3}.eye')).should_be_ok(2)
     subject.process_by_name('e1')[:working_dir].should == '/tmp'
-    subject.process_by_name('e2')[:working_dir].should == 'sub3'
+    subject.process_by_name('e2')[:working_dir].should == '/var'
 
     subject.process_by_name('e3')[:working_dir].should == '/tmp'
-    subject.process_by_name('e4')[:working_dir].should == 'sub2'
+    subject.process_by_name('e4')[:working_dir].should == '/'
   end
 
   it "raised load" do

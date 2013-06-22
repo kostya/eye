@@ -6,7 +6,7 @@ Eye.application "app1" do
   end
 
   process "server_2" do
-    working_dir "/tmp2"
+    working_dir "/"
     pid_file "server_2.pid"
   end
 

@@ -1,1 +1,1 @@
-ROOT = 'sub3'
+ROOT = '/var'

@@ -1,1 +1,1 @@
-ROOT = 'sub2'
+ROOT = '/'

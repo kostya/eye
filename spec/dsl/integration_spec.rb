@@ -158,14 +158,14 @@ describe "Eye::Dsl" do
   it "should rewrite options" do
     conf = <<-E
       Eye.application("bla") do
-        working_dir "/tmp"
+        umask 111
 
         group("moni") do
-          working_dir "/nah"
+          umask 222
 
           process("1") do
             pid_file "1"
-            working_dir "/1"
+            umask 333
           end
 
           process("2") do
@@ -181,28 +181,28 @@ describe "Eye::Dsl" do
     
     h = {'bla' => 
       { :name => "bla",
-        :working_dir=>"/tmp", 
+        :umask=>111,
         :groups=>{
           "moni"=>{:name => "moni", :application => "bla",
-            :working_dir=>"/nah", 
+            :umask=>222,
             :processes=>{
               "1"=>{
-                :working_dir=>"/1", 
+                :umask=>333,
                 :pid_file=>"1", 
                 :application=>"bla", 
                 :group=>"moni", 
                 :name=>"1"}, 
               "2"=>{
-                :working_dir=>"/nah", 
+                :umask=>222,
                 :pid_file=>"2", 
                 :application=>"bla", 
                 :group=>"moni", 
                 :name=>"2"}}}, 
           "__default__"=>{:name => "__default__", :application => "bla",
-            :working_dir=>"/tmp", 
+            :umask=>111,
             :processes=>{
               "3"=>{
-                :working_dir=>"/tmp", 
+                :umask=>111,
                 :pid_file=>"3", 
                 :application=>"bla", 
                 :group=>"__default__", 
