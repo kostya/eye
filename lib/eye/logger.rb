@@ -42,7 +42,7 @@ class Eye::Logger
     attr_reader :dev, :log_level
 
     def link_logger(dev)
-      @dev = dev ? dev.to_s.downcase : nil
+      @dev = dev ? dev.to_s : nil
       @dev_fd = @dev
 
       @dev_fd = STDOUT if @dev == 'stdout'
