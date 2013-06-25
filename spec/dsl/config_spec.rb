@@ -5,10 +5,10 @@ describe "Eye::Dsl::Config" do
   it "logger" do
     conf = <<-E
       Eye.config do
-        logger "/tmp/1.log"
+        logger "/tmp/1.loG"
       end
     E
-    Eye::Dsl.parse(conf).to_h.should == {:applications => {}, :settings => {:logger => "/tmp/1.log"}} 
+    Eye::Dsl.parse(conf).to_h.should == {:applications => {}, :settings => {:logger => "/tmp/1.loG"}}
   end
 
   it "should merge sections" do
