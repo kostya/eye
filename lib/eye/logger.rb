@@ -45,8 +45,8 @@ class Eye::Logger
       @dev = dev ? dev.to_s : nil
       @dev_fd = @dev
 
-      @dev_fd = STDOUT if @dev == 'stdout'
-      @dev_fd = STDERR if @dev == 'stderr'
+      @dev_fd = STDOUT if @dev.to_s.downcase == 'stdout'
+      @dev_fd = STDERR if @dev.to_s.downcase == 'stderr'
       
       @inner_logger = InnerLogger.new(@dev_fd)
       @inner_logger.level = self.log_level || Logger::INFO
