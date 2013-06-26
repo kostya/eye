@@ -201,12 +201,12 @@ describe "Eye::Controller::Load" do
 
     it "load logger" do
       subject.load(fixture("dsl/load_logger.eye")).should_be_ok
-      Eye::Logger.dev.should == "/tmp/1.log"
+      Eye::Logger.dev.should == "/tmp/1.loG"
     end
 
     it "set logger when load multiple configs" do
       subject.load(fixture("dsl/load_logger{,2}.eye")).should_be_ok(2)
-      Eye::Logger.dev.should == "/tmp/1.log"
+      Eye::Logger.dev.should == "/tmp/1.loG"
     end
 
     it "should corrent load config section" do
