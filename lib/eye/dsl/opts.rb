@@ -11,8 +11,8 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     :restart_grace, :stop_grace, :childs_update_period ]
   create_options_methods(INTERVAL_OPTIONS, [Fixnum, Float])
 
-  OTHER_OPTIONS = [ :environment, :stop_signals ]
-  create_options_methods(OTHER_OPTIONS)
+  create_options_methods([:environment], Hash)
+  create_options_methods([:stop_signals], Array)
   create_options_methods([:umask], Fixnum)
 
 
