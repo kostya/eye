@@ -368,20 +368,20 @@ describe "Eye::Controller::Load" do
 
   describe "load is exclusive" do
     it "run double in time" do
-      Eye::Control.async.command(:load, fixture("dsl/long_load.eye"))
-      Eye::Control.async.command(:load, fixture("dsl/long_load.eye"))
+      subject.async.command(:load, fixture("dsl/long_load.eye"))
+      subject.async.command(:load, fixture("dsl/long_load.eye"))
       sleep 2.5   
       should_spend(0, 0.2) do
-        Eye::Control.command(:info).should be_a(String)
+        subject.command(:info).should be_a(String)
       end
     end
 
     it "load with subloads" do
       silence_warnings{ 
-        Eye::Control.command(:load, fixture("dsl/subfolder2.eye"))
+        subject.command(:load, fixture("dsl/subfolder2.eye"))
       }
       should_spend(0, 0.2) do
-        Eye::Control.command(:info).should be_a(String)
+        subject.command(:info).should be_a(String)
       end
     end
   end

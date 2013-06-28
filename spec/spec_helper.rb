@@ -83,7 +83,8 @@ end
 def terminate_old_actors
   Celluloid::Actor.all.each do |actor|
     next unless actor.alive?
-    if [Eye::Process, Eye::Group, Eye::ChildProcess].include?(actor.class)
+    if [Eye::Controller, Eye::Process, Eye::Group, Eye::ChildProcess].include?(actor.class)
+      next if actor == Eye::Control
       actor.terminate 
     end
   end
