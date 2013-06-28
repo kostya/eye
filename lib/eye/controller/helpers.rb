@@ -10,6 +10,10 @@ module Eye::Controller::Helpers
     all_processes.detect{|c| c.name == name}
   end
 
+  def process_by_full_name(name)
+    all_processes.detect{|c| c.full_name == name }
+  end
+
   def group_by_name(name)
     all_groups.detect{|c| c.name == name}
   end
