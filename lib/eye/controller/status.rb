@@ -28,7 +28,7 @@ module Eye::Controller::Status
 
     str = <<-S
 About:  #{Eye::ABOUT}
-Info:   #{resources_str(Eye::SystemResources.resources($$), false)}
+Info:   #{resources_str(Eye::SystemResources.resources($$))}
 Ruby:   #{RUBY_DESCRIPTION}
 Logger: #{Eye::Logger.dev}
 Socket: #{Eye::Settings::socket_path}
@@ -98,16 +98,11 @@ private
     end
   end
 
-  def resources_str(r, mb = true)
+  def resources_str(r)
     return '' if r.blank?
     
     res = "#{r[:start_time]}, #{r[:cpu]}%"
-
-    if r[:memory]
-      mem = mb ? "#{r[:memory] / 1024}Mb" : "#{r[:memory]}Kb"
-      res += ", #{mem}"
-    end
-
+    res += ", #{r[:memory] / 1024}Mb" if r[:memory]
     res += ", <#{r[:pid]}>"
     
     res
