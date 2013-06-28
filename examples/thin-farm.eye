@@ -16,6 +16,7 @@ Eye.app 'thin-farm' do
 
   triggers :flapping, :times => 10, :within => 1.minute
   checks :memory, :below => 60.megabytes, :every => 30.seconds, :times => 5
+  start_timeout 30.seconds
 
   group :web do
     chain :action => :restart, :grace => 5.seconds
