@@ -45,11 +45,7 @@ class Cli < Thor
 
     if options[:foregraund]
       # in foregraund we stop another server, and run just 1 current config version
-      if configs.size != 1
-        say "foregraund expected only one config", :red
-        exit 1
-      end
-
+      error!("foregraund expected only one config") if configs.size != 1
       server_start_foregraund(configs.first)
 
     elsif server_started?
@@ -146,6 +142,11 @@ class Cli < Thor
 
 private
 
+  def error!(msg)
+    say msg, :red
+    exit 1
+  end
+
   def client
     @client ||= Eye::Client.new(Eye::Settings.socket_path)
   end
@@ -160,11 +161,9 @@ private
     res = _cmd(cmd, *args)
 
     if res == :not_started
-      say "eye monitoring not found, did you start it?", :red
-      exit 1
+      error! "eye monitoring not found, did you start it?"
     elsif res == :timeouted
-      say "eye does not answer, timeouted...", :red
-      exit 1
+      error! "eye does not answer, timeouted..."
     end
     
     res
@@ -175,11 +174,7 @@ private
   end
   
   def say_load_result(res = {}, opts = {})
-    unless res.is_a?(Hash)
-      say(res)
-      exit 1
-    end
-
+    error!(res) unless res.is_a?(Hash)
     say_filename = (res.size > 1)
     say "eye started!", :green if opts[:started]
     res.each do |filename, _res|
@@ -210,11 +205,11 @@ private
   def send_command(_cmd, *args)
     res = cmd(_cmd, *args)
     if res == :unknown_command
-      say "unknown command :#{_cmd}", :red
+      error! "unknown command :#{_cmd}"
     elsif res == :corrupred_marshal
-      say "something crazy wrong, check eye logs!", :red
+      error! "something crazy wrong, check eye logs!"
     elsif res == []
-      say "command :#{_cmd}, targets not found!", :red
+      error! "command :#{_cmd}, targets not found!"
     else
       say "command :#{_cmd} sended to [#{res * ", "}]"
     end        
@@ -225,7 +220,7 @@ private
     if log_file && File.exists?(log_file)
       Process.exec "tail -n 100 -f #{log_file} | grep '#{tag}'"
     else
-      say "log file not found #{log_file.inspect}", :red
+      error! "log file not found #{log_file.inspect}"
     end
   end
   
@@ -248,8 +243,7 @@ private
 
   def ensure_loader_path
     unless loader_path
-      say "start monitoring needs to run under ruby with installed gem 'eye'", :red
-      exit 1
+      error! "start monitoring needs to run under ruby with installed gem 'eye'"
     end
   end
 
@@ -283,8 +277,7 @@ private
     File.open(Eye::Settings.pid_path, 'w'){|f| f.write(pid) }
 
     unless wait_server
-      say "server not runned in 15 seconds, something crazy wrong", :red
-      exit 1
+      error! "server not runned in 15 seconds, something crazy wrong"
     end
 
     configs.unshift(Eye::Settings.eyeconfig) if File.exists?(Eye::Settings.eyeconfig)
