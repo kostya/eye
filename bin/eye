@@ -10,9 +10,7 @@ class Cli < Thor
 
   desc "info [MASK]", "show process statuses"
   def info(mask = nil)
-    res = cmd(:info, mask)
-    puts res if res && !res.empty?
-    puts
+    print cmd(:info, mask)
   end
 
   desc "status ", "show process statuses"
@@ -25,16 +23,12 @@ class Cli < Thor
   method_option :config, :type => :boolean, :aliases => "-c"
   method_option :show_processes, :type => :boolean, :aliases => "-p"
   def xinfo    
-    res = cmd(:xinfo, options[:config], options[:show_processes])
-    puts res if res && !res.empty?
-    puts
+    print cmd(:xinfo, options[:config], options[:show_processes])
   end
 
   desc "oinfo", "onelined info"
   def oinfo
-    res = cmd(:oinfo)
-    puts res if res && !res.empty?
-    puts
+    print cmd(:oinfo)
   end
 
   desc "load [CONF, ...]", "load config (and start server if needed) (-f for foregraund start)"
@@ -145,6 +139,11 @@ private
   def error!(msg)
     say msg, :red
     exit 1
+  end
+
+  def print(msg, new_line = true)
+    say msg if msg && !msg.empty?
+    say if new_line
   end
 
   def client
