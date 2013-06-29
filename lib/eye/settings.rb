@@ -36,11 +36,11 @@ module Eye::Settings
   end
 
   def socket_path
-    path('sock')
+    path(ENV['EYE_SOCK'] || "sock#{ENV['EYE_V']}")
   end
   
   def pid_path
-    path('pid')
+    path(ENV['EYE_PID'] || "pid#{ENV['EYE_V']}")
   end
   
   def client_timeout
