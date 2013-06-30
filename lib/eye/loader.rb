@@ -11,13 +11,3 @@ gem 'state_machine', '< 1.2'
 gem 'activesupport', '~> 3.2.0'
 gem 'i18n'
 gem 'multi_json'
-
-# reel
-gem 'reel', '~> 0.4.0.pre'
-gem 'rack'
-gem 'http'
-gem 'http_parser.rb'
-gem 'certified'
-gem 'websocket_parser'
-
-gem 'cuba'

@@ -1,3 +1,6 @@
+gem 'reel', '~> 0.4.0.pre'
+gem 'cuba'
+
 require 'reel'
 
 class Eye::Http
