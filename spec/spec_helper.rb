@@ -4,9 +4,11 @@ Bundler.require :default
 
 if ENV['COV']
   require 'simplecov'
+  require 'coveralls'
   SimpleCov.start do
     add_filter "/bundle/"
   end
+  Coveralls.wear!
 end
 
 # preload
