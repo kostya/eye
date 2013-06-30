@@ -1,15 +1,12 @@
 require 'rubygems'
 require "bundler/setup"
-require 'celluloid'
+Bundler.require :default
 
 if ENV['COV']
-  require 'simplecov'
   SimpleCov.start do
     add_filter "/bundle/"
   end
 end
-
-Bundler.require :default
 
 # preload
 Eye::Control
