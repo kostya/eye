@@ -1,4 +1,4 @@
 language: ruby
 rvm:
   - "1.9.3"
-script: COV=1 bundle exec rake
+script: COVA=1 bundle exec rake

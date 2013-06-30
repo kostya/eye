@@ -4,10 +4,13 @@ Bundler.require :default
 
 if ENV['COV']
   require 'simplecov'
-  require 'coveralls'
   SimpleCov.start do
     add_filter "/bundle/"
   end
+end
+
+if ENV['COVA']
+  require 'coveralls'
   Coveralls.wear!
 end
 
@@ -77,6 +80,10 @@ RSpec.configure do |config|
 
     # actors = Celluloid::Actor.all.map(&:class)
     # $logger.info "Actors: #{actors.inspect}"
+  end
+
+  config.after(:all) do
+    FakeWeb.allow_net_connect = true
   end
 end
 
