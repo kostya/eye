@@ -3,6 +3,7 @@ require "bundler/setup"
 Bundler.require :default
 
 if ENV['COV']
+  require 'simplecov'
   SimpleCov.start do
     add_filter "/bundle/"
   end
