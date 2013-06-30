@@ -1,7 +1,7 @@
 class Eye::Dsl::Opts < Eye::Dsl::PureOpts
 
   STR_OPTIONS = [ :pid_file, :working_dir, :stdout, :stderr, :stdall, :start_command, 
-    :stop_command, :restart_command ]
+    :stop_command, :restart_command, :uid, :gid ]
   create_options_methods(STR_OPTIONS, String)
 
   BOOL_OPTIONS = [ :daemonize, :keep_alive, :control_pid, :auto_start, :stop_on_delete]
@@ -11,16 +11,13 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     :restart_grace, :stop_grace, :childs_update_period ]
   create_options_methods(INTERVAL_OPTIONS, [Fixnum, Float])
 
-  OTHER_OPTIONS = [ :environment, :stop_signals ]
-  create_options_methods(OTHER_OPTIONS)
+  create_options_methods([:environment], Hash)
+  create_options_methods([:stop_signals], Array)
+  create_options_methods([:umask], Fixnum)
 
 
   def initialize(name = nil, parent = nil)
     super(name, parent)
-
-    # ensure delete subobjects which can appears from parent config
-    @config.delete :groups
-    @config.delete :processes
 
     @config[:application] = parent.name if parent.is_a?(Eye::Dsl::ApplicationOpts)
     @config[:group] = parent.name if parent.is_a?(Eye::Dsl::GroupOpts)
@@ -85,13 +82,23 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     @config[:environment].merge!(value)
   end
 
-  alias :env :environment
+  alias env environment
 
   def set_stdall(value)
     super
 
     set_stdout value
     set_stderr value
+  end
+
+  def set_uid(value)
+    raise Eye::Dsl::Error, ":uid not supported by ruby (needed 2.0)" unless Eye::Settings.supported_setsid?
+    super
+  end
+
+  def set_gid(value)
+    raise Eye::Dsl::Error, ":gid not supported by ruby (needed 2.0)" unless Eye::Settings.supported_setsid?
+    super
   end
 
   def scoped(&block)

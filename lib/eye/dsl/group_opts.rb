@@ -6,6 +6,10 @@ class Eye::Dsl::GroupOpts < Eye::Dsl::Opts
     [:pid_file, :start_command]
   end
 
+  def not_seed_options
+    [:processes, :chain]
+  end
+
   def process(name, &block)
     Eye::Dsl.debug "=> process #{name}"
 
@@ -17,11 +21,8 @@ class Eye::Dsl::GroupOpts < Eye::Dsl::Opts
     Eye::Dsl.debug "<= process #{name}"
   end
 
-  def xprocess(name, &block); end
-
-  def application
-    parent
-  end
-  alias :app :application
+  alias xprocess nop
+  alias application parent
+  alias app application
 
 end

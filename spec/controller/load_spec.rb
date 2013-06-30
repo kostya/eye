@@ -196,17 +196,53 @@ describe "Eye::Controller::Load" do
     subject.load(fixture("dsl/load_dup_ex_names.eye")).should_be_ok
   end
 
+  it "processes with same names in different scopes should not create new processes on just update" do
+    subject.load(fixture("dsl/load_dup_ex_names.eye")).should_be_ok
+    p1 = subject.process_by_full_name('app1:p1:server')
+    p2 = subject.process_by_full_name('app1:p2:server')
+
+    subject.load(fixture("dsl/load_dup_ex_names2.eye")).should_be_ok
+
+    t = subject.short_tree
+    t['app1']['p1']['server'].should match('server1.pid')
+    t['app1']['p2']['server'].should match('server2.pid')
+
+    p12 = subject.process_by_full_name('app1:p1:server')
+    p22 = subject.process_by_full_name('app1:p2:server')
+
+    p12.object_id.should_not == p1.object_id # because of some reasons
+    p22.object_id.should == p2.object_id
+  end
+
+  it "same processes crossed in apps dublicate pids" do
+    subject.load(fixture("dsl/load_dup_ex_names3.eye")).errors_count.should == 1
+  end
+
+  it "same processes crossed in apps" do
+    subject.load(fixture("dsl/load_dup_ex_names4.eye")).should_be_ok
+    p1 = subject.process_by_full_name('app1:gr:server')
+    p2 = subject.process_by_full_name('app2:gr:server')
+    p1.object_id.should_not == p2.object_id
+
+    subject.load(fixture("dsl/load_dup_ex_names4.eye")).should_be_ok
+    p12 = subject.process_by_full_name('app1:gr:server')
+    p22 = subject.process_by_full_name('app2:gr:server')
+    
+    p12.object_id.should == p1.object_id
+    p22.object_id.should == p2.object_id
+  end
+
   describe "configs" do
     after(:each){ set_glogger }
 
     it "load logger" do
       subject.load(fixture("dsl/load_logger.eye")).should_be_ok
-      Eye::Logger.dev.should == "/tmp/1.log"
+      Eye::Logger.dev.should == "/tmp/1.loG"
     end
 
     it "set logger when load multiple configs" do
       subject.load(fixture("dsl/load_logger{,2}.eye")).should_be_ok(2)
-      Eye::Logger.dev.should == "/tmp/1.log"
+      Eye::Logger.dev.should == "/tmp/1.loG"
     end
 
     it "should corrent load config section" do
@@ -280,10 +316,10 @@ describe "Eye::Controller::Load" do
   it "load multiple apps with cross constants" do
     subject.load(fixture('dsl/subfolder{2,3}.eye')).should_be_ok(2)
     subject.process_by_name('e1')[:working_dir].should == '/tmp'
-    subject.process_by_name('e2')[:working_dir].should == 'sub3'
+    subject.process_by_name('e2')[:working_dir].should == '/var'
 
     subject.process_by_name('e3')[:working_dir].should == '/tmp'
-    subject.process_by_name('e4')[:working_dir].should == 'sub2'
+    subject.process_by_name('e4')[:working_dir].should == '/'
   end
 
   it "raised load" do
@@ -332,20 +368,20 @@ describe "Eye::Controller::Load" do
 
   describe "load is exclusive" do
     it "run double in time" do
-      Eye::Control.async.command(:load, fixture("dsl/long_load.eye"))
-      Eye::Control.async.command(:load, fixture("dsl/long_load.eye"))
+      subject.async.command(:load, fixture("dsl/long_load.eye"))
+      subject.async.command(:load, fixture("dsl/long_load.eye"))
       sleep 2.5   
       should_spend(0, 0.2) do
-        Eye::Control.command(:info).should be_a(String)
+        subject.command(:info).should be_a(String)
       end
     end
 
     it "load with subloads" do
       silence_warnings{ 
-        Eye::Control.command(:load, fixture("dsl/subfolder2.eye"))
+        subject.command(:load, fixture("dsl/subfolder2.eye"))
       }
       should_spend(0, 0.2) do
-        Eye::Control.command(:info).should be_a(String)
+        subject.command(:info).should be_a(String)
       end
     end
   end

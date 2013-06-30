@@ -6,6 +6,10 @@ class Eye::Dsl::ApplicationOpts < Eye::Dsl::Opts
     [:pid_file, :start_command]
   end
 
+  def not_seed_options
+    [:groups]
+  end
+
   def group(name, &block) 
     Eye::Dsl.debug "=> group #{name}"
     
@@ -28,6 +32,6 @@ class Eye::Dsl::ApplicationOpts < Eye::Dsl::Opts
     group("__default__"){ process(name.to_s, &block) }
   end
 
-  def xgroup(name, &block); end
-  def xprocess(name, &block); end
+  alias xgroup nop
+  alias xprocess nop
 end

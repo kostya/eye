@@ -4,7 +4,7 @@ module Eye::Settings
   module_function
   
   def dir
-    if Process::UID.eid == 0 # root
+    if root?
       '/var/run/eye'
     else
       File.expand_path(File.join(home, '.eye'))
@@ -12,11 +12,15 @@ module Eye::Settings
   end
 
   def eyeconfig
-    if Process::UID.eid == 0 # root
+    if root?
       '/etc/eye.conf'
     else
       File.expand_path(File.join(home, '.eyeconfig'))
     end
+  end
+
+  def root?
+    Process::UID.eid == 0
   end
 
   def home
@@ -32,15 +36,19 @@ module Eye::Settings
   end
 
   def socket_path
-    path('sock')
+    path(ENV['EYE_SOCK'] || "sock#{ENV['EYE_V']}")
   end
   
   def pid_path
-    path('pid')
+    path(ENV['EYE_PID'] || "pid#{ENV['EYE_V']}")
   end
   
   def client_timeout
     5
+  end
+
+  def supported_setsid?
+    RUBY_VERSION >= '2.0'
   end
 
 end

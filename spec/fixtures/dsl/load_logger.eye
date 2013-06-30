@@ -1,5 +1,5 @@
 Eye.config do
-  logger "/tmp/1.log"
+  logger "/tmp/1.loG"
 end
 
 Eye.application "app1" do

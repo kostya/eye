@@ -35,6 +35,8 @@ private
     { :error => false, :config => yield }
 
   rescue Eye::Dsl::Error, Exception, NoMethodError => ex
+    raise if ex.class.to_s.include?('RR') # skip RR exceptions
+
     error "load: config error <#{filename}>: #{ex.message}"
 
     # filter backtrace for user output

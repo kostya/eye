@@ -59,15 +59,10 @@ private
 
   def quit
     info 'exiting...'
-    delete
     sleep 1
     Eye::System.send_signal($$) # soft terminate
     sleep 2
     Eye::System.send_signal($$, 9)
-  end
-
-  def delete
-    send_command(:delete)
   end
 
 end

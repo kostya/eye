@@ -32,7 +32,7 @@ describe "Subfolder load spec" do
       "subfolder2" => {:name => "subfolder2", :working_dir=>"/tmp", :groups=>{
         "__default__"=>{:name => "__default__", :application => "subfolder2", :working_dir=>"/tmp", :processes=>{
           "e3"=>{:working_dir=>"/tmp", :pid_file=>"e3.pid2", :application=>"subfolder2", :group=>"__default__", :name=>"e3"}, 
-          "e4"=>{:working_dir=>"sub2", :pid_file=>"e4.pid3", :application=>"subfolder2", :group=>"__default__", :name=>"e4"}}}}}}
+          "e4"=>{:working_dir=>"/", :pid_file=>"e4.pid3", :application=>"subfolder2", :group=>"__default__", :name=>"e4"}}}}}}
   end
 
   it "subfolder3" do
@@ -41,7 +41,7 @@ describe "Subfolder load spec" do
       "subfolder3" => {:name => "subfolder3", :working_dir=>"/tmp", :groups=>{
         "__default__"=>{:name => "__default__", :application => "subfolder3", :working_dir=>"/tmp", :processes=>{
           "e1"=>{:working_dir=>"/tmp", :pid_file=>"e1.pid4", :application=>"subfolder3", :group=>"__default__", :name=>"e1"}, 
-          "e2"=>{:working_dir=>"sub3", :pid_file=>"e2.pid5", :application=>"subfolder3", :group=>"__default__", :name=>"e2"}}}}}}
+          "e2"=>{:working_dir=>"/var", :pid_file=>"e2.pid5", :application=>"subfolder3", :group=>"__default__", :name=>"e2"}}}}}}
   end
 
   it "subfolder4" do
