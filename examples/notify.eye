@@ -11,8 +11,9 @@ Eye.application :some do
 
   process :some_process do
     notify :dev, :info
+    pid_file "1.pid"
 
-    ...
+    #...
   end
 
 end
