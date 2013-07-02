@@ -106,10 +106,9 @@ private
           if p.childs.present?
             childs = p.childs.values
             res += childs.select do |ch|
-              if ch.alive?
-                name, full_name = ch.name, ch.full_name
-                name =~ r || full_name =~ r
-              end
+              name = ch.name rescue ''
+              full_name = ch.full_name rescue ''
+              name =~ r || full_name =~ r
             end
           end
 
