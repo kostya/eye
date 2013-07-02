@@ -150,6 +150,10 @@ Check config syntax:
 
     $ eye c(heck) examples/test.eye
 
+Config explain (for debug):
+
+    $ eye e(xplain) examples/test.eye
+
 Log tracing:
 
     $ eye trace 
@@ -160,11 +164,6 @@ Quit monitoring:
 
     $ eye q(uit)
 
-Config explain (for debug):
+### Config options:
 
-    $ eye explain examples/test.eye
-
-
-### Config api:
-
-  Waiting for pull requests ..., until that you can read `examples` and `spec/dsl` folders.
+  Waiting for pull requests here..., until that you can read `examples` and `spec/dsl` folders.
