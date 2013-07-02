@@ -46,14 +46,14 @@ private
   end  
   
   def start_checkers
-    self[:checks].each{|type, cfg| start_checker(cfg) }
+    self[:checks].each{|name, cfg| start_checker(name, cfg) }
   end
 
-  def start_checker(cfg)
+  def start_checker(name, cfg)
     subject = Eye::Checker.create(pid, cfg, logger.prefix)
 
     # ex: {:type => :memory, :every => 5.seconds, :below => 100.megabytes, :times => [3,5]}
-    add_watcher("check_#{cfg[:type]}".to_sym, subject.every, subject, &method(:watcher_tick).to_proc)
+    add_watcher("check_#{name}".to_sym, subject.every, subject, &method(:watcher_tick).to_proc)
   end
 
   def watcher_tick(subject)

@@ -13,6 +13,16 @@ class Eye::Checker
 
   attr_accessor :value, :values, :options, :pid, :type, :check_count
 
+  def self.name_and_class(type)
+    type = type.to_sym
+    return {:name => type, :type => type} if TYPES[type]
+
+    if type =~ /\A(.*?)_?[0-9]+\z/
+      ctype = $1.to_sym
+      return {:name => type, :type => ctype} if TYPES[ctype]
+    end   
+  end
+
   def self.get_class(type)
     klass = eval("Eye::Checker::#{TYPES[type]}") rescue nil
     raise "Unknown checker #{type}" unless klass
