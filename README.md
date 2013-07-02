@@ -1,5 +1,8 @@
-Eye [![Build Status](https://secure.travis-ci.org/kostya/eye.png?branch=master)](http://travis-ci.org/kostya/eye)
+Eye
 ===
+[![Gem Version](https://badge.fury.io/rb/eye.png)](http://rubygems.org/gems/eye)
+[![Build Status](https://secure.travis-ci.org/kostya/eye.png?branch=master)](http://travis-ci.org/kostya/eye)
+[![Coverage Status](https://coveralls.io/repos/kostya/eye/badge.png?branch=master)](https://coveralls.io/r/kostya/eye?branch=master)
 
 Process monitoring tool. An alternative to God and Bluepill. With Bluepill like config syntax. Requires MRI Ruby >= 1.9.3-p194. Uses Celluloid and Celluloid::IO.
 
