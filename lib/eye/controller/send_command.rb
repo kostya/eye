@@ -4,7 +4,9 @@ module Eye::Controller::SendCommand
     matched_objects(*obj_strs) do |obj|
       if command.to_sym == :delete
         remove_object_from_tree(obj) 
-        set_proc_line # to sync proc line if was delete application
+
+        set_proc_line
+        save_cache
       end
 
       obj.send_command(command)

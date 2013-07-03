@@ -6,6 +6,16 @@ module Eye::Controller::Helpers
     $0 = str
   end
 
+  def save_cache
+    File.open(Eye::Settings.cache_path, 'w') { |f| f.write(cache_str) }
+  rescue => ex
+    warn "save cache crashed with #{ex.message}"
+  end
+
+  def cache_str
+    all_processes.map{ |p| "#{p.full_name}=#{p.state}" } * "\n"
+  end
+
   def process_by_name(name)
     all_processes.detect{|c| c.name == name}
   end

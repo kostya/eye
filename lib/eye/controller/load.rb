@@ -22,6 +22,7 @@ module Eye::Controller::Load
     end
 
     set_proc_line
+    save_cache
 
     res
   end

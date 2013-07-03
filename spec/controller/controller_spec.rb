@@ -120,6 +120,12 @@ S
     h.keys.sort.should == ["app1:g4", "app1:g5", "app1:gr1:p1", "app1:gr1:p2", "app1:gr2:q3"]
   end
 
+  it "should save cache file" do
+    FileUtils.rm(Eye::Settings.cache_path) rescue nil
+    subject.load(fixture("dsl/load.eye"))
+    File.size(Eye::Settings.cache_path).should > 100
+  end
+
   it "should delete all apps" do
     subject.load(fixture("dsl/load.eye")).should_be_ok
     subject.send_command(:delete, 'all')
