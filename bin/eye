@@ -33,7 +33,6 @@ class Cli < Thor
 
   desc "load [CONF, ...]", "load config (and start server if needed) (-f for foregraund start)"
   method_option :foregraund, :type => :boolean, :aliases => "-f"
-  method_option :logger, :type => :string, :aliases => "-l"
   def load(*configs)
     configs.map!{ |c| File.expand_path(c) } if !configs.empty?
 
@@ -80,9 +79,7 @@ class Cli < Thor
 
   desc "history TARGET[,...]", "show process states history"
   def history(*targets)
-    res = cmd(:history, *targets)
-    puts res if res && !res.empty?
-    puts
+    print cmd(:history, *targets)
   end
 
   desc "trace [TARGET]", "tracing log for app,group or process"
@@ -266,10 +263,8 @@ private
     Eye::Settings.ensure_eye_dir
 
     ensure_stop_previous_server
-    
-    args = []
-    args += ['-l', options[:logger]] if options[:logger]
 
+    args = []
     pid = Process.spawn(ruby_path, loader_path, *args, :out => '/dev/null', :err => '/dev/null', :in => '/dev/null',
                         :chdir => '/', :pgroup => true)
     Process.detach(pid)
