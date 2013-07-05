@@ -96,10 +96,19 @@ describe "Eye::Dsl notify" do
           :notify=>{"vasya"=>:warn}, :application=>"bla", :processes=>{}}}}}
   end
 
+  it "raise on unknown level" do
+    conf = <<-E
+      Eye.app :bla do
+        notify :vasya, :petya
+      end
+    E
+    expect{ Eye::Dsl.parse(conf) }.to raise_error(Eye::Dsl::Error)
+  end
+
   it "clear notify with nonotify" do
     conf = <<-E
       Eye.app :bla do
-        notify :vasya
+        notify :vasya, :warn
 
         group :bla do
           nonotify :vasya

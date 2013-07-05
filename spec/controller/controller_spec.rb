@@ -99,6 +99,9 @@ S
   it "info_string_debug should be" do
     subject.load(fixture("dsl/load.eye"))
     subject.info_string_debug.split("\n").size.should > 5
+
+    subject.load(fixture("dsl/load.eye"))
+    subject.info_string_debug(true, true).split("\n").size.should > 5
   end
 
   it "info_string_short should be" do

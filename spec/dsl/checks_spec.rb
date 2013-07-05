@@ -131,6 +131,7 @@ describe "Eye::Dsl checks" do
       Eye.application("bla") do
         checks :memory, :below => 100.megabytes, :every => 10.seconds
         nochecks :cpu
+        notriggers :flapping
 
         group :blagr do
           process("1") do
