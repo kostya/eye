@@ -63,32 +63,44 @@ private
     return [] if obj_strs.blank?
     return @applications.dup if obj_strs.size == 1 && (obj_strs[0].strip == 'all' || obj_strs[0].strip == '*')
 
-    res = []
+    res = Eye::Utils::AliveArray.new
     obj_strs.map{|c| c.split(",")}.flatten.each do |mask|
-      res += find_objects_by_mask(mask)
+      res += find_objects_by_mask(mask.to_s.strip)
     end
+    res
+  end
+
+  def find_objects_by_mask(mask)
+    res = find_all_objects_by_mask(mask)
 
     if res.size > 1
-      # remove inherited targets
+      final = Eye::Utils::AliveArray.new
 
-      final = []
+      if mask[-1] != '*'
+        # try to find exactly matched
+        r = right_regexp(mask)
+        res.each do |obj|
+          final << obj if obj.full_name =~ r
+        end
+      end
+
+      return final if final.present?
+
+      # remove inherited targets
       res.each do |obj|
         sub_object = res.any?{|a| a.sub_object?(obj) }
         final << obj unless sub_object
       end
 
       res = final
-    end
+    end    
 
-    res.present? ? Eye::Utils::AliveArray.new(res) : []
+    res
   end
 
-  def find_objects_by_mask(mask)
-    mask.strip!
-
-    res = []
-    str = Regexp.escape(mask).gsub('\*', '.*?')
-    r = %r{\A#{str}}
+  def find_all_objects_by_mask(mask)
+    res = Eye::Utils::AliveArray
+    r = left_regexp(mask)
 
     # find app
     res = @applications.select{|a| a.name =~ r || a.full_name =~ r }
@@ -121,4 +133,13 @@ private
     res
   end
 
+  def left_regexp(mask)
+    str = Regexp.escape(mask).gsub('\*', '.*?')
+    %r|\A#{str}|
+  end
+
+  def right_regexp(mask)
+    str = Regexp.escape(mask).gsub('\*', '.*?')
+    %r|#{str}\z|
+  end
 end

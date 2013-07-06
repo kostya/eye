@@ -2,7 +2,8 @@ class Eye::Utils::AliveArray
   extend Forwardable
   include Enumerable
 
-  def_delegators :@arr, :[], :<<, :clear, :delete, :size, :empty?, :push, :flatten
+  def_delegators :@arr, :[], :<<, :clear, :delete, :size, :empty?, :push, 
+                        :flatten, :present?, :uniq!
 
   def initialize(arr = [])
     @arr = arr
@@ -26,6 +27,27 @@ class Eye::Utils::AliveArray
 
   def sort_by(&block)
     self.class.new super
+  end
+
+  def +(other)
+    if other.is_a?(Eye::Utils::AliveArray)
+      @arr += other.pure
+    elsif other.is_a?(Array)
+      @arr += other
+    else
+      raise "Unexpected + #{other}"
+    end
+    self
+  end
+
+  def ==(other)
+    if other.is_a?(Eye::Utils::AliveArray)
+      @arr == other.pure
+    elsif other.is_a?(Array)
+      @arr == other
+    else
+      raise "Unexpected == #{other}"
+    end
   end
 
 end
