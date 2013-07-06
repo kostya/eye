@@ -53,6 +53,10 @@ module Eye::Process::Scheduler
   def scheduler_actions_list
     scheduler.list.map{|c| c[:args].first rescue nil }.compact
   end
+
+  def scheduler_clear_pending_list
+    scheduler.clear_pending_list
+  end
   
   def self.included(base)
     base.finalizer :remove_scheduler
