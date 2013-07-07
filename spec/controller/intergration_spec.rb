@@ -3,7 +3,8 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "Intergration" do
   before :each do
     @c = Eye::Controller.new
-    res = @c.load(fixture("dsl/integration.eye"))
+    res = nil
+    with_erb_file(fixture("dsl/integration.erb")) { |f| res = @c.load(f) }
     Marshal.dump(res).should_not include("ActiveSupport")
     @processes = @c.all_processes
     @p1 = @processes.detect{|c| c.name == 'sample1'}
@@ -16,7 +17,9 @@ describe "Intergration" do
     @processes.map{|c| c.state_name}.uniq.should == [:up]
     @childs = @p3.childs.keys rescue []
 
-    @c.info_string.split("\n").size.should == 8
+    s = @c.info_string.split("\n").size
+    s.should >= 6
+    s.should <= 8
     @c.info_string.strip.size.should > 100
   end
 
@@ -159,6 +162,10 @@ describe "Intergration" do
       sleep 3
 
       # in the middle of the process, we kill all processes
+      @old_pid1 = @p1.pid
+      @old_pid2 = @p2.pid
+      @old_pid3 = @p3.pid
+
       @p1.terminate
       @p2.terminate
 

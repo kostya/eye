@@ -126,7 +126,7 @@ S
   it "should save cache file" do
     FileUtils.rm(Eye::Settings.cache_path) rescue nil
     subject.load(fixture("dsl/load.eye"))
-    File.size(Eye::Settings.cache_path).should > 100
+    File.exists?(Eye::Settings.cache_path).should be_true
   end
 
   it "should delete all apps" do

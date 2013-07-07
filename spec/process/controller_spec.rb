@@ -40,7 +40,7 @@ describe "Process Controller" do
   describe "unmonitor" do
     [C.p1, C.p2].each do |cfg|
       it "should just forget about any process #{cfg[:name]}" do
-        start_ok_process
+        start_ok_process(cfg)
         old_pid = @process.pid
 
         @process.unmonitor

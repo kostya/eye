@@ -74,6 +74,7 @@ module Sample
     STDOUT.reopen(log_file, "a")
     STDERR.reopen(log_file, "a")
     File.open(pid_file, 'w'){|f| f.write $$.to_s}
+    File.open(ENV['FAILSAFE_PID_FILE'], 'w'){|f| f.write $$.to_s} if ENV['FAILSAFE_PID_FILE']
 
     puts "daemonized"
   end

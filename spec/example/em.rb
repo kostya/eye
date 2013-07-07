@@ -1,5 +1,6 @@
 require 'bundler/setup'
 require 'eventmachine'
+require 'fileutils'
 
 def answer(data)
   case data
@@ -46,12 +47,15 @@ end
 
 trap "TERM" do
   EM.stop
-  `rm /tmp/em_test_sock_spec` rescue nil
+   FileUtils.rm($sock) rescue nil
 end
 
 EM.run do
-  EM.start_server '127.0.0.1', 33231, Echo
-  EM.start_server '127.0.0.1', 33232, EchoObj
-  EM.start_server "/tmp/em_test_sock_spec", nil, Echo
+  $port1 = (ARGV[0] || 33231).to_i
+  $port2 = (ARGV[1] || 33232).to_i
+  $sock = (ARGV[2] || "/tmp/em_test_sock_spec")
+  EM.start_server '127.0.0.1', $port1, Echo
+  EM.start_server '127.0.0.1', $port2, EchoObj
+  EM.start_server $sock, nil, Echo
   puts 'started'
 end

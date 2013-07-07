@@ -4,7 +4,7 @@ describe "Some crazey situations" do
 
   before :each do
     @c = Eye::Controller.new
-    @c.load(fixture("dsl/integration.eye"))
+    with_erb_file(fixture("dsl/integration.erb")) { |f| @c.load(f) }
     @processes = @c.all_processes
     @p1 = @processes.detect{|c| c.name == 'sample1'}
     @p2 = @processes.detect{|c| c.name == 'sample2'}
@@ -42,7 +42,8 @@ describe "Some crazey situations" do
     @old_pid2 = @p2.pid
     @old_pid3 = @p3.pid
 
-    @c.load(fixture("dsl/integration2.eye"))
+    with_erb_file(fixture("dsl/integration2.erb")) { |f| @c.load(f) }
+
     sleep 10
 
     # @p1, @p2 recreates

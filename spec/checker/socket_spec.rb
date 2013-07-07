@@ -2,18 +2,22 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 def chsock(cfg = {})
   Eye::Checker.create(nil, {:type => :socket, :every => 5.seconds,
-        :times => 1, :addr => 'tcp://127.0.0.1:33231', :send_data => "ping",
+        :times => 1, :addr => "tcp://127.0.0.1:#{C.p4_ports[0]}", :send_data => "ping",
         :expect_data => /pong/, :timeout => 2}.merge(cfg))
 end
 
 def chsockb(cfg = {})
   Eye::Checker.create(nil, {:type => :socket, :every => 5.seconds,
-        :times => 1, :addr => 'tcp://127.0.0.1:33232', :protocol => :em_object, :send_data => {},
+        :times => 1, :addr => "tcp://127.0.0.1:#{C.p4_ports[1]}", :protocol => :em_object, :send_data => {},
         :expect_data => /pong/, :timeout => 2}.merge(cfg))
 end
 
 describe "Socket Checker" do
-  %w[ tcp://127.0.0.1:33231 unix:/tmp/em_test_sock_spec].each do |addr|
+  after :each do
+    FileUtils.rm(C.p4_sock) rescue nil
+  end
+
+  ["tcp://127.0.0.1:#{C.p4_ports[0]}", "unix:#{C.p4_sock}"].each do |addr|
     describe "socket: '#{addr}'" do
       before :each do
         start_ok_process(C.p4)
@@ -45,7 +49,7 @@ describe "Socket Checker" do
 
       it "socket not found" do
         @process.stop
-        c = chsock(:addr => addr.chop)
+        c = chsock(:addr => addr + "111")
         if addr =~ /tcp/
           c.get_value.should == {:exception => "Error<Connection refused - connect(2)>"}
         else
@@ -61,7 +65,7 @@ describe "Socket Checker" do
       end
 
       it "check responding without send_data" do
-        c = chsock(:addr => addr.chop, :send_data => nil, :expect_data => nil)
+        c = chsock(:addr => addr + "111", :send_data => nil, :expect_data => nil)
         if addr =~ /tcp/
           c.get_value.should == {:exception => "Error<Connection refused - connect(2)>"}
         else

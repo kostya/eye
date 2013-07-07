@@ -5,12 +5,16 @@ module C
     File.expand_path(File.join(File.dirname(__FILE__), %w{.. example}))
   end
 
-  def pid_name
-    "1.pid"
+  def log_name
+    "1111#{process_id}.log"
   end
 
-  def log_name
-    "1111.log"
+  def [](c)
+    p[c]
+  end
+
+  def p
+    {1 => p1, 2 => p2, 3 => p3, 4 => p4, 5 => p5}
   end
 
   def base
@@ -20,7 +24,6 @@ module C
       :application => "main",
       :group => "default",
       :name => "base",
-      :pid_file => sample_dir + "/#{pid_name}",
       :stdout => sample_dir + "/#{log_name}",
       :stderr => sample_dir + "/#{log_name}",
       :check_alive_period => 1.seconds,
@@ -29,9 +32,22 @@ module C
     }
   end
 
+  def just_pid
+    sample_dir + "/aaa#{process_id}.pid"
+  end
+
   # eye daemonize process
+  def p1_pid
+    "1#{process_id}.pid"
+  end
+
+  def p1_lock
+    sample_dir + "/lock1#{process_id}.lock"
+  end
+
   def p1
     base.merge(
+      :pid_file => sample_dir + "/#{p1_pid}",
       :name => "blocking process",
       :start_command => "ruby sample.rb",
       :daemonize => true
@@ -39,20 +55,34 @@ module C
   end
 
   # self daemonized process
+  def p2_pid
+    "2#{process_id}.pid"
+  end
+
+  def p2_lock
+    sample_dir + "/lock2#{process_id}.lock"
+  end
+
   def p2
     base.merge(
+      :pid_file => sample_dir + "/#{p2_pid}",
       :name => "self daemonized process",
-      :start_command => "ruby sample.rb -d --pid #{pid_name} --log #{log_name}",
+      :start_command => "ruby sample.rb -d --pid #{p2_pid} --log #{log_name}",
     )
   end
 
   # forking example
+  def p3_pid
+    "forking#{process_id}.pid"
+  end
+
   def p3
     base.merge(
+      :environment => {"PID_NAME" => p3_pid},
       :name => "forking",
       :start_command => "ruby forking.rb start",
       :stop_command => "ruby forking.rb stop",
-      :pid_file => "forking.pid",
+      :pid_file => sample_dir + "/" + p3_pid,
       :childs_update_period => Eye::SystemResources::PsAxActor::UPDATE_INTERVAL + 1,
       :stop_timeout => 5.seconds,
       :start_timeout => 15.seconds
@@ -60,11 +90,19 @@ module C
   end
 
   # event machine
+  def p4_ports
+    [33231 + process_id * 2, 33232 + process_id * 2]
+  end
+
+  def p4_sock
+    "/tmp/em_test_sock_spec#{process_id}"
+  end
+
   def p4
     base.merge(
-      :pid_file => "em.pid",
+      :pid_file => "#{sample_dir}/em#{process_id}.pid",
       :name => "em",
-      :start_command => "ruby em.rb",
+      :start_command => "ruby em.rb #{p4_ports[0]} #{p4_ports[1]} #{p4_sock}",
       :daemonize => true,
       :start_grace => 3.5,
       :stop_grace => 0.5
@@ -72,11 +110,19 @@ module C
   end
 
   # thin
+  def p5_port
+    33334 + process_id
+  end
+
+  def p5_pid
+    "thin#{process_id}.pid"
+  end
+
   def p5
     base.merge(
-      :pid_file => "thin.pid",
+      :pid_file => sample_dir + "/" + p5_pid,
       :name => "thin",
-      :start_command => "bundle exec thin start -R thin.ru -p 33233 -l thin.log -P thin.pid",
+      :start_command => "bundle exec thin start -R thin.ru -p #{p5_port} -l thin.log -P #{p5_pid}",
       :daemonize => true,
     )
   end
@@ -108,7 +154,7 @@ module C
 
   def check_sock(a = {})
     {:socket => {:type => :socket, :every => 5.seconds,
-     :times => 1, :addr => 'tcp://127.0.0.1:33231', :send_data => "ping",
+     :times => 1, :addr => "tcp://127.0.0.1:#{p4_ports[0]}", :send_data => "ping",
      :expect_data => /pong/, :timeout => 2}.merge(a)
     }
   end
@@ -126,7 +172,7 @@ module C
   end
 
   def socket_path
-    File.join(sample_dir, 'sock1')
+    File.join(sample_dir, "sock1#{process_id}")
   end
 
 end
@@ -171,10 +217,6 @@ def die_process!(pid, signal = :term, int = 0.2)
   Eye::System.send_signal(pid, signal)
   sleep int.to_f
   Eye::System.pid_alive?(pid).should == false
-end
-
-def ensure_kill_samples
-  `ps aux | grep 'ruby sample.rb' | awk '{print $2}' | xargs kill -2 2>/dev/null` rescue nil
 end
 
 require_relative 'rr_celluloid'

@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "StopOnDelete behaviour" do
   before :each do
     @c = Eye::Controller.new
-    @c.load(fixture("dsl/integration_sor.eye"))
+    with_erb_file(fixture("dsl/integration_sor.erb")){|f| @c.load(f) }
     @processes = @c.all_processes
     @p1 = @processes.detect{|c| c.name == 'sample1'}
     @p2 = @processes.detect{|c| c.name == 'sample2'}
@@ -96,7 +96,8 @@ describe "StopOnDelete behaviour" do
   end
 
   it "load config when 1 process deleted, it should stopped" do
-    @c.load(fixture("dsl/integration_sor2.eye"))
+    with_erb_file(fixture("dsl/integration_sor2.erb")) { |f| @c.load(f) }
+
     sleep 10
 
     procs = @c.all_processes
@@ -120,7 +121,10 @@ describe "StopOnDelete behaviour" do
   end
 
   it "load another config, with same processes but changed names" do
-    @c.load(fixture("dsl/integration_sor3.eye"))
+    with_erb_file(fixture("dsl/integration_sor3.erb")) do |f|
+      res = @c.load(f)
+    end
+
     sleep 15
 
     # @p1, @p2 recreates
