@@ -227,6 +227,11 @@ describe "find_objects" do
       objs = subject.find_objects("one")
       objs.map(&:full_name).sort.should == %w{app5:one app6:one} # maybe not good
     end
+
+    it "when exactly matched object and subobject" do
+      objs = subject.find_objects("serv")
+      objs.map(&:full_name).sort.should == %w{app5:serv}
+    end
   end
 
 end

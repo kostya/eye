@@ -84,7 +84,8 @@ private
         end
       end
 
-      return final if final.present?
+      res = final if final.present?
+      final = Eye::Utils::AliveArray.new
 
       # remove inherited targets
       res.each do |obj|
