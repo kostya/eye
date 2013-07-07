@@ -40,19 +40,19 @@ class Eye::Process::StatesHistory < Eye::Utils::Tail
   end
 
   def any?(*seq)
-    states.any? do |st|      
+    states.any? do |st|
       seq.flatten.include?(st)
     end
   end
 
   def noone?(*seq)
-    !states.all? do |st|      
+    !states.all? do |st|
       seq.flatten.include?(st)
     end
   end
 
   def all?(*seq)
-    states.all? do |st|      
+    states.all? do |st|
       seq.flatten.include?(st)
     end
   end

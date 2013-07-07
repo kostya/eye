@@ -29,7 +29,7 @@ module Eye::System
 
     # Send signal to process (uses for kill)
     # code: TERM(15), KILL(9), QUIT(3), ...
-    def send_signal(pid, code = :TERM)      
+    def send_signal(pid, code = :TERM)
       code = 0 if code == '0'
       if code.to_s.to_i != 0
         code = code.to_i
@@ -38,7 +38,7 @@ module Eye::System
       code = code.to_s.upcase if code.is_a?(String) || code.is_a?(Symbol)
 
       if pid
-        ::Process.kill(code, pid) 
+        ::Process.kill(code, pid)
         {:result => :ok}
       else
         {:error => Exception.new('no_pid')}
@@ -59,7 +59,7 @@ module Eye::System
       pid  = Process::spawn(prepare_env(cfg), *Shellwords.shellwords(cmd), opts)
       Process.detach(pid)
       {:pid => pid}
-      
+
     rescue Errno::ENOENT, Errno::EACCES => ex
       {:error => ex}
     end
@@ -90,7 +90,7 @@ module Eye::System
     rescue Errno::ENOENT, Errno::EACCES => ex
       {:error => ex}
 
-    ensure 
+    ensure
       Process.detach(pid) if pid
     end
 
@@ -102,7 +102,7 @@ module Eye::System
       h = {}
       str.each_line do |line|
         chunk = line.strip.split(/\s+/)
-        h[chunk[0].to_i] = { :ppid => chunk[1].to_i, :cpu => chunk[2].to_i, 
+        h[chunk[0].to_i] = { :ppid => chunk[1].to_i, :cpu => chunk[2].to_i,
           :rss => chunk[3].to_i, :start_time => chunk[4] }
       end
       h

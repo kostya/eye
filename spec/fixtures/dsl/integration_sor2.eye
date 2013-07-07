@@ -21,7 +21,7 @@ Eye.app("int") do
       pid_file "3.pid"
       start_command "ruby sample.rb"
       daemonize true
-    end    
+    end
   end
 
 end

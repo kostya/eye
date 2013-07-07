@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
 describe "Eye::SystemResources" do
-    
+
   it "should get memory" do
     x = Eye::SystemResources.memory($$)
     x.should > 100

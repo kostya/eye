@@ -24,7 +24,7 @@ class Echo < EM::Connection
 
   def unbind
      puts "-- someone disconnected from the echo server!"
-  end  
+  end
 end
 
 class EchoObj < EM::Connection
@@ -41,7 +41,7 @@ class EchoObj < EM::Connection
 
   def unbind
     puts "-- someone disconnected from the echo server!"
-  end  
+  end
 end
 
 trap "QUIT" do

@@ -6,8 +6,8 @@ module Eye::Controller::Commands
 
     start_at = Time.now
     cmd = cmd.to_sym
-    
-    res = case cmd 
+
+    res = case cmd
       when :start, :stop, :restart, :unmonitor, :monitor
         send_command(cmd, *args)
       when :delete
@@ -47,12 +47,12 @@ module Eye::Controller::Commands
 
       else
         :unknown_command
-    end   
+    end
 
     GC.start
     info "client command: #{cmd} #{args * ', '} (#{Time.now - start_at}s)"
 
-    res  
+    res
   end
 
 private

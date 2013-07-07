@@ -13,7 +13,7 @@ module Eye::Process::Notify
 
     # send notifies
     if self[:notify].present?
-      message = {:message => msg, :name => name, 
+      message = {:message => msg, :name => name,
         :full_name => full_name, :pid => pid, :host => Eye::System.host, :level => level,
         :at => Time.now }
 

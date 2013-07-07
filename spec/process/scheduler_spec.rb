@@ -15,7 +15,7 @@ class Eye::Process
     @test2 = [a, b]
   end
 
-  def scheduler_test3(*args)    
+  def scheduler_test3(*args)
     @test3 = args
   end
 
@@ -46,7 +46,7 @@ describe "Scheduler" do
     @process.schedule :scheduler_test1, 1
     @process.schedule :scheduler_test2, 1, 2
 
-    sleep 0.4 
+    sleep 0.4
     @process.test1.should == 1
     @process.test2.should == nil
 
@@ -61,8 +61,8 @@ describe "Scheduler" do
 
     @process.schedule :scheduler_test2, 1, 2
     @process.schedule :scheduler_test1, 1
-    
-    sleep 0.4 
+
+    sleep 0.4
     @process.test1.should == nil
     @process.test2.should == nil
 

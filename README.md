@@ -21,7 +21,7 @@ Config example, shows some typical processes and most of the options (see in exa
 examples/test.eye
 ```ruby
 # load submodules, here just for example
-Eye.load("./eye/*.rb") 
+Eye.load("./eye/*.rb")
 
 # Eye self-configuration section
 Eye.config do
@@ -71,13 +71,13 @@ Eye.application "test" do
 
     start_timeout 5.seconds
     stop_grace 5.seconds
-  
+
     monitor_children do
       restart_command "kill -2 {PID}" # for this child process
       checks :memory, :below => 300.megabytes, :times => 3
     end
   end
-  
+
   # eventmachine process, daemonized with eye
   process :event_machine do |p|
     pid_file 'em.pid'
@@ -85,8 +85,8 @@ Eye.application "test" do
     stdout 'em.log'
     daemonize true
     stop_signals [:QUIT, 2.seconds, :KILL]
-    
-    checks :socket, :addr => "tcp://127.0.0.1:33221", :every => 10.seconds, :times => 2, 
+
+    checks :socket, :addr => "tcp://127.0.0.1:33221", :every => 10.seconds, :times => 2,
                     :timeout => 1.second, :send_data => "ping", :expect_data => /pong/
   end
 
@@ -96,7 +96,7 @@ Eye.application "test" do
     start_command "bundle exec thin start -R thin.ru -p 33233 -d -l thin.log -P thin.pid"
     stop_signals [:QUIT, 2.seconds, :TERM, 1.seconds, :KILL]
 
-    checks :http, :url => "http://127.0.0.1:33233/hello", :pattern => /World/, :every => 5.seconds, 
+    checks :http, :url => "http://127.0.0.1:33233/hello", :pattern => /World/, :every => 5.seconds,
                   :times => [2, 3], :timeout => 1.second
   end
 
@@ -117,12 +117,12 @@ Load also uses for config synchronization and load new application into runned e
 
 
 Process statuses:
-  
+
     $ eye i(nfo)
 
 ```
-test                       
-  samples                          
+test
+  samples
     sample1 ....................... up  (21:52, 0%, 13Mb, <4107>)
     sample2 ....................... up  (21:52, 0%, 12Mb, <4142>)
   event_machine ................... up  (21:52, 3%, 26Mb, <4112>)
@@ -134,7 +134,7 @@ test
 ```
 
 ### Commands:
-    
+
     start, stop, restart, delete, monitor, unmonitor
 
 Command params (with restart for example):
@@ -159,7 +159,7 @@ Config explain (for debug):
 
 Log tracing:
 
-    $ eye trace 
+    $ eye trace
     $ eye tr test
     $ eye tr sample
 

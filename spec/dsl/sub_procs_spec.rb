@@ -8,7 +8,7 @@ describe "sub procs" do
       end
 
       Eye.application("bla") do
-        include proc        
+        include proc
       end
     E
     Eye::Dsl.parse_apps(conf).should == {"bla" => {:working_dir=>"/tmp", :name => "bla"}}
@@ -34,7 +34,7 @@ describe "sub procs" do
       end
 
       Eye.application("bla") do
-        include proc        
+        include proc
       end
     E
     Eye::Dsl.parse_apps(conf).should == {"bla" => {:working_dir=>"/tmp", :name => "bla"}}
@@ -81,8 +81,8 @@ describe "sub procs" do
 
   it "include part of code" do
     Eye::Dsl.parse_apps(nil, fixture("dsl/include_test.eye")).should == {
-      "test" => {:name=>"test", :environment=>{"a"=>"b"}, 
-      :groups=>{"__default__"=>{:name=>"__default__", :environment=>{"a"=>"b"}, :application=>"test", 
+      "test" => {:name=>"test", :environment=>{"a"=>"b"},
+      :groups=>{"__default__"=>{:name=>"__default__", :environment=>{"a"=>"b"}, :application=>"test",
       :processes=>{"bla"=>{:name=>"bla", :environment=>{"a"=>"b"}, :application=>"test", :group=>"__default__", :pid_file=>"10"}}}}}}
   end
 

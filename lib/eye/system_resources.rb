@@ -31,8 +31,8 @@ class Eye::SystemResources
     def resources(pid)
       return {} unless ps_aux[pid]
 
-      { :memory => memory(pid), 
-        :cpu => cpu(pid), 
+      { :memory => memory(pid),
+        :cpu => cpu(pid),
         :start_time => start_time(pid),
         :pid => pid
       }
@@ -42,14 +42,14 @@ class Eye::SystemResources
     def setup
       @actor ||= PsAxActor.new
     end
-    
+
   private
 
     def reset!
       setup.terminate
       @actor = nil
     end
-  
+
     def ps_aux
       setup
       @actor.get

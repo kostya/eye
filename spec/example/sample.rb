@@ -14,19 +14,19 @@ optparse = OptionParser.new do|opts|
     exit
   end
 
-  opts.on( '-p', '--pid FILE', 'pid_file' ) do |a| 
+  opts.on( '-p', '--pid FILE', 'pid_file' ) do |a|
     options[:pid_file] = a
   end
 
-  opts.on( '-l', '--log FILE', 'log_file' ) do |a| 
+  opts.on( '-l', '--log FILE', 'log_file' ) do |a|
     options[:log_file] = a
   end
 
-  opts.on( '-L', '--lock FILE', 'lock_file' ) do |a| 
+  opts.on( '-L', '--lock FILE', 'lock_file' ) do |a|
     options[:lock_file] = a
   end
 
-  opts.on( '-d', '--daemonize', 'Daemonize' ) do 
+  opts.on( '-d', '--daemonize', 'Daemonize' ) do
     options[:daemonize] = true
   end
 
@@ -34,7 +34,7 @@ optparse = OptionParser.new do|opts|
     options[:daemonize_delay] = d
   end
 
-  opts.on( '-r', '--raise', 'Raised execution' ) do 
+  opts.on( '-r', '--raise', 'Raised execution' ) do
     options[:raise] = true
   end
 

@@ -6,11 +6,11 @@ class Hash
 
   def ok_count
     self.values.count{ |res| !res[:error] }
-  end  
+  end
 
   def errors_count
     self.size - self.ok_count
-  end  
+  end
 
   def only_value
     if self.size == 1

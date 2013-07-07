@@ -22,7 +22,7 @@ class Cli < Thor
   desc "xinfo", "extended eye info, debug data"
   method_option :config, :type => :boolean, :aliases => "-c"
   method_option :show_processes, :type => :boolean, :aliases => "-p"
-  def xinfo    
+  def xinfo
     print cmd(:xinfo, options[:config], options[:show_processes])
   end
 
@@ -59,7 +59,7 @@ class Cli < Thor
 
     say "stopped...", :yellow
   end
-  
+
   [:start, :stop, :restart, :unmonitor, :monitor, :delete, :match].each do |_cmd|
     desc "#{_cmd} MASK[,...]", "#{_cmd} app,group or process"
     define_method(_cmd) do |*targets|
@@ -100,7 +100,7 @@ class Cli < Thor
 
     Eye::System.host = options[:host] if options[:host]
     Eye::Dsl.verbose = options[:verbose]
-    
+
     if RUBY_VERSION < '1.9'
       say_load_result cmd(:check, conf), :syntax => true
     else
@@ -152,7 +152,7 @@ private
   rescue Errno::ECONNREFUSED, Errno::ENOENT
     :not_started
   end
-  
+
   def cmd(cmd, *args)
     res = _cmd(cmd, *args)
 
@@ -161,14 +161,14 @@ private
     elsif res == :timeouted
       error! "eye does not answer, timeouted..."
     end
-    
+
     res
   end
-  
+
   def server_started?
     _cmd(:ping) == :pong
   end
-  
+
   def say_load_result(res = {}, opts = {})
     error!(res) unless res.is_a?(Hash)
     say_filename = (res.size > 1)
@@ -197,7 +197,7 @@ private
       end
     end
   end
- 
+
   def send_command(_cmd, *args)
     res = cmd(_cmd, *args)
     if res == :unknown_command
@@ -208,7 +208,7 @@ private
       error! "command :#{_cmd}, targets not found!"
     else
       say "command :#{_cmd} sended to [#{res * ", "}]"
-    end        
+    end
   end
 
   def log_trace(tag = '')
@@ -219,7 +219,7 @@ private
       error! "log file not found #{log_file.inspect}"
     end
   end
-  
+
   def loader_path
     if RUBY_VERSION < '1.9'
       begin
@@ -230,8 +230,8 @@ private
 
     filename = File.expand_path(File.join(File.dirname(__FILE__), %w[loader_eye]))
     File.exists?(filename) ? filename : nil
-  end  
-  
+  end
+
   def ruby_path
     require 'rbconfig'
     RbConfig::CONFIG['bindir'] + "/ruby"

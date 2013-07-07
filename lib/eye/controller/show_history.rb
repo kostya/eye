@@ -23,9 +23,9 @@ private
 
   def get_processes_for_history(*obj_strs)
     res = []
-    matched_objects(*obj_strs) do |obj| 
+    matched_objects(*obj_strs) do |obj|
       if (obj.is_a?(Eye::Process) || obj.is_a?(Eye::ChildProcess))
-        res << obj 
+        res << obj
       else
         res += obj.processes.to_a
       end

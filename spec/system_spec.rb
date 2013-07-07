@@ -4,8 +4,8 @@ describe "Eye::System" do
 
   it "pid_alive?" do
     Eye::System.pid_alive?($$).should == true
-    Eye::System.pid_alive?(123456).should == false    
-    Eye::System.pid_alive?(-122).should == false    
+    Eye::System.pid_alive?(123456).should == false
+    Eye::System.pid_alive?(-122).should == false
     Eye::System.pid_alive?(nil).should == false
   end
 
@@ -30,7 +30,7 @@ describe "Eye::System" do
 
   it "prepare env" do
     Eye::System.send(:prepare_env, {}).should include({})
-    Eye::System.send(:prepare_env, {:environment => {'A' => 'B'}}).should include({'A' => 'B'})    
+    Eye::System.send(:prepare_env, {:environment => {'A' => 'B'}}).should include({'A' => 'B'})
     Eye::System.send(:prepare_env, {:environment => {'A' => 'B'}, :working_dir => "/tmp"}).should include({'A' => 'B', 'PWD' => '/tmp'})
 
     r = Eye::System.send(:prepare_env, {:environment => {'A' => [], 'B' => {}, 'C' => nil, 'D' => 1, 'E' => '2'}})
@@ -49,7 +49,7 @@ describe "Eye::System" do
 
   describe "daemonize" do
     it "daemonize default" do
-      @pid = Eye::System.daemonize("ruby sample.rb", {:environment => {"ENV1" => "SECRET1", 'BLA' => {}}, 
+      @pid = Eye::System.daemonize("ruby sample.rb", {:environment => {"ENV1" => "SECRET1", 'BLA' => {}},
         :working_dir => C.p1[:working_dir], :stdout => @log})[:pid]
 
       @pid.should > 0
@@ -58,7 +58,7 @@ describe "Eye::System" do
       Eye::System.pid_alive?(@pid).should == true
 
       sleep 4
-      
+
       # should capture log
       data = File.read(@log)
       data.should include("SECRET1")
@@ -120,7 +120,7 @@ describe "Eye::System" do
       sleep 4
 
       Eye::System.send_signal(@pid, :usr1)[:result].should == :ok
-      
+
       sleep 0.5
 
       data = File.read(@log)
@@ -151,9 +151,9 @@ describe "Eye::System" do
 
       mock(Process).kill(9, 123)
       Eye::System.send_signal(123, -9)
-      
+
       mock(Process).kill(0, 123)
-      Eye::System.send_signal(123, '0')                  
+      Eye::System.send_signal(123, '0')
     end
   end
 

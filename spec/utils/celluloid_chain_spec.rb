@@ -28,7 +28,7 @@ end
 describe "Eye::Utils::CelluloidChain" do
   before :each do
     @t = TestActor.new
-    @c = Eye::Utils::CelluloidChain.new(@t)    
+    @c = Eye::Utils::CelluloidChain.new(@t)
   end
 
   it "should chain" do
@@ -86,7 +86,7 @@ describe "Eye::Utils::CelluloidChain" do
 
     sleep 0.4
     @t.m.should == [:a, :b]
-  end 
+  end
 
   it "#clear_pending_list" do
     10.times{ @c.add :a }

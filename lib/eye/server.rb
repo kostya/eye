@@ -3,9 +3,9 @@ require 'celluloid/autostart'
 
 class Eye::Server
   include Celluloid::IO
-  
+
   attr_reader :socket_path, :server
-  
+
   def initialize(socket_path)
     @socket_path = socket_path
     @server = begin
@@ -24,11 +24,11 @@ class Eye::Server
     command, *args = socket.readline.strip.split('|')
     response = command(command, *args)
     socket.write(Marshal.dump(response))
-    
+
   rescue Errno::EPIPE
     # client timeouted
     # do nothing
-    
+
   ensure
     socket.close
   end
@@ -43,7 +43,7 @@ class Eye::Server
   end
 
   finalizer :close_socket
-  
+
   def close_socket
     @server.close if @server
     unlink_socket_file

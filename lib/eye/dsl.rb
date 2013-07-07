@@ -27,13 +27,13 @@ class Eye::Dsl
     def parse(content = nil, filename = nil)
       Eye.parsed_config = Eye::Config.new
       Eye.parsed_filename = filename
-      
+
       content = File.read(filename) if content.blank?
-      
+
       silence_warnings do
         Kernel.eval(content, Eye::BINDING, filename.to_s)
       end
-      
+
       Eye.parsed_config.validate!
       Eye.parsed_config
     end

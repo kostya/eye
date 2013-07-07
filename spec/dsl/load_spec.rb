@@ -6,20 +6,20 @@ describe "Subfolder load spec" do
     f = fixture("dsl/subfolder1/proc1.rb")
     conf = <<-E
       Eye.load("#{f}")
-      Eye.application("bla") do        
+      Eye.application("bla") do
         proc1(self, "e1")
       end
     E
     Eye::Dsl.parse_apps(conf).should == {"bla" => {:name => "bla", :groups=>{
       "__default__"=>{:name => "__default__", :application => "bla", :processes=>{
-        "e1"=>{:pid_file=>"e1.pid", :application=>"bla", :group=>"__default__", :name=>"e1"}}}}}}    
+        "e1"=>{:pid_file=>"e1.pid", :application=>"bla", :group=>"__default__", :name=>"e1"}}}}}}
   end
 
   it "file loaded, but proc not exists in it" do
     f = fixture("dsl/subfolder1/proc1.rb")
     conf = <<-E
       Eye.load("#{f}")
-      Eye.application("bla") do        
+      Eye.application("bla") do
         proc55(self, "e1")
       end
     E
@@ -31,7 +31,7 @@ describe "Subfolder load spec" do
     Eye::Dsl.parse_apps(nil, file).should == {
       "subfolder2" => {:name => "subfolder2", :working_dir=>"/tmp", :groups=>{
         "__default__"=>{:name => "__default__", :application => "subfolder2", :working_dir=>"/tmp", :processes=>{
-          "e3"=>{:working_dir=>"/tmp", :pid_file=>"e3.pid2", :application=>"subfolder2", :group=>"__default__", :name=>"e3"}, 
+          "e3"=>{:working_dir=>"/tmp", :pid_file=>"e3.pid2", :application=>"subfolder2", :group=>"__default__", :name=>"e3"},
           "e4"=>{:working_dir=>"/", :pid_file=>"e4.pid3", :application=>"subfolder2", :group=>"__default__", :name=>"e4"}}}}}}
   end
 
@@ -40,7 +40,7 @@ describe "Subfolder load spec" do
     Eye::Dsl.parse_apps(nil, file).should == {
       "subfolder3" => {:name => "subfolder3", :working_dir=>"/tmp", :groups=>{
         "__default__"=>{:name => "__default__", :application => "subfolder3", :working_dir=>"/tmp", :processes=>{
-          "e1"=>{:working_dir=>"/tmp", :pid_file=>"e1.pid4", :application=>"subfolder3", :group=>"__default__", :name=>"e1"}, 
+          "e1"=>{:working_dir=>"/tmp", :pid_file=>"e1.pid4", :application=>"subfolder3", :group=>"__default__", :name=>"e1"},
           "e2"=>{:working_dir=>"/var", :pid_file=>"e2.pid5", :application=>"subfolder3", :group=>"__default__", :name=>"e2"}}}}}}
   end
 

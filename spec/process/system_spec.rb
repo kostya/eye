@@ -12,7 +12,7 @@ describe "Eye::Process::System" do
     File.open(@process[:pid_file_ex], 'w'){|f| f.write(12345) }
     @process.load_pid_from_file.should == 12345
 
-    FileUtils.rm(@process[:pid_file_ex]) rescue nil    
+    FileUtils.rm(@process[:pid_file_ex]) rescue nil
     @process.load_pid_from_file.should == nil
   end
 
@@ -23,7 +23,7 @@ describe "Eye::Process::System" do
     File.open(@process[:pid_file_ex], 'w'){|f| f.write(12345) }
     @process.failsafe_load_pid.should == 12345
 
-    FileUtils.rm(@process[:pid_file_ex]) rescue nil    
+    FileUtils.rm(@process[:pid_file_ex]) rescue nil
     @process.failsafe_load_pid.should == nil
   end
 
@@ -49,7 +49,7 @@ describe "Eye::Process::System" do
   it "failsafe_save_pid bad case" do
     @process.config[:pid_file_ex] = "/asdf/adf/asd/fs/dfs/das/df.1"
     @process.pid = 123456789
-    @process.failsafe_save_pid.should == false    
+    @process.failsafe_save_pid.should == false
   end
 
   it "clear_pid_file" do
@@ -110,25 +110,25 @@ describe "Eye::Process::System" do
     it "success" do
       should_spend(0) do
         subject.wait_for_condition(1){ 15 }.should == 15
-      end      
+      end
     end
 
     it "success with sleep" do
       should_spend(0.3) do
         subject.wait_for_condition(1){ sleep 0.3; :a }.should == :a
-      end      
+      end
     end
 
     it "fail by timeout" do
       should_spend(1) do
         subject.wait_for_condition(1){ sleep 4; true }.should == false
-      end      
+      end
     end
 
     it "fail with bad result" do
       should_spend(1) do
         subject.wait_for_condition(1){ nil }.should == false
-      end      
+      end
     end
   end
 

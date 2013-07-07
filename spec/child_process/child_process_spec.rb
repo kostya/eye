@@ -22,8 +22,8 @@ describe "Eye::ChildProcess" do
       @process.schedule :restart
 
       sleep 0.5
-      Eye::System.pid_alive?(@pid).should == false      
-    end  
+      Eye::System.pid_alive?(@pid).should == false
+    end
 
     it "kill by stop command" do
       @process = Eye::ChildProcess.new(@pid, {:stop_command => "kill -9 {{PID}}"})

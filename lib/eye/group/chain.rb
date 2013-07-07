@@ -17,7 +17,7 @@ private
       @chain_processes_current = @chain_processes_current.to_i + 1
 
       # to skip last sleep
-      break if @chain_processes_current.to_i == @chain_processes_count.to_i 
+      break if @chain_processes_current.to_i == @chain_processes_count.to_i
       break if @chain_breaker
 
       # wait next process
@@ -34,7 +34,7 @@ private
 
   def chain_schedule_process(process, type, command, *args)
     debug "chain_schedule_process #{process.name} #{type} #{command}"
-    
+
     if type == :sync
       # sync command, with waiting
       # this is very hackety, because call method of the process without its scheduler
@@ -73,7 +73,7 @@ private
 
       {:type => type, :grace => grace}
     else
-      # default chain case            
+      # default chain case
       {:type => :async, :grace => DEFAULT_CHAIN}
     end
   end

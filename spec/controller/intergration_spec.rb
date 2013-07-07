@@ -270,7 +270,7 @@ describe "Intergration" do
       @old_pid3 = @p3.pid
 
       @c.send_command(:delete, "samples").should == ["int:samples"]
-      sleep 7 # while 
+      sleep 7 # while
 
       @c.all_processes.should == [@p3]
       @c.all_groups.map(&:name).should == ['__default__']
@@ -294,7 +294,7 @@ describe "Intergration" do
       @old_pid3 = @p3.pid
 
       @c.send_command(:delete, "sample1")
-      sleep 7 # while 
+      sleep 7 # while
 
       @c.all_processes.map(&:name).sort.should == %w{forking sample2}
       @c.all_groups.map(&:name).sort.should == %w{__default__ samples}
@@ -316,7 +316,7 @@ describe "Intergration" do
       @old_pid3 = @p3.pid
 
       @c.send_command(:delete, "int")
-      sleep 7 # while 
+      sleep 7 # while
 
       @c.all_processes.should == []
       @c.all_groups.should == []
@@ -344,7 +344,7 @@ describe "Intergration" do
       @old_pid3 = @p3.pid
 
       @c.send_command(:delete, "sam*").should == ["int:samples"]
-      sleep 7 # while 
+      sleep 7 # while
 
       @c.all_processes.should == [@p3]
       @c.all_groups.map(&:name).should == ['__default__']

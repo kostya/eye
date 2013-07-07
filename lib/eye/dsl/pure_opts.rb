@@ -44,7 +44,7 @@ class Eye::Dsl::PureOpts
   attr_reader :config, :parent
 
   def initialize(name = nil, parent = nil, merge_parent_config = true)
-    @name = name.to_s    
+    @name = name.to_s
     @full_name = @name
 
     if parent
@@ -84,7 +84,7 @@ class Eye::Dsl::PureOpts
       self.class.with_parsed_file(proc) do |path|
         if File.exists?(path)
           Eye::Dsl.debug "=> load #{path}"
-          self.instance_eval(File.read(path)) 
+          self.instance_eval(File.read(path))
           Eye::Dsl.debug "<= load #{path}"
         end
       end

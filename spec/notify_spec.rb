@@ -9,8 +9,8 @@ end
 
 describe "Eye::Notify" do
   before :each do
-    @message = {:message=>"something", :name=>"blocking process", 
-        :full_name=>"main:default:blocking process", :pid=>123, 
+    @message = {:message=>"something", :name=>"blocking process",
+        :full_name=>"main:default:blocking process", :pid=>123,
         :host=>'host1', :level=>:crit, :at => Time.now}
 
   end
@@ -18,12 +18,12 @@ describe "Eye::Notify" do
   context "create notify class" do
     before :each do
       @config = {
-        :mail=>{:host=>"mx.some.host.ru", :type => :mail, :port => 25, :domain => "some.host"}, 
+        :mail=>{:host=>"mx.some.host.ru", :type => :mail, :port => 25, :domain => "some.host"},
         :contacts=>{
-          "vasya"=>{:name=>"vasya", :type=>:mail, :contact=>"vasya@mail.ru", :opts=>{}}, 
-          "petya"=>{:name=>"petya", :type=>:mail, :contact=>"petya@mail.ru", :opts=>{:port=>1111}}, 
-          'idiots'=>[{:name=>"idiot1", :type=>:mail, :contact=>"idiot1@mail.ru", :opts=>{}}, {:name=>"idiot2", :type=>:mail, :contact=>"idiot2@mail.ru", :opts=>{:port=>1111}}], 
-          "idiot1"=>{:name=>"idiot1", :type=>:mail, :contact=>"idiot1@mail.ru", :opts=>{}}, 
+          "vasya"=>{:name=>"vasya", :type=>:mail, :contact=>"vasya@mail.ru", :opts=>{}},
+          "petya"=>{:name=>"petya", :type=>:mail, :contact=>"petya@mail.ru", :opts=>{:port=>1111}},
+          'idiots'=>[{:name=>"idiot1", :type=>:mail, :contact=>"idiot1@mail.ru", :opts=>{}}, {:name=>"idiot2", :type=>:mail, :contact=>"idiot2@mail.ru", :opts=>{:port=>1111}}],
+          "idiot1"=>{:name=>"idiot1", :type=>:mail, :contact=>"idiot1@mail.ru", :opts=>{}},
           "idiot2"=>{:name=>"idiot2", :type=>:mail, :contact=>"idiot2@mail.ru", :opts=>{:port=>1111}},
           "idiot3"=>{:name=>"idiot3", :type=>:jabber, :contact=>"idiot3@mail.ru", :opts=>{:host => "jabber.some.host", :port=>1111, :user => "some_user"}}}}
 

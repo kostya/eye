@@ -10,7 +10,7 @@ describe "Eye::Dsl checks" do
 
           checks :memory, :below => 100.megabytes, :every => 10.seconds
           checks :cpu,    :below => 100, :every => 20.seconds
-        end        
+        end
       end
     E
     Eye::Dsl.parse_apps(conf).should == {"bla" => {:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}, :cpu=>{:below=>100, :every=>20, :type=>:cpu}}, :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
@@ -24,9 +24,9 @@ describe "Eye::Dsl checks" do
         process("1") do
           pid_file "1.pid"
 
-          checks :memory, :below => 90.megabytes, :every => 5.seconds  
+          checks :memory, :below => 90.megabytes, :every => 5.seconds
           checks :cpu,    :below => 100, :every => 20.seconds
-        end        
+        end
 
         process("2") do
           pid_file "2.pid"
@@ -41,10 +41,10 @@ describe "Eye::Dsl checks" do
       Eye.application("bla") do
         process("1") do
           pid_file "1.pid"
-          monitor_children{ 
+          monitor_children{
             checks :cpu,    :below => 100, :every => 20.seconds
           }
-        end        
+        end
       end
     E
     Eye::Dsl.parse_apps(conf).should == {"bla" => {:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :monitor_children=>{:checks=>{:cpu=>{:below=>100, :every=>20, :type=>:cpu}}}, :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
@@ -56,9 +56,9 @@ describe "Eye::Dsl checks" do
         process("1") do
           pid_file "1.pid"
           checks :cpu,    :below => 100, :every => 20.seconds
-          monitor_children{               
+          monitor_children{
           }
-        end        
+        end
       end
     E
     Eye::Dsl.parse_apps(conf).should == {"bla" => {:name=>"bla", :groups=>{"__default__"=>{:name=>"__default__", :application=>"bla", :processes=>{"1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"1.pid", :checks=>{:cpu=>{:below=>100, :every=>20, :type=>:cpu}}, :monitor_children=>{}}}}}}}
@@ -70,7 +70,7 @@ describe "Eye::Dsl checks" do
         process("1") do
           pid_file "1.pid"
           checks :cpu,    :below => {1 => 2}, :every => 20.seconds
-        end        
+        end
       end
     E
     expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Validation::Error)
@@ -83,7 +83,7 @@ describe "Eye::Dsl checks" do
           pid_file "1.pid"
 
           triggers :flapping, :times => 2, :within => 15.seconds
-        end        
+        end
       end
     E
     Eye::Dsl.parse_apps(conf).should == {"bla" => {:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :triggers=>{:flapping=>{:times=>2, :within=>15, :type=>:flapping}}, :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
@@ -95,7 +95,7 @@ describe "Eye::Dsl checks" do
         process("1") do
           pid_file "1.pid"
           triggers :flapping, :times => 2, :within => "bla"
-        end        
+        end
       end
     E
     expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Validation::Error)
@@ -109,7 +109,7 @@ describe "Eye::Dsl checks" do
         process("1") do
           pid_file "1.pid"
           nochecks :memory
-        end        
+        end
 
         process("2") do
           pid_file "2.pid"
@@ -117,12 +117,12 @@ describe "Eye::Dsl checks" do
       end
     E
     Eye::Dsl.parse_apps(conf).should == {
-      "bla" => {:name => "bla", :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, 
+      "bla" => {:name => "bla", :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}},
       :groups=>{
-        "__default__"=>{:name => "__default__", :application => "bla", 
-          :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, 
+        "__default__"=>{:name => "__default__", :application => "bla",
+          :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}},
           :processes=>{
-            "1"=>{:checks=>{}, :pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}, 
+            "1"=>{:checks=>{}, :pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"},
             "2"=>{:checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :pid_file=>"2.pid", :application=>"bla", :group=>"__default__", :name=>"2"}}}}}}
   end
 
@@ -138,7 +138,7 @@ describe "Eye::Dsl checks" do
             pid_file "1.pid"
             nochecks :cpu
             nochecks :memory
-          end        
+          end
         end
 
         process("2") do
@@ -147,14 +147,14 @@ describe "Eye::Dsl checks" do
       end
     E
     Eye::Dsl.parse_apps(conf).should == {
-      "bla" => {:name => "bla", 
-        :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, 
+      "bla" => {:name => "bla",
+        :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}},
         :groups=>{
           "blagr" => {:name=>"blagr", :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :application=>"bla",
             :processes => {"1"=>{:checks=>{}, :pid_file=>"1.pid", :application=>"bla", :group=>"blagr", :name=>"1"}}},
-          "__default__"=>{:name => 
-            "__default__", :application => "bla", 
-            :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :processes=>{ 
+          "__default__"=>{:name =>
+            "__default__", :application => "bla",
+            :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :processes=>{
               "2"=>{:checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :pid_file=>"2.pid", :application=>"bla", :group=>"__default__", :name=>"2"}}}}}}
   end
 
@@ -165,7 +165,7 @@ describe "Eye::Dsl checks" do
           pid_file "2.pid"
 
           checks :bla, :a => 1
-        end        
+        end
       end
     E
     expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
@@ -178,7 +178,7 @@ describe "Eye::Dsl checks" do
           pid_file "2.pid"
 
           triggers :bla, :a => 1
-        end        
+        end
       end
     E
     expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
@@ -191,19 +191,19 @@ describe "Eye::Dsl checks" do
           pid_file "1.pid"
 
           checks :socket, :addr => "unix:/tmp/1", :expect_data => Proc.new{|data| data == 1}
-        end        
+        end
 
         process("3") do
           pid_file "3.pid"
 
           checks :socket, :addr => "unix:/tmp/3", :expect_data => /regexp/
-        end        
+        end
 
         process("2") do
           pid_file "2.pid"
 
           checks :socket, :addr => "unix:/tmp/2", :expect_data => Proc.new{|data| data == 1}
-        end        
+        end
 
       end
     E
@@ -267,16 +267,16 @@ describe "Eye::Dsl checks" do
             checks :memory, :below => 100.megabytes, :every => 10.seconds
             checks :memory2, :below => 100, :every => 20.seconds
             checks :memory_3, :below => 100, :every => 20.seconds
-          end        
+          end
         end
       E
       Eye::Dsl.parse_apps(conf).should == {
         "bla" => {:name=>"bla", :groups=>{
           "__default__"=>{:name=>"__default__", :application=>"bla", :processes=>{
-            "1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"1.pid", 
+            "1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"1.pid",
               :checks=>{
-                :memory=>{:below=>104857600, :every=>10, :type=>:memory}, 
-                :memory2=>{:below=>100, :every=>20, :type=>:memory}, 
+                :memory=>{:below=>104857600, :every=>10, :type=>:memory},
+                :memory2=>{:below=>100, :every=>20, :type=>:memory},
                 :memory_3=>{:below=>100, :every=>20, :type=>:memory}}}}}}}}
     end
 
@@ -290,16 +290,16 @@ describe "Eye::Dsl checks" do
 
             nochecks :memory
             checks :memory2, :below => 100, :every => 20.seconds
-          end        
+          end
         end
       E
       Eye::Dsl.parse_apps(conf).should == {
         "bla" => {:name=>"bla", :checks=>{:memory=>{:below=>100, :type=>:memory}}, :groups=>{
-          "__default__"=>{:name=>"__default__", 
+          "__default__"=>{:name=>"__default__",
             :checks=>{
               :memory=>{:below=>100, :type=>:memory}}, :application=>"bla", :processes=>{
                 "1"=>{:name=>"1", :checks=>{
-                  :memory2=>{:below=>100, :every=>20, :type=>:memory}}, 
+                  :memory2=>{:below=>100, :every=>20, :type=>:memory}},
                   :application=>"bla", :group=>"__default__", :pid_file=>"1.pid"}}}}}}
     end
 
@@ -315,16 +315,16 @@ describe "Eye::Dsl checks" do
             checks :cpu, :below => 100.megabytes, :every => 10.seconds
             checks :cpu2, :below => 100, :every => 20.seconds
             checks :cpu3, :below => 100, :every => 20.seconds
-          end        
+          end
         end
       E
       Eye::Dsl.parse_apps(conf).should == {
         "bla" => {:name=>"bla", :groups=>{
           "__default__"=>{:name=>"__default__", :application=>"bla", :processes=>{
-            "1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"1.pid", 
+            "1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"1.pid",
               :checks=>{
-                :cpu=>{:below=>104857600, :every=>10, :type=>:cpu}, 
-                :cpu2=>{:below=>100, :every=>20, :type=>:cpu2}, 
+                :cpu=>{:below=>104857600, :every=>10, :type=>:cpu},
+                :cpu2=>{:below=>100, :every=>20, :type=>:cpu2},
                 :cpu3=>{:below=>100, :every=>20, :type=>:cpu}}}}}}}}
     end
 

@@ -9,7 +9,7 @@ class Eye::Utils::Tail < Array
 
   def push(el)
     super(el)
-    shift if length > @max_size 
+    shift if length > @max_size
     self
   end
 

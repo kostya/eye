@@ -94,7 +94,7 @@ def terminate_old_actors
     next unless actor.alive?
     if [Eye::Controller, Eye::Process, Eye::Group, Eye::ChildProcess].include?(actor.class)
       next if actor == Eye::Control
-      actor.terminate 
+      actor.terminate
     end
   end
 end
@@ -105,14 +105,14 @@ def force_kill_process(process)
 
     process.terminate
     force_kill_pid(pid)
-    
+
     process = nil
   end
 end
 
 def force_kill_pid(pid)
   if pid && pid != $$ && Eye::System.pid_alive?(pid)
-    Eye::System.send_signal(pid, 9) 
+    Eye::System.send_signal(pid, 9)
   end
 end
 

@@ -54,9 +54,9 @@ describe "with_server feature" do
     E
 
     Eye::Dsl.parse_apps(conf).should == {
-      "bla" => {:name=>"bla", :environment=>{"A"=>"B"}, 
+      "bla" => {:name=>"bla", :environment=>{"A"=>"B"},
         :groups=>{
-          "a"=>{:name=>"a", :environment=>{"A"=>"C"}, :application=>"bla", :processes=>{}}, 
+          "a"=>{:name=>"a", :environment=>{"A"=>"C"}, :application=>"bla", :processes=>{}},
           "b"=>{:name=>"b", :environment=>{"A"=>"B"}, :application=>"bla", :processes=>{}}}}}
   end
 
@@ -88,7 +88,7 @@ describe "with_server feature" do
     it "hostname on with server" do
       conf = <<-E
         x = current_config_path
-        Eye.application("bla"){ 
+        Eye.application("bla"){
           with_server('muga_server') do
             working_dir "/tmp"
           end
@@ -101,11 +101,11 @@ describe "with_server feature" do
       Eye::System.host = 'mega_server'
 
       conf = <<-E
-        Eye.application("bla"){ 
+        Eye.application("bla"){
           with_server('mega_server') do
             group :blo do
               working_dir "/tmp"
-            end            
+            end
           end
         }
       E
@@ -116,7 +116,7 @@ describe "with_server feature" do
       Eye::System.host = 'supa_server'
 
       conf = <<-E
-        Eye.application("bla"){ 
+        Eye.application("bla"){
           working_dir "/tmp"
           env "HOST" => hostname
         }

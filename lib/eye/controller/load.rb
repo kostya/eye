@@ -68,7 +68,7 @@ private
         sub << config_path
       end
       sub = [mask] if sub.empty?
-      
+
       res += sub
     end
 
@@ -76,7 +76,7 @@ private
   end
 
   # return: result, config
-  def parse_config(filename)    
+  def parse_config(filename)
     raise Eye::Dsl::Error, "config file '#{filename}' not found!" unless File.exists?(filename)
     debug "parse #{filename}"
 
@@ -90,7 +90,7 @@ private
     info "load #{filename}"
     new_cfg = @current_config.merge(config)
     new_cfg.validate!
-    
+
     load_options(new_cfg.settings)
     create_objects(new_cfg.applications, config.application_names)
     @current_config = new_cfg
@@ -150,7 +150,7 @@ private
       group.resort_processes
     end
 
-    # now, need to clear @old_groups, and @old_processes    
+    # now, need to clear @old_groups, and @old_processes
     @old_groups.each{|_, group| group.clear; group.send_command(:delete) }
     @old_processes.each{|_, process| process.send_command(:delete) if process.alive? }
 
@@ -159,7 +159,7 @@ private
     @added_groups.each do |group|
       if group.processes.size > 0 && (group.processes.pure - @added_processes).size == 0
         added_fully_groups << group
-        @added_processes -= group.processes.pure 
+        @added_processes -= group.processes.pure
       end
     end
 
@@ -205,7 +205,7 @@ private
       debug "update process #{process_name}"
       process = @old_processes.delete(process_name)
       process.schedule :update_config, process_cfg, Eye::Reason::User.new(:'load config')
-      process      
+      process
     else
       debug "create process #{process_name}"
       process = Eye::Process.new(process_cfg)

@@ -11,7 +11,7 @@ class Eye::Logger
 
       self.formatter = Proc.new do |s, d, p, m|
         "#{d.strftime(FORMAT)} #{s.ljust(5)} -- #{m}\n"
-      end      
+      end
     end
   end
 
@@ -47,7 +47,7 @@ class Eye::Logger
 
       @dev_fd = STDOUT if @dev.to_s.downcase == 'stdout'
       @dev_fd = STDERR if @dev.to_s.downcase == 'stderr'
-      
+
       @inner_logger = InnerLogger.new(@dev_fd)
       @inner_logger.level = self.log_level || Logger::INFO
     end

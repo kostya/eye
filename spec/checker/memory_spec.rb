@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 def chmem(cfg = {})
-  Eye::Checker.create(123, {:type => :memory, :every => 5.seconds, 
+  Eye::Checker.create(123, {:type => :memory, :every => 5.seconds,
         :times => 1}.merge(cfg))
 end
 

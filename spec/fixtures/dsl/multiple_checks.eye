@@ -7,7 +7,7 @@ class Cpu2 < Eye::Checker::Custom
   end
 
   def get_value
-    @a.shift    
+    @a.shift
   end
 
   def good?(value)

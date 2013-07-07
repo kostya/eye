@@ -2,9 +2,9 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe "Flapping" do
   before :each do
-    @c = C.p1.merge(      
+    @c = C.p1.merge(
       :triggers => C.flapping(:times => 4, :within => 10)
-    )    
+    )
   end
 
   it "should create trigger from config" do
@@ -100,7 +100,7 @@ describe "Flapping" do
 
     sleep 2
 
-    @process.state_name.should == :up    
+    @process.state_name.should == :up
   end
 
   describe "retry_in, retry_times" do
@@ -110,11 +110,11 @@ describe "Flapping" do
         :start_grace => 0.1, # for fast flapping
         :stop_grace => 0,
         :start_command => @c[:start_command] + " -r"
-      )    
+      )
     end
 
     it "flapping than wait for interval and try again" do
-      @process = process(@c.merge(:triggers => C.flapping(:times => 2, :within => 3, 
+      @process = process(@c.merge(:triggers => C.flapping(:times => 2, :within => 3,
         :retry_in => 5.seconds)))
       @process.async.start
 
@@ -149,7 +149,7 @@ describe "Flapping" do
     end
 
     it "flapping retry 1 times with retry_times = 1" do
-      @process = process(@c.merge(:triggers => C.flapping(:times => 2, :within => 3, 
+      @process = process(@c.merge(:triggers => C.flapping(:times => 2, :within => 3,
         :retry_in => 5.seconds, :retry_times => 1)))
       @process.async.start
 
@@ -184,7 +184,7 @@ describe "Flapping" do
     end
 
     it "flapping than manually doing something, should not retry" do
-      @process = process(@c.merge(:triggers => C.flapping(:times => 2, :within => 3, 
+      @process = process(@c.merge(:triggers => C.flapping(:times => 2, :within => 3,
         :retry_in => 5.seconds)))
       @process.async.start
 

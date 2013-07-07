@@ -1,5 +1,5 @@
 #bad logger
-Eye.config do 
+Eye.config do
   logger "/asd/fasd/fas/df/asd/fas/df/d"
 end
 

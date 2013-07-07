@@ -2,7 +2,7 @@ require 'fileutils'
 
 module Eye::Settings
   module_function
-  
+
   def dir
     if root?
       '/var/run/eye'
@@ -26,7 +26,7 @@ module Eye::Settings
   def home
     ENV['EYE_HOME'] || ENV['HOME']
   end
-  
+
   def path(path)
     File.join(dir, path)
   end
@@ -38,11 +38,11 @@ module Eye::Settings
   def socket_path
     path(ENV['EYE_SOCK'] || "sock#{ENV['EYE_V']}")
   end
-  
+
   def pid_path
     path(ENV['EYE_PID'] || "pid#{ENV['EYE_V']}")
   end
-  
+
   def cache_path
     path("processes#{ENV['EYE_V']}.cache")
   end

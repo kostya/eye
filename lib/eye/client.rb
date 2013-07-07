@@ -7,11 +7,11 @@ class Eye::Client
   def initialize(socket_path)
     @socket_path = socket_path
   end
-  
+
   def command(cmd, *args)
     attempt_command([cmd, *args] * '|')
   end
-  
+
   def attempt_command(pack)
     Timeout.timeout(Eye::Settings.client_timeout) do
       return send_request(pack)
@@ -28,5 +28,5 @@ class Eye::Client
       res = Marshal.load(data) rescue :corrupred_marshal
     end
   end
-  
+
 end

@@ -4,11 +4,11 @@ module C
   def sample_dir
     File.expand_path(File.join(File.dirname(__FILE__), %w{.. example}))
   end
-  
+
   def pid_name
     "1.pid"
   end
-  
+
   def log_name
     "1111.log"
   end
@@ -25,12 +25,12 @@ module C
       :stderr => sample_dir + "/#{log_name}",
       :check_alive_period => 1.seconds,
       :start_timeout => 5.seconds,
-      :stop_timeout => 2.seconds,      
+      :stop_timeout => 2.seconds,
     }
   end
 
   # eye daemonize process
-  def p1 
+  def p1
     base.merge(
       :name => "blocking process",
       :start_command => "ruby sample.rb",
@@ -100,14 +100,14 @@ module C
   def check_http(a = {})
     {:http => {
       :type => :http, :every => 2, :times => 1,
-      :url => "http://localhost:3000/bla", :kind => :sucess, 
+      :url => "http://localhost:3000/bla", :kind => :sucess,
       :pattern => /OK/, :timeout => 3.seconds
     }.merge(a)
     }
   end
 
   def check_sock(a = {})
-    {:socket => {:type => :socket, :every => 5.seconds, 
+    {:socket => {:type => :socket, :every => 5.seconds,
      :times => 1, :addr => 'tcp://127.0.0.1:33231', :send_data => "ping",
      :expect_data => /pong/, :timeout => 2}.merge(a)
     }
@@ -124,7 +124,7 @@ module C
   def restart_async
     {:restart => {:action => :restart, :type => :async, :grace => 5}}
   end
-  
+
   def socket_path
     File.join(sample_dir, 'sock1')
   end
@@ -145,7 +145,7 @@ class TrapError
   end
 end
 
-def process(cfg)  
+def process(cfg)
   p = Eye::Process.new(cfg)
   @trap = TrapError.new
   @trap.link(p)

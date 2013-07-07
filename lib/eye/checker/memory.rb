@@ -3,7 +3,7 @@ class Eye::Checker::Memory < Eye::Checker
   # checks :memory, :every => 3.seconds, :below => 80.megabytes, :times => [3,5]
 
   param :below, [Fixnum, Float], true
-  
+
   def check_name
     @check_name ||= "memory(#{human_value(below)})"
   end

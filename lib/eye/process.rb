@@ -2,7 +2,7 @@ require 'celluloid'
 
 class Eye::Process
   include Celluloid
-  
+
   autoload :Config,           'eye/process/config'
   autoload :Commands,         'eye/process/commands'
   autoload :Data,             'eye/process/data'
@@ -17,9 +17,9 @@ class Eye::Process
   autoload :Scheduler,        'eye/process/scheduler'
   autoload :Validate,         'eye/process/validate'
 
-  attr_accessor :pid, :watchers, :config, :states_history, 
+  attr_accessor :pid, :watchers, :config, :states_history,
                 :childs, :triggers, :name, :state_reason
-  
+
   def initialize(config)
     raise 'pid file should be' unless config[:pid_file]
 
@@ -41,22 +41,22 @@ class Eye::Process
     super() # for statemachine
   end
 
-  # c(), self[]  
+  # c(), self[]
   include Eye::Process::Config
-  
+
   # full_name, status_data
   include Eye::Process::Data
-  
+
   # commands:
   # start_process, stop_process, restart_process
   include Eye::Process::Commands
 
   # start, stop, restart, monitor, unmonit, delete
   include Eye::Process::Controller
-  
+
   # add_watchers, remove_watchers:
   include Eye::Process::Watchers
-  
+
   # check alive, crash methods:
   include Eye::Process::Monitor
 

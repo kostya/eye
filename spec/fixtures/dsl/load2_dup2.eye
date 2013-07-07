@@ -1,5 +1,5 @@
 Eye.application "app1" do
-  
+
   process "server_1" do
     working_dir "/tmp"
     pid_file "server.pid"

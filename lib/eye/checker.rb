@@ -8,7 +8,7 @@ class Eye::Checker
   autoload :FileSize,   'eye/checker/file_size'
   autoload :Socket,     'eye/checker/socket'
 
-  TYPES = {:memory => "Memory", :cpu => "Cpu", :http => "Http", 
+  TYPES = {:memory => "Memory", :cpu => "Cpu", :http => "Http",
            :ctime => "FileCTime", :fsize => "FileSize", :socket => "Socket"}
 
   attr_accessor :value, :values, :options, :pid, :type, :check_count
@@ -20,7 +20,7 @@ class Eye::Checker
     if type =~ /\A(.*?)_?[0-9]+\z/
       ctype = $1.to_sym
       return {:name => type, :type => ctype} if TYPES[ctype]
-    end   
+    end
   end
 
   def self.get_class(type)
@@ -44,14 +44,14 @@ class Eye::Checker
 
     @logger = Eye::Logger.new(logger_prefix, "check:#{check_name}")
     debug "create checker, with #{options}"
-    
+
     @value = nil
     @values = Eye::Utils::Tail.new(max_tries)
     @check_count = 0
   end
 
   def last_human_values
-    h_values = @values.map do |v| 
+    h_values = @values.map do |v|
       sign = v[:good] ? '' : '*'
       sign + human_value(v[:value]).to_s
     end
@@ -106,7 +106,7 @@ class Eye::Checker
       end
     else
       1
-    end    
+    end
   end
 
   def min_tries

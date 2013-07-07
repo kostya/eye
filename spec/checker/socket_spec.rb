@@ -1,14 +1,14 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 def chsock(cfg = {})
-  Eye::Checker.create(nil, {:type => :socket, :every => 5.seconds, 
+  Eye::Checker.create(nil, {:type => :socket, :every => 5.seconds,
         :times => 1, :addr => 'tcp://127.0.0.1:33231', :send_data => "ping",
         :expect_data => /pong/, :timeout => 2}.merge(cfg))
 end
 
 def chsockb(cfg = {})
-  Eye::Checker.create(nil, {:type => :socket, :every => 5.seconds, 
-        :times => 1, :addr => 'tcp://127.0.0.1:33232', :protocol => :em_object, :send_data => {}, 
+  Eye::Checker.create(nil, {:type => :socket, :every => 5.seconds,
+        :times => 1, :addr => 'tcp://127.0.0.1:33232', :protocol => :em_object, :send_data => {},
         :expect_data => /pong/, :timeout => 2}.merge(cfg))
 end
 
@@ -88,7 +88,7 @@ describe "Socket Checker" do
       c = chsockb(:send_data => {:command => 'ping'}, :expect_data => lambda{|r| r == 'pong'})
       c.check.should == true
     end
-    
+
     it "should correctly get big message" do
       c = chsockb(:send_data => {:command => 'big'})
       res = c.get_value[:result]

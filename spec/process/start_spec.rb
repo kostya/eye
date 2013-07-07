@@ -20,7 +20,7 @@ describe "Process Start" do
     sleep 0.5
 
     # pid and should be ok
-    @process.pid.should == @pid  
+    @process.pid.should == @pid
     @process.load_pid_from_file.should == @pid
 
     @process.state_name.should == :up
@@ -133,7 +133,7 @@ describe "Process Start" do
 
   it "C.p1 pid_file failed to write" do
     @process = process(C.p1.merge(:pid_file => "/tmpasdfasdf/asdfa/dfa/df/ad/fad/fd.pid"))
-    res = @process.start      
+    res = @process.start
     res.should == {:error=>:cant_write_pid}
 
     sleep 1
@@ -143,13 +143,13 @@ describe "Process Start" do
     @process.states_history.all?(:unmonitored, :starting, :down).should == true
 
     @process.watchers.keys.should == []
-  end    
+  end
 
   it "C.p2 pid_file failed to write" do
     pid = "/tmpasdfasdf/asdfa/dfa/df/ad/fad/fd.pid"
     @process = process(C.p2.merge(:pid_file => pid,
       :start_command => "ruby sample.rb -d --pid #{pid} --log #{C.log_name}"))
-    res = @process.start      
+    res = @process.start
     res.should == {:error=>:pid_not_found}
 
     sleep 1
@@ -159,11 +159,11 @@ describe "Process Start" do
     @process.states_history.all?(:unmonitored, :starting, :down).should == true
 
     @process.watchers.keys.should == []
-  end    
+  end
 
   it "long process with #{C.p1[:name]} (with daemonize)" do
     # this is no matter for starting
-    @process = process(C.p1.merge(:start_command => C.p1[:start_command] + " --daemonize_delay 3", 
+    @process = process(C.p1.merge(:start_command => C.p1[:start_command] + " --daemonize_delay 3",
       :start_grace => 2.seconds ))
     @process.start.should == {:pid=>@process.pid}
 
@@ -173,7 +173,7 @@ describe "Process Start" do
   end
 
   it "long process with #{C.p2[:name]}" do
-    @process = process(C.p2.merge(:start_command => C.p2[:start_command] + " --daemonize_delay 3", 
+    @process = process(C.p2.merge(:start_command => C.p2[:start_command] + " --daemonize_delay 3",
       :start_timeout => 2.seconds))
     @process.start.should == {:error=>"#<Timeout::Error: execution expired>"}
 
@@ -184,11 +184,11 @@ describe "Process Start" do
     [:starting, :down].should include(@process.state_name)
 
     @process.states_history.seq?(:unmonitored, :starting, :down, :starting).should == true
-    @process.states_history.all?(:unmonitored, :starting, :down).should == true    
+    @process.states_history.all?(:unmonitored, :starting, :down).should == true
   end
 
   it "long process with #{C.p2[:name]} but start_timeout is OK" do
-    @process = process(C.p2.merge(:start_command => C.p2[:start_command] + " --daemonize_delay 3", 
+    @process = process(C.p2.merge(:start_command => C.p2[:start_command] + " --daemonize_delay 3",
       :start_timeout => 10.seconds))
     @process.start.should == {:pid => @process.pid}
 
@@ -224,7 +224,7 @@ describe "Process Start" do
     # should reload process from pid_file
     @process.state_name.should == :up
     @process.pid.should_not == old_pid
-    @process.load_pid_from_file.should == @process.pid    
+    @process.load_pid_from_file.should == @process.pid
   end
 
   it "bad config daemonize self daemonized process pid different" do
@@ -232,7 +232,7 @@ describe "Process Start" do
     @process = process(C.p2.merge(:daemonize => true, :pid_file => "2.pid", :start_grace => 10.seconds))
     @process.start.should == {:error => :not_realy_running}
     @process.pid.should == nil
-    
+
     ensure_kill_samples
   end
 
@@ -249,7 +249,7 @@ describe "Process Start" do
       @process.state = st.to_s # force set state
 
       dont_allow(Eye::System).daemonize
-      dont_allow(Eye::System).execute    
+      dont_allow(Eye::System).execute
 
       @process.start.should == :state_error
       @process.state_name.should == st

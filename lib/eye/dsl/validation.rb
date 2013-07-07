@@ -28,19 +28,19 @@ module Eye::Dsl::Validation
     end
   end
 
-  def validate(options = {})    
-    options.each do |param, value|        
+  def validate(options = {})
+    options.each do |param, value|
       param = param.to_sym
       types = validates[param]
       unless types
         if param != :type
-          raise Error, "#{self.name} unknown param :#{param} value #{value.inspect}" 
+          raise Error, "#{self.name} unknown param :#{param} value #{value.inspect}"
         end
       end
 
       if self.variants[param]
         if value && !value.is_a?(Proc) && !self.variants[param].include?(value)
-          raise Error, "#{value.inspect} should within #{self.variants[param].inspect}" 
+          raise Error, "#{value.inspect} should within #{self.variants[param].inspect}"
         end
       end
 

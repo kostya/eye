@@ -107,7 +107,7 @@ describe "Process Cpu check" do
       stub(Eye::SystemResources).cpu(@process.pid){ 7 }
       dont_allow(@process).schedule(:restart)
 
-      sleep 6   
+      sleep 6
     end
   end
 

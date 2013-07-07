@@ -13,7 +13,7 @@ describe "Process Monitoring" do
       sleep 10 # wait until monitor upping process
 
       @pid = @process.pid
-      @pid.should_not == old_pid    
+      @pid.should_not == old_pid
 
       Eye::System.pid_alive?(old_pid).should == false
       Eye::System.pid_alive?(@pid).should == true
@@ -85,7 +85,7 @@ describe "Process Monitoring" do
       old_pid = @pid
 
       # rewrite by another :)
-      @pid = Eye::System.daemonize("ruby sample.rb", {:environment => {"ENV1" => "SECRET1"}, 
+      @pid = Eye::System.daemonize("ruby sample.rb", {:environment => {"ENV1" => "SECRET1"},
         :working_dir => cfg[:working_dir], :stdout => @log})[:pid]
 
       File.open(cfg[:pid_file], 'w'){|f| f.write(@pid) }
@@ -112,7 +112,7 @@ describe "Process Monitoring" do
     old_pid = @pid
 
     # rewrite by another :)
-    @pid = Eye::System.daemonize("ruby sample.rb", {:environment => {"ENV1" => "SECRET1"}, 
+    @pid = Eye::System.daemonize("ruby sample.rb", {:environment => {"ENV1" => "SECRET1"},
       :working_dir => C.p2[:working_dir], :stdout => @log})[:pid]
 
     File.open(C.p2[:pid_file], 'w'){|f| f.write(@pid) }
@@ -170,7 +170,7 @@ describe "Process Monitoring" do
 
     @process.pid.should == nil
 
-    Eye::System.pid_alive?(old_pid).should == false    
+    Eye::System.pid_alive?(old_pid).should == false
 
     @process.state_name.should == :unmonitored
     @process.watchers.keys.should == []

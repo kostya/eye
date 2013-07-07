@@ -4,13 +4,13 @@ describe "Eye::Dsl" do
 
   it "process without pid_file should raise" do
     conf = <<-E
-      Eye.application("bla") do        
+      Eye.application("bla") do
         process("1") do
           stdout "1.log"
-        end        
+        end
       end
     E
-    expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)    
+    expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
   end
 
   it "valid process" do
@@ -18,7 +18,7 @@ describe "Eye::Dsl" do
       Eye.application("bla") do
         process("1") do
           pid_file "1.pid"
-        end        
+        end
       end
     E
     Eye::Dsl.parse_apps(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
@@ -30,7 +30,7 @@ describe "Eye::Dsl" do
         env "a" => 'b'
         xprocess("1") do
           pid_file "1.pid"
-        end        
+        end
       end
     E
     Eye::Dsl.parse_apps(conf).should == {"bla" => {:environment=>{"a"=>"b"}, :name => "bla"}}
@@ -42,7 +42,7 @@ describe "Eye::Dsl" do
         2.times do |i|
           process("\#{i}") do
             pid_file "\#{i}.pid"
-          end        
+          end
         end
       end
     E
@@ -54,7 +54,7 @@ describe "Eye::Dsl" do
       def add_process(proxy, name)
         proxy.process(name) do
           pid_file "\#{name}.pid"
-        end        
+        end
       end
 
       Eye.application("bla") do
@@ -83,7 +83,7 @@ describe "Eye::Dsl" do
       def add_process(proxy, name)
         proxy.process(name) do
           pid_file "same.pid"
-        end        
+        end
       end
 
       Eye.application("bla") do
@@ -91,7 +91,7 @@ describe "Eye::Dsl" do
         add_process(self, "2")
       end
     E
-    expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)    
+    expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
   end
 
   it "when 2 processes with same name, should squash" do
@@ -112,7 +112,7 @@ describe "Eye::Dsl" do
             stdout  "1.log"
             stderr "2.log"
             pid_file "1.pid"
-          end        
+          end
         end
       E
       Eye::Dsl.parse_apps(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:stdout=>"1.log", :stderr=>"2.log", :pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
@@ -124,7 +124,7 @@ describe "Eye::Dsl" do
           process("1") do
             stdall   "1.log"
             pid_file "1.pid"
-          end        
+          end
         end
       E
       Eye::Dsl.parse_apps(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:stdout=>"1.log", :stderr=>"1.log", :stdall => "1.log", :pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
@@ -140,15 +140,15 @@ describe "Eye::Dsl" do
 
           process("1") do
             pid_file "12"
-          end        
+          end
         end
       E
-      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)    
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
     end
 
     it "pid_file in group is invalid" do
       conf = <<-E
-        Eye.application("bla") do          
+        Eye.application("bla") do
 
           group("mini") do
             pid_file "11"
@@ -156,7 +156,7 @@ describe "Eye::Dsl" do
           end
         end
       E
-      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)    
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
     end
   end
 
@@ -167,7 +167,7 @@ describe "Eye::Dsl" do
           process("1") do
             pid_file "1.pid"
             monitor_children{ restart_command "kill" }
-          end        
+          end
         end
       E
       Eye::Dsl.parse_apps(conf).should == {"bla" => {:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :monitor_children=>{:restart_command=>"kill"}, :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
@@ -179,10 +179,10 @@ describe "Eye::Dsl" do
           process("1") do
             pid_file "1.pid"
             monitor_children{ restart_some "kill" }
-          end        
+          end
         end
       E
-      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(NoMethodError) 
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(NoMethodError)
     end
 
     it "child pid_file" do
@@ -191,10 +191,10 @@ describe "Eye::Dsl" do
           process("1") do
             pid_file "1.pid"
             monitor_children{ pid_file "2.pid" }
-          end        
+          end
         end
       E
-      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)    
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
     end
 
   end
@@ -204,7 +204,7 @@ describe "Eye::Dsl" do
       Eye.application("bla") do |app|
         app.process("1") do |p|
           p.pid_file "2.pid"
-        end        
+        end
       end
     E
     Eye::Dsl.parse_apps(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"2.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
@@ -215,7 +215,7 @@ describe "Eye::Dsl" do
       Eye.application("bla") do |app|
         app.process("1") do |p|
           p.pid_file = "2.pid"
-        end        
+        end
       end
     E
     Eye::Dsl.parse_apps(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"2.pid", :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
@@ -257,7 +257,7 @@ describe "Eye::Dsl" do
       conf = "Eye.app('bla'){ self.working_dir = {} }"
       expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
 
-      conf = "Eye.app('bla'){ self.working_dir = [] }"      
+      conf = "Eye.app('bla'){ self.working_dir = [] }"
       expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
 
       conf = "Eye.app('bla'){ self.working_dir = 5.6 }"
@@ -279,7 +279,7 @@ describe "Eye::Dsl" do
       conf = "Eye.app('bla'){ self.daemonize = {} }"
       expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
 
-      conf = "Eye.app('bla'){ self.daemonize = [] }"      
+      conf = "Eye.app('bla'){ self.daemonize = [] }"
       expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
 
       conf = "Eye.app('bla'){ self.daemonize = 5.6 }"
@@ -304,7 +304,7 @@ describe "Eye::Dsl" do
       conf = "Eye.app('bla'){ self.daemonize = {} }"
       expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
 
-      conf = "Eye.app('bla'){ self.start_timeout = [] }"      
+      conf = "Eye.app('bla'){ self.start_timeout = [] }"
       expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
 
       conf = "Eye.app('bla'){ self.start_timeout = false }"
@@ -335,7 +335,7 @@ describe "Eye::Dsl" do
             pid_file "1.pid"
             daemonize true
             start_command "sh -c 'echo some; ruby 1.rb'"
-          end        
+          end
         end
       E
       expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Process::Validate::Error)
@@ -346,7 +346,7 @@ describe "Eye::Dsl" do
             pid_file "1.pid"
             daemonize true
             start_command "echo some && ruby 1.rb"
-          end        
+          end
         end
       E
       expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Process::Validate::Error)
@@ -357,7 +357,7 @@ describe "Eye::Dsl" do
             pid_file "1.pid"
             daemonize true
             start_command "ruby 1.rb"
-          end        
+          end
         end
       E
       expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Process::Validate::Error)
@@ -369,7 +369,7 @@ describe "Eye::Dsl" do
           process("1") do
             pid_file "1.pid"
             start_command "sh -c 'echo some && ruby 1.rb'"
-          end        
+          end
         end
       E
       expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Process::Validate::Error)

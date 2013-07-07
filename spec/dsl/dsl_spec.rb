@@ -12,7 +12,7 @@ describe "Eye::Dsl" do
 
   it "empty config" do
     conf = <<-E
-      Eye.application("bla") do        
+      Eye.application("bla") do
       end
     E
     Eye::Dsl.parse_apps(conf).should == {'bla' => {:name => "bla"}}
@@ -20,7 +20,7 @@ describe "Eye::Dsl" do
 
   it "should set param " do
     conf = <<-E
-      Eye.application("bla") do        
+      Eye.application("bla") do
         start_timeout 10.seconds
       end
     E
@@ -29,7 +29,7 @@ describe "Eye::Dsl" do
 
   it "should set param, with self and =" do
     conf = <<-E
-      Eye.application("bla") do        
+      Eye.application("bla") do
         self.start_timeout = 10.seconds
       end
     E
@@ -45,7 +45,7 @@ describe "Eye::Dsl" do
 
   it "should raise on unknown option" do
     conf = <<-E
-      Eye.application("bla") do        
+      Eye.application("bla") do
         pid_file "11"
         hoho 10
       end
@@ -87,5 +87,5 @@ describe "Eye::Dsl" do
       expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
     end
   end
-  
+
 end

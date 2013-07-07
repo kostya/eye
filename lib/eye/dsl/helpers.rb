@@ -1,5 +1,5 @@
 
-# Dsl Helpers 
+# Dsl Helpers
 
 # current eye parsed config path
 def current_config_path
@@ -8,5 +8,5 @@ end
 
 # host name
 def hostname
-  Eye::System.host  
+  Eye::System.host
 end
