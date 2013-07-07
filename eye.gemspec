@@ -35,4 +35,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'sinatra'
   gem.add_development_dependency 'thin'
   gem.add_development_dependency 'xmpp4r'
+  gem.add_development_dependency 'coveralls'
 end
