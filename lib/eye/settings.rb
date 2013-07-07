@@ -43,6 +43,10 @@ module Eye::Settings
     path(ENV['EYE_PID'] || "pid#{ENV['EYE_V']}")
   end
   
+  def cache_path
+    path("processes#{ENV['EYE_V']}.cache")
+  end
+
   def client_timeout
     5
   end

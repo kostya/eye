@@ -34,3 +34,20 @@ Eye.application "app2" do
     end
   end
 end
+
+Eye.application "app5" do
+  process("some"){ pid_file "some.pid" }
+  process("some2"){ pid_file "some2.pid" }
+  process("some_name"){ pid_file "some_name.pid" }
+  process("am"){ pid_file "am.pid" }
+  process("am2"){ pid_file "am2.pid" }
+  process("one"){ pid_file "one.pid" }
+  group :gr7 do
+    process("mu") { pid_file "mu.pid" }
+    process("mu2") { pid_file "mu2.pid" }
+  end
+end
+
+Eye.application "app6" do
+  process("one"){ pid_file "app6-one.pid" }
+end

@@ -16,7 +16,7 @@ def sidekiq_process(proxy, name)
 end
 
 Eye.application :sidekiq_test do
-  working_dir '/some_dir'
+  working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
   env "RAILS_ENV" => 'production'
  
   sidekiq_process self, :sidekiq

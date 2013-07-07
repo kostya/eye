@@ -27,14 +27,14 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   end
 
   def checks(type, opts = {})
-    type = type.to_sym
-    raise Eye::Dsl::Error, "unknown checker type #{type}" unless Eye::Checker::TYPES[type]
+    nac = Eye::Checker.name_and_class(type.to_sym)
+    raise Eye::Dsl::Error, "unknown checker type #{type}" unless nac
 
-    opts.merge!(:type => type)
+    opts.merge!(:type => nac[:type])
     Eye::Checker.validate!(opts)
     
     @config[:checks] ||= {}
-    @config[:checks][type] = opts
+    @config[:checks][nac[:name]] = opts
   end
 
   def triggers(type, opts = {})
@@ -50,9 +50,9 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
 
   # clear checks from parent
   def nochecks(type)
-    type = type.to_sym
-    raise Eye::Dsl::Error, "unknown checker type #{type}" unless Eye::Checker::TYPES[type]
-    @config[:checks].try :delete, type
+    nac = Eye::Checker.name_and_class(type.to_sym)
+    raise Eye::Dsl::Error, "unknown checker type #{type}" unless nac
+    @config[:checks].try :delete, nac[:name]
   end
 
   # clear triggers from parent

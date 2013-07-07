@@ -1,7 +1,6 @@
 require 'rubygems'
 require 'bundler/setup'
-require 'celluloid'
-require 'reel'
+Bundler.require :default
 
 if ENV['COV']
   require 'simplecov'
@@ -10,7 +9,10 @@ if ENV['COV']
   end
 end
 
-Bundler.require :default
+if ENV['COVA']
+  require 'coveralls'
+  Coveralls.wear!
+end
 
 # preload
 Eye::Control
@@ -56,6 +58,8 @@ RSpec.configure do |config|
     @log = C.base[:stdout]
     FileUtils.rm(@log) rescue nil
 
+    stub(Eye::Settings).dir { C.sample_dir }
+
     $logger.info "================== #{ self.class.description} '#{ example.description }'========================"
   end
 
@@ -78,6 +82,10 @@ RSpec.configure do |config|
 
     # actors = Celluloid::Actor.all.map(&:class)
     # $logger.info "Actors: #{actors.inspect}"
+  end
+
+  config.after(:all) do
+    FakeWeb.allow_net_connect = true
   end
 end
 

@@ -28,6 +28,16 @@ describe "Eye::Client, Eye::Server" do
     sleep 0.1
     
     @client.command('stop').should == :command_sended2
-  end  
+  end
+
+  it "if server already listen should recreate" do
+    mock(Eye::Control).command('stop'){ :command_sended2 }
+    @server.async.run
+    sleep 0.1
+    @server2 = Eye::Server.new(@socket_path)
+    @server2.async.run
+    sleep 0.1
+    @client.command('stop').should == :command_sended2
+  end
 
 end

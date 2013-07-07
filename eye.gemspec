@@ -30,7 +30,6 @@ Gem::Specification.new do |gem|
 
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rspec'
-  gem.add_development_dependency 'simplecov'
   gem.add_development_dependency 'rr'
   gem.add_development_dependency 'ruby-graphviz'
   gem.add_development_dependency 'forking'
@@ -39,4 +38,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'sinatra'
   gem.add_development_dependency 'thin'
   gem.add_development_dependency 'xmpp4r'
+  gem.add_development_dependency 'coveralls'
 end

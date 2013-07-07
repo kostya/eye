@@ -99,6 +99,9 @@ S
   it "info_string_debug should be" do
     subject.load(fixture("dsl/load.eye"))
     subject.info_string_debug.split("\n").size.should > 5
+
+    subject.load(fixture("dsl/load.eye"))
+    subject.info_string_debug(true, true).split("\n").size.should > 5
   end
 
   it "info_string_short should be" do
@@ -118,6 +121,12 @@ S
     h = subject.history_data('app1')
     h.size.should == 5
     h.keys.sort.should == ["app1:g4", "app1:g5", "app1:gr1:p1", "app1:gr1:p2", "app1:gr2:q3"]
+  end
+
+  it "should save cache file" do
+    FileUtils.rm(Eye::Settings.cache_path) rescue nil
+    subject.load(fixture("dsl/load.eye"))
+    File.size(Eye::Settings.cache_path).should > 100
   end
 
   it "should delete all apps" do

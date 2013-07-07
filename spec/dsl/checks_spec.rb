@@ -131,6 +131,7 @@ describe "Eye::Dsl checks" do
       Eye.application("bla") do
         checks :memory, :below => 100.megabytes, :every => 10.seconds
         nochecks :cpu
+        notriggers :flapping
 
         group :blagr do
           process("1") do
@@ -253,6 +254,96 @@ describe "Eye::Dsl checks" do
       "__default__"=>{:name=>"__default__", :application=>"bla", :processes=>{
         "1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"1.pid",
           :checks=>{:cpu2=>{:times=>2, :below=>80, :every=>30, :type=>:cpu2}}}}}}}}
+  end
+
+  describe "two checks with the same type" do
+
+    it "two checks with the same type" do
+      conf = <<-E
+        Eye.application("bla") do
+          process("1") do
+            pid_file "1.pid"
+
+            checks :memory, :below => 100.megabytes, :every => 10.seconds
+            checks :memory2, :below => 100, :every => 20.seconds
+            checks :memory_3, :below => 100, :every => 20.seconds
+          end        
+        end
+      E
+      Eye::Dsl.parse_apps(conf).should == {
+        "bla" => {:name=>"bla", :groups=>{
+          "__default__"=>{:name=>"__default__", :application=>"bla", :processes=>{
+            "1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"1.pid", 
+              :checks=>{
+                :memory=>{:below=>104857600, :every=>10, :type=>:memory}, 
+                :memory2=>{:below=>100, :every=>20, :type=>:memory}, 
+                :memory_3=>{:below=>100, :every=>20, :type=>:memory}}}}}}}}
+    end
+
+    it "with nochecks" do
+      conf = <<-E
+        Eye.application("bla") do
+          checks :memory, :below => 100
+
+          process("1") do
+            pid_file "1.pid"
+
+            nochecks :memory
+            checks :memory2, :below => 100, :every => 20.seconds
+          end        
+        end
+      E
+      Eye::Dsl.parse_apps(conf).should == {
+        "bla" => {:name=>"bla", :checks=>{:memory=>{:below=>100, :type=>:memory}}, :groups=>{
+          "__default__"=>{:name=>"__default__", 
+            :checks=>{
+              :memory=>{:below=>100, :type=>:memory}}, :application=>"bla", :processes=>{
+                "1"=>{:name=>"1", :checks=>{
+                  :memory2=>{:below=>100, :every=>20, :type=>:memory}}, 
+                  :application=>"bla", :group=>"__default__", :pid_file=>"1.pid"}}}}}}
+    end
+
+    it "do not cross if there custom checker already" do
+      conf = <<-E
+        class Cpu2 < Eye::Checker::Custom
+          param :below, [Fixnum, Float], true
+        end
+
+        Eye.application("bla") do
+          process("1") do
+            pid_file "1.pid"
+            checks :cpu, :below => 100.megabytes, :every => 10.seconds
+            checks :cpu2, :below => 100, :every => 20.seconds
+            checks :cpu3, :below => 100, :every => 20.seconds
+          end        
+        end
+      E
+      Eye::Dsl.parse_apps(conf).should == {
+        "bla" => {:name=>"bla", :groups=>{
+          "__default__"=>{:name=>"__default__", :application=>"bla", :processes=>{
+            "1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"1.pid", 
+              :checks=>{
+                :cpu=>{:below=>104857600, :every=>10, :type=>:cpu}, 
+                :cpu2=>{:below=>100, :every=>20, :type=>:cpu2}, 
+                :cpu3=>{:below=>100, :every=>20, :type=>:cpu}}}}}}}}
+    end
+
+    it "errored cases" do
+      conf = <<-E
+        Eye.application("bla") do
+          checks :memory_bla, :below => 100.megabytes, :every => 10.seconds
+        end
+      E
+      expect{ Eye::Dsl.parse_apps(conf) }.to raise_error(Eye::Dsl::Error)
+
+      conf = <<-E
+        Eye.application("bla") do
+          checks 'memory-4', :below => 100.megabytes, :every => 10.seconds
+        end
+      E
+      expect{ Eye::Dsl.parse_apps(conf) }.to raise_error(Eye::Dsl::Error)
+    end
+
   end
 
 end

@@ -87,6 +87,7 @@ describe "with_server feature" do
   describe "helpers" do
     it "hostname on with server" do
       conf = <<-E
+        x = current_config_path
         Eye.application("bla"){ 
           with_server('muga_server') do
             working_dir "/tmp"

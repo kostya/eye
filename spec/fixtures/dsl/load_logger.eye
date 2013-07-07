@@ -1,5 +1,6 @@
 Eye.config do
   logger "/tmp/1.loG"
+  logger_level Logger::DEBUG
 end
 
 Eye.application "app1" do

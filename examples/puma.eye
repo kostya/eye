@@ -1,6 +1,6 @@
 RUBY      = '/usr/local/ruby/1.9.3-p392/bin/ruby'
 RAILS_ENV = 'production'
-ROOT      = '/var/www/super_app'
+ROOT      = File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
 CURRENT   = File.expand_path(File.join(ROOT, %w{current}))
 LOGS      = File.expand_path(File.join(ROOT, %w{shared log}))
 PIDS      = File.expand_path(File.join(ROOT, %w{shared pids}))
@@ -12,7 +12,7 @@ end
 
 Eye.application :super_app do
   env 'RAILS_ENV' => RAILS_ENV
-  working_dir CURRENT
+  working_dir ROOT
   triggers :flapping, :times => 10, :within => 1.minute
 
   process :puma do
