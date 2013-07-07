@@ -1,4 +1,7 @@
-0.3.2.dev
+0.3.3.dev
+---------
+
+0.3.2
 ---------
 * improve matching targers
 * possibility to add many checkers with the same type per process (ex: checks :http_2, ...)
