@@ -4,7 +4,7 @@ describe "Intergration" do
   before :each do
     @c = Eye::Controller.new
     res = nil
-    with_erb_file(fixture("dsl/integration.erb")) { |f| res = @c.load(f) }
+    @c.load_erb(fixture("dsl/integration.erb"))
     Marshal.dump(res).should_not include("ActiveSupport")
     @processes = @c.all_processes
     @p1 = @processes.detect{|c| c.name == 'sample1'}

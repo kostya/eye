@@ -22,6 +22,7 @@ Eye::Process
 
 class Eye::Controller
   public :find_objects, :remove_object_from_tree
+  def load_erb(file); with_erb_file(file){|f| self.load(f) }; end
 end
 
 require 'rspec/mocks'
