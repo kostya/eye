@@ -15,7 +15,7 @@ class Eye::Http
   end
 
   def start
-    stop 
+    stop
 
     @server = Reel::Server.supervise(@host, @port) do |connection|
       while request = connection.request

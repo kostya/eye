@@ -44,5 +44,5 @@ private
     @http = Eye::Http.new(host, port)
     @http.start
   end
-  
+
 end

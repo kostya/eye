@@ -13,7 +13,7 @@ describe "options spec" do
       Net::HTTP.get(uri).should == Eye::ABOUT
     end
 
-    it "load config with http enable then disable" do    
+    it "load config with http enable then disable" do
       subject.load(fixture("dsl/http/http1.eye"))
       Net::HTTP.get(uri).should == Eye::ABOUT
 
