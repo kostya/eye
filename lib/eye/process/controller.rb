@@ -52,7 +52,7 @@ module Eye::Process::Controller
   def unmonitor
     switch :unmonitoring
   end
-  
+
   def delete
     if self[:stop_on_delete]
       info 'process has stop_on_delete option, so sync-stop it first'
@@ -68,9 +68,9 @@ module Eye::Process::Controller
 
   def signal(sig = 0)
     if self.pid
-      res = send_signal(sig) 
+      res = send_signal(sig)
       info "send signal #{sig} to #{self.pid} = #{res}"
     end
   end
-  
+
 end

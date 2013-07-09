@@ -47,14 +47,14 @@ class Eye::Group
 
     # show current chain
     if current_scheduled_command
-      h.update(current_command: current_scheduled_command) 
+      h.update(current_command: current_scheduled_command)
 
       if (chain_commands = scheduler_actions_list) && chain_commands.present?
-        h.update(chain_commands: chain_commands) 
+        h.update(chain_commands: chain_commands)
       end
 
       if @chain_processes_current && @chain_processes_count
-        h.update(chain_progress: [@chain_processes_current, @chain_processes_count]) 
+        h.update(chain_progress: [@chain_processes_current, @chain_processes_count])
       end
     end
 
@@ -71,9 +71,9 @@ class Eye::Group
     case command
       when :delete
         delete *args
-      when :break_chain 
+      when :break_chain
         break_chain *args
-      else 
+      else
         schedule command, *args, Eye::Reason::User.new(command)
     end
   end
@@ -110,7 +110,7 @@ class Eye::Group
   def break_chain
     info "break chain"
     scheduler_clear_pending_list
-    @chain_breaker = true    
+    @chain_breaker = true
   end
 
   def clear
@@ -125,10 +125,10 @@ private
 
   def async_schedule(command, *args)
     info "send to all processes #{command} #{args.present? ? args*',' : nil}"
-    
+
     @processes.each do |process|
       process.send_command(command, *args)
-    end    
+    end
   end
 
 end

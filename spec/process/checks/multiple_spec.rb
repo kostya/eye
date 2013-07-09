@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe "Multiple checks" do
   it "should create many checks with the same type" do
-    @c = Eye::Controller.new 
+    @c = Eye::Controller.new
     r = @c.load(fixture("dsl/multiple_checks.eye"))
     sleep 3
     @process = @c.process_by_name("1")

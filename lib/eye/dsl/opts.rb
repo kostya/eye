@@ -1,6 +1,6 @@
 class Eye::Dsl::Opts < Eye::Dsl::PureOpts
 
-  STR_OPTIONS = [ :pid_file, :working_dir, :stdout, :stderr, :stdall, :start_command, 
+  STR_OPTIONS = [ :pid_file, :working_dir, :stdout, :stderr, :stdall, :start_command,
     :stop_command, :restart_command, :uid, :gid ]
   create_options_methods(STR_OPTIONS, String)
 
@@ -32,7 +32,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
 
     opts.merge!(:type => nac[:type])
     Eye::Checker.validate!(opts)
-    
+
     @config[:checks] ||= {}
     @config[:checks][nac[:name]] = opts
   end
@@ -40,7 +40,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   def triggers(type, opts = {})
     type = type.to_sym
     raise Eye::Dsl::Error, "unknown trigger type #{type}" unless Eye::Trigger::TYPES[type]
-    
+
     opts.merge!(:type => type)
     Eye::Trigger.validate!(opts)
 
@@ -64,7 +64,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
 
   def notify(contact, level = :warn)
     unless Eye::Process::Notify::LEVELS[level]
-      raise Eye::Dsl::Error, "level should be in #{Eye::Process::Notify::LEVELS.keys}" 
+      raise Eye::Dsl::Error, "level should be in #{Eye::Process::Notify::LEVELS.keys}"
     end
 
     @config[:notify] ||= {}
@@ -125,7 +125,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   def with_server(glob = nil, &block)
     on_server = true
 
-    if glob.present? 
+    if glob.present?
       host = Eye::System.host
 
       if glob.is_a?(Array)

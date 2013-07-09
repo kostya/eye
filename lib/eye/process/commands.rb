@@ -35,7 +35,7 @@ module Eye::Process::Commands
 
     :state_error
   end
-  
+
   def stop_process
     debug 'stop_process command'
 
@@ -54,9 +54,9 @@ module Eye::Process::Commands
 
       if control_pid?
         info "delete pid_file: #{self[:pid_file_ex]}"
-        clear_pid_file 
+        clear_pid_file
       end
-      
+
       true
 
     end
@@ -132,7 +132,7 @@ private
     else # default command
       info "executing: `kill -TERM #{self.pid}` with stop_grace: #{self[:stop_grace].to_f}s"
       send_signal(:TERM)
-      
+
       sleep self[:stop_grace].to_f
 
       # if process not die here, by default we force kill it
@@ -160,7 +160,7 @@ private
 
     res
   end
-  
+
   def daemonize_process
     time_before = Time.now
     res = Eye::System.daemonize(self[:start_command], config)
@@ -177,7 +177,7 @@ private
 
       return {:error => res[:error].inspect}
     end
-    
+
     self.pid = res[:pid]
 
     unless self.pid
@@ -193,9 +193,9 @@ private
     end
 
     unless failsafe_save_pid
-      return {:error => :cant_write_pid} 
+      return {:error => :cant_write_pid}
     end
-    
+
     res
   end
 
@@ -204,7 +204,7 @@ private
     time_before = Time.now
 
     res = execute(self[:start_command], config.merge(:timeout => config[:start_timeout]))
-    start_time = Time.now - time_before    
+    start_time = Time.now - time_before
 
     if res[:error]
       error "raised with #{res[:error].inspect}"
@@ -242,7 +242,7 @@ private
       'maybe should add stdout/err/all logs'
     else
       "check also it stdout/err/all logs #{[self[:stdout], self[:stderr]].inspect}"
-    end    
+    end
   end
 
   def prepare_command(command)

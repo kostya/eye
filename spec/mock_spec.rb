@@ -15,7 +15,7 @@ end
 
 describe "Actor mocking" do
   before :each do
-    @a = Aaa.new    
+    @a = Aaa.new
   end
 
   it "int" do

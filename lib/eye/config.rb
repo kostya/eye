@@ -32,7 +32,7 @@ class Eye::Config
 
     # Check dublicates of the full pid_file
 
-    dubl_pids = all_processes.each_with_object(Hash.new(0)) do |o, h| 
+    dubl_pids = all_processes.each_with_object(Hash.new(0)) do |o, h|
       ex_pid_file = Eye::System.normalized_file(o[:pid_file], o[:working_dir])
       h[ex_pid_file] += 1
     end
@@ -43,7 +43,7 @@ class Eye::Config
     end
 
     # Check dublicates of the full_name
-    dubl_names = all_processes.each_with_object(Hash.new(0)) do |o, h| 
+    dubl_names = all_processes.each_with_object(Hash.new(0)) do |o, h|
       full_name = "#{o[:application]}:#{o[:group]}:#{o[:name]}"
       h[full_name] += 1
     end

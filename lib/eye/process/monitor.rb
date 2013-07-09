@@ -15,7 +15,7 @@ private
   def try_update_pid_from_file
     # if pid file was rewrited
     newpid = load_pid_from_file
-    if newpid != self.pid 
+    if newpid != self.pid
       info "process changed pid to #{newpid}, updating..." if self.pid
       self.pid = newpid
 
@@ -23,7 +23,7 @@ private
         return true
       else
         warn "process with new_pid #{newpid} not found"
-        return false          
+        return false
       end
     else
       debug 'process not found'
@@ -32,7 +32,7 @@ private
   end
 
   REWRITE_FACKUP_PIDFILE_PERIOD = 2.minutes
-  
+
   def check_alive
     if up?
 
@@ -44,7 +44,7 @@ private
       else
         # check that pid_file still here
         ppid = failsafe_load_pid
-        
+
         if ppid != self.pid
           msg = "check_alive: pid_file(#{self[:pid_file]}) changes by itself (pid:#{self.pid}) => (pid:#{ppid})"
           if control_pid?

@@ -1,6 +1,6 @@
 class Eye::Trigger
   include Eye::Logger::Helpers
-  
+
   autoload :Flapping,   'eye/trigger/flapping'
 
   # ex: { :type => :flapping, :times => 2, :within => 30.seconds}
@@ -40,7 +40,7 @@ class Eye::Trigger
     else
       debug "!!! #{self.class} recognized !!!"
     end
-    
+
     res
   end
 

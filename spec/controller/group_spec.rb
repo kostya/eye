@@ -74,7 +74,7 @@ describe "Eye::Group" do
     end
 
     it "when chain clearing by force" do
-      @g = Eye::Group.new('gr', {:chain => {:start => {:command => :start, :grace => 0}, :restart => {:command => :restart, :grace => 0}}})      
+      @g = Eye::Group.new('gr', {:chain => {:start => {:command => :start, :grace => 0}, :restart => {:command => :restart, :grace => 0}}})
       mock(@g).chain_schedule(:async, 0, :monitor)
       @g.monitor
 

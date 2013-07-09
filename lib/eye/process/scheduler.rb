@@ -17,7 +17,7 @@ module Eye::Process::Scheduler
       if reason.class == Eye::Reason
         # for auto reasons
         # skip already running commands and all in chain
-        scheduler.add_wo_dups_current(:scheduled_action, command, {:args => args, :reason => reason}, &block)  
+        scheduler.add_wo_dups_current(:scheduled_action, command, {:args => args, :reason => reason}, &block)
       else
         # for manual, or without reason
         # skip only for last in chain
@@ -57,7 +57,7 @@ module Eye::Process::Scheduler
   def scheduler_clear_pending_list
     scheduler.clear_pending_list
   end
-  
+
   def self.included(base)
     base.finalizer :remove_scheduler
   end
@@ -74,7 +74,7 @@ private
   def remove_scheduler
     @scheduler.terminate if @scheduler && @scheduler.alive?
   end
-  
+
   def scheduler
     @scheduler ||= Eye::Utils::CelluloidChain.new(current_actor)
   end

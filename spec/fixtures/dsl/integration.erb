@@ -4,20 +4,22 @@ Eye.app("int") do
 
   group "samples" do
     process("sample1") do
-      pid_file "1.pid"
+      pid_file "<%= C.p1_pid %>"
       start_command "ruby sample.rb"
       daemonize true
     end
 
     process("sample2") do
-      pid_file "2.pid"
-      start_command "ruby sample.rb -d --pid 2.pid --log shlak.log"
+      pid_file "<%= C.p2_pid %>"
+      start_command "ruby sample.rb -d --pid <%= C.p2_pid %> --log shlak.log"
       checks :memory, :below => 300.megabytes
     end
   end
 
   process("forking") do
-    pid_file "forking.pid"
+    env "PID_NAME" => "<%= C.p3_pid %>"
+    pid_file "<%= C.p3_pid %>"
+
     start_command "ruby forking.rb start"
     stop_command "ruby forking.rb stop"
 

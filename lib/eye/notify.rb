@@ -70,7 +70,7 @@ class Eye::Notify
   def message_subject
     "[#{msg_host}] [#{msg_full_name}] #{msg_message}"
   end
-  
+
   def message_body
     "#{message_subject} at #{msg_at.to_s(:short)}"
   end

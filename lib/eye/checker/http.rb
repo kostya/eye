@@ -28,7 +28,7 @@ class Eye::Checker::Http < Eye::Checker::Defer
     @open_timeout = (open_timeout || 3).to_f
     @read_timeout = (read_timeout || timeout || 15).to_f
   end
-  
+
   def get_value
     res = session.start{ |http| http.get(@uri.request_uri) }
     {:result => res}
@@ -52,7 +52,7 @@ class Eye::Checker::Http < Eye::Checker::Defer
     return false unless value[:result]
 
     unless value[:result].kind_of?(@kind)
-      return false 
+      return false
     end
 
     if @pattern
@@ -79,7 +79,7 @@ class Eye::Checker::Http < Eye::Checker::Defer
       msg += "<#{value[:notice]}>" if value[:notice]
       msg
     end
-  end  
+  end
 
 private
 

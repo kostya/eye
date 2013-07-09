@@ -20,7 +20,7 @@ describe "Process Start" do
     sleep 0.5
 
     # pid and should be ok
-    @process.pid.should == @pid  
+    @process.pid.should == @pid
     @process.load_pid_from_file.should == @pid
 
     @process.state_name.should == :up
@@ -40,9 +40,9 @@ describe "Process Start" do
     @process.watchers.keys.should == [:check_alive]
   end
 
-  [C.p1, C.p2].each do |c|
-    it "start new process, with config #{c[:name]}" do
-      @process = process c
+  [C.p1, C.p2].each do |cfg|
+    it "start new process, with config #{cfg[:name]}" do
+      @process = process cfg
       @process.start.should == {:pid=>@process.pid}
 
       sleep 0.5
@@ -54,10 +54,10 @@ describe "Process Start" do
       @process.watchers.keys.should == [:check_alive]
     end
 
-    it "pid_file already exists, but process not, with config #{c[:name]}" do
+    it "pid_file already exists, but process not, with config #{cfg[:name]}" do
       File.open(C.p1[:pid_file], 'w'){|f| f.write(1234567) }
 
-      @process = process c
+      @process = process cfg
       @process.start.should == {:pid=>@process.pid}
 
       sleep 0.5
@@ -69,8 +69,8 @@ describe "Process Start" do
       @process.state_name.should == :up
     end
 
-    it "process crashed, with config #{c[:name]}" do
-      @process = process(c.merge(:start_command => c[:start_command] + " -r" ))
+    it "process crashed, with config #{cfg[:name]}" do
+      @process = process(cfg.merge(:start_command => cfg[:start_command] + " -r" ))
       @process.start.should == {:error=>:not_realy_running}
 
       sleep 1
@@ -88,7 +88,7 @@ describe "Process Start" do
     end
 
     it "start with invalid command" do
-      @process = process(c.merge(:start_command => "asdf asdf1 r f324 f324f 32f44f"))
+      @process = process(cfg.merge(:start_command => "asdf asdf1 r f324 f324f 32f44f"))
       mock(@process).check_crash
       res = @process.start
       res.should == {:error=>"#<Errno::ENOENT: No such file or directory - asdf>"}
@@ -102,7 +102,7 @@ describe "Process Start" do
     end
 
     it "start PROBLEM with stdout permissions" do
-      @process = process(c.merge(:stdout => "/var/run/1.log"))
+      @process = process(cfg.merge(:stdout => "/var/run/1.log"))
       mock(@process).check_crash
       res = @process.start
       res.should == {:error=>"#<Errno::EACCES: Permission denied - open>"}
@@ -116,7 +116,7 @@ describe "Process Start" do
     end
 
     it "start PROBLEM binary permissions" do
-      @process = process(c.merge(:start_command => "./sample.rb"))
+      @process = process(cfg.merge(:start_command => "./sample.rb"))
       mock(@process).check_crash
       res = @process.start
       res.should == {:error=>"#<Errno::EACCES: Permission denied - ./sample.rb>"}
@@ -133,7 +133,7 @@ describe "Process Start" do
 
   it "C.p1 pid_file failed to write" do
     @process = process(C.p1.merge(:pid_file => "/tmpasdfasdf/asdfa/dfa/df/ad/fad/fd.pid"))
-    res = @process.start      
+    res = @process.start
     res.should == {:error=>:cant_write_pid}
 
     sleep 1
@@ -143,13 +143,13 @@ describe "Process Start" do
     @process.states_history.all?(:unmonitored, :starting, :down).should == true
 
     @process.watchers.keys.should == []
-  end    
+  end
 
   it "C.p2 pid_file failed to write" do
     pid = "/tmpasdfasdf/asdfa/dfa/df/ad/fad/fd.pid"
     @process = process(C.p2.merge(:pid_file => pid,
       :start_command => "ruby sample.rb -d --pid #{pid} --log #{C.log_name}"))
-    res = @process.start      
+    res = @process.start
     res.should == {:error=>:pid_not_found}
 
     sleep 1
@@ -159,11 +159,11 @@ describe "Process Start" do
     @process.states_history.all?(:unmonitored, :starting, :down).should == true
 
     @process.watchers.keys.should == []
-  end    
+  end
 
   it "long process with #{C.p1[:name]} (with daemonize)" do
     # this is no matter for starting
-    @process = process(C.p1.merge(:start_command => C.p1[:start_command] + " --daemonize_delay 3", 
+    @process = process(C.p1.merge(:start_command => C.p1[:start_command] + " --daemonize_delay 3",
       :start_grace => 2.seconds ))
     @process.start.should == {:pid=>@process.pid}
 
@@ -173,7 +173,7 @@ describe "Process Start" do
   end
 
   it "long process with #{C.p2[:name]}" do
-    @process = process(C.p2.merge(:start_command => C.p2[:start_command] + " --daemonize_delay 3", 
+    @process = process(C.p2.merge(:start_command => C.p2[:start_command] + " --daemonize_delay 3",
       :start_timeout => 2.seconds))
     @process.start.should == {:error=>"#<Timeout::Error: execution expired>"}
 
@@ -184,11 +184,11 @@ describe "Process Start" do
     [:starting, :down].should include(@process.state_name)
 
     @process.states_history.seq?(:unmonitored, :starting, :down, :starting).should == true
-    @process.states_history.all?(:unmonitored, :starting, :down).should == true    
+    @process.states_history.all?(:unmonitored, :starting, :down).should == true
   end
 
   it "long process with #{C.p2[:name]} but start_timeout is OK" do
-    @process = process(C.p2.merge(:start_command => C.p2[:start_command] + " --daemonize_delay 3", 
+    @process = process(C.p2.merge(:start_command => C.p2[:start_command] + " --daemonize_delay 3",
       :start_timeout => 10.seconds))
     @process.start.should == {:pid => @process.pid}
 
@@ -198,7 +198,7 @@ describe "Process Start" do
 
   # O_o, what checks this spec
   it "blocking start with lock" do
-    @process = process(C.p2.merge(:start_command => C.p2[:start_command] + " --daemonize_delay 3 -L 1.lock", :start_timeout => 2.seconds))
+    @process = process(C.p2.merge(:start_command => C.p2[:start_command] + " --daemonize_delay 3 -L #{C.p2_lock}", :start_timeout => 2.seconds))
     @process.start.should == {:error => "#<Timeout::Error: execution expired>"}
 
     sleep 0.5
@@ -224,16 +224,21 @@ describe "Process Start" do
     # should reload process from pid_file
     @process.state_name.should == :up
     @process.pid.should_not == old_pid
-    @process.load_pid_from_file.should == @process.pid    
+    @process.load_pid_from_file.should == @process.pid
   end
 
   it "bad config daemonize self daemonized process pid different" do
     # NOT RECOMENDED FOR USE CASE
-    @process = process(C.p2.merge(:daemonize => true, :pid_file => "2.pid", :start_grace => 10.seconds))
+    @process = process(C.p2.merge(:daemonize => true, :pid_file => C.p2_pid, :start_grace => 10.seconds,
+      :environment => {"FAILSAFE_PID_FILE" => C.just_pid}))
     @process.start.should == {:error => :not_realy_running}
     @process.pid.should == nil
-    
-    ensure_kill_samples
+
+    # to ensure kill this process
+    sleep 1
+    if File.exists?(C.just_pid)
+      @process.pid = File.read(C.just_pid).to_i
+    end
   end
 
   it "without start command" do
@@ -249,7 +254,7 @@ describe "Process Start" do
       @process.state = st.to_s # force set state
 
       dont_allow(Eye::System).daemonize
-      dont_allow(Eye::System).execute    
+      dont_allow(Eye::System).execute
 
       @process.start.should == :state_error
       @process.state_name.should == st

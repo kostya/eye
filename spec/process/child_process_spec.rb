@@ -34,7 +34,7 @@ describe "ChildProcess" do
     end
 
     it "when one of child is die, should update list" do
-      start_ok_process(C.p3.merge(:monitor_children => {}, :childs_update_period => Eye::SystemResources::PsAxActor::UPDATE_INTERVAL + 1)) 
+      start_ok_process(C.p3.merge(:monitor_children => {}, :childs_update_period => Eye::SystemResources::PsAxActor::UPDATE_INTERVAL + 1))
       @process.watchers.keys.should == [:check_alive, :check_childs]
 
       sleep 5 # ensure that childs finds
@@ -57,7 +57,7 @@ describe "ChildProcess" do
     end
 
     it "all childs is die, should update list" do
-      start_ok_process(C.p3.merge(:monitor_children => {}, :childs_update_period => Eye::SystemResources::PsAxActor::UPDATE_INTERVAL + 1)) 
+      start_ok_process(C.p3.merge(:monitor_children => {}, :childs_update_period => Eye::SystemResources::PsAxActor::UPDATE_INTERVAL + 1))
       @process.watchers.keys.should == [:check_alive, :check_childs]
 
       sleep 5 # ensure that childs finds
@@ -93,7 +93,7 @@ describe "ChildProcess" do
       @process.watchers.keys.should == []
       @process.childs.size.should == 0
 
-      Eye::System.pid_alive?(pid).should == false    
+      Eye::System.pid_alive?(pid).should == false
     end
 
   end
@@ -124,5 +124,5 @@ describe "ChildProcess" do
       @process.childs.should == {}
     end
   end
-  
+
 end

@@ -6,7 +6,7 @@ RAILS_ENV = 'production'
 Eye.application "rails_unicorn" do
   env "RAILS_ENV" => RAILS_ENV, "PATH" => "#{File.dirname(RUBY)}:#{ENV['PATH']}"
   working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
-  
+
   process("unicorn") do
     pid_file "tmp/pids/unicorn.pid"
     start_command "#{RUBY} ./bin/unicorn -Dc ./config/unicorn.rb -E #{RAILS_ENV}"

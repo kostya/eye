@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "Eye::Process::StatesHistory" do
   before :each do
-    @h = Eye::Process::StatesHistory.new    
+    @h = Eye::Process::StatesHistory.new
   end
 
   it "should work" do
@@ -82,14 +82,14 @@ describe "Eye::Process::StatesHistory" do
     @h << :down
     @h << :starting
 
-    @h.end?(:down, :starting).should == true    
+    @h.end?(:down, :starting).should == true
     @h.end?(:starting, :down).should == false
 
     @h.end?(:starting).should == true
     @h.end?(:down).should == false
 
-    @h.end?(:starting, :down, :starting).should == true    
-    @h.end?(:unmonitored, :starting, :down, :starting).should == true    
+    @h.end?(:starting, :down, :starting).should == true
+    @h.end?(:unmonitored, :starting, :down, :starting).should == true
   end
 
   it "all?" do
@@ -98,7 +98,7 @@ describe "Eye::Process::StatesHistory" do
     @h << :down
     @h << :starting
 
-    @h.all?([:starting, :down, :starting]).should == false    
+    @h.all?([:starting, :down, :starting]).should == false
     @h.all?(:starting, :down, :starting).should == false
     @h.all?(:starting, :down, :starting, :unmonitored).should == true
     @h.all?(:down, :starting, :unmonitored).should == true
@@ -107,7 +107,7 @@ describe "Eye::Process::StatesHistory" do
     @h.all?(:up, :stopping).should == false
     @h.all?(:up, :down).should == false
     @h.all?(:down).should == false
-  end  
+  end
 
   it "state_count" do
     @h << :unmonitored

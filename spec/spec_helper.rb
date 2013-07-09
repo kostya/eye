@@ -30,7 +30,11 @@ require 'fakeweb'
 require File.join(File.dirname(__FILE__), %w{support spec_support})
 require File.join(File.dirname(__FILE__), %w{support load_result})
 
-$logger_path = File.join(File.dirname(__FILE__), %w{spec.log})
+def process_id
+  ENV['TEST_ENV_NUMBER'].to_i
+end
+
+$logger_path = File.join(File.dirname(__FILE__), ["spec#{process_id}.log"])
 
 def set_glogger
   Eye::Logger.log_level = Logger::DEBUG
@@ -53,8 +57,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    FileUtils.rm(C.p1[:pid_file]) rescue nil
-    FileUtils.rm(C.p2[:pid_file]) rescue nil
+    clear_pids
 
     @log = C.base[:stdout]
     FileUtils.rm(@log) rescue nil
@@ -65,19 +68,8 @@ RSpec.configure do |config|
   end
 
   config.after(:each) do
-    # clearing all
-
-    if @pid_file
-      FileUtils.rm(@pid_file) rescue nil
-    end
-
     force_kill_process(@process)
     force_kill_pid(@pid)
-
-    FileUtils.rm(C.p1[:pid_file]) rescue nil
-    FileUtils.rm(C.p2[:pid_file]) rescue nil
-
-    GC.start # for kill spawned threads
 
     terminate_old_actors
 
@@ -90,14 +82,22 @@ RSpec.configure do |config|
   end
 end
 
+def clear_pids
+  (C.p.values).each do |cfg|
+    FileUtils.rm(cfg[:pid_file]) rescue nil
+  end
+  FileUtils.rm(C.just_pid) rescue nil
+end
+
 def terminate_old_actors
   Celluloid::Actor.all.each do |actor|
     next unless actor.alive?
     if [Eye::Controller, Eye::Process, Eye::Group, Eye::ChildProcess, Reel::Server].include?(actor.class)
       next if actor == Eye::Control
-      actor.terminate 
+      actor.terminate
     end
   end
+rescue
 end
 
 def force_kill_process(process)
@@ -106,14 +106,14 @@ def force_kill_process(process)
 
     process.terminate
     force_kill_pid(pid)
-    
+
     process = nil
   end
 end
 
 def force_kill_pid(pid)
   if pid && pid != $$ && Eye::System.pid_alive?(pid)
-    Eye::System.send_signal(pid, 9) 
+    Eye::System.send_signal(pid, 9)
   end
 end
 
@@ -135,3 +135,13 @@ def should_spend(timeout = 0, delta = 0.05, &block)
   yield
   (Time.now - tm1).should be_within(delta).of(timeout)
 end
+
+def with_erb_file(file, &block)
+  require 'erb'
+  filename = file + "#{rand.to_f}.eye"
+  File.open(filename, 'w'){ |f| f.write ERB.new(File.read(file)).result }
+  yield filename
+ensure
+  FileUtils.rm(filename) rescue nil
+end
+

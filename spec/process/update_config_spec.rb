@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "#update_config" do
   before :each do
-    @cfg = C.p3.merge(:checks => join(C.check_mem, C.check_cpu), :monitor_children => {})    
+    @cfg = C.p3.merge(:checks => join(C.check_mem, C.check_cpu), :monitor_children => {})
     start_ok_process(@cfg)
     sleep 6
   end
@@ -15,16 +15,16 @@ describe "#update_config" do
     @process.watchers.keys.should == [:check_alive, :check_childs, :check_memory, :check_cpu]
     @process.childs.keys.size.should == 3
     child_pids = @process.childs.keys
-    @process[:environment].should == {"ENV1" => "SUPER"}
+    @process[:environment]["PID_NAME"].should be
 
-    @process.update_config(@cfg.merge(:environment => {"ENV2" => "SUPER"}))
+    @process.update_config(@cfg.merge(:environment => @cfg[:environment].merge({"ENV2" => "SUPER"})))
     sleep 5
 
     @process.state_name.should == :up
     @process.watchers.keys.should == [:check_alive, :check_childs, :check_memory, :check_cpu]
     @process.childs.keys.size.should == 3
     @process.childs.keys.should == child_pids
-    @process[:environment].should == {"ENV2" => "SUPER"}
+    @process[:environment]["ENV2"].should == "SUPER"
     @process.pid.should == @pid
   end
 

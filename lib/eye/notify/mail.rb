@@ -14,10 +14,10 @@ class Eye::Notify::Mail < Eye::Notify
   param :user, String
   param :password, String
   param :auth, Symbol, nil, nil, [:plain, :login, :cram_md5]
-  
+
   param :from_mail, String
   param :from_name, String, nil, 'eye'
-  
+
   def execute
     smtp
   end

@@ -2,7 +2,7 @@ class Eye::Checker::FileSize < Eye::Checker
 
   # Check that file size changed (log for example)
 
-  # checks :fsize, :every => 5.seconds, :file => "/tmp/1.log", :times => [3,5], 
+  # checks :fsize, :every => 5.seconds, :file => "/tmp/1.log", :times => [3,5],
   #      :below => 30.kilobytes, :above => 10.kilobytes
 
   param :file, [String], true

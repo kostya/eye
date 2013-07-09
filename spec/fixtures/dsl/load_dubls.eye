@@ -46,6 +46,9 @@ Eye.application "app5" do
     process("mu") { pid_file "mu.pid" }
     process("mu2") { pid_file "mu2.pid" }
   end
+  group :serv do
+    process("serv") { pid_file "serv.pid" }
+  end
 end
 
 Eye.application "app6" do

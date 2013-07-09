@@ -2,25 +2,25 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "find_objects" do
   describe "simple matching" do
-    subject do 
+    subject do
       Eye::Controller.new.tap{ |c| c.load(fixture("dsl/load.eye")) }
     end
 
     it "1 process" do
       objs = subject.find_objects("p1")
-      objs.class.should == Eye::Utils::AliveArray    
+      objs.class.should == Eye::Utils::AliveArray
       objs.map(&:full_name).sort.should == %w{app1:gr1:p1}
       objs.map(&:class).should == [Eye::Process]
     end
 
     it "1 group" do
-      objs = subject.find_objects("gr2")    
+      objs = subject.find_objects("gr2")
       objs.map(&:full_name).sort.should == %w{app1:gr2}
       objs.map(&:class).should == [Eye::Group]
     end
 
     it "1 app" do
-      objs = subject.find_objects("app2")    
+      objs = subject.find_objects("app2")
       objs.map(&:full_name).sort.should == %w{app2}
       objs.map(&:class).should == [Eye::Application]
     end
@@ -226,6 +226,11 @@ describe "find_objects" do
     it "in different apps" do
       objs = subject.find_objects("one")
       objs.map(&:full_name).sort.should == %w{app5:one app6:one} # maybe not good
+    end
+
+    it "when exactly matched object and subobject" do
+      objs = subject.find_objects("serv")
+      objs.map(&:full_name).sort.should == %w{app5:serv}
     end
   end
 

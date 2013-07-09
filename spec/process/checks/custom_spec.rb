@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe "Custom checks" do
   before :each do
-    @c = Eye::Controller.new 
+    @c = Eye::Controller.new
     r = @c.load(fixture("dsl/custom_check.eye"))
     sleep 3
     @process = @c.process_by_name("1")

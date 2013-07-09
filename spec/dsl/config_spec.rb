@@ -19,12 +19,12 @@ describe "Eye::Dsl::Config" do
       end
 
       Eye.config do
-        logger "/tmp/2.log"        
+        logger "/tmp/2.log"
       end
 
     E
     Eye::Dsl.parse(conf).to_h.should == {:applications => {}, :settings => {:logger => "/tmp/2.log",
-      :logger_level => 2}} 
+      :logger_level => 2}}
   end
 
 end

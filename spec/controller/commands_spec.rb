@@ -72,7 +72,7 @@ describe "comamnd spec" do
     [:start, :stop, :restart, :unmonitor].each do |cmd|
       it "should send_command #{cmd}" do
         any_instance_of(Eye::Process) do |p|
-          dont_allow(p).send_command(cmd)          
+          dont_allow(p).send_command(cmd)
         end
 
         mock(@p1).send_command(cmd)

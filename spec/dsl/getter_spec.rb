@@ -55,7 +55,7 @@ describe "Eye::Dsl getters" do
     conf = <<-E
       Eye.application("bla") do |app|
         env "A" => "1"
-        
+
         group :blagr do |gr|
           env "A" => app.env['A'] + "2"
 
@@ -71,7 +71,7 @@ describe "Eye::Dsl getters" do
     Eye::Dsl.parse_apps(conf).should == {
       "bla" => {:name => "bla", :environment=>{"A"=>"1"}, :groups=>{
         "blagr"=>{:name => "blagr", :application => "bla", :environment=>{"A"=>"12"}, :processes=>{
-          "blap"=>{:environment=>{"A"=>"123"}, :group=>"blagr", :application=>"bla", :name=>'blap', :pid_file=>"1", 
+          "blap"=>{:environment=>{"A"=>"123"}, :group=>"blagr", :application=>"bla", :name=>'blap', :pid_file=>"1",
             :start_command=>"ruby app:bla gr:blagr p:blap {\"A\"=>\"1\"} {\"A\"=>\"12\"} {\"A\"=>\"123\"} 1"}}}}}}
   end
 
@@ -99,7 +99,7 @@ describe "Eye::Dsl getters" do
     Eye::Dsl.parse_apps(conf).should == {
       "bla" => {:name => "bla", :environment=>{"A"=>"bla"}, :groups=>{
         "blagr"=>{:name => "blagr", :application => "bla", :environment=>{"A"=>"bla", "B"=>"bla:blagr"}, :processes=>{
-          "blap"=>{:environment=>{"A"=>"bla", "B"=>"bla:blagr", "C"=>"bla:blagr:blap"}, :pid_file=>"1", :group=>"blagr", :application=>"bla", :name=>'blap'}}}, 
+          "blap"=>{:environment=>{"A"=>"bla", "B"=>"bla:blagr", "C"=>"bla:blagr:blap"}, :pid_file=>"1", :group=>"blagr", :application=>"bla", :name=>'blap'}}},
         "__default__"=>{:name => "__default__", :environment=>{"A"=>"bla"}, :application => "bla", :processes=>{
           "blap2"=>{:environment=>{"A"=>"bla", "D"=>"bla:blap2"}, :pid_file=>"2", :group=>"__default__", :application=>"bla", :name=>'blap2'}}}}}}
   end
@@ -167,7 +167,7 @@ describe "Eye::Dsl getters" do
         Eye.application("bla") do |app|
           working_dir "/tmp"
 
-          process :p1 do 
+          process :p1 do
             start_command "ruby -t '\#{self.application.name}.\#{self.group.name}'"
             pid_file "p1"
           end
@@ -189,12 +189,12 @@ describe "Eye::Dsl getters" do
       Eye::Dsl.parse_apps(conf).should == {
         "bla" => {:name=>"bla", :working_dir=>"/tmp", :groups=>{
           "__default__"=>{:name=>"__default__", :working_dir=>"/tmp", :application=>"bla", :processes=>{
-            "p1"=>{:name=>"p1", :working_dir=>"/tmp", :application=>"bla", :group=>"__default__", 
-              :start_command=>"ruby -t 'bla.__default__'", :pid_file=>"p1"}}}, 
+            "p1"=>{:name=>"p1", :working_dir=>"/tmp", :application=>"bla", :group=>"__default__",
+              :start_command=>"ruby -t 'bla.__default__'", :pid_file=>"p1"}}},
           "blagr"=>{:name=>"blagr", :working_dir=>"/tmp", :application=>"bla", :processes=>{
-            "p2"=>{:name=>"p2", :working_dir=>"/tmp", :application=>"bla", :group=>"blagr", 
-              :start_command=>"ruby -t 'bla.blagr'", :pid_file=>"p2"}, 
-            "p3"=>{:name=>"p3", :working_dir=>"/tmp", :application=>"bla", :group=>"blagr", 
+            "p2"=>{:name=>"p2", :working_dir=>"/tmp", :application=>"bla", :group=>"blagr",
+              :start_command=>"ruby -t 'bla.blagr'", :pid_file=>"p2"},
+            "p3"=>{:name=>"p3", :working_dir=>"/tmp", :application=>"bla", :group=>"blagr",
               :start_command=>"ruby -t 'bla.blagr'", :pid_file=>"p3"}}}}}}
     end
 
@@ -214,7 +214,7 @@ describe "Eye::Dsl getters" do
       E
       Eye::Dsl.parse_apps(conf).should == {
         "bla" => {:name=>"bla", :working_dir=>"/tmp", :environment=>{"a"=>"bla"}, :groups=>{
-          "blagr"=>{:name=>"blagr", :working_dir=>"/tmp", 
+          "blagr"=>{:name=>"blagr", :working_dir=>"/tmp",
             :environment=>{"a"=>"bla", "b"=>"bla", "c"=>"bla", "d"=>"bla"}, :application=>"bla", :processes=>{}}}}}
     end
 

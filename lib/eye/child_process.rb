@@ -38,7 +38,7 @@ class Eye::ChildProcess
     @full_name = [logger_prefix, @name] * ':'
 
     @logger = Eye::Logger.new(@full_name)
-    
+
     @watchers = {}
 
     debug "start monitoring CHILD config: #{@config.inspect}"
@@ -70,7 +70,7 @@ class Eye::ChildProcess
       execute_restart_command
     else
       stop
-    end    
+    end
   end
 
   def monitor
@@ -79,7 +79,7 @@ class Eye::ChildProcess
   def unmonitor
   end
 
-  def delete 
+  def delete
   end
 
   def destroy

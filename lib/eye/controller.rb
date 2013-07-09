@@ -38,11 +38,11 @@ class Eye::Controller
     @current_config = Eye::Config.new
 
     Eye.instance_variable_set(:@logger, Eye::Logger.new('eye'))
-    @logger = Eye.logger 
+    @logger = Eye.logger
     Celluloid::logger = Eye.logger
 
     Eye::SystemResources.setup
-    
+
     info "starting #{Eye::ABOUT} (#{$$})"
   end
 

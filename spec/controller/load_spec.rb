@@ -27,9 +27,9 @@ describe "Eye::Controller::Load" do
 
     subject.short_tree.should == {
       "app1"=>{
-        "gr1"=>{"p1"=>"/tmp/app1-gr1-p1.pid", "p2"=>"/tmp/app1-gr1-p2.pid"}, 
-        "gr2"=>{"q3"=>"/tmp/app1-gr2-q3.pid"}, 
-        "__default__"=>{"g4"=>"/tmp/app1-g4.pid", "g5"=>"/tmp/app1-g5.pid"}}, 
+        "gr1"=>{"p1"=>"/tmp/app1-gr1-p1.pid", "p2"=>"/tmp/app1-gr1-p2.pid"},
+        "gr2"=>{"q3"=>"/tmp/app1-gr2-q3.pid"},
+        "__default__"=>{"g4"=>"/tmp/app1-g4.pid", "g5"=>"/tmp/app1-g5.pid"}},
       "app2"=>{"__default__"=>{"z1"=>"/tmp/app2-z1.pid"}}}
 
     res.only_value.should == { :error => false, :config => nil }
@@ -58,19 +58,19 @@ describe "Eye::Controller::Load" do
     subject.load(fixture("dsl/load.eye")).should_be_ok
     subject.short_tree.should == {
       "app1"=>{
-        "gr1"=>{"p1"=>"/tmp/app1-gr1-p1.pid", "p2"=>"/tmp/app1-gr1-p2.pid"}, 
-        "gr2"=>{"q3"=>"/tmp/app1-gr2-q3.pid"}, 
-        "__default__"=>{"g4"=>"/tmp/app1-g4.pid", "g5"=>"/tmp/app1-g5.pid"}}, 
+        "gr1"=>{"p1"=>"/tmp/app1-gr1-p1.pid", "p2"=>"/tmp/app1-gr1-p2.pid"},
+        "gr2"=>{"q3"=>"/tmp/app1-gr2-q3.pid"},
+        "__default__"=>{"g4"=>"/tmp/app1-g4.pid", "g5"=>"/tmp/app1-g5.pid"}},
       "app2"=>{"__default__"=>{"z1"=>"/tmp/app2-z1.pid"}}}
 
     subject.load(fixture("dsl/load2.eye")).should_be_ok
 
     subject.short_tree.should == {
       "app1"=>{
-        "gr1"=>{"p1"=>"/tmp/app1-gr1-p1.pid", "p2"=>"/tmp/app1-gr1-p2.pid"}, 
-        "gr2"=>{"q3"=>"/tmp/app1-gr2-q3.pid"}, 
-        "__default__"=>{"g4"=>"/tmp/app1-g4.pid", "g5"=>"/tmp/app1-g5.pid"}}, 
-      "app2"=>{"__default__"=>{"z1"=>"/tmp/app2-z1.pid"}}, 
+        "gr1"=>{"p1"=>"/tmp/app1-gr1-p1.pid", "p2"=>"/tmp/app1-gr1-p2.pid"},
+        "gr2"=>{"q3"=>"/tmp/app1-gr2-q3.pid"},
+        "__default__"=>{"g4"=>"/tmp/app1-g4.pid", "g5"=>"/tmp/app1-g5.pid"}},
+      "app2"=>{"__default__"=>{"z1"=>"/tmp/app2-z1.pid"}},
       "app3"=>{"__default__"=>{"e1"=>"/tmp/app3-e1.pid"}}}
   end
 
@@ -88,10 +88,10 @@ describe "Eye::Controller::Load" do
 
     subject.short_tree.should == {
       "app1"=>{
-        "gr1"=>{"p1"=>"/tmp/app1-gr1-p1.pid", "p2"=>"/tmp/app1-gr1-p2.pid"}, 
-        "gr2"=>{"q3"=>"/tmp/app1-gr2-q3.pid"}, 
-        "__default__"=>{"g4"=>"/tmp/app1-g4.pid", "g5"=>"/tmp/app1-g5.pid"}}, 
-      "app2"=>{"__default__"=>{"z1"=>"/tmp/app2-z1.pid"}}, 
+        "gr1"=>{"p1"=>"/tmp/app1-gr1-p1.pid", "p2"=>"/tmp/app1-gr1-p2.pid"},
+        "gr2"=>{"q3"=>"/tmp/app1-gr2-q3.pid"},
+        "__default__"=>{"g4"=>"/tmp/app1-g4.pid", "g5"=>"/tmp/app1-g5.pid"}},
+      "app2"=>{"__default__"=>{"z1"=>"/tmp/app2-z1.pid"}},
       "app3"=>{"wow"=>{"e1"=>"/tmp/app3-e1.pid"}}}
 
     sleep 0.1
@@ -109,10 +109,10 @@ describe "Eye::Controller::Load" do
 
     subject.short_tree.should == {
       "app1"=>{
-        "gr1"=>{"p1"=>"/tmp/app1-gr1-p1.pid", "p2"=>"/tmp/app1-gr1-p2.pid"}, 
-        "gr2"=>{"q3"=>"/tmp/app1-gr2-q3.pid"}, 
-        "__default__"=>{"g4"=>"/tmp/app1-g4.pid", "g5"=>"/tmp/app1-g5.pid"}}, 
-      "app2"=>{"__default__"=>{"z1"=>"/tmp/app2-z1.pid"}}, 
+        "gr1"=>{"p1"=>"/tmp/app1-gr1-p1.pid", "p2"=>"/tmp/app1-gr1-p2.pid"},
+        "gr2"=>{"q3"=>"/tmp/app1-gr2-q3.pid"},
+        "__default__"=>{"g4"=>"/tmp/app1-g4.pid", "g5"=>"/tmp/app1-g5.pid"}},
+      "app2"=>{"__default__"=>{"z1"=>"/tmp/app2-z1.pid"}},
       "app3"=>{"wow"=>{"e1"=>"/tmp/app3-e1.pid"}}}
   end
 
@@ -165,8 +165,8 @@ describe "Eye::Controller::Load" do
 
     subject.short_tree.should == {
       "app1" => {
-        "gr2"=>{"p1"=>"/tmp/app1-gr1-p1.pid", "p2"=>"/tmp/app1-gr1-p2.pid"}, 
-        "gr1"=>{"q3"=>"/tmp/app1-gr2-q3.pid"}, 
+        "gr2"=>{"p1"=>"/tmp/app1-gr1-p1.pid", "p2"=>"/tmp/app1-gr1-p2.pid"},
+        "gr1"=>{"q3"=>"/tmp/app1-gr2-q3.pid"},
         "__default__"=>{"g4"=>"/tmp/app1-g4.pid", "g5"=>"/tmp/app1-g5.pid"}},
       "app2"=>{"__default__"=>{"z1"=>"/tmp/app2-z1.pid"}}}
   end
@@ -227,7 +227,7 @@ describe "Eye::Controller::Load" do
     subject.load(fixture("dsl/load_dup_ex_names4.eye")).should_be_ok
     p12 = subject.process_by_full_name('app1:gr:server')
     p22 = subject.process_by_full_name('app2:gr:server')
-    
+
     p12.object_id.should == p1.object_id
     p22.object_id.should == p2.object_id
   end
@@ -271,24 +271,24 @@ describe "Eye::Controller::Load" do
 
   it "load folder" do
     subject.load(fixture("dsl/load_folder/")).should_be_ok(2)
-    subject.short_tree.should == {       
+    subject.short_tree.should == {
       "app3" => {"wow"=>{"e1"=>"/tmp/app3-e1.pid"}},
       "app4" => {"__default__"=>{"e2"=>"/tmp/app4-e2.pid"}}
     }
   end
-  
+
   it "load folder with error" do
     subject.load(fixture("dsl/load_error_folder/")).errors_count.should == 1
   end
 
   it "load files by mask" do
     subject.load(fixture("dsl/load_folder/*.eye")).should_be_ok(2)
-    subject.short_tree.should == {       
+    subject.short_tree.should == {
       "app3" => {"wow"=>{"e1"=>"/tmp/app3-e1.pid"}},
       "app4" => {"__default__"=>{"e2"=>"/tmp/app4-e2.pid"}}
     }
   end
-  
+
   it "load files by mask with error" do
     subject.load(fixture("dsl/load_error_folder/*.eye")).errors_count.should == 1
   end
@@ -370,14 +370,14 @@ describe "Eye::Controller::Load" do
     it "run double in time" do
       subject.async.command(:load, fixture("dsl/long_load.eye"))
       subject.async.command(:load, fixture("dsl/long_load.eye"))
-      sleep 2.5   
+      sleep 2.5
       should_spend(0, 0.2) do
         subject.command(:info).should be_a(String)
       end
     end
 
     it "load with subloads" do
-      silence_warnings{ 
+      silence_warnings{
         subject.command(:load, fixture("dsl/subfolder2.eye"))
       }
       should_spend(0, 0.2) do
@@ -388,29 +388,29 @@ describe "Eye::Controller::Load" do
 
   describe "cleanup configs on delete" do
     it "load config, delete 1 process, load another config" do
-      subject.load(fixture('dsl/load.eye')) 
+      subject.load(fixture('dsl/load.eye'))
       subject.process_by_name('p1').should be
 
       subject.command(:delete, "p1"); sleep 0.1
       subject.process_by_name('p1').should be_nil
 
-      subject.load(fixture('dsl/load2.eye')) 
-      subject.process_by_name('p1').should be_nil      
+      subject.load(fixture('dsl/load2.eye'))
+      subject.process_by_name('p1').should be_nil
     end
 
     it "load config, delete 1 group, load another config" do
-      subject.load(fixture('dsl/load.eye')) 
+      subject.load(fixture('dsl/load.eye'))
       subject.group_by_name('gr1').should be
 
       subject.command(:delete, "gr1"); sleep 0.1
       subject.group_by_name('p1').should be_nil
 
-      subject.load(fixture('dsl/load2.eye')) 
-      subject.group_by_name('gr1').should be_nil      
+      subject.load(fixture('dsl/load2.eye'))
+      subject.group_by_name('gr1').should be_nil
     end
 
     it "load config, then delete app, and load it with changed app-name" do
-      subject.load(fixture('dsl/load3.eye')) 
+      subject.load(fixture('dsl/load3.eye'))
       subject.command(:delete, "app3"); sleep 0.1
       subject.load(fixture('dsl/load4.eye')).should_be_ok
     end
@@ -422,7 +422,7 @@ describe "Eye::Controller::Load" do
     subject.load(fixture('dsl/load.eye'))
 
     mock(subject).update_or_create_application('app3', is_a(Hash))
-    subject.load(fixture('dsl/load2.eye'))    
+    subject.load(fixture('dsl/load2.eye'))
 
     mock(subject).update_or_create_application('app3', is_a(Hash))
     subject.load(fixture('dsl/load3.eye'))

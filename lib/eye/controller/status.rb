@@ -3,7 +3,7 @@ module Eye::Controller::Status
   def info_objects(mask = nil)
     res = []
     return @applications unless mask
-    matched_objects(mask){|obj| res << obj }    
+    matched_objects(mask){|obj| res << obj }
     res
   end
 
@@ -49,7 +49,7 @@ Actors: #{actors.inspect}
     str
   end
 
-private  
+private
 
   def make_str(data, level = -1)
     return nil if data.blank?
@@ -76,7 +76,7 @@ private
             str += " (chain: #{data[:debug][:chain].map(&:to_i)})"
           end
         elsif data[:state]
-          str += ' ' + data[:state].to_s 
+          str += ' ' + data[:state].to_s
           str += '  (' + resources_str(data[:resources]) + ')' if data[:resources].present? && data[:state].to_sym == :up
           str += " (#{data[:state_reason]} at #{data[:state_changed_at].to_s(:short)})" if data[:state_reason] && data[:state] == 'unmonitored'
         elsif data[:current_command]
@@ -101,11 +101,11 @@ private
 
   def resources_str(r)
     return '' if r.blank?
-    
+
     res = "#{r[:start_time]}, #{r[:cpu]}%"
     res += ", #{r[:memory] / 1024}Mb" if r[:memory]
     res += ", <#{r[:pid]}>"
-    
+
     res
   end
 

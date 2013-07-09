@@ -5,7 +5,7 @@
 ---------
 * improve matching targers
 * possibility to add many checkers with the same type per process (ex: checks :http_2, ...)
-* add uid,gid options (only for ruby 2.0)
+* add uid, gid options (only for ruby 2.0)
 
 0.3.1
 -----

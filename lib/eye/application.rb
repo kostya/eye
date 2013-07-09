@@ -37,7 +37,7 @@ class Eye::Application
 
   def status_data_short
     h = Hash.new 0
-    @groups.each do |c| 
+    @groups.each do |c|
       c.processes.each do |p|
         h[p.state] += 1
       end
@@ -51,7 +51,7 @@ class Eye::Application
 
   def send_command(command, *args)
     info "send_command #{command}"
-    
+
     @groups.each do |group|
       group.send_command(command, *args)
     end

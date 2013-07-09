@@ -8,7 +8,7 @@ describe "Process Stop" do
 
       @process.stop_process
 
-      Eye::System.pid_alive?(@pid).should == false    
+      Eye::System.pid_alive?(@pid).should == false
       @process.state_name.should == :down
 
       @process.load_pid_from_file.should == nil
@@ -19,7 +19,7 @@ describe "Process Stop" do
 
       @process.stop_process
 
-      Eye::System.pid_alive?(@pid).should == false    
+      Eye::System.pid_alive?(@pid).should == false
       @process.state_name.should == :down
 
       @process.load_pid_from_file.should == @pid
@@ -30,7 +30,7 @@ describe "Process Stop" do
 
       @process.stop_process
 
-      Eye::System.pid_alive?(@pid).should == false    
+      Eye::System.pid_alive?(@pid).should == false
       @process.state_name.should == :down
 
       @process.load_pid_from_file.should == nil
@@ -43,7 +43,7 @@ describe "Process Stop" do
     dont_allow(@process).check_crash
     @process.stop_process
 
-    Eye::System.pid_alive?(@pid).should == false    
+    Eye::System.pid_alive?(@pid).should == false
     @process.pid.should == @pid
     @process.state_name.should == :down
     @process.states_history.end?(:up, :stopping, :down).should == true
@@ -57,7 +57,7 @@ describe "Process Stop" do
     dont_allow(@process).check_crash
     @process.stop_process
 
-    Eye::System.pid_alive?(@pid).should == false    
+    Eye::System.pid_alive?(@pid).should == false
     @process.pid.should == @pid
     @process.state_name.should == :down
     @process.states_history.end?(:up, :stopping, :down).should == true
@@ -71,7 +71,7 @@ describe "Process Stop" do
     @process.stop_process
 
     Eye::System.pid_alive?(@pid).should == false
-    @process.state_name.should == :down    
+    @process.state_name.should == :down
   end
 
   it "bad command" do
@@ -124,7 +124,7 @@ describe "Process Stop" do
     sleep 1
     Eye::System.pid_alive?(@pid).should == false
 
-    # should capture log      
+    # should capture log
     data = File.read(@log)
     data.should include("USR1 signal")
   end
@@ -136,10 +136,10 @@ describe "Process Stop" do
     @process.stop_process
     @process.state_name.should == :down
 
-    Eye::System.pid_alive?(pid).should == false    
+    Eye::System.pid_alive?(pid).should == false
   end
 
-  it "stop process by stop_signals and commands" 
+  # it "stop process by stop_signals and commands"
 
   [:unmonitored, :down, :starting, :stopping].each do |st|
     it "no stop from #{st}" do

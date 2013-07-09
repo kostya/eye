@@ -2,15 +2,15 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "Eye::Notify::Jabber" do
   before :each do
-    @message = {:message=>"something", :name=>"blocking process", 
-        :full_name=>"main:default:blocking process", :pid=>123, 
+    @message = {:message=>"something", :name=>"blocking process",
+        :full_name=>"main:default:blocking process", :pid=>123,
         :host=>'host1', :level=>:crit, :at => Time.now}
     @h = {:host=>"mx.some.host.ru", :type=>:mail, :port=>25, :contact=>"vasya@mail.ru", :password => "123"}
   end
 
   it "should send jabber" do
     require 'xmpp4r'
-    
+
     @m = Eye::Notify::Jabber.new(@h, @message)
 
     ob = ""

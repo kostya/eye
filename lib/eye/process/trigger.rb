@@ -4,7 +4,7 @@ module Eye::Process::Trigger
     if self[:triggers]
       self[:triggers].each do |type, cfg|
         add_trigger(cfg)
-      end      
+      end
     end
   end
 

@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "StopOnDelete behaviour" do
   before :each do
     @c = Eye::Controller.new
-    @c.load(fixture("dsl/integration_sor.eye"))
+    with_erb_file(fixture("dsl/integration_sor.erb")){|f| @c.load(f) }
     @processes = @c.all_processes
     @p1 = @processes.detect{|c| c.name == 'sample1'}
     @p2 = @processes.detect{|c| c.name == 'sample2'}
@@ -40,7 +40,7 @@ describe "StopOnDelete behaviour" do
 
   it "delete process => stop process" do
     @c.send_command(:delete, "sample1")
-    sleep 7 # while 
+    sleep 7 # while
 
     @c.all_processes.map(&:name).sort.should == %w{forking sample2}
     @c.all_groups.map(&:name).sort.should == %w{__default__ samples}
@@ -55,7 +55,7 @@ describe "StopOnDelete behaviour" do
 
   it "delete application => stop group proceses" do
     @c.send_command(:delete, "samples").should == ["int:samples"]
-    sleep 7 # while 
+    sleep 7 # while
 
     @c.all_processes.should == [@p3]
     @c.all_groups.map(&:name).should == ['__default__']
@@ -69,12 +69,12 @@ describe "StopOnDelete behaviour" do
 
     # noone up this
     sleep 2
-    Eye::System.pid_alive?(@old_pid1).should == false    
+    Eye::System.pid_alive?(@old_pid1).should == false
   end
 
   it "delete application => stop all proceses" do
     @c.send_command(:delete, "int")
-    sleep 7 # while 
+    sleep 7 # while
 
     @c.all_processes.should == []
     @c.all_groups.should == []
@@ -96,10 +96,11 @@ describe "StopOnDelete behaviour" do
   end
 
   it "load config when 1 process deleted, it should stopped" do
-    @c.load(fixture("dsl/integration_sor2.eye"))
+    with_erb_file(fixture("dsl/integration_sor2.erb")) { |f| @c.load(f) }
+
     sleep 10
 
-    procs = @c.all_processes 
+    procs = @c.all_processes
     @p1_ = procs.detect{|c| c.name == 'sample1'}
     @p2_ = procs.detect{|c| c.name == 'sample2'}
     @p3_ = procs.detect{|c| c.name == 'sample3'}
@@ -120,28 +121,31 @@ describe "StopOnDelete behaviour" do
   end
 
   it "load another config, with same processes but changed names" do
-    @c.load(fixture("dsl/integration_sor3.eye"))
+    with_erb_file(fixture("dsl/integration_sor3.erb")) do |f|
+      res = @c.load(f)
+    end
+
     sleep 15
-    
+
     # @p1, @p2 recreates
-    # @p3 the same    
-   
-    procs = @c.all_processes 
+    # @p3 the same
+
+    procs = @c.all_processes
     @p1_ = procs.detect{|c| c.name == 'sample1_'}
     @p2_ = procs.detect{|c| c.name == 'sample2_'}
     @p3_ = procs.detect{|c| c.name == 'forking'}
-    
+
     @p3.object_id.should == @p3_.object_id
     @p1.alive?.should == false
     @p1_.alive?.should == true
 
     @p2.alive?.should == false
     @p2_.alive?.should == true
-    
+
     @p1_.pid.should_not == @old_pid1
     @p2_.pid.should_not == @old_pid2
     @p3_.pid.should == @old_pid3
-    
+
     @p1_.state_name.should == :up
     @p2_.state_name.should == :up
     @p3_.state_name.should == :up

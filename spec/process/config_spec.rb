@@ -70,5 +70,5 @@ describe "Eye::Process::Config" do
     end
 
   end
-  
+
 end

@@ -29,17 +29,17 @@ describe "Eye::Dsl notify" do
 
     res.should == {
       :applications => {
-        "bla"=>{:name=>"bla", 
-          :notify=>{"vasya"=>:warn, "idiots"=>:fatal}, 
-          :groups=>{"gr1"=>{:name=>"gr1", 
+        "bla"=>{:name=>"bla",
+          :notify=>{"vasya"=>:warn, "idiots"=>:fatal},
+          :groups=>{"gr1"=>{:name=>"gr1",
             :notify=>{"vasya"=>:warn, "idiots"=>:fatal, "petya"=>:warn, "idiot1"=>:info}, :application=>"bla", :processes=>{}}}}},
       :settings => {
-        :mail=>{:host=>"mx.some.host.ru", :port => 25, :type => :mail}, 
+        :mail=>{:host=>"mx.some.host.ru", :port => 25, :type => :mail},
         :contacts=>{
-          "vasya"=>{:name=>"vasya", :type=>:mail, :contact=>"vasya@mail.ru", :opts=>{}}, 
-          "petya"=>{:name=>"petya", :type=>:mail, :contact=>"petya@mail.ru", :opts=>{:port=>1111}}, 
-          'idiots'=>[{:name=>"idiot1", :type=>:mail, :contact=>"idiot1@mail.ru", :opts=>{}}, {:name=>"idiot2", :type=>:mail, :contact=>"idiot1@mail.ru", :opts=>{:port=>1111}}], 
-          "idiot1"=>{:name=>"idiot1", :type=>:mail, :contact=>"idiot1@mail.ru", :opts=>{}}, 
+          "vasya"=>{:name=>"vasya", :type=>:mail, :contact=>"vasya@mail.ru", :opts=>{}},
+          "petya"=>{:name=>"petya", :type=>:mail, :contact=>"petya@mail.ru", :opts=>{:port=>1111}},
+          'idiots'=>[{:name=>"idiot1", :type=>:mail, :contact=>"idiot1@mail.ru", :opts=>{}}, {:name=>"idiot2", :type=>:mail, :contact=>"idiot1@mail.ru", :opts=>{:port=>1111}}],
+          "idiot1"=>{:name=>"idiot1", :type=>:mail, :contact=>"idiot1@mail.ru", :opts=>{}},
           "idiot2"=>{:name=>"idiot2", :type=>:mail, :contact=>"idiot1@mail.ru", :opts=>{:port=>1111}}}}}
   end
 
@@ -90,9 +90,9 @@ describe "Eye::Dsl notify" do
       end
     E
     Eye::Dsl.parse_apps(conf).should == {
-      "bla" => {:name=>"bla", 
-        :notify=>{"vasya"=>:warn}, 
-        :groups=>{"bla"=>{:name=>"bla", 
+      "bla" => {:name=>"bla",
+        :notify=>{"vasya"=>:warn},
+        :groups=>{"bla"=>{:name=>"bla",
           :notify=>{"vasya"=>:warn}, :application=>"bla", :processes=>{}}}}}
   end
 
@@ -116,8 +116,8 @@ describe "Eye::Dsl notify" do
       end
     E
     Eye::Dsl.parse_apps(conf).should == {
-      "bla" => {:name=>"bla", 
-        :notify=>{"vasya"=>:warn}, 
+      "bla" => {:name=>"bla",
+        :notify=>{"vasya"=>:warn},
         :groups=>{"bla"=>{:name=>"bla", :notify=>{}, :application=>"bla", :processes=>{}}}}}
   end
 end

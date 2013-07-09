@@ -1,10 +1,10 @@
 class Eye::Notify::Jabber < Eye::Notify
-  
+
   # Eye.config do
   #   jabber :host => "some.host", :port => 12345, :user => "eye@some.host", :password => "123456"
   #   contact :vasya, :jabber, "vasya@some.host"
   # end
-  
+
   param :host, String, true
   param :port, [String, Fixnum], true
   param :user, String, true

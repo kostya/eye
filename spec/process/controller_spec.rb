@@ -34,13 +34,13 @@ describe "Process Controller" do
       @process.state_name.should == :up
       @process.pid.should == @pid
     end
-    
+
   end
 
-  describe "unmonitor" do    
+  describe "unmonitor" do
     [C.p1, C.p2].each do |cfg|
       it "should just forget about any process #{cfg[:name]}" do
-        start_ok_process
+        start_ok_process(cfg)
         old_pid = @process.pid
 
         @process.unmonitor
@@ -99,7 +99,7 @@ describe "Process Controller" do
 
       @process.stop
 
-      Eye::System.pid_alive?(@pid).should == false    
+      Eye::System.pid_alive?(@pid).should == false
       @process.state_name.should == :unmonitored
       @process.states_history.end?(:down, :unmonitored).should == true
 

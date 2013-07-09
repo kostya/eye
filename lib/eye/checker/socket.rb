@@ -68,18 +68,18 @@ class Eye::Checker::Socket < Eye::Checker::Defer
     return false if !value[:result]
 
     if expect_data
-      if expect_data.is_a?(Proc)                
+      if expect_data.is_a?(Proc)
         match = begin
-          !!expect_data[value[:result]] 
+          !!expect_data[value[:result]]
         rescue Timeout::Error, Exception => ex
           mes = "proc match failed with '#{ex.message}'"
           error(mes)
           value[:notice] = mes
           return false
         end
-        
+
         unless match
-          warn "proc #{expect_data} not matched (#{value[:result].truncate(30)}) answer" 
+          warn "proc #{expect_data} not matched (#{value[:result].truncate(30)}) answer"
           value[:notice] = "missing proc validation"
         end
 
@@ -108,7 +108,7 @@ class Eye::Checker::Socket < Eye::Checker::Defer
       else
         res = "#{value[:result].to_s.size}b"
         res += "<#{value[:notice]}>" if value[:notice]
-        res 
+        res
       end
     end
   end
@@ -116,7 +116,7 @@ class Eye::Checker::Socket < Eye::Checker::Defer
 private
 
   def open_socket
-    if @socket_family == :tcp      
+    if @socket_family == :tcp
       TCPSocket.open(@socket_addr, @socket_port)
     elsif @socket_family == :unix
       UNIXSocket.open(@socket_path)

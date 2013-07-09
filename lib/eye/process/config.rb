@@ -8,9 +8,9 @@ module Eye::Process::Config
     :stop_timeout => 10.seconds,
     :restart_timeout => 10.seconds,
 
-    :start_grace => 2.5.seconds, 
-    :stop_grace => 0.5.seconds, 
-    :restart_grace => 0.5.seconds, 
+    :start_grace => 2.5.seconds,
+    :stop_grace => 0.5.seconds,
+    :restart_grace => 0.5.seconds,
 
     :daemonize => false,
     :auto_start => true, # auto start on monitor action
@@ -30,21 +30,21 @@ module Eye::Process::Config
       h[:triggers] ||= {}
       h[:triggers][:flapping] = {:type => :flapping, :times => 10, :within => 10.seconds}
     end
-    
+
     h[:stdout] = Eye::System.normalized_file(h[:stdout], h[:working_dir]) if h[:stdout]
     h[:stderr] = Eye::System.normalized_file(h[:stderr], h[:working_dir]) if h[:stderr]
 
-    h    
+    h
   end
 
   def c(name)
     @config[name]
   end
-  
+
   def [](name)
     @config[name]
   end
-  
+
   def update_config(new_config = {})
     new_config = prepare_config(new_config)
     @config = new_config
@@ -58,7 +58,7 @@ module Eye::Process::Config
     if up?
       # rebuild checks for this process
       from_up; on_up
-    end    
+    end
   end
 
   # is pid_file under Eye::Process control, or not
@@ -66,5 +66,5 @@ module Eye::Process::Config
     return self[:control_pid] unless self[:control_pid].nil?
     !!self[:daemonize]
   end
-  
+
 end

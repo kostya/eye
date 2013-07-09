@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 def chfsize(cfg = {})
-  Eye::Checker.create(nil, {:type => :fsize, :every => 5.seconds, 
+  Eye::Checker.create(nil, {:type => :fsize, :every => 5.seconds,
         :file => $logger_path, :times => 1}.merge(cfg))
 end
 

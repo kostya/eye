@@ -52,7 +52,7 @@ describe "Process Restart" do
       sleep 3
       @process.pid.should == old_pid
 
-      Eye::System.pid_alive?(@pid).should == true      
+      Eye::System.pid_alive?(@pid).should == true
 
       @process.state_name.should == :up
       @process.watchers.keys.should == [:check_alive]
@@ -77,7 +77,7 @@ describe "Process Restart" do
       sleep 3
       @process.pid.should_not == old_pid
 
-      Eye::System.pid_alive?(@pid).should == true      
+      Eye::System.pid_alive?(@pid).should == true
 
       @process.state_name.should == :up
       @process.watchers.keys.should == [:check_alive]
@@ -96,7 +96,7 @@ describe "Process Restart" do
       mock(@process).check_crash
 
       @process.restart
-      Eye::System.pid_alive?(@pid).should == false      
+      Eye::System.pid_alive?(@pid).should == false
       @process.states_history.seq?(:up, :restarting, :down).should == true
     end
 
@@ -117,7 +117,7 @@ describe "Process Restart" do
       sleep 1
       @process.pid.should == @pid
 
-      Eye::System.pid_alive?(@pid).should == true      
+      Eye::System.pid_alive?(@pid).should == true
 
       @process.state_name.should == :up
       @process.watchers.keys.should == [:check_alive]
@@ -169,7 +169,7 @@ describe "Process Restart" do
       @process.state = st.to_s # force set state
 
       dont_allow(@process).stop
-      dont_allow(@process).start      
+      dont_allow(@process).start
 
       @process.restart.should == nil
       @process.state_name.should == st

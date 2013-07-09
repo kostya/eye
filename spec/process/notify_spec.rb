@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "Eye::Process::Notify" do
   before :each do
     stub(Eye::System).host{ 'host1' }
-    @process = process(C.p1.merge(:notify => {'vasya' => :info, 
+    @process = process(C.p1.merge(:notify => {'vasya' => :info,
       'petya' => :warn, 'somebody' => :warn}))
   end
 
@@ -14,8 +14,8 @@ describe "Eye::Process::Notify" do
   end
 
   it "should send to notifies crit message" do
-    m = {:message=>"something", :name=>"blocking process", 
-      :full_name=>"main:default:blocking process", :pid=>nil, 
+    m = {:message=>"something", :name=>"blocking process",
+      :full_name=>"main:default:blocking process", :pid=>nil,
       :host=>'host1', :level=>:warn}
 
     mock(Eye::Notify).notify('vasya', hash_including(m))

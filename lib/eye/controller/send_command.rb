@@ -3,7 +3,7 @@ module Eye::Controller::SendCommand
   def send_command(command, *obj_strs)
     matched_objects(*obj_strs) do |obj|
       if command.to_sym == :delete
-        remove_object_from_tree(obj) 
+        remove_object_from_tree(obj)
 
         set_proc_line
         save_cache
@@ -15,7 +15,7 @@ module Eye::Controller::SendCommand
 
   def match(*obj_strs)
     matched_objects(*obj_strs)
-  end  
+  end
 
   def signal(sig, *obj_strs)
     matched_objects(*obj_strs) do |obj|
@@ -35,7 +35,7 @@ private
     objs = find_objects(*obj_strs)
     res = objs.map(&:full_name)
     objs.each{|obj| block[obj] } if block
-    res    
+    res
   end
 
   def remove_object_from_tree(obj)
@@ -54,7 +54,7 @@ private
     if klass == Eye::Process
       @applications.each{|app| app.groups.each{|gr| gr.processes.delete(obj) }}
       @current_config.delete_process(obj.name)
-    end    
+    end
   end
 
   # find object to action, restart ... (app, group or process)
@@ -84,7 +84,8 @@ private
         end
       end
 
-      return final if final.present?
+      res = final if final.present?
+      final = Eye::Utils::AliveArray.new
 
       # remove inherited targets
       res.each do |obj|
@@ -93,7 +94,7 @@ private
       end
 
       res = final
-    end    
+    end
 
     res
   end

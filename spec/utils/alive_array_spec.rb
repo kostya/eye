@@ -24,7 +24,7 @@ describe "Eye::Utils::AliveArray" do
     a = AliveArrayActor.new('a')
     b = AliveArrayActor.new('b'); b.terminate
     c = AliveArrayActor.new('c')
-    
+
     l = Eye::Utils::AliveArray.new([a,b,c])
     l.size.should == 3
     l.map{|a| a.name}.sort.should == %w{a c}

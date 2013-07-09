@@ -11,7 +11,7 @@ Eye.app 'thin-farm' do
   working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
   env "RAILS_ENV" => "production"
 
-  stop_on_delete true # this option means, when we change pids and load config, 
+  stop_on_delete true # this option means, when we change pids and load config,
                       # deleted processes will be stops
 
   triggers :flapping, :times => 10, :within => 1.minute
