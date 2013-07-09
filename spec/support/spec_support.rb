@@ -175,6 +175,13 @@ module C
     File.join(sample_dir, "sock1#{process_id}")
   end
 
+  def port1
+    33434 + process_id
+  end
+
+  def port2
+    33435 + process_id
+  end
 end
 
 class TrapError

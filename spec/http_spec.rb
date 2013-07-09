@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
 describe "Eye::Http" do
-  let(:uri){ URI.parse("http://127.0.0.1:33344/") }
+  let(:uri){ URI.parse("http://127.0.0.1:#{C.port1}/") }
 
   it "should up and down" do
     app = Eye::Http.new(uri.host, uri.port)

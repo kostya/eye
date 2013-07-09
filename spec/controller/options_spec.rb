@@ -3,8 +3,8 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "options spec" do
   describe "http" do
     subject{ Eye::Controller.new }
-    let(:uri){ URI.parse("http://127.0.0.1:33345/") }
-    let(:uri2){ URI.parse("http://127.0.0.1:33346/") }
+    let(:uri){ URI.parse("http://127.0.0.1:#{port1}/") }
+    let(:uri2){ URI.parse("http://127.0.0.1:#{port2}/") }
 
     it "load config with http enable" do
       expect{ Net::HTTP.get(uri) }.to raise_error(Errno::ECONNREFUSED)
