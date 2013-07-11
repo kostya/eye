@@ -24,7 +24,6 @@ class Eye::Process
     raise 'pid file should be' unless config[:pid_file]
 
     @config = prepare_config(config)
-    @logger = Eye::Logger.new(full_name)
 
     @watchers = {}
     @childs = {}
@@ -39,6 +38,10 @@ class Eye::Process
     add_triggers
 
     super() # for statemachine
+  end
+
+  def logger_tag
+    full_name
   end
 
   # c(), self[]
@@ -71,9 +74,6 @@ class Eye::Process
 
   # manage notify methods
   include Eye::Process::Notify
-
-  # logger methods
-  include Eye::Logger::Helpers
 
   # scheduler
   include Eye::Process::Scheduler

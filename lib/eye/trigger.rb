@@ -1,6 +1,4 @@
 class Eye::Trigger
-  include Eye::Logger::Helpers
-
   autoload :Flapping,   'eye/trigger/flapping'
 
   # ex: { :type => :flapping, :times => 2, :within => 30.seconds}
@@ -25,9 +23,17 @@ class Eye::Trigger
 
   def initialize(options = {}, logger_prefix = nil)
     @options = options
-    @logger = Eye::Logger.new(logger_prefix, "trigger")
+    @logger_prefix = logger_prefix
 
     debug "add #{options}"
+  end
+
+  def logger_tag
+    @logger_prefix
+  end
+
+  def logger_sub_tag
+    'trigger'
   end
 
   def check(states_history)

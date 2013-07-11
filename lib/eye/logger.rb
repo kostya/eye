@@ -15,13 +15,22 @@ class Eye::Logger
     end
   end
 
-  module Helpers
-    attr_reader :logger
+  module ObjectExt
+    def logger_tag
+      (self.class != Class) ? "<#{self.class.to_s}>" : to_s
+    end
+
+    def logger_sub_tag
+    end
+
+    def logger
+      @logger ||= Eye::Logger.new(logger_tag, logger_sub_tag)
+    end
 
     Logger::Severity.constants.each do |level|
       method_name = level.to_s.downcase
       define_method method_name do |msg|
-        @logger.send(method_name, msg)
+        logger.send(method_name, msg)
       end
     end
   end

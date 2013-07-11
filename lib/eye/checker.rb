@@ -1,5 +1,4 @@
 class Eye::Checker
-  include Eye::Logger::Helpers
 
   autoload :Memory,     'eye/checker/memory'
   autoload :Cpu,        'eye/checker/cpu'
@@ -41,13 +40,21 @@ class Eye::Checker
     @pid = pid
     @options = options
     @type = options[:type]
+    @logger_prefix = logger_prefix
 
-    @logger = Eye::Logger.new(logger_prefix, "check:#{check_name}")
     debug "create checker, with #{options}"
 
     @value = nil
     @values = Eye::Utils::Tail.new(max_tries)
     @check_count = 0
+  end
+
+  def logger_tag
+    @logger_prefix
+  end
+
+  def logger_sub_tag
+    "check:#{check_name}"
   end
 
   def last_human_values

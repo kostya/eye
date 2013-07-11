@@ -9,7 +9,8 @@ require 'active_support/core_ext/string/filters'
 
 require_relative 'utils/leak_19'
 
-Eye.send(:extend, Eye::Logger::Helpers)
+# Extend all objects with logger
+Object.send(:include, Eye::Logger::ObjectExt)
 
 class Eye::Controller
   include Celluloid
@@ -22,7 +23,6 @@ class Eye::Controller
   autoload :ShowHistory,    'eye/controller/show_history'
   autoload :Options,        'eye/controller/options'
 
-  include Eye::Logger::Helpers
   include Eye::Controller::Load
   include Eye::Controller::Helpers
   include Eye::Controller::Commands
@@ -37,8 +37,6 @@ class Eye::Controller
     @applications = []
     @current_config = Eye::Config.new
 
-    Eye.instance_variable_set(:@logger, Eye::Logger.new('eye'))
-    @logger = Eye.logger
     Celluloid::logger = Eye.logger
 
     Eye::SystemResources.setup

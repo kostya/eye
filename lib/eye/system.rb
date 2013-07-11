@@ -82,7 +82,7 @@ module Eye::System
 
     rescue Timeout::Error => ex
       if pid
-        Eye.warn "[#{cfg[:name]}] send signal 9 to #{pid} (because of timeouted<#{timeout}> execution)"
+        warn "[#{cfg[:name]}] send signal 9 to #{pid} (because of timeouted<#{timeout}> execution)"
         send_signal(pid, 9)
       end
       {:error => ex}

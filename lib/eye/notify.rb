@@ -1,6 +1,5 @@
 class Eye::Notify
   include Celluloid
-  include Eye::Logger::Helpers
   extend Eye::Dsl::Validation
 
   autoload :Mail,     'eye/notify/mail'
@@ -42,11 +41,14 @@ class Eye::Notify
   TIMEOUT = 1.minute
 
   def initialize(options = {}, message_h = {})
-    @logger = Eye::Logger.new("#{self.class.name.downcase} - #{options[:contact]}")
-    debug "created notifier #{options}"
-
     @message_h = message_h
     @options = options
+
+    debug "created notifier #{options}"
+  end
+
+  def logger_sub_tag
+    @options[:contact]
   end
 
   def async_notify
