@@ -18,10 +18,14 @@ class Eye::Notify
   end
 
   def self.notify(contact, message_h)
+    contact = contact.to_s
     settings = Eye::Control.settings
-    needed_hash = (settings[:contacts] || {})[contact.to_s]
+    needed_hash = (settings[:contacts] || {})[contact]
 
-    return if needed_hash.blank?
+    if needed_hash.blank?
+      error "not found contact #{contact}! something wrong with config"
+      return
+    end
 
     create_proc = lambda do |nh|
       type = nh[:type]
