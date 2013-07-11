@@ -17,7 +17,7 @@ class Eye::Logger
 
   module ObjectExt
     def logger_tag
-      (self.class != Class) ? "<#{self.class.to_s}>" : to_s
+      [Class, Module].include?(self.class) ? to_s : "<#{self.class.to_s}>"
     end
 
     def logger_sub_tag
