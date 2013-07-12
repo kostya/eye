@@ -40,10 +40,6 @@ class Eye::Process
     super() # for statemachine
   end
 
-  def logger_tag
-    full_name
-  end
-
   # c(), self[]
   include Eye::Process::Config
 

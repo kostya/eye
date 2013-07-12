@@ -84,6 +84,8 @@ describe "Eye::Controller::Load" do
     proxy(p).schedule :update_config, is_a(Hash), is_a(Eye::Reason)
     dont_allow(p).schedule :monitor
 
+    p.__logger__.prefix.should == 'app3:e1'
+
     subject.load(fixture("dsl/load3.eye")).should_be_ok
 
     subject.short_tree.should == {
@@ -99,6 +101,7 @@ describe "Eye::Controller::Load" do
     p2[:daemonize].should == true
 
     p.object_id.should == p2.object_id
+    p.__logger__.prefix.should == 'app3:wow:e1'
   end
 
   it "load -> delete -> load" do

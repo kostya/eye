@@ -1,6 +1,13 @@
 module Eye::Process::Data
 
-  # logger tag
+  def __logger__ # bug celluloid 0.13, TODO remove in 0.14
+    logger
+  end
+
+  def logger_tag
+    full_name
+  end
+
   def full_name
     @full_name ||= [self[:application], (self[:group] == '__default__') ? nil : self[:group], self[:name]].compact.join(':')
   end

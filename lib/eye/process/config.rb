@@ -49,6 +49,7 @@ module Eye::Process::Config
     new_config = prepare_config(new_config)
     @config = new_config
     @full_name = nil
+    @logger = nil
 
     debug "update config to: #{@config.inspect}"
 
