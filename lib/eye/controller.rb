@@ -7,8 +7,6 @@ require 'active_support/core_ext/object/try'
 require 'active_support/core_ext/numeric'
 require 'active_support/core_ext/string/filters'
 
-require_relative 'utils/leak_19'
-
 # Extend all objects with logger
 Object.send(:include, Eye::Logger::ObjectExt)
 
