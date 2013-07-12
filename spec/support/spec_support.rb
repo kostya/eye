@@ -213,7 +213,7 @@ def start_ok_process(cfg = C.p1)
   @process
 end
 
-def die_process!(pid, signal = :kill, int = 0.2)
+def die_process!(pid, signal = :kill, int = 0.3)
   Eye::System.send_signal(pid, signal)
   sleep int.to_f
   Eye::System.pid_alive?(pid).should == false

@@ -63,7 +63,7 @@ describe "Process Integration checks" do
 
     start_ok_process(cfg)
 
-    should_spend(10, 0.8) do
+    should_spend(10, 1) do
       10.times do
         @process.name.should be_a(String) # actor should be free here
         sleep 1
