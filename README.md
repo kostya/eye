@@ -157,11 +157,11 @@ Config explain (for debug):
 
     $ eye e(xplain) examples/test.eye
 
-Log tracing:
+Log tracing (tail and grep):
 
-    $ eye trace
-    $ eye tr test
-    $ eye tr sample
+    $ eye t(race)
+    $ eye t test
+    $ eye t sample
 
 Quit monitoring:
 
