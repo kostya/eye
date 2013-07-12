@@ -105,7 +105,7 @@ module C
       :start_command => "ruby em.rb #{p4_ports[0]} #{p4_ports[1]} #{p4_sock}",
       :daemonize => true,
       :start_grace => 3.5,
-      :stop_grace => 0.5
+      :stop_grace => 0.7
     )
   end
 

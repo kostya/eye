@@ -119,7 +119,7 @@ describe "Process Stop" do
     end
 
     Eye::System.pid_alive?(@pid).should == true
-    sleep 1.5
+    sleep 1.3
     Eye::System.pid_alive?(@pid).should == true
     sleep 1
     Eye::System.pid_alive?(@pid).should == false

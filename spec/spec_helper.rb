@@ -97,7 +97,9 @@ def terminate_old_actors
       actor.terminate
     end
   end
-rescue
+
+rescue => ex
+  $logger.error [ex.message, ex.backtrace]
 end
 
 def force_kill_process(process)
@@ -109,6 +111,9 @@ def force_kill_process(process)
 
     process = nil
   end
+
+rescue => ex
+  $logger.error [ex.message, ex.backtrace]
 end
 
 def force_kill_pid(pid)
