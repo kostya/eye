@@ -383,6 +383,7 @@ describe "Eye::Controller::Load" do
       silence_warnings{
         subject.command(:load, fixture("dsl/subfolder2.eye"))
       }
+      sleep 0.5
       should_spend(0, 0.2) do
         subject.command(:info).should be_a(String)
       end

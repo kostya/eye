@@ -104,16 +104,11 @@ end
 
 def force_kill_process(process)
   if process && process.alive?
-    pid = process.pid
+    pid = process.pid rescue nil
+    process.terminate rescue nil
 
-    process.terminate
     force_kill_pid(pid)
-
-    process = nil
   end
-
-rescue => ex
-  $logger.error [ex.message, ex.backtrace]
 end
 
 def force_kill_pid(pid)
