@@ -51,9 +51,18 @@ module Eye::Process::System
     res[:result] == :ok
   end
 
-  # non blocking actor timeout
   def wait_for_condition(timeout, step = 0.1, &block)
-    defer{ wait_for_condition_sync(timeout, step, &block) }
+    res = nil
+    sumtime = 0
+
+    loop do
+      tm = Time.now
+      res = yield # note that yield can block actor here and timeout can be overhead
+      return res if res
+      sleep step.to_f
+      sumtime += (Time.now - tm)
+      return false if sumtime > timeout
+    end
   end
 
   def execute(cmd, cfg = {})
@@ -77,20 +86,6 @@ module Eye::Process::System
     true
   rescue => ex
     error "failsafe_save_pid: #{ex.message}"
-    false
-  end
-
-private
-
-  def wait_for_condition_sync(timeout, step, &block)
-    res = nil
-
-    Timeout::timeout(timeout.to_f) do
-      sleep step.to_f until res = yield
-    end
-
-    res
-  rescue Timeout::Error
     false
   end
 
