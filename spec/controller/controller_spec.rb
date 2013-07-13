@@ -103,6 +103,8 @@ S
 
     subject.load(fixture("dsl/load.eye"))
     subject.info_string_debug(true, true).split("\n").size.should > 5
+
+    subject.__klass__.should == "Eye::Controller"
   end
 
   it "info_string_short should be" do
