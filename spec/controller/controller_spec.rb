@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 class String
   def clean_info
-    self.gsub(%r{\033.*?m}im, '').gsub(%r[\(.*?\)], '')
+    self.gsub(%r{\033.*?m}im, '').gsub(%r[\(.*?\)], '').gsub(%r|(\s+)$|, '')
   end
 end
 
@@ -75,18 +75,18 @@ describe "Eye::Controller" do
 
   it "info_string" do
     app1 = <<S
-app1                       
-  gr1                              
-    p1 ............................ unmonitored 
-    p2 ............................ unmonitored 
-  gr2                              
-    q3 ............................ unmonitored 
-  g4 .............................. unmonitored 
-  g5 .............................. unmonitored 
+app1
+  gr1
+    p1 ............................ unmonitored
+    p2 ............................ unmonitored
+  gr2
+    q3 ............................ unmonitored
+  g4 .............................. unmonitored
+  g5 .............................. unmonitored
 S
     app2 = <<S
-app2                       
-  z1 .............................. unmonitored 
+app2
+  z1 .............................. unmonitored
 S
 
     subject.load(fixture("dsl/load.eye"))
