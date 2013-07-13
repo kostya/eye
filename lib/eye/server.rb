@@ -21,7 +21,7 @@ class Eye::Server
   end
 
   def handle_connection(socket)
-    command, *args = socket.readline.strip.split('|')
+    command, *args = Marshal.load(socket.read)
     response = command(command, *args)
     socket.write(Marshal.dump(response))
 

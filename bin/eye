@@ -55,7 +55,7 @@ class Cli < Thor
     res = _cmd(:quit)
 
     # if eye server got crazy, stop by force
-    ensure_stop_previous_server if res != :corrupred_marshal
+    ensure_stop_previous_server if res != :corrupred_data
 
     say "stopped...", :yellow
   end
@@ -202,7 +202,7 @@ private
     res = cmd(_cmd, *args)
     if res == :unknown_command
       error! "unknown command :#{_cmd}"
-    elsif res == :corrupred_marshal
+    elsif res == :corrupred_data
       error! "something crazy wrong, check eye logs!"
     elsif res == []
       error! "command :#{_cmd}, targets not found!"

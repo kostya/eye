@@ -9,7 +9,7 @@ class Eye::Client
   end
 
   def command(cmd, *args)
-    attempt_command([cmd, *args] * '|')
+    attempt_command(Marshal.dump([cmd, *args]))
   end
 
   def attempt_command(pack)
@@ -23,9 +23,9 @@ class Eye::Client
 
   def send_request(pack)
     UNIXSocket.open(@socket_path) do |socket|
-      socket.puts(pack)
+      socket.write(pack)
       data = socket.read
-      res = Marshal.load(data) rescue :corrupred_marshal
+      res = Marshal.load(data) rescue :corrupred_data
     end
   end
 
