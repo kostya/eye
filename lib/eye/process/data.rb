@@ -1,9 +1,5 @@
 module Eye::Process::Data
 
-  def __logger__ # bug celluloid 0.13, TODO remove in 0.14
-    logger
-  end
-
   def logger_tag
     full_name
   end
