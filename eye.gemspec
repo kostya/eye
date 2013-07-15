@@ -22,7 +22,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'celluloid',     '~> 0.13.0'
   gem.add_dependency 'celluloid-io',  '~> 0.13.0'
   gem.add_dependency 'state_machine', '< 1.2'
-  gem.add_dependency 'activesupport', '~> 3.2.0'
+  gem.add_dependency 'activesupport', '>= 3'
   gem.add_dependency 'thor'
 
   gem.add_development_dependency 'rake'

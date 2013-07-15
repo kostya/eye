@@ -6,7 +6,7 @@ gem 'nio4r'
 gem 'timers'
 
 gem 'state_machine', '< 1.2'
-gem 'activesupport', '~> 3.2.0'
+gem 'activesupport', '>= 3'
 
 gem 'i18n' # for as
 gem 'multi_json' # for as
