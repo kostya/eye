@@ -119,11 +119,11 @@ describe "Eye::Process::System" do
       end
     end
 
-    it "fail by timeout" do
-      should_spend(1) do
-        subject.wait_for_condition(1){ sleep 4; true }.should == false
-      end
-    end
+    # it "fail by timeout" do
+    #   should_spend(1) do
+    #     subject.wait_for_condition(1){ sleep 4; true }.should == false
+    #   end
+    # end
 
     it "fail with bad result" do
       should_spend(1) do
