@@ -30,6 +30,7 @@ module Eye::Controller::Status
 About:  #{Eye::ABOUT}
 Info:   #{resources_str(Eye::SystemResources.resources($$))}
 Ruby:   #{RUBY_DESCRIPTION}
+Gems:   #{%w|Celluloid Celluloid::IO ActiveSupport StateMachine NIO|.map{|c| gem_version(c) }}
 Logger: #{Eye::Logger.dev}
 Socket: #{Eye::Settings::socket_path}
 Pid:    #{Eye::Settings::pid_path}
@@ -121,6 +122,16 @@ private
     apps = app.present? ? @applications.select{|a| a.name == app} : nil
     apps = @applications unless apps
     apps
+  end
+
+  def gem_version(klass)
+    v = nil
+    begin
+      v = eval("#{klass}::VERSION::STRING")
+    rescue
+      v = eval("#{klass}::VERSION") rescue ''
+    end
+    "#{klass}=#{v}"
   end
 
 end
