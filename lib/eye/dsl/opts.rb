@@ -4,11 +4,11 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     :stop_command, :restart_command, :uid, :gid ]
   create_options_methods(STR_OPTIONS, String)
 
-  BOOL_OPTIONS = [ :daemonize, :keep_alive, :control_pid, :auto_start, :stop_on_delete]
+  BOOL_OPTIONS = [ :daemonize, :keep_alive, :auto_start, :stop_on_delete, :clear_pid ]
   create_options_methods(BOOL_OPTIONS, [TrueClass, FalseClass])
 
   INTERVAL_OPTIONS = [ :check_alive_period, :start_timeout, :restart_timeout, :stop_timeout, :start_grace,
-    :restart_grace, :stop_grace, :childs_update_period ]
+    :restart_grace, :stop_grace, :childs_update_period, :clear_pid ]
   create_options_methods(INTERVAL_OPTIONS, [Fixnum, Float])
 
   create_options_methods([:environment], Hash)
