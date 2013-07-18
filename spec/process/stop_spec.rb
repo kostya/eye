@@ -33,7 +33,7 @@ describe "Process Stop" do
       Eye::System.pid_alive?(@pid).should == false
       @process.state_name.should == :down
 
-      @process.load_pid_from_file.should == nil
+      @process.load_pid_from_file.should == @pid
     end
   end
 
