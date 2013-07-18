@@ -14,7 +14,7 @@ describe "Process Stop" do
       @process.load_pid_from_file.should == nil
     end
 
-    it "stop should not clear pid by default for not daemonize" do
+    it "stop should clear pid by default for not daemonize" do
       start_ok_process(C.p2)
 
       @process.stop_process
@@ -22,11 +22,11 @@ describe "Process Stop" do
       Eye::System.pid_alive?(@pid).should == false
       @process.state_name.should == :down
 
-      @process.load_pid_from_file.should == @pid
+      @process.load_pid_from_file.should == nil
     end
 
     it "for not daemonize, but option enabled by manual" do
-      start_ok_process(C.p2.merge(:control_pid => true))
+      start_ok_process(C.p2.merge(:clear_pid => false))
 
       @process.stop_process
 
@@ -81,6 +81,8 @@ describe "Process Stop" do
 
     Eye::System.pid_alive?(@pid).should == true
     @process.state_name.should == :unmonitored # cant stop with this command, so :unmonitored
+
+    @process.load_pid_from_file.should == @pid # needs
   end
 
   it "watch_file" do
@@ -97,6 +99,8 @@ describe "Process Stop" do
 
     data = File.read(@log)
     data.should include("watch file finded")
+
+    @process.load_pid_from_file.should == nil
   end
 
   it "stop process by stop_signals" do
@@ -105,6 +109,8 @@ describe "Process Stop" do
     @process.async.stop_process
     sleep 1
     Eye::System.pid_alive?(@pid).should == false
+
+    @process.load_pid_from_file.should == nil
   end
 
   it "stop process by stop_signals" do
@@ -137,6 +143,8 @@ describe "Process Stop" do
     @process.state_name.should == :down
 
     Eye::System.pid_alive?(pid).should == false
+
+    @process.load_pid_from_file.should == nil
   end
 
   # it "stop process by stop_signals and commands"
