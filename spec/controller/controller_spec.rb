@@ -102,7 +102,7 @@ S
     subject.info_string_debug.split("\n").size.should > 5
 
     subject.load(fixture("dsl/load.eye"))
-    subject.info_string_debug(true, true).split("\n").size.should > 5
+    subject.info_string_debug(:config => true, :processes => true).split("\n").size.should > 5
 
     subject.__klass__.should == "Eye::Controller"
   end
