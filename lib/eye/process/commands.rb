@@ -7,7 +7,7 @@ module Eye::Process::Commands
 
     unless self[:start_command]
       warn 'no start command, so unmonitoring'
-      switch :unmonitoring
+      switch :unmonitoring, Eye::Reason.new(:no_start_command)
       return :no_start_command
     end
 
