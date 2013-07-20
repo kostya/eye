@@ -6,6 +6,7 @@ require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/object/try'
 require 'active_support/core_ext/numeric'
 require 'active_support/core_ext/string/filters'
+require 'active_support/core_ext/array/extract_options'
 
 require_relative 'utils/celluloid_klass'
 

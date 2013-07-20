@@ -8,7 +8,9 @@ module Eye::Controller::Load
     { filename => catch_load_error(filename) { parse_config(filename).to_h } }
   end
 
-  def load(*obj_strs)
+  def load(*args)
+    opts = args.extract_options!
+    obj_strs = args.flatten
     info "load: #{obj_strs}"
 
     res = Hash.new
