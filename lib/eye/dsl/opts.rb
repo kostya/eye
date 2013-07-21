@@ -8,7 +8,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   create_options_methods(BOOL_OPTIONS, [TrueClass, FalseClass])
 
   INTERVAL_OPTIONS = [ :check_alive_period, :start_timeout, :restart_timeout, :stop_timeout, :start_grace,
-    :restart_grace, :stop_grace, :childs_update_period, :clear_pid ]
+    :restart_grace, :stop_grace, :childs_update_period, :clear_pid, :restore_in ]
   create_options_methods(INTERVAL_OPTIONS, [Fixnum, Float])
 
   create_options_methods([:environment], Hash)

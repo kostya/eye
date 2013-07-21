@@ -24,6 +24,27 @@ describe "Process Monitoring" do
       @process.load_pid_from_file.should == @process.pid
     end
 
+    it "process crashed, should restart #{cfg[:name]} in restore_in interval" do
+      start_ok_process(cfg.merge(:restore_in => 3.seconds))
+      old_pid = @pid
+
+      die_process!(@pid)
+      mock(@process).notify(:info, anything)
+
+      sleep 10 # wait until monitor upping process
+
+      @pid = @process.pid
+      @pid.should_not == old_pid
+
+      Eye::System.pid_alive?(old_pid).should == false
+      Eye::System.pid_alive?(@pid).should == true
+
+      @process.state_name.should == :up
+      @process.states_history.seq?(:down, :starting, :up).should == true
+      @process.watchers.keys.should == [:check_alive]
+      @process.load_pid_from_file.should == @process.pid
+    end
+
     it "someone remove pid_file. should rewrite" do
       start_ok_process(cfg)
       old_pid = @pid
