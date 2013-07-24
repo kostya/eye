@@ -47,4 +47,8 @@ class Eye::Controller
     current_config.settings
   end
 
+  def logger_tag
+    'Eye'
+  end
+
 end
