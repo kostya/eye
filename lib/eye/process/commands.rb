@@ -53,8 +53,8 @@ module Eye::Process::Commands
       switch :stopped
 
       clear_pid_file if self[:clear_pid] # by default for all
-      true
 
+      true
     end
 
   rescue StateMachine::InvalidTransition => e

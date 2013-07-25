@@ -3,6 +3,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "Process Monitoring" do
 
   [C.p1, C.p2].each do |cfg|
+
     it "process crashed, should restart #{cfg[:name]}" do
       start_ok_process(cfg)
       old_pid = @pid
@@ -60,7 +61,7 @@ describe "Process Monitoring" do
     @process.state_name.should == :unmonitored
     @process.watchers.keys.should == []
     @process.states_history.end?(:up, :down, :unmonitored).should == true
-    @process.load_pid_from_file.should == old_pid # i think this ok
+    @process.load_pid_from_file.should == nil 
   end
 
   it "process in status unmonitored should not up automatically" do

@@ -4,6 +4,21 @@ describe "Process Pid Managment" do
 
   [C.p1, C.p2].each do |cfg|
 
+    it "crashed of process should remove pid_file #{cfg[:name]} for daemonize only" do
+      start_ok_process(cfg)
+      die_process!(@pid)
+
+      mock(@process).start # stub start for clean test
+
+      sleep 6
+
+      if cfg[:daemonize]
+        @process.load_pid_from_file.should == nil
+      else
+        @process.load_pid_from_file.should == @pid
+      end
+    end
+
     it "someone remove pid_file. should rewrite" do
       start_ok_process(cfg)
       old_pid = @pid

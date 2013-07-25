@@ -43,6 +43,7 @@ describe "Flapping" do
     @process.state_name.should == :unmonitored
     @process.watchers.keys.should == []
     @process.states_history.states.last(2).should == [:down, :unmonitored]
+    @process.load_pid_from_file.should == nil
   end
 
   it "process flapping emulate with kill" do
@@ -60,6 +61,7 @@ describe "Flapping" do
 
     # ! should switched to unmonitored from down status
     @process.states_history.states.last(2).should == [:down, :unmonitored]
+    @process.load_pid_from_file.should == nil
   end
 
   it "process flapping, and then send to start and fast kill, should ok started" do
@@ -81,6 +83,8 @@ describe "Flapping" do
     die_process!(@process.pid)
     sleep 4
     @process.state_name.should == :up
+
+    @process.load_pid_from_file.should == @process.pid
   end
 
   it "flapping not happens" do
@@ -101,6 +105,7 @@ describe "Flapping" do
     sleep 2
 
     @process.state_name.should == :up
+    @process.load_pid_from_file.should == @process.pid
   end
 
   describe "retry_in, retry_times" do
