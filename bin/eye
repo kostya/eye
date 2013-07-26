@@ -57,7 +57,10 @@ class Cli < Thor
     # if eye server got crazy, stop by force
     ensure_stop_previous_server if res != :corrupred_data
 
-    say "stopped...", :yellow
+    # remove pid_file
+    File.delete(Eye::Settings.pid_path) if File.exists?(Eye::Settings.pid_path)
+
+    say "quit...", :yellow
   end
 
   [:start, :stop, :restart, :unmonitor, :monitor, :delete, :match].each do |_cmd|

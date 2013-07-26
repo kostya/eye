@@ -58,12 +58,10 @@ module Eye::Controller::Commands
 private
 
   def quit
-    save_cache
-    info 'exiting...'
+    info 'Quit!'
+    Eye::System.send_signal($$, :TERM)
     sleep 1
-    Eye::System.send_signal($$) # soft terminate
-    sleep 2
-    Eye::System.send_signal($$, 9)
+    Eye::System.send_signal($$, :KILL)
   end
 
 end
