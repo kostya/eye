@@ -169,10 +169,10 @@ private
     info "daemonizing: `#{self[:start_command]}` with start_grace: #{self[:start_grace].to_f}s, env: #{self[:environment].inspect}, working_dir: #{self[:working_dir]} (pid:#{res[:pid]})"
 
     if res[:error]
-      error "raised with #{res[:error].inspect}"
-
       if res[:error].message == 'Permission denied - open'
-        error 'seems stdout/err/all files is not writable'
+        error "raised with #{res[:error].inspect}, seems #{[self[:stdout], self[:stderr]]} files are not writable"
+      else
+        error "raised with #{res[:error].inspect}"
       end
 
       return {:error => res[:error].inspect}
@@ -207,10 +207,10 @@ private
     start_time = Time.now - time_before
 
     if res[:error]
-      error "raised with #{res[:error].inspect}"
-
       if res[:error].message == 'Permission denied - open'
-        error 'seems stdout/err/all files is not writable'
+        error "raised with #{res[:error].inspect}, seems #{[self[:stdout], self[:stderr]]} files are not writable"
+      else
+        error "raised with #{res[:error].inspect}"
       end
 
       if res[:error].class == Timeout::Error
@@ -241,7 +241,7 @@ private
     if !self[:stdout] && !self[:stderr]
       'maybe should add stdout/err/all logs'
     else
-      "check also it stdout/err/all logs #{[self[:stdout], self[:stderr]].inspect}"
+      "check also it stdout/err/all logs #{[self[:stdout], self[:stderr]]}"
     end
   end
 
