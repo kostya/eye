@@ -17,9 +17,11 @@ module Eye::Controller::SendCommand
     matched_objects(*obj_strs)
   end
 
-  def signal(sig, *obj_strs)
+  def signal(*args)
+    opts = args.extract_options!
+    obj_strs = args
     matched_objects(*obj_strs) do |obj|
-      obj.send_command :signal, sig || 0
+      obj.send_command :signal, opts[:signal] || 0
     end
   end
 

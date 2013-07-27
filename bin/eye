@@ -72,7 +72,7 @@ class Cli < Thor
 
   desc "signal SIG, MASK[,...]", "send signal to matched app,group or process (ex: `eye sig USR2 some_app`)"
   def signal(sig, *targets)
-    send_command(:signal, sig, *targets)
+    send_command(:signal, *targets, :signal => sig)
   end
 
   desc "break TARGET[,...]", "break group chain executing"

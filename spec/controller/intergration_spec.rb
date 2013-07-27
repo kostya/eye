@@ -259,14 +259,14 @@ describe "Intergration" do
     mock(@p2).signal('usr2')
     mock(@p3).signal('usr2')
 
-    @c.signal('usr2', "int").should == ["int"]
+    @c.signal("int", :signal => 'usr2').should == ["int"]
     sleep 3 # while they gettings
 
     @p1.last_scheduled_command.should == :signal
     @p1.last_scheduled_reason.to_s.should == 'signal by user'
 
     mock(@p1).signal('usr1')
-    @c.signal('usr1', 'sample1')
+    @c.signal('sample1', :signal => 'usr1')
     sleep 0.5
   end
 
