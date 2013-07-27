@@ -73,7 +73,7 @@ module Eye::Process::Commands
 
     if self[:restart_command]
       execute_restart_command
-      sleep self[:restart_timeout].to_f
+      sleep_grace(:restart_timeout)
       result = check_alive_with_refresh_pid_if_needed
       switch(result ? :restarted : :crashed)
     else
@@ -106,7 +106,7 @@ private
         end
       end
 
-      sleep self[:stop_grace].to_f
+      sleep_grace(:stop_grace)
 
     elsif self[:stop_signals]
       info "executing stop_signals #{self[:stop_signals].inspect}"
@@ -127,13 +127,13 @@ private
         send_signal(signal)
       end
 
-      sleep self[:stop_grace].to_f
+      sleep_grace(:stop_grace)
 
     else # default command
       info "executing: `kill -TERM #{self.pid}` with stop_grace: #{self[:stop_grace].to_f}s"
       send_signal(:TERM)
 
-      sleep self[:stop_grace].to_f
+      sleep_grace(:stop_grace)
 
       # if process not die here, by default we force kill it
       if process_realy_running?
@@ -185,7 +185,7 @@ private
       return {:error => :empty_pid}
     end
 
-    sleep self[:start_grace].to_f
+    sleep_grace(:start_grace)
 
     unless process_realy_running?
       error "process with pid(#{self.pid}) not found, may be crashed (#{check_logs_str})"
@@ -220,7 +220,7 @@ private
       return {:error => res[:error].inspect}
     end
 
-    sleep self[:start_grace].to_f
+    sleep_grace(:start_grace)
 
     unless set_pid_from_file
       error "pid_file(#{self[:pid_file_ex]}) does not appears after start_grace #{self[:start_grace].to_f}, check start_command, or tune start_grace (eye dont know what to monitor without pid)"
@@ -251,6 +251,12 @@ private
     else
       command
     end
+  end
+
+  def sleep_grace(grace_name)
+    grace = self[grace_name].to_f
+    info "sleeping for :#{grace_name} #{grace}"
+    sleep grace
   end
 
 end
