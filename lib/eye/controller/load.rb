@@ -24,6 +24,8 @@ module Eye::Controller::Load
     set_proc_line
     save_cache
 
+    info "loaded: #{obj_strs} in <#{$$}>"
+
     res
   end
 
