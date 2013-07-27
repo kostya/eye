@@ -10,7 +10,7 @@ module Eye::Process::Config
 
     :start_grace => 2.5.seconds,
     :stop_grace => 0.5.seconds,
-    :restart_grace => 0.5.seconds,
+    :restart_grace => 1.second,
 
     :daemonize => false,
     :auto_start => true, # auto start on monitor action
