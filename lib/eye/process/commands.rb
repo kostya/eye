@@ -73,7 +73,7 @@ module Eye::Process::Commands
 
     if self[:restart_command]
       execute_restart_command
-      sleep_grace(:restart_timeout)
+      sleep_grace(:restart_grace)
       result = check_alive_with_refresh_pid_if_needed
       switch(result ? :restarted : :crashed)
     else
