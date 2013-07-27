@@ -119,7 +119,7 @@ private
         delay = stop_signals.shift
         signal = stop_signals.shift
 
-        if wait_for_condition(delay.to_f, 0.1){ !process_realy_running? }
+        if wait_for_condition(delay.to_f, 0.3){ !process_realy_running? }
           info 'has terminated'
           break
         end
