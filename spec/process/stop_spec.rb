@@ -48,6 +48,7 @@ describe "Process Stop" do
     @process.state_name.should == :down
     @process.states_history.end?(:up, :stopping, :down).should == true
     @process.watchers.keys.should == []
+    @process.load_pid_from_file.should == nil
   end
 
   it "stop process by default command, and its not die by TERM, should stop anyway" do
@@ -62,6 +63,7 @@ describe "Process Stop" do
     @process.state_name.should == :down
     @process.states_history.end?(:up, :stopping, :down).should == true
     @process.watchers.keys.should == []
+    @process.load_pid_from_file.should == nil
   end
 
   it "stop process by specific command" do
@@ -72,6 +74,7 @@ describe "Process Stop" do
 
     Eye::System.pid_alive?(@pid).should == false
     @process.state_name.should == :down
+    @process.load_pid_from_file.should == nil
   end
 
   it "bad command" do
