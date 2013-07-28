@@ -15,7 +15,6 @@ if ENV['COVA']
 end
 
 # preload
-Eye::Control
 Eye::Controller
 Eye::Process
 

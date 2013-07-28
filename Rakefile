@@ -17,7 +17,7 @@ end
 task :env do
   require 'bundler/setup'
   require 'eye'
-  Eye::Control
+  Eye::Controller
   Eye::Process # preload
 end
 

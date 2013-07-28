@@ -107,7 +107,7 @@ class Cli < Thor
     if RUBY_VERSION < '1.9'
       say_load_result cmd(:check, conf), :syntax => true
     else
-      say_load_result Eye::Control.check(conf), :syntax => true
+      say_load_result Eye::Controller.new.check(conf), :syntax => true
     end
   end
 
@@ -123,7 +123,7 @@ class Cli < Thor
     if RUBY_VERSION < '1.9'
       say_load_result cmd(:explain, conf), :print_config => true, :syntax => true
     else
-      say_load_result Eye::Control.explain(conf), :print_config => true, :syntax => true
+      say_load_result Eye::Controller.new.explain(conf), :print_config => true, :syntax => true
     end
   end
 
