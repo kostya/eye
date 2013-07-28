@@ -31,6 +31,7 @@ About:  #{Eye::ABOUT}
 Info:   #{resources_str(Eye::SystemResources.resources($$))}
 Ruby:   #{RUBY_DESCRIPTION}
 Gems:   #{%w|Celluloid Celluloid::IO ActiveSupport StateMachine NIO|.map{|c| gem_version(c) }}
+Checks: #{Eye::Checker::TYPES}, #{Eye::Trigger::TYPES}
 Logger: #{Eye::Logger.dev}
 Socket: #{Eye::Settings::socket_path}
 Pid:    #{Eye::Settings::pid_path}

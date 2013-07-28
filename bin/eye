@@ -196,7 +196,7 @@ private
 
       if opts[:print_config]
         require 'pp'
-        PP.pp res[:config], STDOUT, 300
+        PP.pp res[:config], STDOUT, 150
       end
     end
   end
