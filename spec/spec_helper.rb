@@ -144,3 +144,11 @@ ensure
   FileUtils.rm(filename) rescue nil
 end
 
+def with_temp_file(cont, &block)
+  filename = C.sample_dir + "#{rand.to_f}.eye"
+  $logger.info cont
+  File.open(filename, 'w'){ |f| f.write cont }
+  yield filename
+ensure
+  FileUtils.rm(filename) rescue nil
+end

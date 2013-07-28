@@ -28,19 +28,19 @@ class Eye::Checker
     klass
   end
 
-  def self.create(pid, options = {}, logger_prefix = nil)
-    get_class(options[:type]).new(pid, options, logger_prefix)
+  def self.create(pid, options = {}, process = nil)
+    get_class(options[:type]).new(pid, options, process)
   end
 
   def self.validate!(options)
     get_class(options[:type]).validate(options)
   end
 
-  def initialize(pid, options = {}, logger_prefix = nil)
+  def initialize(pid, options = {}, process = nil)
+    @process = process
     @pid = pid
     @options = options
     @type = options[:type]
-    @logger_prefix = logger_prefix
 
     debug "create checker, with #{options}"
 
@@ -49,8 +49,12 @@ class Eye::Checker
     @check_count = 0
   end
 
+  def inspect
+    "<#{self.class} @process='#{@process.full_name}' @options=#{@options} @pid=#{@pid}>"
+  end
+
   def logger_tag
-    @logger_prefix
+    @process.logger.prefix
   end
 
   def logger_sub_tag
