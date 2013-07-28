@@ -28,17 +28,17 @@ class Eye::Checker
     klass
   end
 
-  def self.create(process, options = {})
-    get_class(options[:type]).new(process, options)
+  def self.create(pid, options = {}, process = nil)
+    get_class(options[:type]).new(pid, options, process)
   end
 
   def self.validate!(options)
     get_class(options[:type]).validate(options)
   end
 
-  def initialize(process, options = {})
+  def initialize(pid, options = {}, process = nil)
     @process = process
-    @pid = @process.pid
+    @pid = pid
     @options = options
     @type = options[:type]
 

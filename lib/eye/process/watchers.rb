@@ -50,7 +50,7 @@ private
   end
 
   def start_checker(name, cfg)
-    subject = Eye::Checker.create(current_actor, cfg)
+    subject = Eye::Checker.create(pid, cfg, current_actor)
 
     # ex: {:type => :memory, :every => 5.seconds, :below => 100.megabytes, :times => [3,5]}
     add_watcher("check_#{name}".to_sym, subject.every, subject, &method(:watcher_tick).to_proc)
