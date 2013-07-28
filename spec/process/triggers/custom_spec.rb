@@ -17,4 +17,23 @@ describe "Trigger Custom" do
       File.exists?(@filename).should == false
     end
   end
+
+  describe "delete file on event" do
+    before :each do
+      @c = Eye::Controller.new
+      r = @c.load(fixture("dsl/custom_trigger2.eye"))
+      sleep 5
+      @process = @c.process_by_name("1")
+      @filename = @process[:working_dir] + "/1.tmp"
+    end
+
+    it "should delete file when stop" do
+      File.open(@filename, 'w'){ |f| f.write "aaa" }
+      File.exists?(@filename).should == true
+      force_kill_pid(@process.pid)
+      sleep 5
+      File.exists?(@filename).should == false
+    end
+  end
+
 end
