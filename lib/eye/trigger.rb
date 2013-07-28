@@ -43,6 +43,7 @@ class Eye::Trigger
 
   def notify(transition)
     debug "check"
+    @transition = transition
     check(transition)
   rescue => ex
     warn "failed #{ex.message} #{ex.backtrace}"
