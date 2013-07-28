@@ -130,7 +130,7 @@ private
       sleep_grace(:stop_grace)
 
     else # default command
-      info "executing: `kill -TERM #{self.pid}` with stop_grace: #{self[:stop_grace].to_f}s"
+      debug "executing: `kill -TERM #{self.pid}` with stop_grace: #{self[:stop_grace].to_f}s"
       send_signal(:TERM)
 
       sleep_grace(:stop_grace)
