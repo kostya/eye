@@ -39,6 +39,8 @@ class Eye::Trigger
   def notify(transition)
     debug "check"
     check(transition)
+  rescue => ex
+    warn "failed #{ex.message} #{ex.backtrace}"
   end
 
   def check(transition)
@@ -47,4 +49,13 @@ class Eye::Trigger
 
   extend Eye::Dsl::Validation
 
+  class Custom < Eye::Trigger
+    def self.inherited(base)
+      super
+      name = base.to_s
+      type = name.underscore.to_sym
+      Eye::Trigger::TYPES[type] = name
+      Eye::Trigger.const_set(name, base)
+    end
+  end
 end

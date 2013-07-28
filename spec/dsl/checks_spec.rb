@@ -256,6 +256,32 @@ describe "Eye::Dsl checks" do
           :checks=>{:cpu2=>{:times=>2, :below=>80, :every=>30, :type=>:cpu2}}}}}}}}
   end
 
+  it "define custom trigger" do
+    conf = <<-E
+      class DeleteFile < Eye::Trigger::Custom
+        param :file, [String], true
+
+        def check(transition)
+          File.delete(file) if transition.to_name == :down
+        end
+      end
+
+      Eye.application("bla") do
+        process("1") do
+          pid_file "1.pid"
+
+          trigger :delete_file, :file => "/tmp/111111"
+        end
+      end
+    E
+
+    res = Eye::Dsl.parse_apps(conf)
+    res.should == {"bla" => {:name=>"bla", :groups=>{
+      "__default__"=>{:name=>"__default__", :application=>"bla", :processes=>{
+        "1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"1.pid",
+          :triggers=>{:delete_file=>{:file=>"/tmp/111111", :type=>:delete_file}}}}}}}}
+  end
+
   describe "two checks with the same type" do
 
     it "two checks with the same type" do
