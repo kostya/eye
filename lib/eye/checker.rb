@@ -49,6 +49,10 @@ class Eye::Checker
     @check_count = 0
   end
 
+  def inspect
+    "<#{self.class} @process='#{@process.full_name}' @options=#{@options} @pid=#{@pid}>"
+  end
+
   def logger_tag
     @process.logger.prefix
   end

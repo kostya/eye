@@ -28,6 +28,10 @@ class Eye::Trigger
     debug "add #{options}"
   end
 
+  def inspect
+    "<#{self.class} @process='#{@process.full_name}' @options=#{@options}>"
+  end
+
   def logger_tag
     @process.logger.prefix
   end
