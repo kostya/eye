@@ -23,8 +23,10 @@ module Eye::Dsl::Validation
     defaults[param] = default
     variants[param] = _variants
 
+    return if param == :do
+
     define_method "#{param}" do
-      @options[param.to_sym] || default
+      @options[param] || default
     end
   end
 

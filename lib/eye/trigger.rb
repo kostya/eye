@@ -1,9 +1,10 @@
 class Eye::Trigger
   autoload :Flapping,   'eye/trigger/flapping'
+  autoload :State,      'eye/trigger/state'
 
   # ex: { :type => :flapping, :times => 2, :within => 30.seconds}
 
-  TYPES = {:flapping => "Flapping"}
+  TYPES = {:flapping => "Flapping", :state => "State"}
 
   attr_reader :message, :options, :process
 
