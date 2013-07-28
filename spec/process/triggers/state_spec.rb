@@ -60,4 +60,31 @@ describe "Trigger State" do
     end
   end
 
+  describe "multiple triggers" do
+    before :each do
+      cfg = <<-D
+        Eye.application("bla") do
+          working_dir "#{C.sample_dir}"
+          process("1") do
+            pid_file "#{C.p1_pid}"
+            start_command "sleep 30"
+            daemonize true
+            trigger :state1, :to => :up, :do => ->{ info "touch #{C.tmp_file}"; File.open("#{C.tmp_file}", 'w') }
+            trigger :state2, :to => :down, :do => ->{ info "rm #{C.tmp_file}"; File.delete("#{C.tmp_file}") }
+          end
+        end
+      D
+
+      with_temp_file(cfg){ |f| @c.load(f) }
+      sleep 5
+      @process = @c.process_by_name("1")
+    end
+
+    it "should delete file when stop" do
+      File.exists?(C.tmp_file).should == true
+      @process.stop
+      File.exists?(C.tmp_file).should == false
+    end
+  end
+
 end

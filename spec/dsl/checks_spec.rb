@@ -372,4 +372,65 @@ describe "Eye::Dsl checks" do
 
   end
 
+  describe "multiple triggers" do
+    it "two checks with the same type" do
+      conf = <<-E
+        Eye.application("bla") do
+          process("1") do
+            pid_file "1.pid"
+
+            trigger :state, :from => :a
+            trigger :state2, :to => :b
+            trigger :state_3, :event => :c
+          end
+        end
+      E
+      Eye::Dsl.parse_apps(conf).should == {
+        "bla" => {:name=>"bla", :groups=>{
+          "__default__"=>{:name=>"__default__", :application=>"bla", :processes=>{
+            "1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"1.pid", :triggers=>{
+              :state=>{:from=>:a, :type=>:state},
+              :state2=>{:to=>:b, :type=>:state},
+              :state_3=>{:event=>:c, :type=>:state}}}}}}}}
+    end
+
+    it "with notriggers" do
+      conf = <<-E
+        Eye.application("bla") do
+          trigger :state
+
+          process("1") do
+            pid_file "1.pid"
+
+            notrigger :state
+            trigger :state2, :to => :up
+          end
+        end
+      E
+      Eye::Dsl.parse_apps(conf).should == {
+        "bla" => {:name=>"bla", :triggers=>{:state=>{:type=>:state}}, :groups=>{
+          "__default__"=>{:name=>"__default__",
+            :triggers=>{:state=>{:type=>:state}}, :application=>"bla", :processes=>{
+              "1"=>{:name=>"1", :triggers=>{:state2=>{:to=>:up, :type=>:state}},
+              :application=>"bla", :group=>"__default__", :pid_file=>"1.pid"}}}}}}
+    end
+
+    it "errored cases" do
+      conf = <<-E
+        Eye.application("bla") do
+          trigger :memory_bla, :below => 100.megabytes, :every => 10.seconds
+        end
+      E
+      expect{ Eye::Dsl.parse_apps(conf) }.to raise_error(Eye::Dsl::Error)
+
+      conf = <<-E
+        Eye.application("bla") do
+          trigger 'memory-4', :below => 100.megabytes, :every => 10.seconds
+        end
+      E
+      expect{ Eye::Dsl.parse_apps(conf) }.to raise_error(Eye::Dsl::Error)
+    end
+
+  end
+
 end

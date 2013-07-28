@@ -8,6 +8,16 @@ class Eye::Trigger
 
   attr_reader :message, :options, :process
 
+  def self.name_and_class(type)
+    type = type.to_sym
+    return {:name => type, :type => type} if TYPES[type]
+
+    if type =~ /\A(.*?)_?[0-9]+\z/
+      ctype = $1.to_sym
+      return {:name => type, :type => ctype} if TYPES[ctype]
+    end
+  end
+
   def self.get_class(type)
     klass = eval("Eye::Trigger::#{TYPES[type]}") rescue nil
     raise "Unknown trigger #{type}" unless klass

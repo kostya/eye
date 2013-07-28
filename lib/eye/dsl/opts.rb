@@ -38,14 +38,14 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   end
 
   def triggers(type, opts = {})
-    type = type.to_sym
-    raise Eye::Dsl::Error, "unknown trigger type #{type}" unless Eye::Trigger::TYPES[type]
+    nac = Eye::Trigger.name_and_class(type.to_sym)
+    raise Eye::Dsl::Error, "unknown trigger type #{type}" unless nac
 
-    opts.merge!(:type => type)
+    opts.merge!(:type => nac[:type])
     Eye::Trigger.validate!(opts)
 
     @config[:triggers] ||= {}
-    @config[:triggers][type] = opts
+    @config[:triggers][nac[:name]] = opts
   end
 
   # clear checks from parent
@@ -57,9 +57,9 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
 
   # clear triggers from parent
   def notriggers(type)
-    type = type.to_sym
-    raise Eye::Dsl::Error, "unknown trigger type #{type}" unless Eye::Trigger::TYPES[type]
-    @config[:triggers].try :delete, type
+    nac = Eye::Trigger.name_and_class(type.to_sym)
+    raise Eye::Dsl::Error, "unknown trigger type #{type}" unless nac
+    @config[:triggers].try :delete, nac[:name]
   end
 
   alias check checks
