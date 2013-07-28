@@ -12,43 +12,24 @@ module Eye::Process::Trigger
     self.triggers = []
   end
 
-  def check_triggers
+  def check_triggers(transition)
     return if unmonitored?
+    self.triggers.each { |trigger| trigger.notify(transition) }
+  end
 
-    self.triggers.each do |trigger|
-      unless trigger.check(self.states_history)
-        on_flapping(trigger) if trigger.class == Eye::Trigger::Flapping
-      end
-    end
+  def retry_start_after_flapping
+    return unless unmonitored?
+    return unless state_reason.to_s.include?('flapping') # TODO: remove hackety
+
+    schedule :start, Eye::Reason.new(:'retry start after flapping')
+    self.flapping_times += 1
   end
 
 private
 
   def add_trigger(cfg = {})
-    trigger = Eye::Trigger.create(cfg, logger.prefix)
+    trigger = Eye::Trigger.create(current_actor, cfg)
     self.triggers << trigger
-  end
-
-  def on_flapping(trigger)
-    notify :error, 'flapping!'
-    schedule :unmonitor, Eye::Reason.new(:flapping)
-
-    @retry_times ||= 0
-    retry_in = trigger.retry_in
-
-    return unless retry_in
-    return if trigger.retry_times && @retry_times >= trigger.retry_times
-
-    schedule_in(retry_in.to_f, :retry_action)
-  end
-
-  def retry_action
-    debug "trigger retry timer"
-    return unless unmonitored?
-    return unless state_reason.to_s.include?('flapping') # TODO: remove hackety
-
-    schedule :start, Eye::Reason.new(:'retry start after flapping')
-    @retry_times += 1
   end
 
 end

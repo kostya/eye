@@ -5,7 +5,7 @@ class Eye::Trigger
 
   TYPES = {:flapping => "Flapping"}
 
-  attr_reader :message, :options
+  attr_reader :message, :options, :process
 
   def self.get_class(type)
     klass = eval("Eye::Trigger::#{TYPES[type]}") rescue nil
@@ -13,45 +13,36 @@ class Eye::Trigger
     klass
   end
 
-  def self.create(options = {}, logger_prefix = nil)
-    get_class(options[:type]).new(options, logger_prefix)
+  def self.create(process, options = {})
+    get_class(options[:type]).new(process, options)
   end
 
   def self.validate!(options = {})
     get_class(options[:type]).validate(options)
   end
 
-  def initialize(options = {}, logger_prefix = nil)
+  def initialize(process, options = {})
     @options = options
-    @logger_prefix = logger_prefix
+    @process = process
 
     debug "add #{options}"
   end
 
   def logger_tag
-    @logger_prefix
+    @process.logger.prefix
   end
 
   def logger_sub_tag
-    'trigger'
+    "trigger(#{@options[:type]})"
   end
 
-  def check(states_history)
-    @states_history = states_history
-
-    res = good?
-
-    if res
-      debug 'check flapping'
-    else
-      debug "!!! #{self.class} recognized !!!"
-    end
-
-    res
+  def notify(transition)
+    debug "check"
+    check(transition)
   end
 
-  def good?
-    raise 'realize me'
+  def check(transition)
+    raise "realize me"
   end
 
   extend Eye::Dsl::Validation
