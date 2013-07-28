@@ -62,6 +62,11 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     @config[:triggers].try :delete, type
   end
 
+  alias check checks
+  alias nocheck nochecks
+  alias trigger triggers
+  alias notrigger notriggers
+
   def notify(contact, level = :warn)
     unless Eye::Process::Notify::LEVELS[level]
       raise Eye::Dsl::Error, "level should be in #{Eye::Process::Notify::LEVELS.keys}"
