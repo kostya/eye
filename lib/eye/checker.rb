@@ -10,7 +10,12 @@ class Eye::Checker
   TYPES = {:memory => "Memory", :cpu => "Cpu", :http => "Http",
            :ctime => "FileCTime", :fsize => "FileSize", :socket => "Socket"}
 
-  attr_accessor :value, :values, :options, :pid, :type, :check_count
+  attr_accessor :value, :values, :options, :pid, :type, :check_count, :process
+
+  extend Eye::Dsl::Validation
+  param :every, [Fixnum, Float], false, 5
+  param :times, [Fixnum, Array], nil, 1
+  param :fire, Symbol, nil, nil, [:stop, :restart, :unmonitor, :nothing]
 
   def self.name_and_class(type)
     type = type.to_sym
@@ -101,7 +106,7 @@ class Eye::Checker
   # true if check ok
   # false if check bad
   def good?(value)
-    raise 'Realize me'
+    value
   end
 
   def check_name
@@ -136,24 +141,30 @@ class Eye::Checker
     @values[-1][:value] if @values.present?
   end
 
-  extend Eye::Dsl::Validation
-  param :every, [Fixnum, Float], false, 5
-  param :times, [Fixnum, Array]
-  param :fire, Symbol, nil, nil, [:stop, :restart, :unmonitor, :nothing]
-
   class Defer < Eye::Checker
     def get_value_safe
       Celluloid::Future.new{ get_value }.value
     end
   end
 
-  class Custom < Defer
+  def self.register(base)
+    name = base.to_s.gsub("Eye::Checker::", '')
+    type = name.underscore.to_sym
+    Eye::Checker::TYPES[type] = name
+    Eye::Checker.const_set(name, base)
+  end
+
+  class Custom < Eye::Checker
     def self.inherited(base)
       super
-      name = base.to_s
-      type = name.underscore.to_sym
-      Eye::Checker::TYPES[type] = name
-      Eye::Checker.const_set(name, base)
+      register(base)
+    end
+  end
+
+  class CustomDefer < Defer
+    def self.inherited(base)
+      super
+      register(base)
     end
   end
 end

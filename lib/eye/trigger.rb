@@ -8,6 +8,8 @@ class Eye::Trigger
 
   attr_reader :message, :options, :process
 
+  extend Eye::Dsl::Validation
+
   def self.name_and_class(type)
     type = type.to_sym
     return {:name => type, :type => type} if TYPES[type]
@@ -63,15 +65,18 @@ class Eye::Trigger
     raise "realize me"
   end
 
-  extend Eye::Dsl::Validation
+  def self.register(base)
+    name = base.to_s.gsub("Eye::Trigger::", '')
+    name = base.to_s
+    type = name.underscore.to_sym
+    Eye::Trigger::TYPES[type] = name
+    Eye::Trigger.const_set(name, base)
+  end
 
   class Custom < Eye::Trigger
     def self.inherited(base)
       super
-      name = base.to_s
-      type = name.underscore.to_sym
-      Eye::Trigger::TYPES[type] = name
-      Eye::Trigger.const_set(name, base)
+      register(base)
     end
   end
 end

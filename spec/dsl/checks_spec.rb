@@ -256,6 +256,22 @@ describe "Eye::Dsl checks" do
           :checks=>{:cpu2=>{:times=>2, :below=>80, :every=>30, :type=>:cpu2}}}}}}}}
   end
 
+  it "define custom check in Checker scope" do
+    conf = <<-E
+      class Eye::Checker::Khg < Eye::Checker::Custom
+      end
+
+      Eye.application("bla") do
+        process("1") do
+          pid_file "1.pid"
+          checks :khg, :times => 2, :every => 30
+        end
+      end
+    E
+
+    Eye::Dsl.parse_apps(conf)
+  end
+
   it "define custom trigger" do
     conf = <<-E
       class DeleteFile < Eye::Trigger::Custom
