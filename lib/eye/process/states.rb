@@ -1,4 +1,5 @@
 require 'state_machine'
+require 'state_machine/version'
 
 class Eye::Process
 

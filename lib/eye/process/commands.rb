@@ -7,7 +7,7 @@ module Eye::Process::Commands
 
     unless self[:start_command]
       warn 'no start command, so unmonitoring'
-      switch :unmonitoring
+      switch :unmonitoring, Eye::Reason.new(:no_start_command)
       return :no_start_command
     end
 
@@ -52,7 +52,7 @@ module Eye::Process::Commands
     else
       switch :stopped
 
-      if control_pid?
+      if self[:clear_pid] # by default for all
         info "delete pid_file: #{self[:pid_file_ex]}"
         clear_pid_file
       end
@@ -73,7 +73,7 @@ module Eye::Process::Commands
 
     if self[:restart_command]
       execute_restart_command
-      sleep self[:restart_timeout].to_f
+      sleep_grace(:restart_grace)
       result = check_alive_with_refresh_pid_if_needed
       switch(result ? :restarted : :crashed)
     else
@@ -106,7 +106,7 @@ private
         end
       end
 
-      sleep self[:stop_grace].to_f
+      sleep_grace(:stop_grace)
 
     elsif self[:stop_signals]
       info "executing stop_signals #{self[:stop_signals].inspect}"
@@ -119,7 +119,7 @@ private
         delay = stop_signals.shift
         signal = stop_signals.shift
 
-        if wait_for_condition(delay.to_f, 0.1){ !process_realy_running? }
+        if wait_for_condition(delay.to_f, 0.3){ !process_realy_running? }
           info 'has terminated'
           break
         end
@@ -127,13 +127,13 @@ private
         send_signal(signal)
       end
 
-      sleep self[:stop_grace].to_f
+      sleep_grace(:stop_grace)
 
     else # default command
-      info "executing: `kill -TERM #{self.pid}` with stop_grace: #{self[:stop_grace].to_f}s"
+      debug "executing: `kill -TERM #{self.pid}` with stop_grace: #{self[:stop_grace].to_f}s"
       send_signal(:TERM)
 
-      sleep self[:stop_grace].to_f
+      sleep_grace(:stop_grace)
 
       # if process not die here, by default we force kill it
       if process_realy_running?
@@ -169,10 +169,10 @@ private
     info "daemonizing: `#{self[:start_command]}` with start_grace: #{self[:start_grace].to_f}s, env: #{self[:environment].inspect}, working_dir: #{self[:working_dir]} (pid:#{res[:pid]})"
 
     if res[:error]
-      error "raised with #{res[:error].inspect}"
-
       if res[:error].message == 'Permission denied - open'
-        error 'seems stdout/err/all files is not writable'
+        error "raised with #{res[:error].inspect}, seems #{[self[:stdout], self[:stderr]]} files are not writable"
+      else
+        error "raised with #{res[:error].inspect}"
       end
 
       return {:error => res[:error].inspect}
@@ -185,7 +185,7 @@ private
       return {:error => :empty_pid}
     end
 
-    sleep self[:start_grace].to_f
+    sleep_grace(:start_grace)
 
     unless process_realy_running?
       error "process with pid(#{self.pid}) not found, may be crashed (#{check_logs_str})"
@@ -207,10 +207,10 @@ private
     start_time = Time.now - time_before
 
     if res[:error]
-      error "raised with #{res[:error].inspect}"
-
       if res[:error].message == 'Permission denied - open'
-        error 'seems stdout/err/all files is not writable'
+        error "raised with #{res[:error].inspect}, seems #{[self[:stdout], self[:stderr]]} files are not writable"
+      else
+        error "raised with #{res[:error].inspect}"
       end
 
       if res[:error].class == Timeout::Error
@@ -220,7 +220,7 @@ private
       return {:error => res[:error].inspect}
     end
 
-    sleep self[:start_grace].to_f
+    sleep_grace(:start_grace)
 
     unless set_pid_from_file
       error "pid_file(#{self[:pid_file_ex]}) does not appears after start_grace #{self[:start_grace].to_f}, check start_command, or tune start_grace (eye dont know what to monitor without pid)"
@@ -241,7 +241,7 @@ private
     if !self[:stdout] && !self[:stderr]
       'maybe should add stdout/err/all logs'
     else
-      "check also it stdout/err/all logs #{[self[:stdout], self[:stderr]].inspect}"
+      "check also it stdout/err/all logs #{[self[:stdout], self[:stderr]]}"
     end
   end
 
@@ -251,6 +251,12 @@ private
     else
       command
     end
+  end
+
+  def sleep_grace(grace_name)
+    grace = self[grace_name].to_f
+    info "sleeping for :#{grace_name} #{grace}"
+    sleep grace
   end
 
 end

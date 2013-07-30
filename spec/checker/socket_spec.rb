@@ -51,7 +51,7 @@ describe "Socket Checker" do
         @process.stop
         c = chsock(:addr => addr + "111")
         if addr =~ /tcp/
-          c.get_value.should == {:exception => "Error<Connection refused - connect(2)>"}
+          c.get_value[:exception].should include("Error<")
         else
           c.get_value[:exception].should include("No such file or directory")
         end
@@ -67,7 +67,7 @@ describe "Socket Checker" do
       it "check responding without send_data" do
         c = chsock(:addr => addr + "111", :send_data => nil, :expect_data => nil)
         if addr =~ /tcp/
-          c.get_value.should == {:exception => "Error<Connection refused - connect(2)>"}
+          c.get_value[:exception].should include("Error<")
         else
           c.get_value[:exception].should include("No such file or directory")
         end

@@ -30,6 +30,11 @@ describe "Eye::Process::Config" do
     @p[:triggers].should == {:flapping => {:type=>:flapping, :times=>100, :within=>100}}
   end
 
+  it "clear_pid default" do
+    @p = Eye::Process.new({:pid_file => '/tmp/1.pid'})
+    @p[:clear_pid].should == true
+  end
+
   describe "control_pid?" do
     it "if daemonize than true" do
       @p = Eye::Process.new({:pid_file => '/tmp/1.pid', :daemonize => true})
@@ -40,12 +45,6 @@ describe "Eye::Process::Config" do
       @p = Eye::Process.new({:pid_file => '/tmp/1.pid'})
       @p.control_pid?.should == false
     end
-
-    it "true if not daemonize, but manual" do
-      @p = Eye::Process.new({:pid_file => '/tmp/1.pid', :daemonize => false, :control_pid => true})
-      @p.control_pid?.should == true
-    end
-
   end
 
   describe ":childs_update_period" do

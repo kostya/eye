@@ -10,12 +10,13 @@ module Eye::Process::Config
 
     :start_grace => 2.5.seconds,
     :stop_grace => 0.5.seconds,
-    :restart_grace => 0.5.seconds,
+    :restart_grace => 1.second,
 
     :daemonize => false,
     :auto_start => true, # auto start on monitor action
 
-    :childs_update_period => 30.seconds
+    :childs_update_period => 30.seconds,
+    :clear_pid => true # by default clear pid on stop
   }
 
   def prepare_config(new_config)
@@ -49,6 +50,7 @@ module Eye::Process::Config
     new_config = prepare_config(new_config)
     @config = new_config
     @full_name = nil
+    @logger = nil
 
     debug "update config to: #{@config.inspect}"
 
@@ -63,7 +65,6 @@ module Eye::Process::Config
 
   # is pid_file under Eye::Process control, or not
   def control_pid?
-    return self[:control_pid] unless self[:control_pid].nil?
     !!self[:daemonize]
   end
 

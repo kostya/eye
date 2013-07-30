@@ -88,7 +88,7 @@ describe "Process Restart" do
       File.read(@log).should include("USR1")
     end
 
-    it "bad restart_command is #{cfg[:name]} and its kills" do
+    it "bad restart_command is #{cfg[:name]} and it kills" do
       # not really restartin, just killing
       # so monitor should see that process died, and up it
       start_ok_process(cfg.merge(:restart_command => "kill -9 {{PID}}"))

@@ -18,18 +18,18 @@ class Eye::Process
   autoload :Validate,         'eye/process/validate'
 
   attr_accessor :pid, :watchers, :config, :states_history,
-                :childs, :triggers, :name, :state_reason
+                :childs, :triggers, :name, :state_reason, :flapping_times
 
   def initialize(config)
     raise 'pid file should be' unless config[:pid_file]
 
     @config = prepare_config(config)
-    @logger = Eye::Logger.new(full_name)
 
     @watchers = {}
     @childs = {}
     @triggers = []
     @name = @config[:name]
+    @flapping_times = 0
 
     @states_history = Eye::Process::StatesHistory.new(100)
     @states_history << :unmonitored
@@ -71,9 +71,6 @@ class Eye::Process
 
   # manage notify methods
   include Eye::Process::Notify
-
-  # logger methods
-  include Eye::Logger::Helpers
 
   # scheduler
   include Eye::Process::Scheduler

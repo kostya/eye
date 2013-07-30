@@ -1,5 +1,4 @@
 class Eye::Checker
-  include Eye::Logger::Helpers
 
   autoload :Memory,     'eye/checker/memory'
   autoload :Cpu,        'eye/checker/cpu'
@@ -11,7 +10,12 @@ class Eye::Checker
   TYPES = {:memory => "Memory", :cpu => "Cpu", :http => "Http",
            :ctime => "FileCTime", :fsize => "FileSize", :socket => "Socket"}
 
-  attr_accessor :value, :values, :options, :pid, :type, :check_count
+  attr_accessor :value, :values, :options, :pid, :type, :check_count, :process
+
+  extend Eye::Dsl::Validation
+  param :every, [Fixnum, Float], false, 5
+  param :times, [Fixnum, Array], nil, 1
+  param :fire, Symbol, nil, nil, [:stop, :restart, :unmonitor, :nothing]
 
   def self.name_and_class(type)
     type = type.to_sym
@@ -29,25 +33,37 @@ class Eye::Checker
     klass
   end
 
-  def self.create(pid, options = {}, logger_prefix = nil)
-    get_class(options[:type]).new(pid, options, logger_prefix)
+  def self.create(pid, options = {}, process = nil)
+    get_class(options[:type]).new(pid, options, process)
   end
 
   def self.validate!(options)
     get_class(options[:type]).validate(options)
   end
 
-  def initialize(pid, options = {}, logger_prefix = nil)
+  def initialize(pid, options = {}, process = nil)
+    @process = process
     @pid = pid
     @options = options
     @type = options[:type]
 
-    @logger = Eye::Logger.new(logger_prefix, "check:#{check_name}")
     debug "create checker, with #{options}"
 
     @value = nil
     @values = Eye::Utils::Tail.new(max_tries)
     @check_count = 0
+  end
+
+  def inspect
+    "<#{self.class} @process='#{@process.full_name}' @options=#{@options} @pid=#{@pid}>"
+  end
+
+  def logger_tag
+    @process.logger.prefix
+  end
+
+  def logger_sub_tag
+    "check:#{check_name}"
   end
 
   def last_human_values
@@ -90,7 +106,7 @@ class Eye::Checker
   # true if check ok
   # false if check bad
   def good?(value)
-    raise 'Realize me'
+    value
   end
 
   def check_name
@@ -125,24 +141,30 @@ class Eye::Checker
     @values[-1][:value] if @values.present?
   end
 
-  extend Eye::Dsl::Validation
-  param :every, [Fixnum, Float], false, 5
-  param :times, [Fixnum, Array]
-  param :fire, Symbol, nil, nil, [:stop, :restart, :unmonitor, :nothing]
-
   class Defer < Eye::Checker
     def get_value_safe
       Celluloid::Future.new{ get_value }.value
     end
   end
 
-  class Custom < Defer
+  def self.register(base)
+    name = base.to_s.gsub("Eye::Checker::", '')
+    type = name.underscore.to_sym
+    Eye::Checker::TYPES[type] = name
+    Eye::Checker.const_set(name, base)
+  end
+
+  class Custom < Eye::Checker
     def self.inherited(base)
       super
-      name = base.to_s
-      type = name.underscore.to_sym
-      Eye::Checker::TYPES[type] = name
-      Eye::Checker.const_set(name, base)
+      register(base)
+    end
+  end
+
+  class CustomDefer < Defer
+    def self.inherited(base)
+      super
+      register(base)
     end
   end
 end

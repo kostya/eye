@@ -35,6 +35,10 @@ describe "Eye::Controller::Load" do
     res.only_value.should == { :error => false, :config => nil }
   end
 
+  it "can accept options" do
+    subject.load(fixture("dsl/load.eye"), :some => 1).should_be_ok
+  end
+
   it "load correctly application, groups for full_names processes" do
     subject.load(fixture("dsl/load.eye")).should_be_ok
 
@@ -84,6 +88,8 @@ describe "Eye::Controller::Load" do
     proxy(p).schedule :update_config, is_a(Hash), is_a(Eye::Reason)
     dont_allow(p).schedule :monitor
 
+    p.logger.prefix.should == 'app3:e1'
+
     subject.load(fixture("dsl/load3.eye")).should_be_ok
 
     subject.short_tree.should == {
@@ -99,6 +105,7 @@ describe "Eye::Controller::Load" do
     p2[:daemonize].should == true
 
     p.object_id.should == p2.object_id
+    p.logger.prefix.should == 'app3:wow:e1'
   end
 
   it "load -> delete -> load" do
@@ -380,6 +387,7 @@ describe "Eye::Controller::Load" do
       silence_warnings{
         subject.command(:load, fixture("dsl/subfolder2.eye"))
       }
+      sleep 0.5
       should_spend(0, 0.2) do
         subject.command(:info).should be_a(String)
       end

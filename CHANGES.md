@@ -1,5 +1,8 @@
-0.3.3.dev
+0.4.dev
 ---------
+* improve triggers (custom, ...)
+* on stop cleanup pid_file by default for all process types (`clear_pid false` to disable)
+* update celluloid to 0.14
 
 0.3.2
 ---------

@@ -23,13 +23,15 @@ module Eye::Controller::Status
     make_str({:subtree => @applications.map{|a| a.status_data_short } }).to_s
   end
 
-  def info_string_debug(show_config = false, show_processes = false)
-    actors = Celluloid::Actor.all.map{|actor| actor.instance_variable_get(:@klass) }.group_by{|a| a}.map{|k,v| [k, v.size]}.sort_by{|a|a[1]}.reverse
+  def info_string_debug(h = {})
+    actors = Celluloid::Actor.all.map{|actor| actor.__klass__ }.group_by{|a| a}.map{|k,v| [k, v.size]}.sort_by{|a|a[1]}.reverse
 
     str = <<-S
 About:  #{Eye::ABOUT}
 Info:   #{resources_str(Eye::SystemResources.resources($$))}
 Ruby:   #{RUBY_DESCRIPTION}
+Gems:   #{%w|Celluloid Celluloid::IO ActiveSupport StateMachine NIO|.map{|c| gem_version(c) }}
+Checks: #{Eye::Checker::TYPES}, #{Eye::Trigger::TYPES}
 Logger: #{Eye::Logger.dev}
 Http:   #{@http ? "#{@http.host}:#{@http.port}" : '-'}
 Socket: #{Eye::Settings::socket_path}
@@ -38,9 +40,9 @@ Actors: #{actors.inspect}
 
     S
 
-    str += make_str(info_data_debug) + "\n" if show_processes.present?
+    str += make_str(info_data_debug) + "\n" if h[:processes].present?
 
-    if show_config.present?
+    if h[:config].present?
       str += "\nCurrent config: \n"
       str += YAML.dump(current_config.to_h)
     end
@@ -122,6 +124,16 @@ private
     apps = app.present? ? @applications.select{|a| a.name == app} : nil
     apps = @applications unless apps
     apps
+  end
+
+  def gem_version(klass)
+    v = nil
+    begin
+      v = eval("#{klass}::VERSION::STRING")
+    rescue
+      v = eval("#{klass}::VERSION") rescue ''
+    end
+    "#{klass}=#{v}"
   end
 
 end

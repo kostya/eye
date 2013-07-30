@@ -13,16 +13,36 @@ class Eye::Trigger::Flapping < Eye::Trigger
     @last_at = nil
   end
 
+  def check(transition)
+    unless good?
+      on_flapping
+    end
+  end
+
+private
+
   def good?
-    states = @states_history.states_for_period( within, @last_at )
+    states = process.states_history.states_for_period( within, @last_at )
     down_count = states.count{|st| st == :down }
 
     if down_count >= times
-      @last_at = @states_history.last_state_changed_at
+      @last_at = process.states_history.last_state_changed_at
       false
     else
       true
     end
+  end
+
+  def on_flapping
+    debug "flapping recognized!!!"
+
+    process.notify :error, 'flapping!'
+    process.schedule :unmonitor, Eye::Reason.new(:flapping)
+
+    return unless retry_in
+    return if retry_times && process.flapping_times >= retry_times
+
+    process.schedule_in(retry_in.to_f, :retry_start_after_flapping)
   end
 
 end

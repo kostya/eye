@@ -73,7 +73,7 @@ describe "ChildProcess" do
       mock(crazy).notify(:warn, "Bounded cpu(50%): [*55%, *55%] send to :restart")
       mock(crazy).schedule :restart, anything
 
-      sleep 4
+      sleep 3.5
     end
   end
 end

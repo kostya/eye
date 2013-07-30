@@ -5,7 +5,6 @@ class Eye::Group
 
   autoload :Chain, 'eye/group/chain'
 
-  include Eye::Logger::Helpers
   include Eye::Process::Scheduler
   include Eye::Group::Chain
 
@@ -14,10 +13,13 @@ class Eye::Group
   def initialize(name, config)
     @name = name
     @config = config
-    @logger = Eye::Logger.new(full_name)
     @processes = Eye::Utils::AliveArray.new
     @hidden = (name == '__default__')
     debug 'created'
+  end
+
+  def logger_tag
+    full_name
   end
 
   def full_name

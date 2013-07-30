@@ -105,7 +105,7 @@ module C
       :start_command => "ruby em.rb #{p4_ports[0]} #{p4_ports[1]} #{p4_sock}",
       :daemonize => true,
       :start_grace => 3.5,
-      :stop_grace => 0.5
+      :stop_grace => 0.7
     )
   end
 
@@ -125,6 +125,10 @@ module C
       :start_command => "bundle exec thin start -R thin.ru -p #{p5_port} -l thin.log -P #{p5_pid}",
       :daemonize => true,
     )
+  end
+
+  def tmp_file
+    C.sample_dir + "/1#{process_id}.tmp"
   end
 
   def check_mem(a = {})
@@ -220,7 +224,7 @@ def start_ok_process(cfg = C.p1)
   @process
 end
 
-def die_process!(pid, signal = :term, int = 0.2)
+def die_process!(pid, signal = :kill, int = 0.3)
   Eye::System.send_signal(pid, signal)
   sleep int.to_f
   Eye::System.pid_alive?(pid).should == false

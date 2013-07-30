@@ -15,9 +15,6 @@ class Eye::ChildProcess
   # system methods: send_signal
   include Eye::Process::System
 
-  # logger methods: info, ...
-  include Eye::Logger::Helpers
-
   # self_status_data
   include Eye::Process::Data
 
@@ -37,13 +34,15 @@ class Eye::ChildProcess
     @name = "child-#{pid}"
     @full_name = [logger_prefix, @name] * ':'
 
-    @logger = Eye::Logger.new(@full_name)
-
     @watchers = {}
 
     debug "start monitoring CHILD config: #{@config.inspect}"
 
     start_checkers
+  end
+
+  def logger_tag
+    full_name
   end
 
   def state

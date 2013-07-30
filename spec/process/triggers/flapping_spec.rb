@@ -46,7 +46,7 @@ describe "Flapping" do
   end
 
   it "process flapping emulate with kill" do
-    @process = process(@c.merge(:triggers => C.flapping(:times => 3, :within => 7)))
+    @process = process(@c.merge(:triggers => C.flapping(:times => 3, :within => 8)))
 
     @process.start
 

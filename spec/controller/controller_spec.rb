@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 class String
   def clean_info
-    self.gsub(%r{\033.*?m}im, '').gsub(%r[\(.*?\)], '')
+    self.gsub(%r{\033.*?m}im, '').gsub(%r[\(.*?\)], '').gsub(%r|(\s+)$|, '')
   end
 end
 
@@ -75,21 +75,22 @@ describe "Eye::Controller" do
 
   it "info_string" do
     app1 = <<S
-app1                       
-  gr1                               [monitor 1 of 2]
-    p1 ............................ unmonitored 
+app1
+  gr1
+    p1 ............................ unmonitored
     p2 ............................ unmonitored
-  gr2                              
-    q3 ............................ unmonitored 
-  g4 .............................. unmonitored 
+  gr2
+    q3 ............................ unmonitored
+  g4 .............................. unmonitored
   g5 .............................. unmonitored
 S
     app2 = <<S
-app2                       
+app2
   z1 .............................. unmonitored
 S
 
     subject.load(fixture("dsl/load.eye"))
+    sleep 0.5
     subject.info_string.clean_info.strip.should == (app1 + app2).strip
     subject.info_string('app1').clean_info.should == app1.chomp
     subject.info_string('app2').clean_info.strip.should == app2.strip
@@ -101,7 +102,9 @@ S
     subject.info_string_debug.split("\n").size.should > 5
 
     subject.load(fixture("dsl/load.eye"))
-    subject.info_string_debug(true, true).split("\n").size.should > 5
+    subject.info_string_debug(:config => true, :processes => true).split("\n").size.should > 5
+
+    subject.__klass__.should == "Eye::Controller"
   end
 
   it "info_string_short should be" do

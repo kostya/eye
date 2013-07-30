@@ -21,9 +21,9 @@ class Cli < Thor
 
   desc "xinfo", "extended eye info, debug data"
   method_option :config, :type => :boolean, :aliases => "-c"
-  method_option :show_processes, :type => :boolean, :aliases => "-p"
+  method_option :processes, :type => :boolean, :aliases => "-p"
   def xinfo
-    print cmd(:xinfo, options[:config], options[:show_processes])
+    print cmd(:xinfo, :config => options[:config], :processes => options[:processes])
   end
 
   desc "oinfo", "onelined info"
@@ -55,9 +55,12 @@ class Cli < Thor
     res = _cmd(:quit)
 
     # if eye server got crazy, stop by force
-    ensure_stop_previous_server if res != :corrupred_marshal
+    ensure_stop_previous_server if res != :corrupred_data
 
-    say "stopped...", :yellow
+    # remove pid_file
+    File.delete(Eye::Settings.pid_path) if File.exists?(Eye::Settings.pid_path)
+
+    say "quit...", :yellow
   end
 
   [:start, :stop, :restart, :unmonitor, :monitor, :delete, :match].each do |_cmd|
@@ -69,7 +72,7 @@ class Cli < Thor
 
   desc "signal SIG, MASK[,...]", "send signal to matched app,group or process (ex: `eye sig USR2 some_app`)"
   def signal(sig, *targets)
-    send_command(:signal, sig, *targets)
+    send_command(:signal, *targets, :signal => sig)
   end
 
   desc "break TARGET[,...]", "break group chain executing"
@@ -104,7 +107,7 @@ class Cli < Thor
     if RUBY_VERSION < '1.9'
       say_load_result cmd(:check, conf), :syntax => true
     else
-      say_load_result Eye::Control.check(conf), :syntax => true
+      say_load_result Eye::Controller.new.check(conf), :syntax => true
     end
   end
 
@@ -120,7 +123,7 @@ class Cli < Thor
     if RUBY_VERSION < '1.9'
       say_load_result cmd(:explain, conf), :print_config => true, :syntax => true
     else
-      say_load_result Eye::Control.explain(conf), :print_config => true, :syntax => true
+      say_load_result Eye::Controller.new.explain(conf), :print_config => true, :syntax => true
     end
   end
 
@@ -193,7 +196,7 @@ private
 
       if opts[:print_config]
         require 'pp'
-        PP.pp res[:config]
+        PP.pp res[:config], STDOUT, 150
       end
     end
   end
@@ -202,7 +205,7 @@ private
     res = cmd(_cmd, *args)
     if res == :unknown_command
       error! "unknown command :#{_cmd}"
-    elsif res == :corrupred_marshal
+    elsif res == :corrupred_data
       error! "something crazy wrong, check eye logs!"
     elsif res == []
       error! "command :#{_cmd}, targets not found!"

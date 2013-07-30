@@ -78,7 +78,12 @@ private
     if down?
       if self[:keep_alive]
         warn 'check crashed: process is down'
-        schedule :restore, Eye::Reason.new(:crashed)
+
+        if self[:restore_in]
+          schedule_in self[:restore_in].to_f, :restore, Eye::Reason.new(:crashed)
+        else
+          schedule :restore, Eye::Reason.new(:crashed)
+        end
       else
         warn 'check crashed: process without keep_alive'
         schedule :unmonitor, Eye::Reason.new(:crashed)

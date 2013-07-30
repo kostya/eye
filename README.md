@@ -46,6 +46,10 @@ Eye.application "test" do
     process :sample1 do
       pid_file "1.pid" # pid_path will be expanded with the working_dir
       start_command "ruby ./sample.rb"
+
+      # when no stop_command or stop_signals, default stop is [:TERM, 0.5, :KILL]
+      # default `restart` command is `stop; start`
+
       daemonize true
       stdall "sample1.log"
 
@@ -157,11 +161,11 @@ Config explain (for debug):
 
     $ eye e(xplain) examples/test.eye
 
-Log tracing:
+Log tracing (tail and grep):
 
-    $ eye trace
-    $ eye tr test
-    $ eye tr sample
+    $ eye t(race)
+    $ eye t test
+    $ eye t sample
 
 Quit monitoring:
 

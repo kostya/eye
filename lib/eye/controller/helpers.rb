@@ -3,6 +3,7 @@ module Eye::Controller::Helpers
   def set_proc_line
     str = Eye::PROCLINE
     str += " (#{@applications.map(&:name) * ', '})" if @applications.present?
+    str += " [#{ENV['EYE_V']}]" if ENV['EYE_V']
     $0 = str
   end
 

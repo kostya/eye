@@ -70,7 +70,7 @@ describe "ChildProcess" do
       Eye::System.execute("kill -HUP #{master_pid}")
 
       # sleep enought for update list
-      sleep (Eye::SystemResources::PsAxActor::UPDATE_INTERVAL * 2 + 1).seconds
+      sleep (Eye::SystemResources::PsAxActor::UPDATE_INTERVAL * 2 + 2).seconds
 
       new_pids = @process.childs.keys.sort
 

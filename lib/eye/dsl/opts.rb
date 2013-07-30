@@ -4,11 +4,11 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     :stop_command, :restart_command, :uid, :gid ]
   create_options_methods(STR_OPTIONS, String)
 
-  BOOL_OPTIONS = [ :daemonize, :keep_alive, :control_pid, :auto_start, :stop_on_delete]
+  BOOL_OPTIONS = [ :daemonize, :keep_alive, :auto_start, :stop_on_delete, :clear_pid ]
   create_options_methods(BOOL_OPTIONS, [TrueClass, FalseClass])
 
   INTERVAL_OPTIONS = [ :check_alive_period, :start_timeout, :restart_timeout, :stop_timeout, :start_grace,
-    :restart_grace, :stop_grace, :childs_update_period ]
+    :restart_grace, :stop_grace, :childs_update_period, :restore_in ]
   create_options_methods(INTERVAL_OPTIONS, [Fixnum, Float])
 
   create_options_methods([:environment], Hash)
@@ -38,14 +38,14 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   end
 
   def triggers(type, opts = {})
-    type = type.to_sym
-    raise Eye::Dsl::Error, "unknown trigger type #{type}" unless Eye::Trigger::TYPES[type]
+    nac = Eye::Trigger.name_and_class(type.to_sym)
+    raise Eye::Dsl::Error, "unknown trigger type #{type}" unless nac
 
-    opts.merge!(:type => type)
+    opts.merge!(:type => nac[:type])
     Eye::Trigger.validate!(opts)
 
     @config[:triggers] ||= {}
-    @config[:triggers][type] = opts
+    @config[:triggers][nac[:name]] = opts
   end
 
   # clear checks from parent
@@ -57,10 +57,15 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
 
   # clear triggers from parent
   def notriggers(type)
-    type = type.to_sym
-    raise Eye::Dsl::Error, "unknown trigger type #{type}" unless Eye::Trigger::TYPES[type]
-    @config[:triggers].try :delete, type
+    nac = Eye::Trigger.name_and_class(type.to_sym)
+    raise Eye::Dsl::Error, "unknown trigger type #{type}" unless nac
+    @config[:triggers].try :delete, nac[:name]
   end
+
+  alias check checks
+  alias nocheck nochecks
+  alias trigger triggers
+  alias notrigger notriggers
 
   def notify(contact, level = :warn)
     unless Eye::Process::Notify::LEVELS[level]

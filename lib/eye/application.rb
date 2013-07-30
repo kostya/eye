@@ -2,14 +2,15 @@ class Eye::Application
 
   attr_reader :groups, :name
 
-  include Eye::Logger::Helpers
-
   def initialize(name, config = {})
     @groups = Eye::Utils::AliveArray.new
     @name = name
-    @logger = Eye::Logger.new(full_name)
     @config = config
     debug 'created'
+  end
+
+  def logger_tag
+    full_name
   end
 
   def full_name

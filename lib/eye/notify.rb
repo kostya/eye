@@ -1,6 +1,5 @@
 class Eye::Notify
   include Celluloid
-  include Eye::Logger::Helpers
   extend Eye::Dsl::Validation
 
   autoload :Mail,     'eye/notify/mail'
@@ -19,10 +18,14 @@ class Eye::Notify
   end
 
   def self.notify(contact, message_h)
+    contact = contact.to_s
     settings = Eye::Control.settings
-    needed_hash = (settings[:contacts] || {})[contact.to_s]
+    needed_hash = (settings[:contacts] || {})[contact]
 
-    return if needed_hash.blank?
+    if needed_hash.blank?
+      error "not found contact #{contact}! something wrong with config"
+      return
+    end
 
     create_proc = lambda do |nh|
       type = nh[:type]
@@ -42,11 +45,14 @@ class Eye::Notify
   TIMEOUT = 1.minute
 
   def initialize(options = {}, message_h = {})
-    @logger = Eye::Logger.new("#{self.class.name.downcase} - #{options[:contact]}")
-    debug "created notifier #{options}"
-
     @message_h = message_h
     @options = options
+
+    debug "created notifier #{options}"
+  end
+
+  def logger_sub_tag
+    @options[:contact]
   end
 
   def async_notify

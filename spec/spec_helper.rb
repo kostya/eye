@@ -16,7 +16,6 @@ if ENV['COVA']
 end
 
 # preload
-Eye::Control
 Eye::Controller
 Eye::Process
 
@@ -98,17 +97,17 @@ def terminate_old_actors
       actor.terminate
     end
   end
-rescue
+
+rescue => ex
+  $logger.error [ex.message, ex.backtrace]
 end
 
 def force_kill_process(process)
   if process && process.alive?
-    pid = process.pid
+    pid = process.pid rescue nil
+    process.terminate rescue nil
 
-    process.terminate
     force_kill_pid(pid)
-
-    process = nil
   end
 end
 
@@ -146,3 +145,11 @@ ensure
   FileUtils.rm(filename) rescue nil
 end
 
+def with_temp_file(cont, &block)
+  filename = C.sample_dir + "#{rand.to_f}.eye"
+  $logger.info cont
+  File.open(filename, 'w'){ |f| f.write cont }
+  yield filename
+ensure
+  FileUtils.rm(filename) rescue nil
+end

@@ -256,6 +256,48 @@ describe "Eye::Dsl checks" do
           :checks=>{:cpu2=>{:times=>2, :below=>80, :every=>30, :type=>:cpu2}}}}}}}}
   end
 
+  it "define custom check in Checker scope" do
+    conf = <<-E
+      class Eye::Checker::Khg < Eye::Checker::Custom
+      end
+
+      Eye.application("bla") do
+        process("1") do
+          pid_file "1.pid"
+          checks :khg, :times => 2, :every => 30
+        end
+      end
+    E
+
+    Eye::Dsl.parse_apps(conf)
+  end
+
+  it "define custom trigger" do
+    conf = <<-E
+      class DeleteFile < Eye::Trigger::Custom
+        param :file, [String], true
+
+        def check(transition)
+          File.delete(file) if transition.to_name == :down
+        end
+      end
+
+      Eye.application("bla") do
+        process("1") do
+          pid_file "1.pid"
+
+          trigger :delete_file, :file => "/tmp/111111"
+        end
+      end
+    E
+
+    res = Eye::Dsl.parse_apps(conf)
+    res.should == {"bla" => {:name=>"bla", :groups=>{
+      "__default__"=>{:name=>"__default__", :application=>"bla", :processes=>{
+        "1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"1.pid",
+          :triggers=>{:delete_file=>{:file=>"/tmp/111111", :type=>:delete_file}}}}}}}}
+  end
+
   describe "two checks with the same type" do
 
     it "two checks with the same type" do
@@ -339,6 +381,67 @@ describe "Eye::Dsl checks" do
       conf = <<-E
         Eye.application("bla") do
           checks 'memory-4', :below => 100.megabytes, :every => 10.seconds
+        end
+      E
+      expect{ Eye::Dsl.parse_apps(conf) }.to raise_error(Eye::Dsl::Error)
+    end
+
+  end
+
+  describe "multiple triggers" do
+    it "two checks with the same type" do
+      conf = <<-E
+        Eye.application("bla") do
+          process("1") do
+            pid_file "1.pid"
+
+            trigger :state, :from => :a
+            trigger :state2, :to => :b
+            trigger :state_3, :event => :c
+          end
+        end
+      E
+      Eye::Dsl.parse_apps(conf).should == {
+        "bla" => {:name=>"bla", :groups=>{
+          "__default__"=>{:name=>"__default__", :application=>"bla", :processes=>{
+            "1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"1.pid", :triggers=>{
+              :state=>{:from=>:a, :type=>:state},
+              :state2=>{:to=>:b, :type=>:state},
+              :state_3=>{:event=>:c, :type=>:state}}}}}}}}
+    end
+
+    it "with notriggers" do
+      conf = <<-E
+        Eye.application("bla") do
+          trigger :state
+
+          process("1") do
+            pid_file "1.pid"
+
+            notrigger :state
+            trigger :state2, :to => :up
+          end
+        end
+      E
+      Eye::Dsl.parse_apps(conf).should == {
+        "bla" => {:name=>"bla", :triggers=>{:state=>{:type=>:state}}, :groups=>{
+          "__default__"=>{:name=>"__default__",
+            :triggers=>{:state=>{:type=>:state}}, :application=>"bla", :processes=>{
+              "1"=>{:name=>"1", :triggers=>{:state2=>{:to=>:up, :type=>:state}},
+              :application=>"bla", :group=>"__default__", :pid_file=>"1.pid"}}}}}}
+    end
+
+    it "errored cases" do
+      conf = <<-E
+        Eye.application("bla") do
+          trigger :memory_bla, :below => 100.megabytes, :every => 10.seconds
+        end
+      E
+      expect{ Eye::Dsl.parse_apps(conf) }.to raise_error(Eye::Dsl::Error)
+
+      conf = <<-E
+        Eye.application("bla") do
+          trigger 'memory-4', :below => 100.megabytes, :every => 10.seconds
         end
       E
       expect{ Eye::Dsl.parse_apps(conf) }.to raise_error(Eye::Dsl::Error)
