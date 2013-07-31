@@ -24,7 +24,7 @@ describe "Some crazey situations" do
     force_kill_pid(@old_pid2)
     force_kill_pid(@old_pid3)
     (@childs || []).each { |p| force_kill_pid(p) }
-    
+
     File.delete(File.join(C.sample_dir, "lock1.lock")) rescue nil
     File.delete(File.join(C.sample_dir, "lock2.lock")) rescue nil
   end

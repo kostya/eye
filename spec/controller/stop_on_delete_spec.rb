@@ -21,6 +21,7 @@ describe "StopOnDelete behaviour" do
   end
 
   after :each do
+    @processes = @c.all_processes
     @processes.map { |p| Celluloid::Future.new{ p.stop if p.alive? } }.each(&:value)
     @processes.each { |p| force_kill_process(p) if p.alive? }
     force_kill_pid(@old_pid1)
