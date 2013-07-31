@@ -1,47 +1,29 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe "Some crazey situations" do
+describe "Some crazy situations on load config" do
 
   before :each do
-    @c = Eye::Controller.new
-    @c.load_erb(fixture("dsl/integration.erb"))
-    @processes = @c.all_processes
-    @p1 = @processes.detect{|c| c.name == 'sample1'}
-    @p2 = @processes.detect{|c| c.name == 'sample2'}
-    @p3 = @processes.detect{|c| c.name == 'forking'}
-    @samples = @c.all_groups.detect{|c| c.name == 'samples'}
-    sleep 10 # to ensure that all processes started
-
-    @processes.size.should == 3
-    @processes.map{|c| c.state_name}.uniq.should == [:up]
-    @childs = @p3.childs.keys rescue []
+    start_controller do
+      @controller.load_erb(fixture("dsl/integration.erb"))
+    end
   end
 
   after :each do
-    @processes.map { |p| Celluloid::Future.new{ p.stop if p.alive? } }.each(&:value)
-    @processes.each { |p| force_kill_process(p) if p.alive? }
-    force_kill_pid(@old_pid1)
-    force_kill_pid(@old_pid2)
-    force_kill_pid(@old_pid3)
-    (@childs || []).each { |p| force_kill_pid(p) }
+    stop_controller
 
     File.delete(File.join(C.sample_dir, "lock1.lock")) rescue nil
     File.delete(File.join(C.sample_dir, "lock2.lock")) rescue nil
   end
 
   it "load another config, with same processes but changed names" do
-    @old_pid1 = @p1.pid
-    @old_pid2 = @p2.pid
-    @old_pid3 = @p3.pid
-
-    @c.load_erb(fixture("dsl/integration2.erb"))
+    @controller.load_erb(fixture("dsl/integration2.erb"))
 
     sleep 10
 
     # @p1, @p2 recreates
     # @p3 the same
 
-    procs = @c.all_processes
+    procs = @controller.all_processes
     @p1_ = procs.detect{|c| c.name == 'sample1_'}
     @p2_ = procs.detect{|c| c.name == 'sample2_'}
     @p3_ = procs.detect{|c| c.name == 'forking'}

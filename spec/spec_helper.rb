@@ -153,3 +153,44 @@ def with_temp_file(cont, &block)
 ensure
   FileUtils.rm(filename) rescue nil
 end
+
+def start_controller
+  @controller = Eye::Controller.new
+  res = yield
+
+  @processes = @controller.all_processes
+
+  # wait for all processes to up
+  @processes.pmap do |p|
+    p.wait_for_condition(10, 0.3) do
+      p.state_name == :up
+    end
+  end
+
+  @pids = @processes.map(&:pid)
+
+  @p1 = @processes.detect{|c| c.name == 'sample1' }
+  @p2 = @processes.detect{|c| c.name == 'sample2' }
+  @p3 = @processes.detect{|c| c.name == 'forking' }
+
+  @old_pid1 = @p1.pid
+  @old_pid2 = @p2.pid
+  @old_pid3 = @p3.pid
+
+  res
+end
+
+def stop_controller
+  return unless @controller
+
+  @processes.pmap { |p| p.stop if p.alive? }
+  @processes.each { |p| force_kill_process(p) if p.alive? }
+
+  # if processes was reloaded
+  processes = @controller.all_processes
+  processes.pmap { |p| p.stop if p.alive? }
+  processes.each { |p| force_kill_process(p) if p.alive? }
+
+  $logger.info "force_kill_pid: #{@pids}"
+  @pids.each { |pid| force_kill_pid(pid) }
+end
