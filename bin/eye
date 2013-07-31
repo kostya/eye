@@ -176,10 +176,14 @@ private
     error!(res) unless res.is_a?(Hash)
     say_filename = (res.size > 1)
     say "eye started!", :green if opts[:started]
+    error = false
     res.each do |filename, _res|
       say "#{filename}: ", nil, true if say_filename
       show_load_message(_res, opts)
+      error = true if _res[:error]
     end
+
+    exit(1) if error
   end
 
   def show_load_message(res, opts = {})
@@ -187,7 +191,6 @@ private
       say res[:message], :red
       res[:backtrace].to_a.each{|line| say line, :red }
     else
-      all_error = false
       if opts[:syntax]
         say "config ok!", :green if !res[:empty]
       else
