@@ -24,20 +24,12 @@ describe "Intergration" do
   end
 
   after :each do
-    @processes.each do |p|
-      p.schedule(:stop) if p.alive?
-    end
-    sleep 5
-    @processes.each do |process|
-      force_kill_process(process) if process.alive?
-    end
-
+    @processes.map { |p| Celluloid::Future.new{ p.stop if p.alive? } }.each(&:value)
+    @processes.each { |p| force_kill_process(p) if p.alive? }
     force_kill_pid(@old_pid1)
     force_kill_pid(@old_pid2)
     force_kill_pid(@old_pid3)
-    (@childs || []).each do |pid|
-      force_kill_pid(pid)
-    end
+    (@childs || []).each { |p| force_kill_pid(p) }
   end
 
   it "restart process group samples" do

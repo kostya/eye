@@ -86,6 +86,7 @@ def clear_pids
     FileUtils.rm(cfg[:pid_file]) rescue nil
   end
   FileUtils.rm(C.just_pid) rescue nil
+  FileUtils.rm(C.tmp_file) rescue nil
 end
 
 def terminate_old_actors
