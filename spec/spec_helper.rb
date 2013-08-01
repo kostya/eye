@@ -49,6 +49,11 @@ STDERR.reopen($logger_path)
 $logger.info "specs started in process #{$$}"
 
 RSpec.configure do |config|
+  if ENV['PROFILE']
+    require 'parallel_tests/rspec/runtime_logger'
+    config.formatters << ParallelTests::RSpec::RuntimeLogger.new("spec/weights.txt")
+  end
+
   config.mock_with :rr
 
   config.before(:all) do
