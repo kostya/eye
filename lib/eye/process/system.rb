@@ -25,6 +25,7 @@ module Eye::Process::System
   end
 
   def clear_pid_file
+    info "delete pid_file: #{self[:pid_file_ex]}"
     File.unlink(self[:pid_file_ex])
     true
   rescue

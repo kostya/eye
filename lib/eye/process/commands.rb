@@ -46,17 +46,13 @@ module Eye::Process::Commands
     if process_realy_running?
       warn 'NOT STOPPED, check command/signals, or tune stop_timeout/stop_grace, seems it was really soft'
 
-      switch :unmonitoring
+      switch :unmonitoring, Eye::Reason.new(:'not stopped (soft command)')
       nil
 
     else
       switch :stopped
 
-      if self[:clear_pid] # by default for all
-        info "delete pid_file: #{self[:pid_file_ex]}"
-        clear_pid_file
-      end
-
+      clear_pid_file if self[:clear_pid] # by default for all
       true
 
     end
