@@ -40,4 +40,11 @@ describe "Eye::Client, Eye::Server" do
     @client.command('stop').should == :command_sended2
   end
 
+  it "if error server should be alive" do
+    @server.async.run
+    sleep 0.1
+    @client.attempt_command('trash').should == :corrupred_data
+    @server.alive?.should be_true
+  end
+
 end
