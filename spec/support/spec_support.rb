@@ -224,3 +224,9 @@ def die_process!(pid, signal = :kill, int = 0.3)
 end
 
 require_relative 'rr_celluloid'
+
+def new_controller(filename)
+  Eye::Controller.new.tap do |c|
+    c.load(filename)
+  end
+end

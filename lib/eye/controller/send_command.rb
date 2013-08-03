@@ -78,8 +78,8 @@ private
     if res.size > 1
       final = Eye::Utils::AliveArray.new
 
+      # try to find exactly matched
       if mask[-1] != '*'
-        # try to find exactly matched
         r = right_regexp(mask)
         res.each do |obj|
           final << obj if obj.full_name =~ r
@@ -96,6 +96,18 @@ private
       end
 
       res = final
+
+      # try to remove objects with different applications
+      fapps, apps = [], []
+      res.each do |obj|
+        if obj.is_a?(Eye::Application)
+          fapps << obj.name
+        else
+          apps << obj.app_name
+        end
+      end
+
+      res = [] if (apps).uniq.size > 1 || (fapps.size > 0 && (apps | fapps).size > fapps.size)
     end
 
     res

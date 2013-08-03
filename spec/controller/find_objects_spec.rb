@@ -2,9 +2,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "find_objects" do
   describe "simple matching" do
-    subject do
-      Eye::Controller.new.tap{ |c| c.load(fixture("dsl/load.eye")) }
-    end
+    subject{ new_controller(fixture("dsl/load.eye")) }
 
     it "1 process" do
       objs = subject.find_objects("p1")
@@ -132,7 +130,7 @@ describe "find_objects" do
 
 
   describe "dubls" do
-    subject{ c = Eye::Controller.new; c.load(fixture("dsl/load_dubls.eye")); c }
+    subject{ new_controller(fixture("dsl/load_dubls.eye")) }
 
     it "not found" do
       subject.find_objects("zu").should == []
@@ -145,17 +143,15 @@ describe "find_objects" do
 
     it "find by gr1" do
       objs = subject.find_objects("gr1")
-      objs.map(&:full_name).sort.should == %w{app1:gr1 app2:gr1}
+      objs.map(&:full_name).sort.should == %w{} # because from different apps
     end
 
     it "correct by gr*" do
       objs = subject.find_objects("gr*")
-      objs.map(&:full_name).should == %w{app1:gr1 app1:gr2 app2:gr1 app5:gr7 app1:gr2and}
-    end
+      objs.map(&:full_name).should == %w{}
 
-    it "correct by gr1*" do
-      objs = subject.find_objects("gr1*")
-      objs.map(&:full_name).sort.should == %w{app1:gr1 app2:gr1}
+      objs = subject.find_objects("app1:gr*")
+      objs.map(&:full_name).should == %w{app1:gr1 app1:gr2 app1:gr2and}
     end
 
     it "correct process" do
@@ -165,7 +161,7 @@ describe "find_objects" do
   end
 
   describe "exactly matching" do
-    subject{ c = Eye::Controller.new; c.load(fixture("dsl/load_dubls.eye")); c }
+    subject{ new_controller(fixture("dsl/load_dubls.eye")) }
 
     it "find 1 process by short name" do
       objs = subject.find_objects("some")
@@ -225,7 +221,7 @@ describe "find_objects" do
 
     it "in different apps" do
       objs = subject.find_objects("one")
-      objs.map(&:full_name).sort.should == %w{app5:one app6:one} # maybe not good
+      objs.map(&:full_name).sort.should == %w{}
     end
 
     it "when exactly matched object and subobject" do
@@ -234,4 +230,62 @@ describe "find_objects" do
     end
   end
 
+  describe "Not allow objects from different apps" do
+    subject{ new_controller(fixture("dsl/load_dubls2.eye")) }
+
+    it "`admin` should not match anything" do
+      objs = subject.find_objects("admin")
+      objs.map(&:full_name).sort.should == %w{}
+    end
+
+    it "`zoo` should not match anything" do
+      objs = subject.find_objects("zoo")
+      objs.map(&:full_name).sort.should == %w{}
+    end
+
+    it "`e1` should not match anything" do
+      objs = subject.find_objects("e1")
+      objs.map(&:full_name).sort.should == %w{}
+    end
+
+    it "`koo` should match group" do
+      objs = subject.find_objects("koo")
+      objs.map(&:full_name).sort.should == %w{app2:koo}
+    end
+
+    it "`*admin` should not match anything" do
+      objs = subject.find_objects("*admin")
+      objs.map(&:full_name).sort.should == %w{}
+    end
+
+    it "`*zoo` should not match anything" do
+      objs = subject.find_objects("*zoo")
+      objs.map(&:full_name).sort.should == %w{}
+    end
+
+    it "`*e1` should not match anything" do
+      objs = subject.find_objects("*e1")
+      objs.map(&:full_name).sort.should == %w{}
+    end
+
+    it "`*:e1` should not match anything" do
+      objs = subject.find_objects("*:e1")
+      objs.map(&:full_name).sort.should == %w{}
+    end
+
+    it "`*p1` should not match anything" do
+      objs = subject.find_objects("*p1")
+      objs.map(&:full_name).sort.should == %w{}
+    end
+
+    it "`app1:admin` should match" do
+      objs = subject.find_objects("app1:admin")
+      objs.map(&:full_name).sort.should == %w{app1:admin}
+    end
+
+    it "multiple targets allowed" do
+      objs = subject.find_objects("app1:admin", "app2:admin")
+      objs.map(&:full_name).sort.should == %w{app1:admin app2:admin}
+    end
+  end
 end

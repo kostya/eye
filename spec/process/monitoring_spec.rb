@@ -61,7 +61,7 @@ describe "Process Monitoring" do
     @process.state_name.should == :unmonitored
     @process.watchers.keys.should == []
     @process.states_history.end?(:up, :down, :unmonitored).should == true
-    @process.load_pid_from_file.should == nil 
+    @process.load_pid_from_file.should == nil
   end
 
   it "process in status unmonitored should not up automatically" do
