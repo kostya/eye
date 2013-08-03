@@ -75,6 +75,10 @@ RSpec.configure do |config|
     force_kill_process(@process)
     force_kill_pid(@pid)
 
+    if @pids && @pids.present?
+      @pids.each { |p| force_kill_pid(p) }
+    end
+
     terminate_old_actors
 
     # actors = Celluloid::Actor.all.map(&:class)
@@ -198,4 +202,5 @@ def stop_controller
 
   $logger.info "force_kill_pid: #{@pids}"
   @pids.each { |pid| force_kill_pid(pid) }
+  @pids = []
 end

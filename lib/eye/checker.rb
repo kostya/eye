@@ -141,6 +141,10 @@ class Eye::Checker
     @values[-1][:value] if @values.present?
   end
 
+  def run_in_process_context(p)
+    process.instance_exec(&p) if process.alive?
+  end
+
   class Defer < Eye::Checker
     def get_value_safe
       Celluloid::Future.new{ get_value }.value

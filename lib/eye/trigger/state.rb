@@ -9,7 +9,8 @@ class Eye::Trigger::State < Eye::Trigger
 
   def check(trans)
     if compare(trans.to_name, to) || compare(trans.from_name, from) || compare(trans.event, event)
-      @options[:do].call if @options[:do]
+      debug "trans ok #{trans}, executing proc!"
+      run_in_process_context(@options[:do]) if @options[:do]
     end
   end
 
