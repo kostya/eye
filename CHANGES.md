@@ -1,5 +1,7 @@
 0.4.dev
 ---------
+* pass tests on 1.9.2
+* relax activesupport dependency
 * change client-server protocol (requires `eye q && eye l` after update gem from 0.3.x)
 * not matching targets from different applications
 * improve triggers (custom, better flapping)
