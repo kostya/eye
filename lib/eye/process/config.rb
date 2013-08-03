@@ -59,7 +59,11 @@ module Eye::Process::Config
 
     if up?
       # rebuild checks for this process
-      from_up; on_up
+      remove_watchers
+      remove_childs
+
+      add_watchers
+      add_childs
     end
   end
 
