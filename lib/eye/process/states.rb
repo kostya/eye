@@ -53,6 +53,7 @@ class Eye::Process
       transition any => :unmonitored
     end
 
+    after_transition any => any, :do => :log_transition
     after_transition any => any, :do => :check_triggers
 
     after_transition any => :unmonitored, :do => :on_unmonitored
@@ -63,7 +64,6 @@ class Eye::Process
     after_transition any-:up => :up, :do => :add_childs
     after_transition any => [:unmonitored, :down], :do => :remove_childs
 
-    after_transition any => any, :do => :log_transition
     after_transition :on => :crashed, :do => :on_crashed
   end
 
