@@ -10,7 +10,7 @@ class Cli < Thor
 
   desc "info [MASK]", "show process statuses"
   def info(mask = nil)
-    print cmd(:info, mask)
+    print cmd(:info, :filter => mask)
   end
 
   desc "status ", "show process statuses"

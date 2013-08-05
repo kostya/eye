@@ -1,25 +1,10 @@
 module Eye::Controller::Status
 
-  def info_objects(mask = nil)
-    res = []
-    return @applications unless mask
-    matched_objects(mask){|obj| res << obj }
-    res
+  def info_string(h = {})
+    make_str(info_data(h)).to_s
   end
 
-  def info_data(mask = nil)
-    {:subtree => info_objects(mask).map{|a| a.status_data } }
-  end
-
-  def info_data_debug(mask = nil)
-    {:subtree => info_objects(mask).map{|a| a.status_data(true) } }
-  end
-
-  def info_string(mask = nil)
-    make_str(info_data(mask)).to_s
-  end
-
-  def info_string_short
+  def info_string_short(h = {})
     make_str({:subtree => @applications.map{|a| a.status_data_short } }).to_s
   end
 
@@ -50,7 +35,22 @@ Actors: #{actors.inspect}
     str
   end
 
+  def info_data(h = {})
+    {:subtree => info_objects(h[:filter]).map{|a| a.status_data } }
+  end
+
+  def info_data_debug(h = {})
+    {:subtree => info_objects(h[:filter]).map{|a| a.status_data(true) } }
+  end
+
 private
+
+  def info_objects(mask = nil)
+    res = []
+    return @applications unless mask
+    matched_objects(mask){|obj| res << obj }
+    res
+  end
 
   def make_str(data, level = -1)
     return nil if data.blank?
