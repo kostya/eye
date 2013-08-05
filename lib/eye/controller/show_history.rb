@@ -1,7 +1,7 @@
 module Eye::Controller::ShowHistory
 
-  def history_string(*obj_strs)
-    data = history_data(*obj_strs)
+  def history_string(*args)
+    data = history_data(*args)
 
     res = []
     data.each do |name, data|
@@ -11,7 +11,9 @@ module Eye::Controller::ShowHistory
     res * "\n"
   end
 
-  def history_data(*obj_strs)
+  def history_data(*args)
+    opts = args.extract_options!
+    obj_strs = args
     res = {}
     get_processes_for_history(*obj_strs).each do |process|
       res[process.full_name] = process.schedule_history.reject{|c| c[:state] == :check_crash }
