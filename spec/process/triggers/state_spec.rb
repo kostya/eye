@@ -14,7 +14,7 @@ describe "Trigger State" do
             pid_file "#{C.p1_pid}"
             start_command "sleep 30"
             daemonize true
-            trigger :state, :to => :down, :do => ->{ File.delete("#{C.tmp_file}") }
+            trigger :state, :to => :down, :do => ->{ ::File.delete("#{C.tmp_file}") }
           end
         end
       D
@@ -41,7 +41,7 @@ describe "Trigger State" do
             pid_file "#{C.p1_pid}"
             start_command "sleep 30"
             daemonize true
-            trigger :state, :event => :crashed, :do => ->{ File.delete("#{C.tmp_file}") }
+            trigger :state, :event => :crashed, :do => ->{ ::File.delete("#{C.tmp_file}") }
           end
         end
       D
@@ -69,8 +69,8 @@ describe "Trigger State" do
             pid_file "#{C.p1_pid}"
             start_command "sleep 30"
             daemonize true
-            trigger :state1, :to => :up, :do => ->{ info "touch #{C.tmp_file}"; File.open("#{C.tmp_file}", 'w') }
-            trigger :state2, :to => :down, :do => ->{ info "rm #{C.tmp_file}"; File.delete("#{C.tmp_file}") }
+            trigger :state1, :to => :up, :do => ->{ info "touch #{C.tmp_file}"; ::File.open("#{C.tmp_file}", 'w') }
+            trigger :state2, :to => :down, :do => ->{ info "rm #{C.tmp_file}"; ::File.delete("#{C.tmp_file}") }
           end
         end
       D
