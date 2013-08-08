@@ -133,7 +133,7 @@ private
 
       # if process not die here, by default we force kill it
       if process_realy_running?
-        warn "process not die after TERM and stop_grace #{self[:stop_grace].to_f}s, so send KILL"
+        warn "process not die after TERM and stop_grace #{self[:stop_grace].to_f}s, so send KILL(#{self.pid})"
         send_signal(:KILL)
         sleep 0.1 # little grace
       end
