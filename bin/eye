@@ -6,7 +6,7 @@ require 'eye'
 gem 'thor'
 require 'thor'
 
-class Cli < Thor
+class Eye::Cli < Thor
 
   desc "info [MASK]", "show process statuses"
   def info(mask = nil)
@@ -310,4 +310,4 @@ private
 
 end
 
-Cli.start
+Eye::Cli.start
