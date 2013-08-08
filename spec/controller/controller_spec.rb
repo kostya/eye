@@ -138,6 +138,20 @@ S
     subject.applications.should be_empty
   end
 
+  it "[bug] delete was crashed when we have 1 process and same named app" do
+    cfg = <<-D
+      Eye.application("bla") do
+        process("bla") do
+          pid_file "#{C.p1_pid}"
+        end
+      end
+    D
+
+    with_temp_file(cfg){ |f| subject.load(f) }
+    subject.command('delete', 'bla')
+    subject.alive?.should be_true
+  end
+
   describe "command" do
     it "should send_command" do
       mock(subject).send_command(:restart, 'samples')
