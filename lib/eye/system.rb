@@ -114,7 +114,10 @@ module Eye::System
     end
 
     def host
-      @host ||= `hostname`.chomp
+      @host ||= begin
+        require 'socket'
+        Socket.gethostname
+      end
     end
 
     # set host for tests
