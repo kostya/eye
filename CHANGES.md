@@ -1,7 +1,13 @@
 0.4.dev
 ---------
-* improve triggers (custom, ...)
-* on stop cleanup pid_file by default for all process types (`clear_pid false` to disable)
+* pass tests on 1.9.2
+* relax activesupport dependency
+* change client-server protocol (requires `eye q && eye l` after update gem from 0.3.x)
+* not matching targets from different applications
+* improve triggers (custom, better flapping)
+* delete pid_file on crash for daemonize process
+* delete pid_file on stop for all process types (`clear_pid false` to disable)
+* parallel tests (from 30 mins to 3min)
 * update celluloid to 0.14
 
 0.3.2

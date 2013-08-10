@@ -4,8 +4,16 @@ module Eye::Process::Data
     full_name
   end
 
+  def app_name
+    self[:application]
+  end
+
+  def group_name
+    (self[:group] == '__default__') ? nil : self[:group]
+  end
+
   def full_name
-    @full_name ||= [self[:application], (self[:group] == '__default__') ? nil : self[:group], self[:name]].compact.join(':')
+    @full_name ||= [app_name, group_name, self[:name]].compact.join(':')
   end
 
   def status_data(debug = false)

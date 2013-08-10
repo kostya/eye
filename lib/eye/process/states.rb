@@ -53,11 +53,17 @@ class Eye::Process
       transition any => :unmonitored
     end
 
-    after_transition any => :unmonitored, :do => :on_unmonitored
-    after_transition any-:up => :up, :do => :on_up
-    after_transition :up => any-:up, :do => :from_up
     after_transition any => any, :do => :log_transition
     after_transition any => any, :do => :check_triggers
+
+    after_transition any => :unmonitored, :do => :on_unmonitored
+
+    after_transition any-:up => :up, :do => :add_watchers
+    after_transition :up => any-:up, :do => :remove_watchers
+
+    after_transition any-:up => :up, :do => :add_childs
+    after_transition any => [:unmonitored, :down], :do => :remove_childs
+
     after_transition :on => :crashed, :do => :on_crashed
   end
 
@@ -67,16 +73,6 @@ class Eye::Process
 
   def on_unmonitored
     self.pid = nil
-  end
-
-  def on_up
-    add_watchers
-    add_childs
-  end
-
-  def from_up
-    remove_watchers
-    remove_childs
   end
 
   def log_transition(transition)

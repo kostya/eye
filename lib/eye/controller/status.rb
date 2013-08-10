@@ -1,29 +1,15 @@
 module Eye::Controller::Status
 
-  def info_objects(mask = nil)
-    res = []
-    return @applications unless mask
-    matched_objects(mask){|obj| res << obj }
-    res
+  def info_string(*args)
+    make_str(info_data(*args)).to_s
   end
 
-  def info_data(mask = nil)
-    {:subtree => info_objects(mask).map{|a| a.status_data } }
-  end
-
-  def info_data_debug(mask = nil)
-    {:subtree => info_objects(mask).map{|a| a.status_data(true) } }
-  end
-
-  def info_string(mask = nil)
-    make_str(info_data(mask)).to_s
-  end
-
-  def info_string_short
+  def info_string_short(*args)
     make_str({:subtree => @applications.map{|a| a.status_data_short } }).to_s
   end
 
-  def info_string_debug(h = {})
+  def info_string_debug(*args)
+    h = args.extract_options!
     actors = Celluloid::Actor.all.map{|actor| actor.__klass__ }.group_by{|a| a}.map{|k,v| [k, v.size]}.sort_by{|a|a[1]}.reverse
 
     str = <<-S
@@ -51,7 +37,22 @@ Actors: #{actors.inspect}
     str
   end
 
+  def info_data(*args)
+    {:subtree => info_objects(*args).map{|a| a.status_data } }
+  end
+
 private
+
+  def info_data_debug(*args)
+    {:subtree => info_objects(*args).map{|a| a.status_data(true) } }
+  end
+
+  def info_objects(*args)
+    res = []
+    return @applications if args.empty?
+    matched_objects(*args){|obj| res << obj }
+    res
+  end
 
   def make_str(data, level = -1)
     return nil if data.blank?

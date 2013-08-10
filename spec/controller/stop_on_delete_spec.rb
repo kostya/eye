@@ -2,48 +2,21 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "StopOnDelete behaviour" do
   before :each do
-    @c = Eye::Controller.new
-    @c.load_erb(fixture("dsl/integration_sor.erb"))
-    @processes = @c.all_processes
-    @p1 = @processes.detect{|c| c.name == 'sample1'}
-    @p2 = @processes.detect{|c| c.name == 'sample2'}
-    @p3 = @processes.detect{|c| c.name == 'forking'}
-    @samples = @c.all_groups.detect{|c| c.name == 'samples'}
-    sleep 10 # to ensure that all processes started
-
-    @processes.size.should == 3
-    @processes.map{|c| c.state_name}.uniq.should == [:up]
-    @childs = @p3.childs.keys rescue []
-
-    @old_pid1 = @p1.pid
-    @old_pid2 = @p2.pid
-    @old_pid3 = @p3.pid
+    start_controller do
+      @controller.load_erb(fixture("dsl/integration_sor.erb"))
+    end
   end
 
   after :each do
-    @processes = @c.all_processes
-    @processes.each do |p|
-      p.schedule(:stop) if p.alive?
-    end
-    sleep 5
-    @processes.each do |process|
-      force_kill_process(process) if process.alive?
-    end
-
-    force_kill_pid(@old_pid1)
-    force_kill_pid(@old_pid2)
-    force_kill_pid(@old_pid3)
-    (@childs || []).each do |pid|
-      force_kill_pid(pid)
-    end
+    stop_controller
   end
 
   it "delete process => stop process" do
-    @c.send_command(:delete, "sample1")
+    @controller.send_command(:delete, "sample1")
     sleep 7 # while
 
-    @c.all_processes.map(&:name).sort.should == %w{forking sample2}
-    @c.all_groups.map(&:name).sort.should == %w{__default__ samples}
+    @controller.all_processes.map(&:name).sort.should == %w{forking sample2}
+    @controller.all_groups.map(&:name).sort.should == %w{__default__ samples}
 
     Eye::System.pid_alive?(@old_pid1).should == false
     Eye::System.pid_alive?(@old_pid2).should == true
@@ -54,11 +27,11 @@ describe "StopOnDelete behaviour" do
   end
 
   it "delete application => stop group proceses" do
-    @c.send_command(:delete, "samples").should == ["int:samples"]
+    @controller.send_command(:delete, "samples").should == {:result => ["int:samples"]}
     sleep 7 # while
 
-    @c.all_processes.should == [@p3]
-    @c.all_groups.map(&:name).should == ['__default__']
+    @controller.all_processes.should == [@p3]
+    @controller.all_groups.map(&:name).should == ['__default__']
 
     Eye::System.pid_alive?(@old_pid1).should == false
     Eye::System.pid_alive?(@old_pid2).should == false
@@ -73,12 +46,12 @@ describe "StopOnDelete behaviour" do
   end
 
   it "delete application => stop all proceses" do
-    @c.send_command(:delete, "int")
+    @controller.send_command(:delete, "int")
     sleep 7 # while
 
-    @c.all_processes.should == []
-    @c.all_groups.should == []
-    @c.applications.should == []
+    @controller.all_processes.should == []
+    @controller.all_groups.should == []
+    @controller.applications.should == []
 
     Eye::System.pid_alive?(@old_pid1).should == false
     Eye::System.pid_alive?(@old_pid2).should == false
@@ -96,11 +69,11 @@ describe "StopOnDelete behaviour" do
   end
 
   it "load config when 1 process deleted, it should stopped" do
-    @c.load_erb(fixture("dsl/integration_sor2.erb"))
+    @controller.load_erb(fixture("dsl/integration_sor2.erb"))
 
     sleep 10
 
-    procs = @c.all_processes
+    procs = @controller.all_processes
     @p1_ = procs.detect{|c| c.name == 'sample1'}
     @p2_ = procs.detect{|c| c.name == 'sample2'}
     @p3_ = procs.detect{|c| c.name == 'sample3'}
@@ -117,18 +90,18 @@ describe "StopOnDelete behaviour" do
     Eye::System.pid_alive?(@old_pid3).should == false
 
     @p3.alive?.should == false
-    @c.all_processes.map{|c| c.name}.sort.should == %w{sample1 sample2 sample3}
+    @controller.all_processes.map{|c| c.name}.sort.should == %w{sample1 sample2 sample3}
   end
 
   it "load another config, with same processes but changed names" do
-    @c.load_erb(fixture("dsl/integration_sor3.erb"))
+    @controller.load_erb(fixture("dsl/integration_sor3.erb"))
 
     sleep 15
 
     # @p1, @p2 recreates
     # @p3 the same
 
-    procs = @c.all_processes
+    procs = @controller.all_processes
     @p1_ = procs.detect{|c| c.name == 'sample1_'}
     @p2_ = procs.detect{|c| c.name == 'sample2_'}
     @p3_ = procs.detect{|c| c.name == 'forking'}

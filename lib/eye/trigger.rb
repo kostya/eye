@@ -65,6 +65,10 @@ class Eye::Trigger
     raise "realize me"
   end
 
+  def run_in_process_context(p)
+    process.instance_exec(&p) if process.alive?
+  end
+
   def self.register(base)
     name = base.to_s.gsub("Eye::Trigger::", '')
     name = base.to_s

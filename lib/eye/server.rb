@@ -21,7 +21,15 @@ class Eye::Server
   end
 
   def handle_connection(socket)
-    command, *args = Marshal.load(socket.read)
+    text = socket.read
+
+    begin
+      command, *args = Marshal.load(text)
+    rescue => ex
+      error "Failed socket read #{ex.message}"
+      return
+    end
+
     response = command(command, *args)
     socket.write(Marshal.dump(response))
 

@@ -75,10 +75,11 @@ describe "Process Start" do
 
       sleep 1
 
-      # may be not saving pid?
-      #@pid = @process.pid
-      #@pid.should > 0
-      #@process.load_pid_from_file.should == @pid
+      if cfg[:daemonize]
+        @process.load_pid_from_file.should == nil
+      else
+        @process.load_pid_from_file.should > 0
+      end
 
       # should try to up process many times
       @process.states_history.seq?(:unmonitored, :starting, :down, :starting).should == true

@@ -2,16 +2,26 @@ class Eye::Trigger::State < Eye::Trigger
 
   # triggers :state, :to => :up, :from => :starting, :do => ->{ ... }
 
-  param :to, [Symbol]
-  param :from, [Symbol]
-  param :event, [Symbol]
+  param :to, [Symbol, Array]
+  param :from, [Symbol, Array]
+  param :event, [Symbol, Array]
   param :do, [Proc]
 
-  def check(transition)
-    if (to && transition.to_name == to) ||
-        (from && from == transition.from_name) ||
-        (event && transition.event == event)
-      @options[:do].call if @options[:do]
+  def check(trans)
+    if compare(trans.to_name, to) || compare(trans.from_name, from) || compare(trans.event, event)
+      debug "trans ok #{trans}, executing proc!"
+      run_in_process_context(@options[:do]) if @options[:do]
+    end
+  end
+
+private
+
+  def compare(state_name, condition)
+    case condition
+    when Symbol
+      state_name == condition
+    when Array
+      condition.include?(state_name)
     end
   end
 

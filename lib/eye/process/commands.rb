@@ -46,19 +46,15 @@ module Eye::Process::Commands
     if process_realy_running?
       warn 'NOT STOPPED, check command/signals, or tune stop_timeout/stop_grace, seems it was really soft'
 
-      switch :unmonitoring
+      switch :unmonitoring, Eye::Reason.new(:'not stopped (soft command)')
       nil
 
     else
       switch :stopped
 
-      if self[:clear_pid] # by default for all
-        info "delete pid_file: #{self[:pid_file_ex]}"
-        clear_pid_file
-      end
+      clear_pid_file if self[:clear_pid] # by default for all
 
       true
-
     end
 
   rescue StateMachine::InvalidTransition => e
@@ -137,7 +133,7 @@ private
 
       # if process not die here, by default we force kill it
       if process_realy_running?
-        warn "process not die after TERM and stop_grace #{self[:stop_grace].to_f}s, so send KILL"
+        warn "process not die after TERM and stop_grace #{self[:stop_grace].to_f}s, so send KILL(#{self.pid})"
         send_signal(:KILL)
         sleep 0.1 # little grace
       end

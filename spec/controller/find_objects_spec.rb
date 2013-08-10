@@ -2,8 +2,11 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "find_objects" do
   describe "simple matching" do
-    subject do
-      Eye::Controller.new.tap{ |c| c.load(fixture("dsl/load.eye")) }
+    subject{ new_controller(fixture("dsl/load.eye")) }
+
+    it "matched_objects" do
+      res = subject.matched_objects("p1")
+      res[:result].should == %w{app1:gr1:p1}
     end
 
     it "1 process" do
@@ -125,14 +128,14 @@ describe "find_objects" do
 
     describe "match" do
       it "should match" do
-        subject.match("gr*").should == ["app1:gr1", "app1:gr2"]
+        subject.match("gr*")[:result].should == ["app1:gr1", "app1:gr2"]
       end
     end
   end
 
 
   describe "dubls" do
-    subject{ c = Eye::Controller.new; c.load(fixture("dsl/load_dubls.eye")); c }
+    subject{ new_controller(fixture("dsl/load_dubls.eye")) }
 
     it "not found" do
       subject.find_objects("zu").should == []
@@ -144,18 +147,20 @@ describe "find_objects" do
     end
 
     it "find by gr1" do
-      objs = subject.find_objects("gr1")
-      objs.map(&:full_name).sort.should == %w{app1:gr1 app2:gr1}
+      expect{
+        subject.find_objects("gr1")
+      }.to raise_error(Eye::Controller::Error)
     end
 
-    it "correct by gr*" do
-      objs = subject.find_objects("gr*")
-      objs.map(&:full_name).should == %w{app1:gr1 app1:gr2 app2:gr1 app5:gr7 app1:gr2and}
+    it "raised by gr*" do
+      expect{
+        objs = subject.find_objects("gr*")
+      }.to raise_error(Eye::Controller::Error)
     end
 
-    it "correct by gr1*" do
-      objs = subject.find_objects("gr1*")
-      objs.map(&:full_name).sort.should == %w{app1:gr1 app2:gr1}
+    it "correct by app1:gr*" do
+      objs = subject.find_objects("app1:gr*")
+      objs.map(&:full_name).should == %w{app1:gr1 app1:gr2 app1:gr2and}
     end
 
     it "correct process" do
@@ -165,7 +170,7 @@ describe "find_objects" do
   end
 
   describe "exactly matching" do
-    subject{ c = Eye::Controller.new; c.load(fixture("dsl/load_dubls.eye")); c }
+    subject{ new_controller(fixture("dsl/load_dubls.eye")) }
 
     it "find 1 process by short name" do
       objs = subject.find_objects("some")
@@ -224,8 +229,9 @@ describe "find_objects" do
     end
 
     it "in different apps" do
-      objs = subject.find_objects("one")
-      objs.map(&:full_name).sort.should == %w{app5:one app6:one} # maybe not good
+      expect {
+        objs = subject.find_objects("one")
+      }.to raise_error(Eye::Controller::Error)
     end
 
     it "when exactly matched object and subobject" do
@@ -234,4 +240,75 @@ describe "find_objects" do
     end
   end
 
+  describe "Not allow objects from different apps" do
+    subject{ new_controller(fixture("dsl/load_dubls2.eye")) }
+
+    it "`admin` should not match anything" do
+      expect {
+        objs = subject.find_objects("admin")
+      }.to raise_error(Eye::Controller::Error)
+    end
+
+    it "`zoo` should not match anything" do
+      expect {
+        objs = subject.find_objects("zoo")
+      }.to raise_error(Eye::Controller::Error)
+    end
+
+    it "`e1` should not match anything" do
+      expect {
+        objs = subject.find_objects("e1")
+      }.to raise_error(Eye::Controller::Error)
+    end
+
+    it "`koo` should match group" do
+      objs = subject.find_objects("koo")
+      objs.map(&:full_name).sort.should == %w{app2:koo}
+    end
+
+    it "`*admin` should not match anything" do
+      expect {
+        objs = subject.find_objects("*admin")
+      }.to raise_error(Eye::Controller::Error)
+    end
+
+    it "`*zoo` should not match anything" do
+      expect {
+        objs = subject.find_objects("*zoo")
+      }.to raise_error(Eye::Controller::Error)
+    end
+
+    it "`*e1` should not match anything" do
+      expect {
+        objs = subject.find_objects("*e1")
+      }.to raise_error(Eye::Controller::Error)
+    end
+
+    it "`*:e1` should not match anything" do
+      expect {
+        objs = subject.find_objects("*:e1")
+      }.to raise_error(Eye::Controller::Error)
+    end
+
+    it "`*p1` should not match anything" do
+      expect{
+        objs = subject.find_objects("*p1")
+      }.to raise_error(Eye::Controller::Error)
+    end
+
+    it "`app1:admin` should match" do
+      objs = subject.find_objects("app1:admin")
+      objs.map(&:full_name).sort.should == %w{app1:admin}
+    end
+
+    it "multiple targets allowed" do
+      objs = subject.find_objects("app1:admin", "app2:admin")
+      objs.map(&:full_name).sort.should == %w{app1:admin app2:admin}
+    end
+
+    it "matched_objects" do
+      res = subject.matched_objects("admin")
+      res[:error].should == 'cant match targets from different applications: ["app1:admin", "app2:admin"]'
+    end
+  end
 end

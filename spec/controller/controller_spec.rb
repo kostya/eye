@@ -94,7 +94,10 @@ S
     subject.info_string.clean_info.strip.should == (app1 + app2).strip
     subject.info_string('app1').clean_info.should == app1.chomp
     subject.info_string('app2').clean_info.strip.should == app2.strip
-    subject.info_string('app3').clean_info.should == ''
+    subject.info_string('app3', :some_arg => :ignored).clean_info.should == ''
+
+    # wrong arg should not crash
+    subject.info_string(['1']).clean_info.should == ''
   end
 
   it "info_string_debug should be" do
@@ -136,6 +139,20 @@ S
     subject.load(fixture("dsl/load.eye")).should_be_ok
     subject.send_command(:delete, 'all')
     subject.applications.should be_empty
+  end
+
+  it "[bug] delete was crashed when we have 1 process and same named app" do
+    cfg = <<-D
+      Eye.application("bla") do
+        process("bla") do
+          pid_file "#{C.p1_pid}"
+        end
+      end
+    D
+
+    with_temp_file(cfg){ |f| subject.load(f) }
+    subject.command('delete', 'bla')
+    subject.alive?.should be_true
   end
 
   describe "command" do

@@ -67,10 +67,7 @@ module Eye::Process::Controller
   end
 
   def signal(sig = 0)
-    if self.pid
-      res = send_signal(sig)
-      info "send signal #{sig} to #{self.pid} = #{res}"
-    end
+    send_signal(sig) if self.pid
   end
 
 end

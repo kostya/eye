@@ -9,7 +9,7 @@ module Eye::Controller::Load
   end
 
   def load(*args)
-    opts = args.extract_options!
+    h = args.extract_options!
     obj_strs = args.flatten
     info "load: #{obj_strs}"
 
@@ -26,7 +26,7 @@ module Eye::Controller::Load
     set_proc_line
     save_cache
 
-    info "loaded: #{obj_strs} in <#{$$}>"
+    info "loaded: #{obj_strs}, selfpid <#{$$}>"
 
     res
   end

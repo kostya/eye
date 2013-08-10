@@ -22,8 +22,12 @@ class Eye::Group
     full_name
   end
 
+  def app_name
+    @config[:application]
+  end
+
   def full_name
-    @full_name ||= "#{@config[:application]}:#{@name}"
+    @full_name ||= "#{app_name}:#{@name}"
   end
 
   def update_config(cfg)
