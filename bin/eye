@@ -10,7 +10,7 @@ class Eye::Cli < Thor
 
   desc "info [MASK]", "show process statuses"
   def info(mask = nil)
-    print cmd(:info, :filter => mask)
+    print cmd(:info, *Array(mask))
   end
 
   desc "status ", "show process statuses"
@@ -72,7 +72,7 @@ class Eye::Cli < Thor
 
   desc "signal SIG, MASK[,...]", "send signal to matched app,group or process (ex: `eye sig USR2 some_app`)"
   def signal(sig, *targets)
-    send_command(:signal, *targets, :signal => sig)
+    send_command(:signal, sig, *targets)
   end
 
   desc "break TARGET[,...]", "break group chain executing"
@@ -210,10 +210,18 @@ private
       error! "unknown command :#{_cmd}"
     elsif res == :corrupred_data
       error! "something crazy wrong, check eye logs!"
-    elsif res == []
-      error! "command :#{_cmd}, targets not found!"
+    elsif res.is_a?(Hash)
+      if res[:error]
+        error! "Error: #{res[:error]}"
+      elsif res = res[:result]
+        if res == []
+          error! "command :#{_cmd}, targets not found!"
+        else
+          say "command :#{_cmd} sended to [#{res * ", "}]"
+        end
+      end
     else
-      say "command :#{_cmd} sended to [#{res * ", "}]"
+      error! "unknown result #{res.inspect}"
     end
   end
 

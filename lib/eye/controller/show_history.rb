@@ -12,10 +12,8 @@ module Eye::Controller::ShowHistory
   end
 
   def history_data(*args)
-    opts = args.extract_options!
-    obj_strs = args
     res = {}
-    get_processes_for_history(*obj_strs).each do |process|
+    get_processes_for_history(*args).each do |process|
       res[process.full_name] = process.schedule_history.reject{|c| c[:state] == :check_crash }
     end
     res
@@ -23,9 +21,10 @@ module Eye::Controller::ShowHistory
 
 private
 
-  def get_processes_for_history(*obj_strs)
+  def get_processes_for_history(*args)
+    args = ['*'] if args.empty?
     res = []
-    matched_objects(*obj_strs) do |obj|
+    matched_objects(*args) do |obj|
       if (obj.is_a?(Eye::Process) || obj.is_a?(Eye::ChildProcess))
         res << obj
       else

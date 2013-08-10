@@ -63,7 +63,7 @@ describe "Intergration" do
     @childs.size.should == 3
     dead_pid = @childs.sample
 
-    @controller.send_command(:restart, "child-#{dead_pid}").should == ["int:forking:child-#{dead_pid}"]
+    @controller.send_command(:restart, "child-#{dead_pid}").should == {:result => ["int:forking:child-#{dead_pid}"]}
     sleep 11 # while it
 
     new_childs = @p3.childs.keys
@@ -75,7 +75,7 @@ describe "Intergration" do
   end
 
   it "restart missing" do
-    @controller.send_command(:restart, "blabla").should == []
+    @controller.send_command(:restart, "blabla").should == {:result => []}
     sleep 1
     @processes.map{|c| c.state_name}.uniq.should == [:up]
     @p1.pid.should == @old_pid1
@@ -115,7 +115,7 @@ describe "Intergration" do
   end
 
   it "unmonitor process" do
-    @controller.send_command(:unmonitor, "sample1").should == ["int:samples:sample1"]
+    @controller.send_command(:unmonitor, "sample1").should == {:result => ["int:samples:sample1"]}
     sleep 7 # while they stopping
 
     @p1.state_name.should == :unmonitored
@@ -132,14 +132,14 @@ describe "Intergration" do
     mock(@p2).signal('usr2')
     mock(@p3).signal('usr2')
 
-    @controller.signal("int", :signal => 'usr2').should == ["int"]
+    @controller.signal('usr2', "int").should == {:result => ["int"]}
     sleep 3 # while they gettings
 
     @p1.last_scheduled_command.should == :signal
     @p1.last_scheduled_reason.to_s.should == 'signal by user'
 
     mock(@p1).signal('usr1')
-    @controller.signal('sample1', :signal => 'usr1')
+    @controller.signal('usr1', 'sample1')
     sleep 0.5
   end
 

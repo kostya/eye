@@ -1,7 +1,7 @@
 module Eye::Controller::SendCommand
 
-  def send_command(command, *obj_strs)
-    matched_objects(*obj_strs) do |obj|
+  def send_command(command, *args)
+    matched_objects(*args) do |obj|
       if command.to_sym == :delete
         remove_object_from_tree(obj)
 
@@ -13,31 +13,39 @@ module Eye::Controller::SendCommand
     end
   end
 
-  def match(*obj_strs)
-    matched_objects(*obj_strs)
+  def match(*args)
+    matched_objects(*args)
   end
 
-  def signal(*args)
-    opts = args.extract_options!
-    obj_strs = args
-    matched_objects(*obj_strs) do |obj|
-      obj.send_command :signal, opts[:signal] || 0
+  def signal(signal, *args)
+    matched_objects(*args) do |obj|
+      obj.send_command :signal, signal || 0
     end
   end
 
-  def break_chain(*obj_strs)
-    matched_objects(*obj_strs) do |obj|
+  def break_chain(*args)
+    matched_objects(*args) do |obj|
       obj.send_command(:break_chain)
     end
   end
 
 private
 
-  def matched_objects(*obj_strs, &block)
+  class Error < Exception; end
+
+  def matched_objects(*args, &block)
+    h = args.extract_options!
+    obj_strs = args
+
     objs = find_objects(*obj_strs)
     res = objs.map(&:full_name)
     objs.each{|obj| block[obj] } if block
-    res
+    {:result => res}
+
+  rescue Error => ex
+    error ex.message
+
+    {:error => ex.message}
   end
 
   def remove_object_from_tree(obj)
@@ -63,10 +71,10 @@ private
   # nil if not found
   def find_objects(*obj_strs)
     return [] if obj_strs.blank?
-    return @applications.dup if obj_strs.size == 1 && (obj_strs[0].strip == 'all' || obj_strs[0].strip == '*')
+    return @applications.dup if obj_strs.size == 1 && (obj_strs[0].to_s.strip == 'all' || obj_strs[0].to_s.strip == '*')
 
     res = Eye::Utils::AliveArray.new
-    obj_strs.map{|c| c.split(",")}.flatten.each do |mask|
+    obj_strs.map{|c| c.to_s.split(",")}.flatten.each do |mask|
       res += find_objects_by_mask(mask.to_s.strip)
     end
     res
@@ -107,7 +115,9 @@ private
         end
       end
 
-      res = [] if (apps).uniq.size > 1 || (fapps.size > 0 && (apps | fapps).size > fapps.size)
+      if (apps).uniq.size > 1 || (fapps.size > 0 && (apps | fapps).size > fapps.size)
+        raise Error, "cant match targets from different applications: #{res.map(&:full_name)}"
+      end
     end
 
     res

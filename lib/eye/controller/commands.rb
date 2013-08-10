@@ -23,7 +23,7 @@ module Eye::Controller::Commands
       when :xinfo
         info_string_debug(*args)
       when :oinfo
-        info_string_short
+        info_string_short(*args)
       when :history
         history_string(*args)
       when :quit

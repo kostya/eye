@@ -4,6 +4,11 @@ describe "find_objects" do
   describe "simple matching" do
     subject{ new_controller(fixture("dsl/load.eye")) }
 
+    it "matched_objects" do
+      res = subject.matched_objects("p1")
+      res[:result].should == %w{app1:gr1:p1}
+    end
+
     it "1 process" do
       objs = subject.find_objects("p1")
       objs.class.should == Eye::Utils::AliveArray
@@ -123,7 +128,7 @@ describe "find_objects" do
 
     describe "match" do
       it "should match" do
-        subject.match("gr*").should == ["app1:gr1", "app1:gr2"]
+        subject.match("gr*")[:result].should == ["app1:gr1", "app1:gr2"]
       end
     end
   end
@@ -142,14 +147,18 @@ describe "find_objects" do
     end
 
     it "find by gr1" do
-      objs = subject.find_objects("gr1")
-      objs.map(&:full_name).sort.should == %w{} # because from different apps
+      expect{
+        subject.find_objects("gr1")
+      }.to raise_error(Eye::Controller::Error)
     end
 
-    it "correct by gr*" do
-      objs = subject.find_objects("gr*")
-      objs.map(&:full_name).should == %w{}
+    it "raised by gr*" do
+      expect{
+        objs = subject.find_objects("gr*")
+      }.to raise_error(Eye::Controller::Error)
+    end
 
+    it "correct by app1:gr*" do
       objs = subject.find_objects("app1:gr*")
       objs.map(&:full_name).should == %w{app1:gr1 app1:gr2 app1:gr2and}
     end
@@ -220,8 +229,9 @@ describe "find_objects" do
     end
 
     it "in different apps" do
-      objs = subject.find_objects("one")
-      objs.map(&:full_name).sort.should == %w{}
+      expect {
+        objs = subject.find_objects("one")
+      }.to raise_error(Eye::Controller::Error)
     end
 
     it "when exactly matched object and subobject" do
@@ -234,18 +244,21 @@ describe "find_objects" do
     subject{ new_controller(fixture("dsl/load_dubls2.eye")) }
 
     it "`admin` should not match anything" do
-      objs = subject.find_objects("admin")
-      objs.map(&:full_name).sort.should == %w{}
+      expect {
+        objs = subject.find_objects("admin")
+      }.to raise_error(Eye::Controller::Error)
     end
 
     it "`zoo` should not match anything" do
-      objs = subject.find_objects("zoo")
-      objs.map(&:full_name).sort.should == %w{}
+      expect {
+        objs = subject.find_objects("zoo")
+      }.to raise_error(Eye::Controller::Error)
     end
 
     it "`e1` should not match anything" do
-      objs = subject.find_objects("e1")
-      objs.map(&:full_name).sort.should == %w{}
+      expect {
+        objs = subject.find_objects("e1")
+      }.to raise_error(Eye::Controller::Error)
     end
 
     it "`koo` should match group" do
@@ -254,28 +267,33 @@ describe "find_objects" do
     end
 
     it "`*admin` should not match anything" do
-      objs = subject.find_objects("*admin")
-      objs.map(&:full_name).sort.should == %w{}
+      expect {
+        objs = subject.find_objects("*admin")
+      }.to raise_error(Eye::Controller::Error)
     end
 
     it "`*zoo` should not match anything" do
-      objs = subject.find_objects("*zoo")
-      objs.map(&:full_name).sort.should == %w{}
+      expect {
+        objs = subject.find_objects("*zoo")
+      }.to raise_error(Eye::Controller::Error)
     end
 
     it "`*e1` should not match anything" do
-      objs = subject.find_objects("*e1")
-      objs.map(&:full_name).sort.should == %w{}
+      expect {
+        objs = subject.find_objects("*e1")
+      }.to raise_error(Eye::Controller::Error)
     end
 
     it "`*:e1` should not match anything" do
-      objs = subject.find_objects("*:e1")
-      objs.map(&:full_name).sort.should == %w{}
+      expect {
+        objs = subject.find_objects("*:e1")
+      }.to raise_error(Eye::Controller::Error)
     end
 
     it "`*p1` should not match anything" do
-      objs = subject.find_objects("*p1")
-      objs.map(&:full_name).sort.should == %w{}
+      expect{
+        objs = subject.find_objects("*p1")
+      }.to raise_error(Eye::Controller::Error)
     end
 
     it "`app1:admin` should match" do
@@ -286,6 +304,11 @@ describe "find_objects" do
     it "multiple targets allowed" do
       objs = subject.find_objects("app1:admin", "app2:admin")
       objs.map(&:full_name).sort.should == %w{app1:admin app2:admin}
+    end
+
+    it "matched_objects" do
+      res = subject.matched_objects("admin")
+      res[:error].should == 'cant match targets from different applications: ["app1:admin", "app2:admin"]'
     end
   end
 end

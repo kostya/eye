@@ -12,7 +12,7 @@ describe "Intergration Delete" do
   end
 
   it "delete group not monitoring anymore" do
-    @controller.send_command(:delete, "samples").should == ["int:samples"]
+    @controller.send_command(:delete, "samples").should == {:result => ["int:samples"]}
     sleep 7 # while
 
     @controller.all_processes.should == [@p3]
@@ -77,7 +77,7 @@ describe "Intergration Delete" do
   end
 
   it "delete by mask" do
-    @controller.send_command(:delete, "sam*").should == ["int:samples"]
+    @controller.send_command(:delete, "sam*").should == {:result => ["int:samples"]}
     sleep 7 # while
 
     @controller.all_processes.should == [@p3]

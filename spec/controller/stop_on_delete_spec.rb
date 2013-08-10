@@ -27,7 +27,7 @@ describe "StopOnDelete behaviour" do
   end
 
   it "delete application => stop group proceses" do
-    @controller.send_command(:delete, "samples").should == ["int:samples"]
+    @controller.send_command(:delete, "samples").should == {:result => ["int:samples"]}
     sleep 7 # while
 
     @controller.all_processes.should == [@p3]

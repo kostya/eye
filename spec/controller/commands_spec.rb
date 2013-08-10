@@ -61,12 +61,12 @@ describe "comamnd spec" do
 
     it "nothing" do
       subject.load(fixture("dsl/load.eye")).should_be_ok
-      subject.send_command(:start, "2341234").should == []
+      subject.send_command(:start, "2341234").should == {:result => []}
     end
 
     it "unknown" do
       subject.load(fixture("dsl/load.eye")).should_be_ok
-      subject.send_command(:st33art, "2341234").should == []
+      subject.send_command(:st33art, "2341234").should == {:result=>[]}
     end
 
     [:start, :stop, :restart, :unmonitor].each do |cmd|
@@ -78,6 +78,11 @@ describe "comamnd spec" do
         mock(@p1).send_command(cmd)
 
         subject.send_command cmd, "p1"
+      end
+
+      it "should send_command #{cmd} with options" do
+        mock(subject).find_objects('p1') { [] }
+        subject.command cmd, "p1", :some_flag => true
       end
     end
 
