@@ -13,7 +13,7 @@ end
 Eye.application :super_app do
   env 'RAILS_ENV' => RAILS_ENV
   working_dir ROOT
-  triggers :flapping, :times => 10, :within => 1.minute
+  trigger :flapping, :times => 10, :within => 1.minute
 
   process :puma do
     daemonize true
@@ -28,7 +28,7 @@ Eye.application :super_app do
     stop_grace 10.seconds
     restart_grace 10.seconds
 
-    checks :cpu, :every => 30, :below => 80, :times => 3
-    checks :memory, :every => 30, :below => 70.megabytes, :times => [3,5]
+    check :cpu, :every => 30, :below => 80, :times => 3
+    check :memory, :every => 30, :below => 70.megabytes, :times => [3,5]
   end
 end
