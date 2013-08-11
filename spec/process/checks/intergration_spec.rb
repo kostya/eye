@@ -51,6 +51,8 @@ describe "Process Integration checks" do
     w_cpu = @process.watchers[:check_cpu][:subject]
     w_http.check_count.should <= 2
     w_cpu.check_count.should >= 9
+
+    w_http.inspect.size.should > 100
   end
 
   it "timeouted socket, should not lock actor-mailbox" do
