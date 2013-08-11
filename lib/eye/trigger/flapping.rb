@@ -14,9 +14,7 @@ class Eye::Trigger::Flapping < Eye::Trigger
   end
 
   def check(transition)
-    unless good?
-      on_flapping
-    end
+    on_flapping if transition.event == :crashed && !good?
   end
 
 private
