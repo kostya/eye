@@ -69,6 +69,10 @@ class Eye::Trigger
     process.instance_exec(&p) if process.alive?
   end
 
+  def defer(&block)
+    Celluloid::Future.new(&block).value
+  end
+
   def self.register(base)
     name = base.to_s.gsub("Eye::Trigger::", '')
     name = base.to_s
