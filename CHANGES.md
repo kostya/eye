@@ -1,4 +1,7 @@
-0.4.dev
+0.4.1.dev
+---------
+
+0.4
 ---------
 * pass tests on 1.9.2
 * relax activesupport dependency
