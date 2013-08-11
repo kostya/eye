@@ -23,12 +23,6 @@ module Eye::Controller::SendCommand
     end
   end
 
-  def break_chain(*args)
-    matched_objects(*args) do |obj|
-      obj.send_command(:break_chain)
-    end
-  end
-
 private
 
   class Error < Exception; end
