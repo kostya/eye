@@ -88,6 +88,17 @@ describe "Process Stop" do
     @process.load_pid_from_file.should == @pid # needs
   end
 
+  it "bad command timeouted" do
+    start_ok_process(C.p1.merge(:stop_command => "sleep 2", :stop_timeout => 1))
+
+    @process.stop_process
+
+    Eye::System.pid_alive?(@pid).should == true
+    @process.state_name.should == :unmonitored # cant stop with this command, so :unmonitored
+
+    @process.load_pid_from_file.should == @pid # needs
+  end
+
   it "watch_file" do
     wf = File.join(C.p1[:working_dir], %w{1111.stop})
     start_ok_process(C.p1.merge(:stop_command => "touch #{wf}",
