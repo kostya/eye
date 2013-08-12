@@ -17,7 +17,7 @@ module Eye::Controller::Commands
       when :break_chain
         break_chain(*args)
       when :load
-        exclusive{ load(*args) }
+        load(*args)
       when :info
         info_string(*args)
       when :xinfo
