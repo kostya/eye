@@ -22,6 +22,7 @@ Eye::Process
 class Eye::Controller
   public :find_objects, :remove_object_from_tree, :matched_objects
   def load_erb(file); with_erb_file(file){|f| self.load(f) }; end
+  def load_wrap(*args); load(*args); end # bug of celluloid 0.14
 end
 
 require 'rspec/mocks'

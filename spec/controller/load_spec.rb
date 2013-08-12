@@ -257,19 +257,19 @@ describe "Eye::Controller::Load" do
     end
 
     it "should corrent load config section" do
-      subject.load(fixture("dsl/configs/{1,2}.eye")).should_be_ok(2)
+      subject.load_wrap(fixture("dsl/configs/{1,2}.eye")).should_be_ok(2)
       Eye::Logger.dev.should == "/tmp/a.log"
       subject.current_config.settings.should == {:logger=>"/tmp/a.log", :http=>{:enable=>true}}
 
-      subject.load(fixture("dsl/configs/3.eye")).should_be_ok
+      subject.load_wrap(fixture("dsl/configs/3.eye")).should_be_ok
       Eye::Logger.dev.should == "/tmp/a.log"
       subject.current_config.settings.should == {:logger=>"/tmp/a.log", :http=>{:enable=>false}}
 
-      subject.load(fixture("dsl/configs/4.eye")).should_be_ok
+      subject.load_wrap(fixture("dsl/configs/4.eye")).should_be_ok
       Eye::Logger.dev.should == nil
       subject.current_config.settings.should == {:logger=>'', :http=>{:enable=>false}}
 
-      subject.load(fixture("dsl/configs/2.eye")).should_be_ok
+      subject.load_wrap(fixture("dsl/configs/2.eye")).should_be_ok
       Eye::Logger.dev.should == nil
       subject.current_config.settings.should == {:logger=>'', :http=>{:enable=>true}}
     end
@@ -442,7 +442,7 @@ describe "Eye::Controller::Load" do
 
   describe "load multiple" do
     it "ok load 2 configs" do
-      subject.load(fixture("dsl/configs/1.eye"), fixture("dsl/configs/2.eye")).should_be_ok(2)
+      subject.load_wrap(fixture("dsl/configs/1.eye"), fixture("dsl/configs/2.eye")).should_be_ok(2)
     end
 
     it "load 2 configs, 1 not exists" do
