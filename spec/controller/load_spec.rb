@@ -39,6 +39,10 @@ describe "Eye::Controller::Load" do
     subject.load(fixture("dsl/load.eye"), :some => 1).should_be_ok
   end
 
+  it "work fine throught command" do
+    subject.command(:load, fixture("dsl/load.eye")).should_be_ok
+  end
+
   it "load correctly application, groups for full_names processes" do
     subject.load(fixture("dsl/load.eye")).should_be_ok
 

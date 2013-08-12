@@ -15,7 +15,7 @@ module Eye::Controller::Commands
       when :signal
         signal(*args)
       when :load
-        exclusive{ load(*args) }
+        load(*args)
       when :info
         info_string(*args)
       when :xinfo
