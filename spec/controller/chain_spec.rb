@@ -71,7 +71,7 @@ describe "Intergration chains" do
     @samples.current_scheduled_command.should == :restart
     @samples.scheduler_actions_list.should == [:stop]
 
-    @controller.send_command(:break_chain, "samples")
+    @controller.command(:break_chain, "samples")
     sleep 3
     @samples.current_scheduled_command.should == :restart
     sleep 2

@@ -71,6 +71,7 @@ describe "comamnd spec" do
 
     [:start, :stop, :restart, :unmonitor].each do |cmd|
       it "should send_command #{cmd}" do
+        sleep 0.3
         any_instance_of(Eye::Process) do |p|
           dont_allow(p).send_command(cmd)
         end
@@ -86,7 +87,23 @@ describe "comamnd spec" do
       end
     end
 
+    it "unmonitor group" do
+      sleep 0.5
+      cmd = :unmonitor
+
+      any_instance_of(Eye::Process) do |p|
+        dont_allow(p).send_command(cmd)
+      end
+
+      mock(@p1).send_command(cmd)
+      mock(@p2).send_command(cmd)
+
+      subject.send_command cmd, "gr1"
+      sleep 0.5
+    end
+
     it "delete obj" do
+      sleep 0.5
       any_instance_of(Eye::Process) do |p|
         dont_allow(p).send_command(:delete)
       end

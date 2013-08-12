@@ -16,6 +16,7 @@ describe "Flapping" do
     triggers.first.class.should == Eye::Trigger::Flapping
     triggers.first.within.should == 10
     triggers.first.times.should == 4
+    triggers.first.inspect.size.should > 100
   end
 
   it "should check speedy flapping by default" do
