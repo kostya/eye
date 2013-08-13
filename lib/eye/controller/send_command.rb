@@ -100,16 +100,18 @@ private
       res = final
 
       # try to remove objects with different applications
-      fapps, apps = [], []
+      apps, objs = Eye::Utils::AliveArray.new, Eye::Utils::AliveArray.new
       res.each do |obj|
         if obj.is_a?(Eye::Application)
-          fapps << obj.name
+          apps << obj
         else
-          apps << obj.app_name
+          objs << obj
         end
       end
 
-      if (apps).uniq.size > 1 || (fapps.size > 0 && (apps | fapps).size > fapps.size)
+      return apps if apps.size > 0
+
+      if objs.map(&:app_name).uniq.size > 1
         raise Error, "cant match targets from different applications: #{res.map(&:full_name)}"
       end
     end

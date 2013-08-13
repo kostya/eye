@@ -290,10 +290,9 @@ describe "find_objects" do
       }.to raise_error(Eye::Controller::Error)
     end
 
-    it "`*p1` should not match anything" do
-      expect{
-        objs = subject.find_objects("*p1")
-      }.to raise_error(Eye::Controller::Error)
+    it "`*p1` should match app1" do
+      objs = subject.find_objects("*p1")
+      objs.map(&:full_name).sort.should == %w{app1}
     end
 
     it "`app1:admin` should match" do
@@ -309,6 +308,30 @@ describe "find_objects" do
     it "matched_objects" do
       res = subject.matched_objects("admin")
       res[:error].should == 'cant match targets from different applications: ["app1:admin", "app2:admin"]'
+    end
+  end
+
+  describe "matching app in priority" do
+    subject{ new_controller(fixture("dsl/load_dubls3.eye")) }
+
+    it "`some` should find only app" do
+      objs = subject.find_objects("some")
+      objs.map(&:full_name).sort.should == %w{someapp}
+    end
+
+    it "`someapp` should find only app" do
+      objs = subject.find_objects("someapp")
+      objs.map(&:full_name).sort.should == %w{someapp}
+    end
+
+    it "`somep` should find only process" do
+      objs = subject.find_objects("somep")
+      objs.map(&:full_name).sort.should == %w{app:someprocess}
+    end
+
+    it 'app should raise error' do
+      objs = subject.find_objects("app")
+      objs.map(&:full_name).sort.should == %w{app}
     end
   end
 end
