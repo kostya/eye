@@ -18,7 +18,7 @@ describe "Eye::Controller::Load" do
 
   it "not exists file" do
     mock(subject).set_proc_line
-    subject.load("/asdf/asd/fasd/fas/df/sfd").should == {"/asdf/asd/fasd/fas/df/sfd" => {:error=>true, :message=>"config file '/asdf/asd/fasd/fas/df/sfd' not found!"}}
+    subject.load("/asdf/asd/fasd/fas/df/sfd").should == {"/asdf/asd/fasd/fas/df/sfd" => {:error=>true, :message=>"No such file or directory - /asdf/asd/fasd/fas/df/sfd"}}
   end
 
   it "load 1 ok app" do
@@ -309,7 +309,7 @@ describe "Eye::Controller::Load" do
   end
 
   it "bad mask" do
-    subject.load(" asdf asdf afd d").should == {" asdf asdf afd d" => {:error=>true, :message=>"config file ' asdf asdf afd d' not found!"}}
+    subject.load(" asdf asdf afd d").should == {" asdf asdf afd d" => {:error=>true, :message=>"No such file or directory -  asdf asdf afd d"}}
   end
 
   it "group update it settings" do

@@ -81,7 +81,6 @@ private
 
   # return: result, config
   def parse_config(filename)
-    raise Eye::Dsl::Error, "config file '#{filename}' not found!" unless File.exists?(filename)
     debug "parse #{filename}"
 
     cfg = Eye::Dsl.parse(nil, filename)
