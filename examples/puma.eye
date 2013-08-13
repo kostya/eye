@@ -1,13 +1,10 @@
-RUBY      = '/usr/local/ruby/1.9.3-p392/bin/ruby'
+RUBY      = 'ruby'
 RAILS_ENV = 'production'
+
 ROOT      = File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
-CURRENT   = File.expand_path(File.join(ROOT, %w{current}))
-LOGS      = File.expand_path(File.join(ROOT, %w{shared log}))
-PIDS      = File.expand_path(File.join(ROOT, %w{shared pids}))
 
 Eye.config do
-  logger "#{LOGS}/eye.log"
-  logger_level Logger::ERROR
+  logger "#{ROOT}/eye.log"
 end
 
 Eye.application :super_app do
@@ -17,10 +14,10 @@ Eye.application :super_app do
 
   process :puma do
     daemonize true
-    pid_file "#{PIDS}/puma.pid"
-    stdall "#{LOGS}/#{RAILS_ENV}.log"
+    pid_file "puma.pid"
+    stdall "puma.log"
 
-    start_command "#{RUBY} bin/puma --port 80 --pidfile #{PIDS}/puma.pid --environment #{RAILS_ENV} config.ru"
+    start_command "#{RUBY} -S bundle exec puma --port 33280 --environment #{RAILS_ENV} thin.ru"
     stop_command "kill -TERM {{PID}}"
     restart_command "kill -USR2 {{PID}}"
 
