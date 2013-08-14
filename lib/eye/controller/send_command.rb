@@ -82,9 +82,9 @@ private
 
       # try to find exactly matched
       if mask[-1] != '*'
-        r = right_regexp(mask)
+        r = exact_regexp(mask)
         res.each do |obj|
-          final << obj if obj.full_name =~ r
+          final << obj if obj.name =~ r || obj.full_name =~ r
         end
       end
 
@@ -159,8 +159,8 @@ private
     %r|\A#{str}|
   end
 
-  def right_regexp(mask)
+  def exact_regexp(mask)
     str = Regexp.escape(mask).gsub('\*', '.*?')
-    %r|#{str}\z|
+    %r|\A#{str}\z|
   end
 end

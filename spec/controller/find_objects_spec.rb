@@ -334,4 +334,30 @@ describe "find_objects" do
       objs.map(&:full_name).sort.should == %w{app}
     end
   end
+
+  describe "matching app in priority" do
+    subject{ with_temp_file(<<-E){ |f| new_controller(f) }
+      Eye.application "worder" do
+        group "word1" do
+          process("p1"){ pid_file "p1" }
+        end
+
+        group :bigword do
+          process("o1"){ pid_file "o1" }
+        end
+      end
+    E
+    }
+
+    it "`word` should match app" do
+      objs = subject.find_objects("word")
+      objs.map(&:full_name).sort.should == %w{worder}
+    end
+
+    it "`word*` should match app" do
+      objs = subject.find_objects("word*")
+      objs.map(&:full_name).sort.should == %w{worder}
+    end
+  end
+
 end
