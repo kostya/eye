@@ -15,7 +15,7 @@ class Eye::Checker
   extend Eye::Dsl::Validation
   param :every, [Fixnum, Float], false, 5
   param :times, [Fixnum, Array], nil, 1
-  param :fire, Symbol, nil, nil, [:stop, :restart, :unmonitor, :nothing]
+  param :fires, [Symbol, Array], nil, nil, [:stop, :restart, :unmonitor, :nothing, :start, :delete]
 
   def self.name_and_class(type)
     type = type.to_sym

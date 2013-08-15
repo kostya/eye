@@ -60,9 +60,12 @@ private
     unless subject.check
       return unless up?
 
-      action = subject.fire || :restart
-      notify :warn, "Bounded #{subject.check_name}: #{subject.last_human_values} send to :#{action}"
-      schedule action, Eye::Reason.new("bounded #{subject.check_name}")
+      actions = subject.fires ? Array(subject.fires) : [:restart]
+      notify :warn, "Bounded #{subject.check_name}: #{subject.last_human_values} send to #{actions}"
+
+      actions.each do |action|
+        schedule action, Eye::Reason.new("bounded #{subject.check_name}")
+      end
     end
   end
 
