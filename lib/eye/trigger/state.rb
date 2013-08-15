@@ -8,7 +8,9 @@ class Eye::Trigger::State < Eye::Trigger
   param :do, [Proc]
 
   def check(trans)
-    if compare(trans.to_name, to) || compare(trans.from_name, from) || compare(trans.event, event)
+    return unless to || from || event
+
+    if compare(trans.to_name, to) && compare(trans.from_name, from) && compare(trans.event, event)
       debug "trans ok #{trans}, executing proc!"
       run_in_process_context(@options[:do]) if @options[:do]
     end
@@ -22,6 +24,8 @@ private
       state_name == condition
     when Array
       condition.include?(state_name)
+    else
+      true
     end
   end
 
