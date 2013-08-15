@@ -11,6 +11,7 @@ module Eye::Dsl::Main
     Eye::Dsl.debug "<= app: #{name}"
   end
 
+  alias project application
   alias app application
 
   def load(glob = '')
