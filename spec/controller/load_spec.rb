@@ -382,7 +382,7 @@ describe "Eye::Controller::Load" do
       subject.async.command(:load, fixture("dsl/long_load.eye"))
       subject.async.command(:load, fixture("dsl/long_load.eye"))
       sleep 2.5
-      should_spend(0, 0.2) do
+      should_spend(0, 0.6) do
         subject.command(:info).should be_a(String)
       end
     end
