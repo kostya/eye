@@ -58,7 +58,7 @@ module Eye::System
       opts = spawn_options(cfg)
       pid  = Process::spawn(prepare_env(cfg), *Shellwords.shellwords(cmd), opts)
       Process.detach(pid)
-      {:pid => pid}
+      {:pid => pid, :exitstatus => 0}
 
     rescue Errno::ENOENT, Errno::EACCES => ex
       {:error => ex}
@@ -74,11 +74,14 @@ module Eye::System
       pid  = Process::spawn(prepare_env(cfg), *Shellwords.shellwords(cmd), opts)
 
       timeout = cfg[:timeout] || 1.second
+      status = 0
+
       Timeout.timeout(timeout) do
-        Process.waitpid(pid)
+        _, st = Process.waitpid2(pid)        
+        status = st.exitstatus
       end
 
-      {:pid => pid}
+      {:pid => pid, :exitstatus => status}
 
     rescue Timeout::Error => ex
       if pid
