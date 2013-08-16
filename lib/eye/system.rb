@@ -159,9 +159,6 @@ module Eye::System
         env[k.to_s] = v.to_s if v
       end
 
-      # set PWD for unicorn respawn
-      env['PWD'] = config[:working_dir] if config[:working_dir]
-
       env
     end
   end
