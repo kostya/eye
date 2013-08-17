@@ -64,3 +64,4 @@
 ./spec/process/start_spec.rb:82.204534482
 ./spec/process/states_history_spec.rb:0.162761042
 ./spec/system_spec.rb:10.409700716
+./spec/process/trigger/stop_childs_spec.rb:32.2

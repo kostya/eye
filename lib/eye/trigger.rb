@@ -1,10 +1,11 @@
 class Eye::Trigger
   autoload :Flapping,   'eye/trigger/flapping'
   autoload :State,      'eye/trigger/state'
+  autoload :StopChilds, 'eye/trigger/stop_childs'
 
   # ex: { :type => :flapping, :times => 2, :within => 30.seconds}
 
-  TYPES = {:flapping => "Flapping", :state => "State"}
+  TYPES = {:flapping => "Flapping", :state => "State", :stop_childs => "StopChilds"}
 
   attr_reader :message, :options, :process
 
@@ -54,11 +55,24 @@ class Eye::Trigger
   end
 
   def notify(transition)
-    debug "check"
+    debug "check (:#{transition.event}) :#{transition.from} => :#{transition.to}"
     @transition = transition
-    check(transition)
+
+    check(transition) if filter_transition(transition)
   rescue => ex
     warn "failed #{ex.message} #{ex.backtrace}"
+  end
+
+  param :to, [Symbol, Array]
+  param :from, [Symbol, Array]
+  param :event, [Symbol, Array]
+
+  def filter_transition(trans)
+    return true unless to || from || event
+
+    compare_state(trans.to_name, to) &&
+      compare_state(trans.from_name, from) &&
+      compare_state(trans.event, event)
   end
 
   def check(transition)
@@ -87,4 +101,18 @@ class Eye::Trigger
       register(base)
     end
   end
+
+private
+
+  def compare_state(state_name, condition)
+    case condition
+    when Symbol
+      state_name == condition
+    when Array
+      condition.include?(state_name)
+    else
+      true
+    end
+  end
+
 end
