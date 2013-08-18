@@ -5,7 +5,7 @@ Gem::Specification.new do |gem|
   gem.email         = "kostya27@gmail.com"
 
   gem.description   = gem.summary = \
-    %q{Process monitoring tool. An alternative to God and Bluepill. With Bluepill like config syntax. Requires MRI Ruby >= 1.9.2. Uses Celluloid and Celluloid::IO.}
+    %q{Process monitoring tool. Inspired from Bluepill and God. Requires Ruby(MRI) >= 1.9.3-p194. Uses Celluloid and Celluloid::IO.}
   gem.homepage      = "http://github.com/kostya/eye"
 
   gem.files         = `git ls-files`.split($\).reject{|n| n =~ %r[png|gif\z]}.reject{|n| n =~ %r[^(test|spec|features)/]}
