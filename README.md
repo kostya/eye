@@ -107,7 +107,7 @@ Eye.application "test" do
 end
 ```
 
-### Start monitoring and load config:
+### Start eye daemon and/or load config:
 
     $ eye l(oad) examples/test.eye
 
@@ -116,8 +116,7 @@ load folder with configs:
     $ eye l examples/
     $ eye l examples/*.rb
 
-Load also uses for config synchronization and load new application into runned eye daemon. Light operation, so i recommend to use with every deploy (and than restart processes).
-(for processes with option `stop_on_delete`, `load` becomes a tool for full config synchronization, which stopps deleted from config processes).
+If eye daemon already started and you call `load` command, config will be updated (into eye daemon). New objects(applications, groups, processes) will be added and monitored. Removed from config processes will be removed (and stopped if process has `stop_on_delete true`). Other objects update their configs.
 
 
 Process statuses:
