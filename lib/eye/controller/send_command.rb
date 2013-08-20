@@ -28,10 +28,7 @@ private
   class Error < Exception; end
 
   def matched_objects(*args, &block)
-    h = args.extract_options!
-    obj_strs = args
-
-    objs = find_objects(*obj_strs)
+    objs = find_objects(*args)
     res = objs.map(&:full_name)
     objs.each{|obj| block[obj] } if block
     {:result => res}
@@ -63,13 +60,25 @@ private
 
   # find object to action, restart ... (app, group or process)
   # nil if not found
-  def find_objects(*obj_strs)
+  def find_objects(*args)
+    h = args.extract_options!
+    obj_strs = args
+
     return [] if obj_strs.blank?
-    return @applications.dup if obj_strs.size == 1 && (obj_strs[0].to_s.strip == 'all' || obj_strs[0].to_s.strip == '*')
+
+    if obj_strs.size == 1 && (obj_strs[0].to_s.strip == 'all' || obj_strs[0].to_s.strip == '*')
+      if h[:application]
+        return @applications.select { |app| app.name == h[:application]}
+      else
+        return @applications.dup
+      end
+    end
 
     res = Eye::Utils::AliveArray.new
     obj_strs.map{|c| c.to_s.split(",")}.flatten.each do |mask|
-      res += find_objects_by_mask(mask.to_s.strip)
+      objs = find_objects_by_mask(mask.to_s.strip)
+      objs.select! { |obj| obj.app_name == h[:application] } if h[:application]
+      res += objs
     end
     res
   end

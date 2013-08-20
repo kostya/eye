@@ -77,7 +77,7 @@ module Eye::System
       status = 0
 
       Timeout.timeout(timeout) do
-        _, st = Process.waitpid2(pid)        
+        _, st = Process.waitpid2(pid)
         status = st.exitstatus
       end
 

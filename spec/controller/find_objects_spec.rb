@@ -360,4 +360,55 @@ describe "find_objects" do
     end
   end
 
+  describe "application filter" do
+    subject{ new_controller(fixture("dsl/load.eye")) }
+
+    it "when unknown application" do
+      res = subject.matched_objects("p1", :application => "crazey")
+      res[:result].should == %w{}
+    end
+
+    it "*" do
+      res = subject.matched_objects("*", :application => "app1")
+      res[:result].should == %w{app1}
+
+      res = subject.matched_objects("*", :application => "app2")
+      res[:result].should == %w{app2}
+    end
+
+    it "all" do
+      res = subject.matched_objects("all", :application => "app1")
+      res[:result].should == %w{app1}
+
+      res = subject.matched_objects("all", :application => "app2")
+      res[:result].should == %w{app2}
+    end
+
+    it "p1" do
+      res = subject.matched_objects("p1", :application => "app1")
+      res[:result].should == %w{app1:gr1:p1}
+
+      res = subject.matched_objects("p1", :application => "app2")
+      res[:result].should == %w{}
+    end
+
+    it "find p* processes by mask" do
+      objs = subject.find_objects("p*", :application => "app1")
+      objs.map(&:full_name).sort.should == %w{app1:gr1:p1 app1:gr1:p2}
+    end
+
+    it "z1" do
+      res = subject.matched_objects("z1", :application => "app1")
+      res[:result].should == %w{}
+
+      res = subject.matched_objects("z1", :application => "app2")
+      res[:result].should == %w{app2:z1}
+    end
+
+    it "not matched app partially" do
+      res = subject.matched_objects("p1", :application => "app")
+      res[:result].should == %w{}
+    end
+  end
+
 end
