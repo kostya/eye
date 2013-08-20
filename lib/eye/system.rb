@@ -78,7 +78,7 @@ module Eye::System
 
       Timeout.timeout(timeout) do
         _, st = Process.waitpid2(pid)
-        status = st.exitstatus
+        status = st.exitstatus || st.termsig
       end
 
       {:pid => pid, :exitstatus => status}
