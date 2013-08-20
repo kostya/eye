@@ -78,12 +78,7 @@ describe "comamnd spec" do
 
         mock(@p1).send_command(cmd)
 
-        subject.send_command cmd, "p1"
-      end
-
-      it "should send_command #{cmd} with options" do
-        mock(subject).find_objects('p1') { [] }
-        subject.command cmd, "p1", :some_flag => true
+        subject.send_command cmd, "p1", :some_flag => true
       end
     end
 
