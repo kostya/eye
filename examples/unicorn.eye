@@ -4,7 +4,8 @@ RUBY = '/usr/local/ruby/1.9.3/bin/ruby' # ruby on the server
 RAILS_ENV = 'production'
 
 Eye.application "rails_unicorn" do
-  env "RAILS_ENV" => RAILS_ENV, "PATH" => "#{File.dirname(RUBY)}:#{ENV['PATH']}"
+  env "RAILS_ENV" => RAILS_ENV
+  env "PATH" => "#{File.dirname(RUBY)}:#{ENV['PATH']}" # unicorn requires to be `ruby` in path (for soft restart)
   working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
 
   process("unicorn") do
