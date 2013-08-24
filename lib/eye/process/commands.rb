@@ -123,7 +123,7 @@ private
           break
         end
 
-        send_signal(signal)
+        send_signal(signal) if signal
       end
 
       sleep_grace(:stop_grace)
