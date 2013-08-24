@@ -160,7 +160,7 @@ private
     res = _cmd(cmd, *args)
 
     if res == :not_started
-      error! "eye monitoring not found, did you start it?"
+      error! "socket(#{Eye::Settings.socket_path}) not found, did you `eye load`?"
     elsif res == :timeouted
       error! "eye does not answer, timeouted..."
     end
