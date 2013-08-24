@@ -1,5 +1,8 @@
 0.4.1.dev
 ---------
+* checker can fires array of commands
+* fix targets matching
+* remove autoset PWD env
 
 0.4
 ---------
