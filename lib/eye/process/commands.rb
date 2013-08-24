@@ -87,7 +87,10 @@ module Eye::Process::Commands
 private
 
   def kill_process
-    return unless self.pid
+    unless self.pid
+      error "try to kill process without pid"
+      return
+    end
 
     if self[:stop_command]
       cmd = prepare_command(self[:stop_command])
@@ -141,6 +144,11 @@ private
   end
 
   def execute_restart_command
+    unless self.pid
+      error "try to execute restart_command without pid"
+      return
+    end
+
     cmd = prepare_command(self[:restart_command])
     info "executing: `#{cmd}` with restart_timeout: #{self[:restart_timeout].to_f}s and restart_grace: #{self[:restart_grace].to_f}s"
 
