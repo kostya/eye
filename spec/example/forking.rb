@@ -12,9 +12,12 @@ f = Forking.new(:name => 'forking', :working_dir => root,
 3.times do |i|
   f.spawn(:log_file => "#{root}/child#{i}.log", :sync_log => true) do
     $0 = "forking child"
+    start_at = Time.now
     loop do
-      p "#{Time.now} - #{Time.now.to_f} - #{i} - tick"
+      tm = Time.now
+      p "#{tm} - #{tm.to_f} - #{i} - tick"
       sleep 0.1
+      return if tm - start_at > 600
     end
   end
 end

@@ -11,7 +11,7 @@ describe "Process Monitoring" do
       die_process!(@pid)
       mock(@process).notify(:info, anything)
 
-      sleep 10 # wait until monitor upping process
+      sleep 7 # wait until monitor upping process
 
       @pid = @process.pid
       @pid.should_not == old_pid
@@ -53,7 +53,7 @@ describe "Process Monitoring" do
 
     die_process!(@pid)
 
-    sleep 10 # wait until monitor upping process
+    sleep 7 # wait until monitor upping process
 
     @process.pid.should == nil
     Eye::System.pid_alive?(@pid).should == false
@@ -73,7 +73,7 @@ describe "Process Monitoring" do
 
     die_process!(@pid)
 
-    sleep 10 # wait until monitor upping process
+    sleep 7 # wait until monitor upping process
 
     @process.pid.should == nil
 
