@@ -1,5 +1,6 @@
 0.5.dev
 -------
+* update celluloid to 0.15
 
 0.4.1
 ---------
