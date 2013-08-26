@@ -51,8 +51,8 @@ Eye.application "test" do
     stop_command "ruby forking.rb stop"
     stdall "forking.log"
 
-    start_timeout 5.seconds
-    stop_grace 5.seconds
+    start_timeout 10.seconds
+    stop_timeout 5.seconds
 
     monitor_children do
       restart_command "kill -2 {PID}" # for this child process
