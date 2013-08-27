@@ -89,7 +89,6 @@ class Eye::Trigger
 
   def self.register(base)
     name = base.to_s.gsub("Eye::Trigger::", '')
-    name = base.to_s
     type = name.underscore.to_sym
     Eye::Trigger::TYPES[type] = name
     Eye::Trigger.const_set(name, base)
