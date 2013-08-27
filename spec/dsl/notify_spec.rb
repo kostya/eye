@@ -120,4 +120,25 @@ describe "Eye::Dsl notify" do
         :notify=>{"vasya"=>:warn},
         :groups=>{"bla"=>{:name=>"bla", :notify=>{}, :application=>"bla", :processes=>{}}}}}
   end
+
+  it "add custom notify" do
+    conf = <<-E
+      class Cnot < Eye::Notify::Custom
+        param :bla, String
+      end
+
+      Eye.config do
+        cnot :bla => "some"
+        contact :vasya, :cnot, "some"
+      end
+
+      Eye.application :bla do
+        notify :vasya
+      end
+    E
+    res = Eye::Dsl.parse(conf).to_h
+
+    res.should == {:applications => {"bla"=>{:name=>"bla", :notify=>{"vasya"=>:warn}}},
+       :settings => {:cnot=>{:bla=>"some", :type=>:cnot}, :contacts=>{"vasya"=>{:name=>"vasya", :type=>:cnot, :contact=>"some", :opts=>{}}}}}
+  end
 end

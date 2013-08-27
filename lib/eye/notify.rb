@@ -81,6 +81,21 @@ class Eye::Notify
     "#{message_subject} at #{msg_at.to_s(:short)}"
   end
 
+  def self.register(base)
+    name = base.to_s.gsub("Eye::Notify::", '')
+    type = name.underscore.to_sym
+    Eye::Notify::TYPES[type] = name
+    Eye::Notify.const_set(name, base)
+    Eye::Dsl::ConfigOpts.add_notify(type)
+  end
+
+  class Custom < Eye::Notify
+    def self.inherited(base)
+      super
+      register(base)
+    end
+  end
+
 private
 
   %w{at host message name full_name pid level}.each do |name|
