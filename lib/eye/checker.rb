@@ -35,6 +35,10 @@ class Eye::Checker
 
   def self.create(pid, options = {}, process = nil)
     get_class(options[:type]).new(pid, options, process)
+
+  rescue Exception, Timeout::Error => ex
+    log_ex(ex)
+    nil
   end
 
   def self.validate!(options)
@@ -46,6 +50,7 @@ class Eye::Checker
     @pid = pid
     @options = options
     @type = options[:type]
+    @full_name = @process.full_name if @process
 
     debug "create checker, with #{options}"
 
@@ -55,7 +60,7 @@ class Eye::Checker
   end
 
   def inspect
-    "<#{self.class} @process='#{@process.full_name}' @options=#{@options} @pid=#{@pid}>"
+    "<#{self.class} @process='#{@full_name}' @options=#{@options} @pid=#{@pid}>"
   end
 
   def logger_tag
@@ -89,6 +94,9 @@ class Eye::Checker
 
     info "#{last_human_values} => #{result ? 'OK' : 'Fail'}"
     result
+
+  rescue Exception, Timeout::Error => ex
+    log_ex(ex)
   end
 
   def get_value_safe

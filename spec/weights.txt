@@ -6,7 +6,7 @@
 ./spec/process/checks/child_checks_spec.rb:49.385822675
 ./spec/process/config_spec.rb:0.174030763
 ./spec/process/system_spec.rb:4.714789262
-./spec/process/triggers/state_spec.rb:53.85914653
+./spec/process/triggers/state_spec.rb:58.85914653
 ./spec/utils/alive_array_spec.rb:0.021848547
 ./spec/controller/chain_spec.rb:60.692300082
 ./spec/process/checks/ctime_spec.rb:22.688738907
@@ -19,7 +19,7 @@
 ./spec/dsl/sub_procs_spec.rb:0.085485319
 ./spec/notify/jabber_spec.rb:0.094030764
 ./spec/notify_spec.rb:0.545601989
-./spec/process/checks/custom_spec.rb:24.11438497
+./spec/process/checks/custom_spec.rb:48.11438497
 ./spec/process/checks/multiple_spec.rb:3.024713053
 ./spec/process/child_process_spec.rb:61.158010733
 ./spec/process/monitoring_spec.rb:80.785368228
@@ -28,7 +28,7 @@
 ./spec/dsl/notify_spec.rb:0.038882584
 ./spec/dsl/with_server_spec.rb:0.042519777
 ./spec/process/checks/fsize_spec.rb:3.238269606
-./spec/process/triggers/custom_spec.rb:21.174011739
+./spec/process/triggers/custom_spec.rb:44.174011739
 ./spec/process/triggers/flapping_spec.rb:122.340471445
 ./spec/process/update_config_spec.rb:45.605127107
 ./spec/system_resources_spec.rb:1.404905473

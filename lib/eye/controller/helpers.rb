@@ -10,7 +10,7 @@ module Eye::Controller::Helpers
   def save_cache
     File.open(Eye::Settings.cache_path, 'w') { |f| f.write(cache_str) }
   rescue => ex
-    warn "save cache crashed with #{ex.message}"
+    log_ex(ex)
   end
 
   def cache_str

@@ -259,7 +259,7 @@ describe "Eye::Dsl checks" do
 
   it "define custom check" do
     conf = <<-E
-      class Cpu2 < Eye::Checker::Custom
+      class Cpu2 < Eye::Checker::CustomDefer
         # checks :cpu2, :every => 3.seconds, :below => 80, :times => [3,5]
         param :below, [Fixnum, Float], true
 
@@ -387,7 +387,7 @@ describe "Eye::Dsl checks" do
 
     it "do not cross if there custom checker already" do
       conf = <<-E
-        class Cpu2 < Eye::Checker::Custom
+        class Cpu2 < Eye::Checker::CustomDefer
           param :below, [Fixnum, Float], true
         end
 

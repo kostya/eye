@@ -29,6 +29,10 @@ class Eye::Trigger
 
   def self.create(process, options = {})
     get_class(options[:type]).new(process, options)
+
+  rescue Exception, Timeout::Error => ex
+    log_ex(ex)
+    nil
   end
 
   def self.validate!(options = {})
@@ -38,12 +42,13 @@ class Eye::Trigger
   def initialize(process, options = {})
     @options = options
     @process = process
+    @full_name = @process.full_name if @process
 
     debug "add #{options}"
   end
 
   def inspect
-    "<#{self.class} @process='#{@process.full_name}' @options=#{@options}>"
+    "<#{self.class} @process='#{@full_name}' @options=#{@options}>"
   end
 
   def logger_tag
@@ -59,8 +64,9 @@ class Eye::Trigger
     @transition = transition
 
     check(transition) if filter_transition(transition)
-  rescue => ex
-    warn "failed #{ex.message} #{ex.backtrace}"
+
+  rescue Exception, Timeout::Error => ex
+    log_ex(ex)
   end
 
   param :to, [Symbol, Array]

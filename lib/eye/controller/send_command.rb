@@ -34,7 +34,7 @@ private
     {:result => res}
 
   rescue Error => ex
-    error ex.message
+    log_ex(ex)
 
     {:error => ex.message}
   end
