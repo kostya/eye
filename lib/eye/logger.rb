@@ -33,6 +33,11 @@ class Eye::Logger
         logger.send(method_name, msg)
       end
     end
+
+    def log_ex(ex)
+      error "#{ex.message} #{ex.backtrace}"
+      # notify here?
+    end
   end
 
   Logger::Severity.constants.each do |level|

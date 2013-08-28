@@ -86,7 +86,7 @@ module Eye::Process::System
     save_pid_to_file
     true
   rescue => ex
-    error "failsafe_save_pid: #{ex.message}"
+    log_ex(ex)
     false
   end
 

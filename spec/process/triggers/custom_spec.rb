@@ -129,4 +129,71 @@ end
     end
   end
 
+  describe "catch exceptions" do
+    before :each do
+      @app = <<-D
+        Eye.application("bla") do
+          working_dir "#{C.sample_dir}"
+          process("1") do
+            pid_file "#{C.p1_pid}"
+            start_command "sleep 30"
+            daemonize true
+            trigger :cust2
+          end
+        end
+      D
+    end
+
+    it "when raised in initialize" do
+      conf = <<-D
+        class Cust2 < Eye::Trigger::Custom
+          def initialize(*a); super; raise :jop; end
+          def check(t); end
+        end
+        #{@app}
+      D
+      with_temp_file(conf){ |f| @c.load(f) }
+      @process = @c.process_by_name("1")
+      @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
+
+      sleep 2
+      @process.alive?.should == true
+      @process.state_name.should == :up
+    end
+
+    it "when raised in check" do
+      conf = <<-D
+        class Cust2 < Eye::Trigger::Custom
+          def initialize(*a); super; end
+          def check(t); 1/0; end
+        end
+        #{@app}
+      D
+      with_temp_file(conf){ |f| @c.load(f) }
+      @process = @c.process_by_name("1")
+      @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
+
+      sleep 2
+      @process.alive?.should == true
+      @process.state_name.should == :up
+    end
+
+    it "when raised in check NoMethodError" do
+      conf = <<-D
+        class Cust2 < Eye::Trigger::Custom
+          def initialize(*a); super; end
+          def check(t); jop?; end
+        end
+        #{@app}
+      D
+      with_temp_file(conf){ |f| @c.load(f) }
+      @process = @c.process_by_name("1")
+      @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
+
+      sleep 2
+      @process.alive?.should == true
+      @process.state_name.should == :up
+    end
+  end
+
 end

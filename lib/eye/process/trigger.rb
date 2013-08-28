@@ -29,7 +29,7 @@ private
 
   def add_trigger(cfg = {})
     trigger = Eye::Trigger.create(current_actor, cfg)
-    self.triggers << trigger
+    self.triggers << trigger if trigger
   end
 
 end
