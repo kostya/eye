@@ -50,7 +50,7 @@ class Eye::Checker
     @pid = pid
     @options = options
     @type = options[:type]
-    @full_name = @process.full_name
+    @full_name = @process.full_name if @process
 
     debug "create checker, with #{options}"
 

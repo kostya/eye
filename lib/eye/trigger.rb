@@ -42,7 +42,7 @@ class Eye::Trigger
   def initialize(process, options = {})
     @options = options
     @process = process
-    @full_name = @process.full_name
+    @full_name = @process.full_name if @process
 
     debug "add #{options}"
   end
