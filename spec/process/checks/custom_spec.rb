@@ -183,6 +183,24 @@ describe "Custom checks" do
       @process.state_name.should == :up
     end
 
+    it "when raised in defer" do
+      conf = <<-D
+        class Cust1 < Eye::Checker::Custom
+          def initialize(*a); super; end
+          def get_value; 1; end
+          def good?(v); defer{ jop }; end
+        end
+        #{@app}
+      D
+      with_temp_file(conf){ |f| @c.load(f) }
+      @process = @c.process_by_name("1")
+      @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
+
+      sleep 2
+      @process.alive?.should == true
+      @process.state_name.should == :up
+    end
+
   end
 
 end

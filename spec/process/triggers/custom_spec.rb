@@ -194,6 +194,40 @@ end
       @process.alive?.should == true
       @process.state_name.should == :up
     end
+
+    it "raises in defer" do
+      conf = <<-D
+        class Cust2 < Eye::Trigger::Custom
+          def initialize(*a); super; end
+          def check(t); defer{ 1/0 } ; end
+        end
+        #{@app}
+      D
+      with_temp_file(conf){ |f| @c.load(f) }
+      @process = @c.process_by_name("1")
+      @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
+
+      sleep 2
+      @process.alive?.should == true
+      @process.state_name.should == :up
+    end
+
+    it "raises in future" do
+      conf = <<-D
+        class Cust2 < Eye::Trigger::Custom
+          def initialize(*a); super; end
+          def check(t); Celluloid::Future.new{ wtf? } ; end
+        end
+        #{@app}
+      D
+      with_temp_file(conf){ |f| @c.load(f) }
+      @process = @c.process_by_name("1")
+      @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
+
+      sleep 2
+      @process.alive?.should == true
+      @process.state_name.should == :up
+    end
   end
 
 end
