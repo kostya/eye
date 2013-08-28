@@ -170,4 +170,10 @@ Quit monitoring:
 
     $ eye q(uit)
 
+
+Process states and events:
+
+[![Eye](https://raw.github.com/kostya/stuff/master/eye/mprocess.png)](https://raw.github.com/kostya/stuff/master/eye/process.png)
+
+
 Thanks `Bluepill` for the nice config ideas.
