@@ -1,8 +1,10 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-class A22
+class A22 # duck
   def logger_tag
     "some"
+  end
+  def full_name
   end
 end
 

@@ -387,7 +387,7 @@ describe "Eye::Dsl checks" do
 
     it "do not cross if there custom checker already" do
       conf = <<-E
-        class Cpu2 < Eye::Checker::Custom
+        class Cpu2 < Eye::Checker::CustomDefer
           param :below, [Fixnum, Float], true
         end
 
