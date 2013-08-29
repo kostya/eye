@@ -101,7 +101,7 @@ describe "Trigger State" do
             monitor_children { childs_update_period 3.seconds }
 
             trigger :state, :event => [:stopped, :crashed], :do => ->{
-              childs.pmap { |pid, c| c.stop }
+              process.childs.pmap { |pid, c| c.stop }
             }
           end
         end
