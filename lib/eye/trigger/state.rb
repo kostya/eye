@@ -5,7 +5,7 @@ class Eye::Trigger::State < Eye::Trigger
   param :do, [Proc]
 
   def check(trans)
-    @options[:do].call if @options[:do]
+    instance_exec(&@options[:do]) if @options[:do]
   end
 
 end
