@@ -7,6 +7,7 @@ class Eye::Utils::CelluloidChain
     @target = target
     @calls = []
     @running = false
+    @target_class = @target.class
   end
 
   def add(method_name, *args, &block)
@@ -46,7 +47,7 @@ class Eye::Utils::CelluloidChain
 
   # need, because of https://github.com/celluloid/celluloid/issues/22
   def inspect
-    "Celluloid::Chain(#{@target.class}: #{@calls.inspect})"
+    "Celluloid::Chain(#{@target_class}: #{@calls.size})"
   end
 
   attr_reader :running
