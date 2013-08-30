@@ -116,6 +116,10 @@ load folder with configs:
     $ eye l examples/
     $ eye l examples/*.rb
 
+foregraund load:
+
+    $ eye l CONF -f
+
 If eye daemon already started and you call `load` command, config will be updated (into eye daemon). New objects(applications, groups, processes) will be added and monitored. Removed from config processes will be removed (and stopped if process has `stop_on_delete true`). Other objects update their configs.
 
 
@@ -170,6 +174,18 @@ Quit monitoring:
 
     $ eye q(uit)
 
+Interactive info:
+
+    $ eye w(atch)
+
+Process statuses history:
+
+    $ eye hi(story)
+
+Eye daemon info:
+
+    $ eye x(info)
+    $ eye x -c # for show current config
 
 Process states and events:
 
