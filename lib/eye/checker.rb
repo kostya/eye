@@ -172,7 +172,14 @@ class Eye::Checker
     Eye::Checker.const_set(name, base)
   end
 
-  class Custom < Eye::Checker
+  class CustomCell < Eye::Checker
+    def self.inherited(base)
+      super
+      register(base)
+    end
+  end
+
+  class Custom < Defer
     def self.inherited(base)
       super
       register(base)
