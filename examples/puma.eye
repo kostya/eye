@@ -1,34 +1,29 @@
-RUBY      = '/usr/local/ruby/1.9.3-p392/bin/ruby'
+BUNDLE = 'bundle'
 RAILS_ENV = 'production'
-ROOT      = File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
-CURRENT   = File.expand_path(File.join(ROOT, %w{current}))
-LOGS      = File.expand_path(File.join(ROOT, %w{shared log}))
-PIDS      = File.expand_path(File.join(ROOT, %w{shared pids}))
+ROOT = File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
 
 Eye.config do
-  logger "#{LOGS}/eye.log"
-  logger_level Logger::ERROR
+  logger "#{ROOT}/eye.log"
 end
 
-Eye.application :super_app do
+Eye.application :puma do
   env 'RAILS_ENV' => RAILS_ENV
   working_dir ROOT
-  triggers :flapping, :times => 10, :within => 1.minute
+  trigger :flapping, :times => 10, :within => 1.minute
 
   process :puma do
     daemonize true
-    pid_file "#{PIDS}/puma.pid"
-    stdall "#{LOGS}/#{RAILS_ENV}.log"
+    pid_file "puma.pid"
+    stdall "puma.log"
 
-    start_command "#{RUBY} bin/puma --port 80 --pidfile #{PIDS}/puma.pid --environment #{RAILS_ENV} config.ru"
-    stop_command "kill -TERM {{PID}}"
+    start_command "#{BUNDLE} exec puma --port 33280 --environment #{RAILS_ENV} thin.ru"
+    stop_signals [:TERM, 5.seconds, :KILL]
     restart_command "kill -USR2 {{PID}}"
 
-    start_timeout 15.seconds
-    stop_grace 10.seconds
-    restart_grace 10.seconds
+    restart_grace 10.seconds # just sleep this until process get up status
+                             # (maybe enought to puma soft restart)
 
-    checks :cpu, :every => 30, :below => 80, :times => 3
-    checks :memory, :every => 30, :below => 70.megabytes, :times => [3,5]
+    check :cpu, :every => 30, :below => 80, :times => 3
+    check :memory, :every => 30, :below => 70.megabytes, :times => [3,5]
   end
 end

@@ -77,6 +77,7 @@ describe "Eye::Dsl checks" do
   end
 
   it "ok trigger" do
+
     conf = <<-E
       Eye.application("bla") do
         process("1") do
@@ -217,9 +218,48 @@ describe "Eye::Dsl checks" do
     proc[1].should == true
   end
 
+  it "checker with fires" do
+    conf = <<-E
+      Eye.application("bla") do |app|
+        app.process("1") do
+          pid_file "2.pid"
+
+          checks :memory, :fires => [:stop, :start], :below => 10
+        end
+      end
+    E
+    Eye::Dsl.parse_apps(conf).should == {"bla" => {:name=>"bla", :groups=>{"__default__"=>{:name=>"__default__", :application=>"bla", :processes=>{"1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"2.pid", :checks=>{:memory=>{:fires=>[:stop, :start], :below=>10, :type=>:memory}}}}}}}}
+  end
+
+  it "checker with fires" do
+    conf = <<-E
+      Eye.application("bla") do |app|
+        app.process("1") do
+          pid_file "2.pid"
+
+          checks :memory, :fires => :stop, :below => 10
+        end
+      end
+    E
+    Eye::Dsl.parse_apps(conf).should == {"bla" => {:name=>"bla", :groups=>{"__default__"=>{:name=>"__default__", :application=>"bla", :processes=>{"1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"2.pid", :checks=>{:memory=>{:fires=>:stop, :below=>10, :type=>:memory}}}}}}}}
+  end
+
+  it "checker with bad fires" do
+    conf = <<-E
+      Eye.application("bla") do |app|
+        app.process("1") do
+          pid_file "2.pid"
+
+          checks :memory, :fires => [:what?]
+        end
+      end
+    E
+    expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Validation::Error)
+  end
+
   it "define custom check" do
     conf = <<-E
-      class Cpu2 < Eye::Checker::Custom
+      class Cpu2 < Eye::Checker::CustomDefer
         # checks :cpu2, :every => 3.seconds, :below => 80, :times => [3,5]
         param :below, [Fixnum, Float], true
 
@@ -347,7 +387,7 @@ describe "Eye::Dsl checks" do
 
     it "do not cross if there custom checker already" do
       conf = <<-E
-        class Cpu2 < Eye::Checker::Custom
+        class Cpu2 < Eye::Checker::CustomDefer
           param :below, [Fixnum, Float], true
         end
 

@@ -40,6 +40,9 @@ class Eye::Notify
     else
       create_proc[needed_hash]
     end
+
+  rescue Exception, Timeout::Error => ex
+    log_ex(ex)
   end
 
   TIMEOUT = 1.minute
@@ -79,6 +82,21 @@ class Eye::Notify
 
   def message_body
     "#{message_subject} at #{msg_at.to_s(:short)}"
+  end
+
+  def self.register(base)
+    name = base.to_s.gsub("Eye::Notify::", '')
+    type = name.underscore.to_sym
+    Eye::Notify::TYPES[type] = name
+    Eye::Notify.const_set(name, base)
+    Eye::Dsl::ConfigOpts.add_notify(type)
+  end
+
+  class Custom < Eye::Notify
+    def self.inherited(base)
+      super
+      register(base)
+    end
   end
 
 private

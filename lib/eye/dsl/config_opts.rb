@@ -9,16 +9,17 @@ class Eye::Dsl::ConfigOpts < Eye::Dsl::PureOpts
   end
 
   # ==== contact options ==============================
+  def self.add_notify(type)
+    create_options_methods([type], Hash)
 
-  Eye::Notify::TYPES.keys.each do |not_system|
-    create_options_methods([not_system], Hash)
-
-    define_method("set_#{not_system}") do |value|
-      value = value.merge(:type => not_system)
+    define_method("set_#{type}") do |value|
+      value = value.merge(:type => type)
       super(value)
       Eye::Notify.validate!(value)
     end
   end
+
+  Eye::Notify::TYPES.keys.each { |name| add_notify(name) }
 
   def contact(contact_name, contact_type, contact, contact_opts = {})
     raise Eye::Dsl::Error, "unknown contact_type #{contact_type}" unless Eye::Notify::TYPES[contact_type]

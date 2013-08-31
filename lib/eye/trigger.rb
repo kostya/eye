@@ -1,10 +1,11 @@
 class Eye::Trigger
   autoload :Flapping,   'eye/trigger/flapping'
   autoload :State,      'eye/trigger/state'
+  autoload :StopChilds, 'eye/trigger/stop_childs'
 
   # ex: { :type => :flapping, :times => 2, :within => 30.seconds}
 
-  TYPES = {:flapping => "Flapping", :state => "State"}
+  TYPES = {:flapping => "Flapping", :state => "State", :stop_childs => "StopChilds"}
 
   attr_reader :message, :options, :process
 
@@ -28,6 +29,10 @@ class Eye::Trigger
 
   def self.create(process, options = {})
     get_class(options[:type]).new(process, options)
+
+  rescue Exception, Timeout::Error => ex
+    log_ex(ex)
+    nil
   end
 
   def self.validate!(options = {})
@@ -37,12 +42,13 @@ class Eye::Trigger
   def initialize(process, options = {})
     @options = options
     @process = process
+    @full_name = @process.full_name if @process
 
     debug "add #{options}"
   end
 
   def inspect
-    "<#{self.class} @process='#{@process.full_name}' @options=#{@options}>"
+    "<#{self.class} @process='#{@full_name}' @options=#{@options}>"
   end
 
   def logger_tag
@@ -54,11 +60,25 @@ class Eye::Trigger
   end
 
   def notify(transition)
-    debug "check"
+    debug "check (:#{transition.event}) :#{transition.from} => :#{transition.to}"
     @transition = transition
-    check(transition)
-  rescue => ex
-    warn "failed #{ex.message} #{ex.backtrace}"
+
+    check(transition) if filter_transition(transition)
+
+  rescue Exception, Timeout::Error => ex
+    log_ex(ex)
+  end
+
+  param :to, [Symbol, Array]
+  param :from, [Symbol, Array]
+  param :event, [Symbol, Array]
+
+  def filter_transition(trans)
+    return true unless to || from || event
+
+    compare_state(trans.to_name, to) &&
+      compare_state(trans.from_name, from) &&
+      compare_state(trans.event, event)
   end
 
   def check(transition)
@@ -75,7 +95,6 @@ class Eye::Trigger
 
   def self.register(base)
     name = base.to_s.gsub("Eye::Trigger::", '')
-    name = base.to_s
     type = name.underscore.to_sym
     Eye::Trigger::TYPES[type] = name
     Eye::Trigger.const_set(name, base)
@@ -87,4 +106,18 @@ class Eye::Trigger
       register(base)
     end
   end
+
+private
+
+  def compare_state(state_name, condition)
+    case condition
+    when Symbol
+      state_name == condition
+    when Array
+      condition.include?(state_name)
+    else
+      true
+    end
+  end
+
 end

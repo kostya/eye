@@ -53,16 +53,19 @@ private
     subject = Eye::Checker.create(pid, cfg, current_actor)
 
     # ex: {:type => :memory, :every => 5.seconds, :below => 100.megabytes, :times => [3,5]}
-    add_watcher("check_#{name}".to_sym, subject.every, subject, &method(:watcher_tick).to_proc)
+    add_watcher("check_#{name}".to_sym, subject.every, subject, &method(:watcher_tick).to_proc) if subject
   end
 
   def watcher_tick(subject)
     unless subject.check
       return unless up?
 
-      action = subject.fire || :restart
-      notify :warn, "Bounded #{subject.check_name}: #{subject.last_human_values} send to :#{action}"
-      schedule action, Eye::Reason.new("bounded #{subject.check_name}")
+      actions = subject.fires ? Array(subject.fires) : [:restart]
+      notify :warn, "Bounded #{subject.check_name}: #{subject.last_human_values} send to #{actions}"
+
+      actions.each do |action|
+        schedule action, Eye::Reason.new("bounded #{subject.check_name}")
+      end
     end
   end
 

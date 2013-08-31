@@ -31,7 +31,7 @@ describe "Eye::System" do
   it "prepare env" do
     Eye::System.send(:prepare_env, {}).should include({})
     Eye::System.send(:prepare_env, {:environment => {'A' => 'B'}}).should include({'A' => 'B'})
-    Eye::System.send(:prepare_env, {:environment => {'A' => 'B'}, :working_dir => "/tmp"}).should include({'A' => 'B', 'PWD' => '/tmp'})
+    Eye::System.send(:prepare_env, {:environment => {'A' => 'B'}, :working_dir => "/tmp"}).should include({'A' => 'B'})
 
     r = Eye::System.send(:prepare_env, {:environment => {'A' => [], 'B' => {}, 'C' => nil, 'D' => 1, 'E' => '2'}})
     r['A'].should == '[]'

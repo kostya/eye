@@ -6,16 +6,18 @@ class Eye::Checker
   autoload :FileCTime,  'eye/checker/file_ctime'
   autoload :FileSize,   'eye/checker/file_size'
   autoload :Socket,     'eye/checker/socket'
+  autoload :Nop,        'eye/checker/nop'
 
   TYPES = {:memory => "Memory", :cpu => "Cpu", :http => "Http",
-           :ctime => "FileCTime", :fsize => "FileSize", :socket => "Socket"}
+           :ctime => "FileCTime", :fsize => "FileSize", :socket => "Socket",
+           :nop => "Nop" }
 
   attr_accessor :value, :values, :options, :pid, :type, :check_count, :process
 
   extend Eye::Dsl::Validation
   param :every, [Fixnum, Float], false, 5
   param :times, [Fixnum, Array], nil, 1
-  param :fire, Symbol, nil, nil, [:stop, :restart, :unmonitor, :nothing]
+  param :fires, [Symbol, Array], nil, nil, [:stop, :restart, :unmonitor, :nothing, :start, :delete]
 
   def self.name_and_class(type)
     type = type.to_sym
@@ -35,6 +37,10 @@ class Eye::Checker
 
   def self.create(pid, options = {}, process = nil)
     get_class(options[:type]).new(pid, options, process)
+
+  rescue Exception, Timeout::Error => ex
+    log_ex(ex)
+    nil
   end
 
   def self.validate!(options)
@@ -46,6 +52,7 @@ class Eye::Checker
     @pid = pid
     @options = options
     @type = options[:type]
+    @full_name = @process.full_name if @process
 
     debug "create checker, with #{options}"
 
@@ -55,7 +62,7 @@ class Eye::Checker
   end
 
   def inspect
-    "<#{self.class} @process='#{@process.full_name}' @options=#{@options} @pid=#{@pid}>"
+    "<#{self.class} @process='#{@full_name}' @options=#{@options} @pid=#{@pid}>"
   end
 
   def logger_tag
@@ -89,6 +96,9 @@ class Eye::Checker
 
     info "#{last_human_values} => #{result ? 'OK' : 'Fail'}"
     result
+
+  rescue Exception, Timeout::Error => ex
+    log_ex(ex)
   end
 
   def get_value_safe
@@ -162,7 +172,14 @@ class Eye::Checker
     Eye::Checker.const_set(name, base)
   end
 
-  class Custom < Eye::Checker
+  class CustomCell < Eye::Checker
+    def self.inherited(base)
+      super
+      register(base)
+    end
+  end
+
+  class Custom < Defer
     def self.inherited(base)
       super
       register(base)

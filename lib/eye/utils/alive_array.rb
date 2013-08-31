@@ -3,7 +3,7 @@ class Eye::Utils::AliveArray
   include Enumerable
 
   def_delegators :@arr, :[], :<<, :clear, :delete, :size, :empty?, :push,
-                        :flatten, :present?, :uniq!
+                        :flatten, :present?, :uniq!, :select!
 
   def initialize(arr = [])
     @arr = arr

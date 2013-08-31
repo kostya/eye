@@ -58,7 +58,7 @@ module Eye::System
       opts = spawn_options(cfg)
       pid  = Process::spawn(prepare_env(cfg), *Shellwords.shellwords(cmd), opts)
       Process.detach(pid)
-      {:pid => pid}
+      {:pid => pid, :exitstatus => 0}
 
     rescue Errno::ENOENT, Errno::EACCES => ex
       {:error => ex}
@@ -74,11 +74,14 @@ module Eye::System
       pid  = Process::spawn(prepare_env(cfg), *Shellwords.shellwords(cmd), opts)
 
       timeout = cfg[:timeout] || 1.second
+      status = 0
+
       Timeout.timeout(timeout) do
-        Process.waitpid(pid)
+        _, st = Process.waitpid2(pid)
+        status = st.exitstatus || st.termsig
       end
 
-      {:pid => pid}
+      {:pid => pid, :exitstatus => status}
 
     rescue Timeout::Error => ex
       if pid
@@ -155,9 +158,6 @@ module Eye::System
       (config[:environment] || {}).each do |k,v|
         env[k.to_s] = v.to_s if v
       end
-
-      # set PWD for unicorn respawn
-      env['PWD'] = config[:working_dir] if config[:working_dir]
 
       env
     end

@@ -70,7 +70,7 @@ describe "Custom checks" do
             start_command "sleep 30"
             daemonize true
 
-            check :touch_file, :every => 3.seconds, :fire => :stop, :file => "#{C.tmp_file}"
+            check :touch_file, :every => 3.seconds, :fires => [:stop], :file => "#{C.tmp_file}"
             trigger :state, :event => :stopped, :do => ->{ ::File.delete("#{C.tmp_file}") }
           end
         end
@@ -93,6 +93,114 @@ describe "Custom checks" do
 
       File.exists?(C.tmp_file).should == false
     end
+  end
+
+  describe "catch exceptions" do
+    before :each do
+      @app = <<-D
+        Eye.application("bla") do
+          working_dir "#{C.sample_dir}"
+          process("1") do
+            pid_file "#{C.p1_pid}"
+            start_command "sleep 30"
+            daemonize true
+            check :cust1, :every => 1.seconds
+          end
+        end
+      D
+    end
+
+    it "when raised in initialize" do
+      conf = <<-D
+        class Cust1 < Eye::Checker::Custom
+          def initialize(*a); super; raise :jop; end
+          def get_value; 1; end
+          def good?(v); v; end
+        end
+        #{@app}
+      D
+      with_temp_file(conf){ |f| @c.load(f) }
+      @process = @c.process_by_name("1")
+      @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
+
+
+      sleep 2
+      @process.alive?.should == true
+      @process.state_name.should == :up
+    end
+
+    it "when raised in get_value" do
+      conf = <<-D
+        class Cust1 < Eye::Checker::Custom
+          def initialize(*a); super; end
+          def get_value; raise :jop; end
+          def good?(v); v; end
+        end
+        #{@app}
+      D
+      with_temp_file(conf){ |f| @c.load(f) }
+      @process = @c.process_by_name("1")
+      @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
+
+      sleep 2
+      @process.alive?.should == true
+      @process.state_name.should == :up
+    end
+
+    it "when raised in good?" do
+      conf = <<-D
+        class Cust1 < Eye::Checker::Custom
+          def initialize(*a); super; end
+          def get_value; 1; end
+          def good?(v); raise :jop; end
+        end
+        #{@app}
+      D
+      with_temp_file(conf){ |f| @c.load(f) }
+      @process = @c.process_by_name("1")
+      @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
+
+      sleep 2
+      @process.alive?.should == true
+      @process.state_name.should == :up
+    end
+
+    it "when raised in good? and NoMethodError" do
+      conf = <<-D
+        class Cust1 < Eye::Checker::Custom
+          def initialize(*a); super; end
+          def get_value; 1; end
+          def good?(v); jop; end
+        end
+        #{@app}
+      D
+      with_temp_file(conf){ |f| @c.load(f) }
+      @process = @c.process_by_name("1")
+      @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
+
+      sleep 2
+      @process.alive?.should == true
+      @process.state_name.should == :up
+    end
+
+    it "when raised in defer" do
+      conf = <<-D
+        class Cust1 < Eye::Checker::Custom
+          def initialize(*a); super; end
+          def get_value; 1; end
+          def good?(v); defer{ jop }; end
+        end
+        #{@app}
+      D
+      with_temp_file(conf){ |f| @c.load(f) }
+      @process = @c.process_by_name("1")
+      @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
+
+      sleep 2
+      @process.alive?.should == true
+      @process.state_name.should == :up
+    end
+
   end
 
 end

@@ -290,10 +290,9 @@ describe "find_objects" do
       }.to raise_error(Eye::Controller::Error)
     end
 
-    it "`*p1` should not match anything" do
-      expect{
-        objs = subject.find_objects("*p1")
-      }.to raise_error(Eye::Controller::Error)
+    it "`*p1` should match app1" do
+      objs = subject.find_objects("*p1")
+      objs.map(&:full_name).sort.should == %w{app1}
     end
 
     it "`app1:admin` should match" do
@@ -311,4 +310,105 @@ describe "find_objects" do
       res[:error].should == 'cant match targets from different applications: ["app1:admin", "app2:admin"]'
     end
   end
+
+  describe "matching app in priority" do
+    subject{ new_controller(fixture("dsl/load_dubls3.eye")) }
+
+    it "`some` should find only app" do
+      objs = subject.find_objects("some")
+      objs.map(&:full_name).sort.should == %w{someapp}
+    end
+
+    it "`someapp` should find only app" do
+      objs = subject.find_objects("someapp")
+      objs.map(&:full_name).sort.should == %w{someapp}
+    end
+
+    it "`somep` should find only process" do
+      objs = subject.find_objects("somep")
+      objs.map(&:full_name).sort.should == %w{app:someprocess}
+    end
+
+    it 'app should raise error' do
+      objs = subject.find_objects("app")
+      objs.map(&:full_name).sort.should == %w{app}
+    end
+  end
+
+  describe "matching app in priority" do
+    subject{ with_temp_file(<<-E){ |f| new_controller(f) }
+      Eye.application "worder" do
+        group "word1" do
+          process("p1"){ pid_file "p1" }
+        end
+
+        group :bigword do
+          process("o1"){ pid_file "o1" }
+        end
+      end
+    E
+    }
+
+    it "`word` should match app" do
+      objs = subject.find_objects("word")
+      objs.map(&:full_name).sort.should == %w{worder}
+    end
+
+    it "`word*` should match app" do
+      objs = subject.find_objects("word*")
+      objs.map(&:full_name).sort.should == %w{worder}
+    end
+  end
+
+  describe "application filter" do
+    subject{ new_controller(fixture("dsl/load.eye")) }
+
+    it "when unknown application" do
+      res = subject.matched_objects("p1", :application => "crazey")
+      res[:result].should == %w{}
+    end
+
+    it "*" do
+      res = subject.matched_objects("*", :application => "app1")
+      res[:result].should == %w{app1}
+
+      res = subject.matched_objects("*", :application => "app2")
+      res[:result].should == %w{app2}
+    end
+
+    it "all" do
+      res = subject.matched_objects("all", :application => "app1")
+      res[:result].should == %w{app1}
+
+      res = subject.matched_objects("all", :application => "app2")
+      res[:result].should == %w{app2}
+    end
+
+    it "p1" do
+      res = subject.matched_objects("p1", :application => "app1")
+      res[:result].should == %w{app1:gr1:p1}
+
+      res = subject.matched_objects("p1", :application => "app2")
+      res[:result].should == %w{}
+    end
+
+    it "find p* processes by mask" do
+      objs = subject.find_objects("p*", :application => "app1")
+      objs.map(&:full_name).sort.should == %w{app1:gr1:p1 app1:gr1:p2}
+    end
+
+    it "z1" do
+      res = subject.matched_objects("z1", :application => "app1")
+      res[:result].should == %w{}
+
+      res = subject.matched_objects("z1", :application => "app2")
+      res[:result].should == %w{app2:z1}
+    end
+
+    it "not matched app partially" do
+      res = subject.matched_objects("p1", :application => "app")
+      res[:result].should == %w{}
+    end
+  end
+
 end

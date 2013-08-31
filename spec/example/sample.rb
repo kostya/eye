@@ -130,9 +130,12 @@ if options[:no_terminate]
   end
 end
 
+start_at = Time.now
 loop do
   sleep 0.1
   puts "tick"
+
+  break if Time.now - start_at > 600 # autostop this after 10 mins
 
   if options[:watch_file]
     if File.exists?(options[:watch_file])

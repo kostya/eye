@@ -17,10 +17,6 @@ class Eye::Application
     @name
   end
 
-  def update_config(cfg)
-    @config = cfg
-  end
-
   def add_group(group)
     @groups << group
   end

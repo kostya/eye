@@ -87,6 +87,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     @config[:environment].merge!(value)
   end
 
+  alias dir working_dir
   alias env environment
 
   def set_stdall(value)

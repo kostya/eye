@@ -23,27 +23,18 @@ module Eye::Controller::SendCommand
     end
   end
 
-  def break_chain(*args)
-    matched_objects(*args) do |obj|
-      obj.send_command(:break_chain)
-    end
-  end
-
 private
 
   class Error < Exception; end
 
   def matched_objects(*args, &block)
-    h = args.extract_options!
-    obj_strs = args
-
-    objs = find_objects(*obj_strs)
+    objs = find_objects(*args)
     res = objs.map(&:full_name)
     objs.each{|obj| block[obj] } if block
     {:result => res}
 
   rescue Error => ex
-    error ex.message
+    log_ex(ex)
 
     {:error => ex.message}
   end
@@ -69,13 +60,25 @@ private
 
   # find object to action, restart ... (app, group or process)
   # nil if not found
-  def find_objects(*obj_strs)
+  def find_objects(*args)
+    h = args.extract_options!
+    obj_strs = args
+
     return [] if obj_strs.blank?
-    return @applications.dup if obj_strs.size == 1 && (obj_strs[0].to_s.strip == 'all' || obj_strs[0].to_s.strip == '*')
+
+    if obj_strs.size == 1 && (obj_strs[0].to_s.strip == 'all' || obj_strs[0].to_s.strip == '*')
+      if h[:application]
+        return @applications.select { |app| app.name == h[:application]}
+      else
+        return @applications.dup
+      end
+    end
 
     res = Eye::Utils::AliveArray.new
     obj_strs.map{|c| c.to_s.split(",")}.flatten.each do |mask|
-      res += find_objects_by_mask(mask.to_s.strip)
+      objs = find_objects_by_mask(mask.to_s.strip)
+      objs.select! { |obj| obj.app_name == h[:application] } if h[:application]
+      res += objs
     end
     res
   end
@@ -88,9 +91,9 @@ private
 
       # try to find exactly matched
       if mask[-1] != '*'
-        r = right_regexp(mask)
+        r = exact_regexp(mask)
         res.each do |obj|
-          final << obj if obj.full_name =~ r
+          final << obj if obj.name =~ r || obj.full_name =~ r
         end
       end
 
@@ -106,16 +109,18 @@ private
       res = final
 
       # try to remove objects with different applications
-      fapps, apps = [], []
+      apps, objs = Eye::Utils::AliveArray.new, Eye::Utils::AliveArray.new
       res.each do |obj|
         if obj.is_a?(Eye::Application)
-          fapps << obj.name
+          apps << obj
         else
-          apps << obj.app_name
+          objs << obj
         end
       end
 
-      if (apps).uniq.size > 1 || (fapps.size > 0 && (apps | fapps).size > fapps.size)
+      return apps if apps.size > 0
+
+      if objs.map(&:app_name).uniq.size > 1
         raise Error, "cant match targets from different applications: #{res.map(&:full_name)}"
       end
     end
@@ -163,8 +168,8 @@ private
     %r|\A#{str}|
   end
 
-  def right_regexp(mask)
+  def exact_regexp(mask)
     str = Regexp.escape(mask).gsub('\*', '.*?')
-    %r|#{str}\z|
+    %r|\A#{str}\z|
   end
 end

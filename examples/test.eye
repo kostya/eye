@@ -14,8 +14,8 @@ Eye.application "test" do
   working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
   stdall "trash.log" # stdout,err logs for processes by default
   env "APP_ENV" => "production" # global env for each processes
-  triggers :flapping, :times => 10, :within => 1.minute, :retry_in => 10.minutes
-  checks :cpu, :below => 100, :times => 3 # global check for all processes
+  trigger :flapping, :times => 10, :within => 1.minute, :retry_in => 10.minutes
+  check :cpu, :below => 100, :times => 3 # global check for all processes
 
   group "samples" do
     chain :grace => 5.seconds # chained start-restart with 5s interval, one by one.
@@ -31,7 +31,7 @@ Eye.application "test" do
       daemonize true
       stdall "sample1.log"
 
-      checks :cpu, :below => 30, :times => [3, 5]
+      check :cpu, :below => 30, :times => [3, 5]
     end
 
     # self daemonized process
@@ -40,7 +40,7 @@ Eye.application "test" do
       start_command "ruby ./sample.rb -d --pid 2.pid --log sample2.log"
       stop_command "kill -9 {PID}"
 
-      checks :memory, :below => 300.megabytes, :times => 3
+      check :memory, :below => 300.megabytes, :times => 3
     end
   end
 
@@ -51,12 +51,12 @@ Eye.application "test" do
     stop_command "ruby forking.rb stop"
     stdall "forking.log"
 
-    start_timeout 5.seconds
-    stop_grace 5.seconds
+    start_timeout 10.seconds
+    stop_timeout 5.seconds
 
     monitor_children do
       restart_command "kill -2 {PID}" # for this child process
-      checks :memory, :below => 300.megabytes, :times => 3
+      check :memory, :below => 300.megabytes, :times => 3
     end
   end
 
@@ -68,8 +68,8 @@ Eye.application "test" do
     daemonize true
     stop_signals [:QUIT, 2.seconds, :KILL]
 
-    checks :socket, :addr => "tcp://127.0.0.1:33221", :every => 10.seconds, :times => 2,
-                    :timeout => 1.second, :send_data => "ping", :expect_data => /pong/
+    check :socket, :addr => "tcp://127.0.0.1:33221", :every => 10.seconds, :times => 2,
+                   :timeout => 1.second, :send_data => "ping", :expect_data => /pong/
   end
 
   # thin process, self daemonized
@@ -78,8 +78,8 @@ Eye.application "test" do
     start_command "bundle exec thin start -R thin.ru -p 33233 -d -l thin.log -P thin.pid"
     stop_signals [:QUIT, 2.seconds, :TERM, 1.seconds, :KILL]
 
-    checks :http, :url => "http://127.0.0.1:33233/hello", :pattern => /World/, :every => 5.seconds,
-                  :times => [2, 3], :timeout => 1.second
+    check :http, :url => "http://127.0.0.1:33233/hello", :pattern => /World/, :every => 5.seconds,
+                 :times => [2, 3], :timeout => 1.second
   end
 
 end

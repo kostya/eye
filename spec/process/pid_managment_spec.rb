@@ -10,7 +10,7 @@ describe "Process Pid Managment" do
 
       mock(@process).start # stub start for clean test
 
-      sleep 6
+      sleep 4
 
       if cfg[:daemonize]
         @process.load_pid_from_file.should == nil
@@ -27,7 +27,7 @@ describe "Process Pid Managment" do
       FileUtils.rm(cfg[:pid_file]) # someone removes it (bad man)
       File.exists?(cfg[:pid_file]).should == false
 
-      sleep 10 # wait until monitor understand it
+      sleep 5 # wait until monitor understand it
 
       File.exists?(cfg[:pid_file]).should == true
       @process.pid.should == old_pid
@@ -43,7 +43,7 @@ describe "Process Pid Managment" do
       File.open(cfg[:pid_file], 'w'){|f| f.write(99999) }
       @process.load_pid_from_file.should == 99999
 
-      sleep 10 # wait until monitor understand it
+      sleep 5 # wait until monitor understand it
 
       if cfg[:daemonize]
         @process.load_pid_from_file.should == @pid
@@ -60,12 +60,12 @@ describe "Process Pid Managment" do
       old_pid = @pid
       @process.load_pid_from_file.should == @pid
 
-      silence_warnings{ Eye::Process::Monitor::REWRITE_FACKUP_PIDFILE_PERIOD = 4.seconds }
+      silence_warnings{ Eye::Process::Monitor::REWRITE_FACKUP_PIDFILE_PERIOD = 3.seconds }
 
       File.open(cfg[:pid_file], 'w'){|f| f.write(99999) }
       @process.load_pid_from_file.should == 99999
 
-      sleep 15 # wait until monitor understand it
+      sleep 8 # wait until monitor understand it
 
       @process.load_pid_from_file.should == @pid
 
@@ -87,7 +87,7 @@ describe "Process Pid Managment" do
 
       die_process!(old_pid)
 
-      sleep 10 # wait until monitor upping process
+      sleep 5 # wait until monitor upping process
 
       @process.pid.should == @pid
       old_pid.should_not == @pid

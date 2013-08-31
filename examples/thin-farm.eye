@@ -14,8 +14,8 @@ Eye.app 'thin-farm' do
   stop_on_delete true # this option means, when we change pids and load config,
                       # deleted processes will be stops
 
-  triggers :flapping, :times => 10, :within => 1.minute
-  checks :memory, :below => 60.megabytes, :every => 30.seconds, :times => 5
+  trigger :flapping, :times => 10, :within => 1.minute
+  check :memory, :below => 60.megabytes, :every => 30.seconds, :times => 5
   start_timeout 30.seconds
 
   group :web do

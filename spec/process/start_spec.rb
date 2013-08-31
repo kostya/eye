@@ -29,7 +29,7 @@ describe "Process Start" do
 
   it "process started and up, receive command start" do
     @process = process C.p1
-    @process.start.should == {:pid=>@process.pid}
+    @process.start.should == {:pid=>@process.pid, :exitstatus => 0}
     sleep 0.5
     @process.state_name.should == :up
     @process.watchers.keys.should == [:check_alive]
@@ -43,7 +43,7 @@ describe "Process Start" do
   [C.p1, C.p2].each do |cfg|
     it "start new process, with config #{cfg[:name]}" do
       @process = process cfg
-      @process.start.should == {:pid=>@process.pid}
+      @process.start.should == {:pid=>@process.pid, :exitstatus => 0}
 
       sleep 0.5
 
@@ -58,7 +58,7 @@ describe "Process Start" do
       File.open(C.p1[:pid_file], 'w'){|f| f.write(1234567) }
 
       @process = process cfg
-      @process.start.should == {:pid=>@process.pid}
+      @process.start.should == {:pid=>@process.pid, :exitstatus => 0}
 
       sleep 0.5
 
@@ -166,7 +166,7 @@ describe "Process Start" do
     # this is no matter for starting
     @process = process(C.p1.merge(:start_command => C.p1[:start_command] + " --daemonize_delay 3",
       :start_grace => 2.seconds ))
-    @process.start.should == {:pid=>@process.pid}
+    @process.start.should == {:pid=>@process.pid, :exitstatus => 0}
 
     sleep 5
     Eye::System.pid_alive?(@process.pid).should == true
@@ -191,7 +191,7 @@ describe "Process Start" do
   it "long process with #{C.p2[:name]} but start_timeout is OK" do
     @process = process(C.p2.merge(:start_command => C.p2[:start_command] + " --daemonize_delay 3",
       :start_timeout => 10.seconds))
-    @process.start.should == {:pid => @process.pid}
+    @process.start.should == {:pid => @process.pid, :exitstatus => 0}
 
     @process.load_pid_from_file.should == @process.pid
     @process.state_name.should == :up

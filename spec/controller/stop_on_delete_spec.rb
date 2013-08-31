@@ -47,7 +47,7 @@ describe "StopOnDelete behaviour" do
 
   it "delete application => stop all proceses" do
     @controller.send_command(:delete, "int")
-    sleep 7 # while
+    sleep 8 # while
 
     @controller.all_processes.should == []
     @controller.all_groups.should == []

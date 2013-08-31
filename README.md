@@ -4,7 +4,7 @@ Eye
 [![Build Status](https://secure.travis-ci.org/kostya/eye.png?branch=master)](http://travis-ci.org/kostya/eye)
 [![Coverage Status](https://coveralls.io/repos/kostya/eye/badge.png?branch=master)](https://coveralls.io/r/kostya/eye?branch=master)
 
-Process monitoring tool. An alternative to God and Bluepill. With Bluepill like config syntax. Requires MRI Ruby >= 1.9.3-p194. Uses Celluloid and Celluloid::IO.
+Process monitoring tool. Inspired from Bluepill and God. Requires Ruby(MRI) >= 1.9.3-p194. Uses Celluloid and Celluloid::IO.
 
 Little demo, shows general commands and how chain works:
 
@@ -36,8 +36,8 @@ Eye.application "test" do
   working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
   stdall "trash.log" # stdout,err logs for processes by default
   env "APP_ENV" => "production" # global env for each processes
-  triggers :flapping, :times => 10, :within => 1.minute, :retry_in => 10.minutes
-  checks :cpu, :below => 100, :times => 3 # global check for all processes
+  trigger :flapping, :times => 10, :within => 1.minute, :retry_in => 10.minutes
+  check :cpu, :below => 100, :times => 3 # global check for all processes
 
   group "samples" do
     chain :grace => 5.seconds # chained start-restart with 5s interval, one by one.
@@ -53,7 +53,7 @@ Eye.application "test" do
       daemonize true
       stdall "sample1.log"
 
-      checks :cpu, :below => 30, :times => [3, 5]
+      check :cpu, :below => 30, :times => [3, 5]
     end
 
     # self daemonized process
@@ -62,7 +62,7 @@ Eye.application "test" do
       start_command "ruby ./sample.rb -d --pid 2.pid --log sample2.log"
       stop_command "kill -9 {PID}"
 
-      checks :memory, :below => 300.megabytes, :times => 3
+      check :memory, :below => 300.megabytes, :times => 3
     end
   end
 
@@ -73,12 +73,12 @@ Eye.application "test" do
     stop_command "ruby forking.rb stop"
     stdall "forking.log"
 
-    start_timeout 5.seconds
-    stop_grace 5.seconds
+    start_timeout 10.seconds
+    stop_timeout 5.seconds
 
     monitor_children do
       restart_command "kill -2 {PID}" # for this child process
-      checks :memory, :below => 300.megabytes, :times => 3
+      check :memory, :below => 300.megabytes, :times => 3
     end
   end
 
@@ -90,8 +90,8 @@ Eye.application "test" do
     daemonize true
     stop_signals [:QUIT, 2.seconds, :KILL]
 
-    checks :socket, :addr => "tcp://127.0.0.1:33221", :every => 10.seconds, :times => 2,
-                    :timeout => 1.second, :send_data => "ping", :expect_data => /pong/
+    check :socket, :addr => "tcp://127.0.0.1:33221", :every => 10.seconds, :times => 2,
+                   :timeout => 1.second, :send_data => "ping", :expect_data => /pong/
   end
 
   # thin process, self daemonized
@@ -100,14 +100,14 @@ Eye.application "test" do
     start_command "bundle exec thin start -R thin.ru -p 33233 -d -l thin.log -P thin.pid"
     stop_signals [:QUIT, 2.seconds, :TERM, 1.seconds, :KILL]
 
-    checks :http, :url => "http://127.0.0.1:33233/hello", :pattern => /World/, :every => 5.seconds,
-                  :times => [2, 3], :timeout => 1.second
+    check :http, :url => "http://127.0.0.1:33233/hello", :pattern => /World/, :every => 5.seconds,
+                 :times => [2, 3], :timeout => 1.second
   end
 
 end
 ```
 
-### Start monitoring and load config:
+### Start eye daemon and/or load config:
 
     $ eye l(oad) examples/test.eye
 
@@ -116,8 +116,11 @@ load folder with configs:
     $ eye l examples/
     $ eye l examples/*.rb
 
-Load also uses for config synchronization and load new application into runned eye daemon. Light operation, so i recommend to use with every deploy (and than restart processes).
-(for processes with option `stop_on_delete`, `load` becomes a tool for full config synchronization, which stopps deleted from config processes).
+foregraund load:
+
+    $ eye l CONF -f
+
+If eye daemon already started and you call `load` command, config will be updated (into eye daemon). New objects(applications, groups, processes) will be added and monitored. Removed from config processes will be removed (and stopped if process has `stop_on_delete true`). Other objects update their configs.
 
 
 Process statuses:
@@ -171,6 +174,22 @@ Quit monitoring:
 
     $ eye q(uit)
 
-### Config options:
+Interactive info:
 
-  Waiting for pull requests here..., until that you can read `examples` and `spec/dsl` folders.
+    $ eye w(atch)
+
+Process statuses history:
+
+    $ eye hi(story)
+
+Eye daemon info:
+
+    $ eye x(info)
+    $ eye x -c # for show current config
+
+Process states and events:
+
+[![Eye](https://raw.github.com/kostya/stuff/master/eye/mprocess.png)](https://raw.github.com/kostya/stuff/master/eye/process.png)
+
+
+Thanks `Bluepill` for the nice config ideas.

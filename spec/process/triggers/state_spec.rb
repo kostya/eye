@@ -101,7 +101,7 @@ describe "Trigger State" do
             monitor_children { childs_update_period 3.seconds }
 
             trigger :state, :event => [:stopped, :crashed], :do => ->{
-              childs.pmap { |pid, c| c.stop }
+              process.childs.pmap { |pid, c| c.stop }
             }
           end
         end
@@ -148,6 +148,52 @@ describe "Trigger State" do
 
       @pids = @process.childs.keys # to ensure spec kill them
       @process.childs.size.should == 3
+    end
+  end
+
+  describe "catch errors" do
+    it "catch just error in do" do
+      cfg = <<-D
+        Eye.application("bla") do
+          working_dir "#{C.sample_dir}"
+          process("1") do
+            pid_file "#{C.p1_pid}"
+            start_command "sleep 30"
+            daemonize true
+            trigger :state1, :to => :up, :do => ->{ info "some"; 1/0 }
+          end
+        end
+      D
+
+      with_temp_file(cfg){ |f| @c.load(f) }
+      @process = @c.process_by_name("1")
+      @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
+
+      sleep 2
+      @process.alive?.should == true
+      @process.state_name.should == :up
+    end
+
+    it "catch just error in do with NoMethodError" do
+      cfg = <<-D
+        Eye.application("bla") do
+          working_dir "#{C.sample_dir}"
+          process("1") do
+            pid_file "#{C.p1_pid}"
+            start_command "sleep 30"
+            daemonize true
+            trigger :state1, :to => :up, :do => ->{ info "some"; wtf? }
+          end
+        end
+      D
+
+      with_temp_file(cfg){ |f| @c.load(f) }
+      @process = @c.process_by_name("1")
+      @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
+
+      sleep 2
+      @process.alive?.should == true
+      @process.state_name.should == :up
     end
   end
 

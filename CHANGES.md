@@ -1,4 +1,13 @@
-0.4.dev
+0.4.1.dev
+---------
+* add nop checker for periodic restart
+* catch errors in custom checkers, triggers
+* add custom notify
+* checker can fires array of commands
+* fix targets matching
+* remove autoset PWD env
+
+0.4
 ---------
 * pass tests on 1.9.2
 * relax activesupport dependency
