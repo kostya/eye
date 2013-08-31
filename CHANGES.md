@@ -1,4 +1,7 @@
-0.4.1.dev
+0.5.dev
+-------
+
+0.4.1
 ---------
 * add nop checker for periodic restart
 * catch errors in custom checkers, triggers
