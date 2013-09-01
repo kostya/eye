@@ -7,6 +7,7 @@ gem 'thor'
 require 'thor'
 
 class Eye::Cli < Thor
+  map ["-v", "--version"] => :version
 
   desc "info [MASK]", "show process statuses"
   def info(mask = nil)
