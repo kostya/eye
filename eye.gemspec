@@ -2,7 +2,7 @@ require File.expand_path('../lib/eye', __FILE__)
 
 Gem::Specification.new do |gem|
   gem.authors       = "Konstantin Makarchev"
-  gem.email         = "kostya27@gmail.com"
+  gem.email         = "eye-rb@googlegroups.com"
 
   gem.description   = gem.summary = \
     %q{Process monitoring tool. Inspired from Bluepill and God. Requires Ruby(MRI) >= 1.9.3-p194. Uses Celluloid and Celluloid::IO.}
