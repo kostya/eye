@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 $:.unshift File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib]))
-require 'rubygems' if RUBY_VERSION < '1.9'
 require 'eye'
 
 gem 'thor'
@@ -105,11 +104,7 @@ class Eye::Cli < Thor
     Eye::System.host = options[:host] if options[:host]
     Eye::Dsl.verbose = options[:verbose]
 
-    if RUBY_VERSION < '1.9'
-      say_load_result cmd(:check, conf), :syntax => true
-    else
-      say_load_result Eye::Controller.new.check(conf), :syntax => true
-    end
+    say_load_result Eye::Controller.new.check(conf), :syntax => true
   end
 
   desc "explain CONF", "explain config tree (for debug)"
@@ -121,11 +116,7 @@ class Eye::Cli < Thor
     Eye::System.host = options[:host] if options[:host]
     Eye::Dsl.verbose = options[:verbose]
 
-    if RUBY_VERSION < '1.9'
-      say_load_result cmd(:explain, conf), :print_config => true, :syntax => true
-    else
-      say_load_result Eye::Controller.new.explain(conf), :print_config => true, :syntax => true
-    end
+    say_load_result Eye::Controller.new.explain(conf), :print_config => true, :syntax => true
   end
 
   desc "watch [MASK]", "interactive process info"
@@ -236,13 +227,6 @@ private
   end
 
   def loader_path
-    if RUBY_VERSION < '1.9'
-      begin
-        return Gem.bin_path('eye', 'loader_eye')
-      rescue Gem::GemNotFoundException, Gem::Exception
-      end
-    end
-
     filename = File.expand_path(File.join(File.dirname(__FILE__), %w[loader_eye]))
     File.exists?(filename) ? filename : nil
   end
