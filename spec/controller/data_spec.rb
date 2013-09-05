@@ -10,7 +10,7 @@ describe "Eye::Controller data spec" do
     st.size.should == 2
     p = st[1][:subtree][0][:subtree][0]
     p.should include(:name=>"z1", :state=>"unmonitored",
-      :type=>:process, :resources=>{})
+      :type=>:process, :resources=>{:memory=>nil, :cpu=>nil, :start_time=>nil, :pid=>nil})
   end
 
   it "info_data + filter" do
@@ -19,7 +19,7 @@ describe "Eye::Controller data spec" do
     st.size.should == 1
     p = st[0][:subtree][0][:subtree][0]
     p.should include(:name=>"z1", :state=>"unmonitored",
-      :type=>:process, :resources=>{})
+      :type=>:process, :resources=>{:memory=>nil, :cpu=>nil, :start_time=>nil, :pid=>nil})
   end
 
   it "short_data" do

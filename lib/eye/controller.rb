@@ -16,6 +16,8 @@ require_relative 'utils/leak_19'
 # Extend all objects with logger
 Object.send(:include, Eye::Logger::ObjectExt)
 
+Eye::Sigar # needs to preload
+
 class Eye::Controller
   include Celluloid
 
@@ -42,7 +44,7 @@ class Eye::Controller
     @current_config = Eye::Config.new
 
     Celluloid::logger = Eye::Logger.new('celluloid')
-    Eye::SystemResources.setup
+    Eye::SystemResources.cache
 
     info "starting #{Eye::ABOUT} (#{$$})"
   end

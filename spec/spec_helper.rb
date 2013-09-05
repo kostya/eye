@@ -26,6 +26,7 @@ end
 
 require 'rspec/mocks'
 require 'fakeweb'
+require 'ostruct'
 
 require File.join(File.dirname(__FILE__), %w{support spec_support})
 require File.join(File.dirname(__FILE__), %w{support load_result})
@@ -58,7 +59,7 @@ RSpec.configure do |config|
   config.mock_with :rr
 
   config.before(:all) do
-    silence_warnings{ Eye::SystemResources::PsAxActor::UPDATE_INTERVAL = 2 }
+    Eye::SystemResources.cache.setup_expire(1.0)
   end
 
   config.before(:each) do

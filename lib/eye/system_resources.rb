@@ -6,31 +6,26 @@ class Eye::SystemResources
   class << self
 
     def memory(pid)
-      ps_aux[pid].try :[], :rss
+      cache.proc_mem(pid).try(:resident)
     end
 
     def cpu(pid)
-      ps_aux[pid].try :[], :cpu
+      if cpu = cache.proc_cpu(pid)
+        cpu.percent * 100
+      end
     end
 
     def childs(parent_pid)
-      parent_pid = parent_pid.to_i
-
-      childs = []
-      ps_aux.each do |pid, h|
-        childs << pid if h[:ppid] == parent_pid
-      end
-
-      childs
+      cache.childs(parent_pid)
     end
 
-    def start_time(pid)
-      ps_aux[pid].try :[], :start_time
+    def start_time(pid) # unixtime
+      if cpu = cache.proc_cpu(pid)
+        cpu.start_time.to_i / 1000
+      end
     end
 
     def resources(pid)
-      return {} unless ps_aux[pid]
-
       { :memory => memory(pid),
         :cpu => cpu(pid),
         :start_time => start_time(pid),
@@ -38,49 +33,52 @@ class Eye::SystemResources
       }
     end
 
-    # initialize actor, call 1 time before using
-    def setup
-      @actor ||= PsAxActor.new
+    def cache
+      @cache ||= Cache.new
     end
-
-  private
-
-    def reset!
-      setup.terminate
-      @actor = nil
-    end
-
-    def ps_aux
-      setup
-      @actor.get
-    end
-
   end
 
-  class PsAxActor
+  class Cache
     include Celluloid
 
-    UPDATE_INTERVAL = 5 # seconds
+    attr_reader :expire
 
     def initialize
-      set
+      clear
+      setup_expire
     end
 
-    def get
-      if @at + UPDATE_INTERVAL < Time.now
-        @at = Time.now # for minimize races
-        async.set
+    def setup_expire(expire = 5)
+      @expire = expire
+      @timer.cancel if @timer
+      @timer = every(@expire) { clear }
+    end
+
+    def clear
+      @memory = {}
+      @cpu = {}
+      @ppids = {}
+    end
+
+    def proc_mem(pid)
+      @memory[pid] ||= Eye::Sigar.proc_mem(pid) if pid
+
+    rescue ArgumentError # when incorrect PID
+    end
+
+    def proc_cpu(pid)
+      @cpu[pid] ||= Eye::Sigar.proc_cpu(pid) if pid
+
+    rescue ArgumentError # when incorrect PID
+    end
+
+    def childs(pid)
+      if pid
+        @ppids[pid] ||= Eye::Sigar.proc_list("State.Ppid.eq=#{pid}")
+      else
+        []
       end
-      @ps_aux
     end
-
-  private
-
-    def set
-      @ps_aux = Eye::System.ps_aux
-      @at = Time.now
-    end
-
   end
 
 end

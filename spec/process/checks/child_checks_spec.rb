@@ -26,7 +26,7 @@ describe "ChildProcess" do
     end
 
     it "should check childs even when one of them respawned" do
-      start_ok_process(C.p3.merge(:monitor_children => {:checks => join(C.check_mem, C.check_cpu)}, :childs_update_period => Eye::SystemResources::PsAxActor::UPDATE_INTERVAL + 1))
+      start_ok_process(C.p3.merge(:monitor_children => {:checks => join(C.check_mem, C.check_cpu)}, :childs_update_period => Eye::SystemResources::cache.expire + 1))
       @process.watchers.keys.should == [:check_alive, :check_childs]
 
       sleep 6 # ensure that childs finds
@@ -38,7 +38,7 @@ describe "ChildProcess" do
       die_process!(died, 9)
 
       # sleep enought for update list
-      sleep (Eye::SystemResources::PsAxActor::UPDATE_INTERVAL * 2 + 3).seconds
+      sleep (Eye::SystemResources::cache.expire * 2 + 3).seconds
 
       @process.childs.size.should == 3
       @process.childs.keys.should_not include(died)

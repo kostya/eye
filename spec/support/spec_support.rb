@@ -83,7 +83,7 @@ module C
       :start_command => "ruby forking.rb start",
       :stop_command => "ruby forking.rb stop",
       :pid_file => sample_dir + "/" + p3_pid,
-      :childs_update_period => Eye::SystemResources::PsAxActor::UPDATE_INTERVAL + 1,
+      :childs_update_period => Eye::SystemResources::cache.expire + 1,
       :stop_timeout => 5.seconds,
       :start_timeout => 15.seconds
     )

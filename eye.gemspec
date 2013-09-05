@@ -23,6 +23,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'celluloid-io',  '~> 0.15.0'
   gem.add_dependency 'state_machine'
   gem.add_dependency 'thor'
+  gem.add_dependency 'sigar'
 
   if RUBY_VERSION == '1.9.2'
     gem.add_dependency 'activesupport', '>= 3', '< 4.0'

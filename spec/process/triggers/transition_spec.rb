@@ -131,6 +131,7 @@ describe "Trigger Transition" do
             stop_command "kill -9 {PID}" # SPECIALLY here wrong command for kill parent
             stdall "trash.log"
             monitor_children { childs_update_period 3.seconds }
+            check_alive_period 1
 
             trigger :transition, :event => [:stopped, :crashed], :do => ->{
               process.childs.pmap { |pid, c| c.stop }
