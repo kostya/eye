@@ -45,7 +45,7 @@ Eye::Control # preload
 
 if config
   res = server.command('load', config)
-  exit if res[:error]
+  exit if res.values.any? { |r| r[:error] }
 end
 
 Eye::Control.set_proc_line
