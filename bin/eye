@@ -6,20 +6,18 @@ gem 'thor'
 require 'thor'
 
 class Eye::Cli < Thor
-  map ["-v", "--version"] => :version
-
-  desc "info [MASK]", "show process statuses"
+  desc "info [MASK]", "processes info"
   def info(mask = nil)
     print cmd(:info, *Array(mask))
   end
 
-  desc "status ", "show process statuses"
+  desc "status", "processes info (deprecated)"
   def status
     say ":status is deprecated, use :info instead", :yellow
     info
   end
 
-  desc "xinfo", "extended eye info, debug data"
+  desc "xinfo", "eye-deamon info (-c show current config)"
   method_option :config, :type => :boolean, :aliases => "-c"
   method_option :processes, :type => :boolean, :aliases => "-p"
   def xinfo
@@ -31,7 +29,7 @@ class Eye::Cli < Thor
     print cmd(:oinfo)
   end
 
-  desc "load [CONF, ...]", "load config (and start server if needed) (-f for foregraund start)"
+  desc "load [CONF, ...]", "load config (start eye-daemon if not) (-f foregraund start)"
   method_option :foregraund, :type => :boolean, :aliases => "-f"
   def load(*configs)
     configs.map!{ |c| File.expand_path(c) } if !configs.empty?
@@ -50,7 +48,7 @@ class Eye::Cli < Thor
     end
   end
 
-  desc "quit", "stop eye monitoring"
+  desc "quit", "eye-daemon quit"
   def quit
     res = _cmd(:quit)
 
@@ -65,37 +63,38 @@ class Eye::Cli < Thor
 
   [:start, :stop, :restart, :unmonitor, :monitor, :delete, :match].each do |_cmd|
     desc "#{_cmd} MASK[,...]", "#{_cmd} app,group or process"
-    define_method(_cmd) do |*targets|
-      send_command(_cmd, *targets)
+    define_method(_cmd) do |*masks|
+      send_command(_cmd, *masks)
     end
   end
 
-  desc "signal SIG, MASK[,...]", "send signal to matched app,group or process (ex: `eye sig USR2 some_app`)"
-  def signal(sig, *targets)
-    send_command(:signal, sig, *targets)
+  desc "signal SIG MASK[,...]", "send signal to app,group or process"
+  def signal(sig, *masks)
+    send_command(:signal, sig, *masks)
   end
 
-  desc "break TARGET[,...]", "break group chain executing"
-  def break(*targets)
-    send_command(:break_chain, *targets)
+  desc "break MASK[,...]", "break chain executing"
+  def break(*masks)
+    send_command(:break_chain, *masks)
   end
 
-  desc "history TARGET[,...]", "show process states history"
-  def history(*targets)
-    print cmd(:history, *targets)
+  desc "history [MASK,...]", "processes history"
+  def history(*masks)
+    print cmd(:history, *masks)
   end
 
-  desc "trace [TARGET]", "tracing log for app,group or process"
-  def trace(target = "")
-    log_trace(target)
+  desc "trace [MASK]", "tracing log(tail + grep) for app,group or process"
+  def trace(mask = "")
+    log_trace(mask)
   end
 
-  desc "version", "show current version"
+  map ["-v", "--version"] => :version
+  desc "version", "version"
   def version
     say Eye::ABOUT
   end
 
-  desc "check CONF", "check syntax of the config file"
+  desc "check CONF", "check config file syntax"
   method_option :host, :type => :string, :aliases => "-h"
   method_option :verbose, :type => :boolean, :aliases => "-v"
   def check(conf)
@@ -107,7 +106,7 @@ class Eye::Cli < Thor
     say_load_result Eye::Controller.new.check(conf), :syntax => true
   end
 
-  desc "explain CONF", "explain config tree (for debug)"
+  desc "explain CONF", "explain config tree"
   method_option :host, :type => :string, :aliases => "-h"
   method_option :verbose, :type => :boolean, :aliases => "-v"
   def explain(conf)
@@ -119,7 +118,7 @@ class Eye::Cli < Thor
     say_load_result Eye::Controller.new.explain(conf), :print_config => true, :syntax => true
   end
 
-  desc "watch [MASK]", "interactive process info"
+  desc "watch [MASK]", "interactive processes info"
   def watch(*args)
     pid = Process.spawn("watch -n 1 --color #{$0} i #{args * ' '}")
     Process.waitpid(pid)
@@ -207,7 +206,7 @@ private
         error! "Error: #{res[:error]}"
       elsif res = res[:result]
         if res == []
-          error! "command :#{_cmd}, targets not found!"
+          error! "command :#{_cmd}, objects not found!"
         else
           say "command :#{_cmd} sended to [#{res * ", "}]"
         end
