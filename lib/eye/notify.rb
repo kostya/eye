@@ -1,6 +1,6 @@
 class Eye::Notify
   include Celluloid
-  extend Eye::Dsl::Validation
+  include Eye::Dsl::Validation
 
   autoload :Mail,     'eye/notify/mail'
   autoload :Jabber,   'eye/notify/jabber'

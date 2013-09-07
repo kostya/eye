@@ -1,4 +1,5 @@
 class Eye::Checker
+  include Eye::Dsl::Validation
 
   autoload :Memory,     'eye/checker/memory'
   autoload :Cpu,        'eye/checker/cpu'
@@ -14,7 +15,6 @@ class Eye::Checker
 
   attr_accessor :value, :values, :options, :pid, :type, :check_count, :process
 
-  extend Eye::Dsl::Validation
   param :every, [Fixnum, Float], false, 5
   param :times, [Fixnum, Array], nil, 1
   param :fires, [Symbol, Array], nil, nil, [:stop, :restart, :unmonitor, :nothing, :start, :delete]

@@ -1,4 +1,6 @@
 class Eye::Trigger
+  include Eye::Dsl::Validation
+
   autoload :Flapping,   'eye/trigger/flapping'
   autoload :State,      'eye/trigger/state'
   autoload :StopChilds, 'eye/trigger/stop_childs'
@@ -8,8 +10,6 @@ class Eye::Trigger
   TYPES = {:flapping => "Flapping", :state => "State", :stop_childs => "StopChilds"}
 
   attr_reader :message, :options, :process
-
-  extend Eye::Dsl::Validation
 
   def self.name_and_class(type)
     type = type.to_sym
