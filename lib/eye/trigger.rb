@@ -2,12 +2,12 @@ class Eye::Trigger
   include Eye::Dsl::Validation
 
   autoload :Flapping,   'eye/trigger/flapping'
-  autoload :State,      'eye/trigger/state'
+  autoload :Transition, 'eye/trigger/transition'
   autoload :StopChilds, 'eye/trigger/stop_childs'
 
   # ex: { :type => :flapping, :times => 2, :within => 30.seconds}
 
-  TYPES = {:flapping => "Flapping", :state => "State", :stop_childs => "StopChilds"}
+  TYPES = {:flapping => "Flapping", :transition => "Transition", :stop_childs => "StopChilds"}
 
   attr_reader :message, :options, :process
 
