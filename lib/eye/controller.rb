@@ -22,7 +22,6 @@ class Eye::Controller
   autoload :Commands,       'eye/controller/commands'
   autoload :Status,         'eye/controller/status'
   autoload :SendCommand,    'eye/controller/send_command'
-  autoload :ShowHistory,    'eye/controller/show_history'
   autoload :Options,        'eye/controller/options'
 
   include Eye::Controller::Load
@@ -30,7 +29,6 @@ class Eye::Controller
   include Eye::Controller::Commands
   include Eye::Controller::Status
   include Eye::Controller::SendCommand
-  include Eye::Controller::ShowHistory
   include Eye::Controller::Options
 
   attr_reader :applications, :current_config

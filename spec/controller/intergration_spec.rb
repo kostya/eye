@@ -18,10 +18,11 @@ describe "Intergration" do
   end
 
   it "should be ok status string" do
-    s = @controller.info_string.split("\n").size
+    str = Eye::Cli.new.send(:render_info, @controller.info_data)
+    s = str.split("\n").size
     s.should >= 6
     s.should <= 8
-    @controller.info_string.strip.size.should > 100
+    str.strip.size.should > 100
   end
 
   it "stop group" do

@@ -23,4 +23,5 @@ module Eye
 
   autoload :Controller,     'eye/controller'
   autoload :Control,        'eye/control'
+  autoload :Cli,            'eye/cli'
 end

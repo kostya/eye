@@ -67,66 +67,12 @@ describe "Eye::Controller" do
 
     p6 = gr4.processes[0]
     p_check(p6, 'z1', "app2-z1.pid")
-  end
-
-  it "raise when load config" do
-    subject.load(fixture("dsl/bad.eye")).only_value.should include(:error => true, :message => "blank pid_file for: bad")
-  end
-
-  it "info_string" do
-    app1 = <<S
-app1
-  gr1
-    p1 ............................ unmonitored
-    p2 ............................ unmonitored
-  gr2
-    q3 ............................ unmonitored
-  g4 .............................. unmonitored
-  g5 .............................. unmonitored
-S
-    app2 = <<S
-app2
-  z1 .............................. unmonitored
-S
-
-    subject.load(fixture("dsl/load.eye"))
-    sleep 0.5
-    subject.info_string.clean_info.strip.should == (app1 + app2).strip
-    subject.info_string('app1').clean_info.should == app1.chomp
-    subject.info_string('app2').clean_info.strip.should == app2.strip
-    subject.info_string('app3', :some_arg => :ignored).clean_info.should == ''
-
-    # wrong arg should not crash
-    subject.info_string(['1']).clean_info.should == ''
-  end
-
-  it "info_string_debug should be" do
-    subject.load(fixture("dsl/load.eye"))
-    subject.info_string_debug.split("\n").size.should > 5
-
-    subject.load(fixture("dsl/load.eye"))
-    subject.info_string_debug(:config => true, :processes => true).split("\n").size.should > 5
 
     subject.__klass__.should == "Eye::Controller"
   end
 
-  it "info_string_short should be" do
-    subject.load(fixture("dsl/load.eye"))
-    subject.info_string_short.split("\n").size.should == 2
-  end
-
-  it "history_string" do
-    subject.load(fixture("dsl/load.eye"))
-    str = subject.history_string('*')
-    str.should be_a(String)
-    str.size.should > 100
-  end
-
-  it "history_data" do
-    subject.load(fixture("dsl/load.eye"))
-    h = subject.history_data('app1')
-    h.size.should == 5
-    h.keys.sort.should == ["app1:g4", "app1:g5", "app1:gr1:p1", "app1:gr1:p2", "app1:gr2:q3"]
+  it "raise when load config" do
+    subject.load(fixture("dsl/bad.eye")).only_value.should include(:error => true, :message => "blank pid_file for: bad")
   end
 
   it "should save cache file" do
@@ -172,8 +118,8 @@ S
     end
 
     it "info" do
-      mock(subject).info_string
-      subject.command('info')
+      mock(subject).info_data
+      subject.command('info_data')
     end
 
     it "quit" do

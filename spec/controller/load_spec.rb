@@ -169,7 +169,7 @@ describe "Eye::Controller::Load" do
 
     # terminate 1 action
     subject.process_by_name('p1').terminate
-    subject.info_string.should be_a(String)
+    subject.info_data.should be_a(Hash)
   end
 
   it "swap groups" do
@@ -390,7 +390,7 @@ describe "Eye::Controller::Load" do
       subject.async.command(:load, fixture("dsl/long_load.eye"))
       sleep 2.5
       should_spend(0, 0.6) do
-        subject.command(:info).should be_a(String)
+        subject.command(:info_data).should be_a(Hash)
       end
     end
 
@@ -400,7 +400,7 @@ describe "Eye::Controller::Load" do
       }
       sleep 0.5
       should_spend(0, 0.2) do
-        subject.command(:info).should be_a(String)
+        subject.command(:info_data).should be_a(Hash)
       end
     end
   end

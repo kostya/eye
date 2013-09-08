@@ -16,14 +16,6 @@ module Eye::Controller::Commands
         signal(*args)
       when :load
         load(*args)
-      when :info
-        info_string(*args)
-      when :xinfo
-        info_string_debug(*args)
-      when :oinfo
-        info_string_short(*args)
-      when :history
-        history_string(*args)
       when :quit
         quit
       when :check
@@ -38,9 +30,13 @@ module Eye::Controller::Commands
         Eye::Logger.dev
 
       # object commands, for api
-      when :raw_info
+      when :info_data
         info_data(*args)
-      when :raw_history
+      when :short_data
+        short_data(*args)
+      when :debug_data
+        debug_data(*args)
+      when :history_data
         history_data(*args)
 
       else
