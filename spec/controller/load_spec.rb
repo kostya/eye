@@ -18,7 +18,9 @@ describe "Eye::Controller::Load" do
 
   it "not exists file" do
     mock(subject).set_proc_line
-    subject.load("/asdf/asd/fasd/fas/df/sfd").should == {"/asdf/asd/fasd/fas/df/sfd" => {:error=>true, :message=>"No such file or directory - /asdf/asd/fasd/fas/df/sfd"}}
+    res = subject.load("/asdf/asd/fasd/fas/df/sfd")
+    res["/asdf/asd/fasd/fas/df/sfd"][:error].should == true
+    res["/asdf/asd/fasd/fas/df/sfd"][:message].should include("/asdf/asd/fasd/fas/df/sfd")
   end
 
   it "load 1 ok app" do
@@ -309,7 +311,10 @@ describe "Eye::Controller::Load" do
   end
 
   it "bad mask" do
-    subject.load(" asdf asdf afd d").should == {" asdf asdf afd d" => {:error=>true, :message=>"No such file or directory -  asdf asdf afd d"}}
+    s = " asdf asdf afd d"
+    res = subject.load(s)
+    res[s][:error].should == true
+    res[s][:message].should include(s)
   end
 
   it "group update it settings" do
@@ -334,7 +339,9 @@ describe "Eye::Controller::Load" do
   end
 
   it "raised load" do
-    subject.load(fixture("dsl/load_error.eye")).only_value.should == {:error=>true, :message=>"No such file or directory - /asd/fasd/fas/df/asd/fas/df/d"}
+    res = subject.load(fixture("dsl/load_error.eye")).only_value
+    res[:error].should == true
+    res[:message].should include("/asd/fasd/fas/df/asd/fas/df/d")
     set_glogger
   end
 
