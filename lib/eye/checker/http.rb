@@ -40,7 +40,6 @@ class Eye::Checker::Http < Eye::Checker::Defer
       mes = ex.class.is_a?(Net::OpenTimeout) ? "OpenTimeout<#{@open_timeout}>" : "ReadTimeout<#{@read_timeout}>"
       {:exception => mes}
     else
-      error "#{ex.message}"
       {:exception => "Timeout<#{@open_timeout},#{@read_timeout}>"}
     end
 
