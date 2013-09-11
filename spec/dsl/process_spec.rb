@@ -276,32 +276,32 @@ describe "Eye::Dsl" do
     end
 
     it "bad bool" do
-      conf = "Eye.app('bla'){ self.daemonize = {} }"
+      conf = "Eye.app('bla'){ self.clear_pid = {} }"
       expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
 
-      conf = "Eye.app('bla'){ self.daemonize = [] }"
+      conf = "Eye.app('bla'){ self.clear_pid = [] }"
       expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
 
-      conf = "Eye.app('bla'){ self.daemonize = 5.6 }"
+      conf = "Eye.app('bla'){ self.clear_pid = 5.6 }"
       expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
 
-      conf = "Eye.app('bla'){ self.daemonize = 'false' }"
+      conf = "Eye.app('bla'){ self.clear_pid = 'false' }"
       expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
     end
 
     it "good bool" do
-      conf = "Eye.app('bla'){ self.daemonize = nil }"
+      conf = "Eye.app('bla'){ self.clear_pid = nil }"
       expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Dsl::Error)
 
-      conf = "Eye.app('bla'){ self.daemonize = true }"
+      conf = "Eye.app('bla'){ self.clear_pid = true }"
       expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Dsl::Error)
 
-      conf = "Eye.app('bla'){ self.daemonize = false }"
+      conf = "Eye.app('bla'){ self.clear_pid = false }"
       expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Dsl::Error)
     end
 
     it "bad interval" do
-      conf = "Eye.app('bla'){ self.daemonize = {} }"
+      conf = "Eye.app('bla'){ self.clear_pid = {} }"
       expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
 
       conf = "Eye.app('bla'){ self.start_timeout = [] }"
