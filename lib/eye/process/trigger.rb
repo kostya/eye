@@ -14,7 +14,7 @@ module Eye::Process::Trigger
 
   def check_triggers(transition)
     return if unmonitored?
-    self.triggers.each { |trigger| trigger.notify(transition) }
+    self.triggers.each { |trigger| trigger.notify(transition, state_reason) }
   end
 
   def retry_start_after_flapping
