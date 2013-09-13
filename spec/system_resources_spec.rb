@@ -17,6 +17,12 @@ describe "Eye::SystemResources" do
     x.should <= 100
   end
 
+  it "should get cputime" do
+    x = Eye::SystemResources.cputime($$)
+    x.should >= 0
+    x.should <= 30 * 60
+  end
+
   it "when unknown pid" do
     pid = 12342341
     Eye::SystemResources.cpu(pid).should == nil

@@ -25,6 +25,13 @@ class Eye::SystemResources
       end
     end
 
+    # total cpu usage in seconds
+    def cputime(pid)
+      if cpu = cache.proc_cpu(pid)
+        cpu.total.to_f / 1000
+      end
+    end
+
     def resources(pid)
       { :memory => memory(pid),
         :cpu => cpu(pid),

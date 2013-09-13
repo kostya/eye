@@ -8,10 +8,12 @@ class Eye::Checker
   autoload :FileSize,   'eye/checker/file_size'
   autoload :Socket,     'eye/checker/socket'
   autoload :Nop,        'eye/checker/nop'
+  autoload :Runtime,    'eye/checker/runtime'
+  autoload :Cputime,    'eye/checker/cputime'
 
   TYPES = {:memory => "Memory", :cpu => "Cpu", :http => "Http",
            :ctime => "FileCTime", :fsize => "FileSize", :socket => "Socket",
-           :nop => "Nop" }
+           :nop => "Nop", :runtime => "Runtime", :cputime => "Cputime" }
 
   attr_accessor :value, :values, :options, :pid, :type, :check_count, :process
 
