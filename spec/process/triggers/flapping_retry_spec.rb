@@ -6,7 +6,7 @@ describe "Flapping retry" do
       :triggers => C.flapping(:times => 2, :within => 3),
       :start_grace => 0.1, # for fast flapping
       :stop_grace => 0,
-      :start_command => @c[:start_command] + " -r"
+      :start_command => C.p1[:start_command] + " -r"
     )
   end
 
