@@ -250,6 +250,15 @@ describe "Eye::Dsl" do
       expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
     end
 
+    it "should accept nil value" do
+      conf = <<-E
+        Eye.application("bla") do
+          env "SOME" => nil
+        end
+      E
+      Eye::Dsl.parse_apps(conf).should == {"bla" => {:name=>"bla", :environment=>{"SOME"=>nil}}}
+    end
+
   end
 
   describe "validation" do
