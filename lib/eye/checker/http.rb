@@ -7,7 +7,7 @@ class Eye::Checker::Http < Eye::Checker::Defer
 
   param :url,           String, true
   param :pattern,       [String, Regexp]
-  param :kind
+  param :kind,          [String, Fixnum, Symbol]
   param :timeout,       [Fixnum, Float]
   param :open_timeout,  [Fixnum, Float]
   param :read_timeout,  [Fixnum, Float]
@@ -17,8 +17,7 @@ class Eye::Checker::Http < Eye::Checker::Defer
   def initialize(*args)
     super
 
-    @uri = URI.parse(url) rescue URI.parse('http://127.0.0.1')
-    @pattern = pattern
+    @uri = URI.parse(url)
     @kind = case kind
               when Fixnum then Net::HTTPResponse::CODE_TO_OBJ[kind]
               when String, Symbol then Net.const_get("HTTP#{kind.to_s.camelize}") rescue Net::HTTPSuccess
@@ -54,13 +53,13 @@ class Eye::Checker::Http < Eye::Checker::Defer
       return false
     end
 
-    if @pattern
-      matched = if @pattern.is_a?(Regexp)
-        @pattern === value[:result].body
+    if pattern
+      matched = if pattern.is_a?(Regexp)
+        pattern === value[:result].body
       else
-        value[:result].body.include?(@pattern.to_s)
+        value[:result].body.include?(pattern.to_s)
       end
-      value[:notice] = "missing '#{@pattern.to_s}'" unless matched
+      value[:notice] = "missing '#{pattern.to_s}'" unless matched
       matched
     else
       true
