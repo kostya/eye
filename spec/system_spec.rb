@@ -29,9 +29,9 @@ describe "Eye::System" do
   end
 
   it "prepare env" do
-    Eye::System.send(:prepare_env, {}).should include({})
-    Eye::System.send(:prepare_env, {:environment => {'A' => 'B'}}).should include({'A' => 'B'})
-    Eye::System.send(:prepare_env, {:environment => {'A' => 'B'}, :working_dir => "/tmp"}).should include({'A' => 'B'})
+    Eye::System.send(:prepare_env, {}).should eq({})
+    Eye::System.send(:prepare_env, {:environment => {'A' => 'B'}}).should eq({'A' => 'B'})
+    Eye::System.send(:prepare_env, {:environment => {'A' => 'B'}, :working_dir => "/tmp"}).should eq({'A' => 'B'})
 
     r = Eye::System.send(:prepare_env, {:environment => {'A' => [], 'B' => {}, 'C' => nil, 'D' => 1, 'E' => '2'}})
     r.should eq(
@@ -46,6 +46,8 @@ describe "Eye::System" do
   it "set spawn_options" do
     stub(Eye::Settings).root? { true }
     Eye::System.send(:spawn_options, {}).should == {:pgroup => true, :chdir => "/"}
+    Eye::System.send(:spawn_options, {:working_dir => "/tmp"}).should include(:chdir => "/tmp")
+    Eye::System.send(:spawn_options, {:stdout => "/tmp/1", :stderr => "/tmp/2"}).should include(:out => ["/tmp/1", 'a'], :err => ["/tmp/2", 'a'])
     Eye::System.send(:spawn_options, {:uid => "root", :gid => "root"}).should include({:uid => 0, :gid => 0})
   end
 
