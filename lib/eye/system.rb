@@ -156,7 +156,7 @@ module Eye::System
       env = {}
 
       (config[:environment] || {}).each do |k,v|
-        env[k.to_s] = v.to_s if v
+        env[k.to_s] = v && v.to_s
       end
 
       env

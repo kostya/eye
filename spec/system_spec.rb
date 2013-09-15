@@ -34,11 +34,13 @@ describe "Eye::System" do
     Eye::System.send(:prepare_env, {:environment => {'A' => 'B'}, :working_dir => "/tmp"}).should include({'A' => 'B'})
 
     r = Eye::System.send(:prepare_env, {:environment => {'A' => [], 'B' => {}, 'C' => nil, 'D' => 1, 'E' => '2'}})
-    r['A'].should == '[]'
-    r['B'].should == '{}'
-    r['C'].should == nil
-    r['D'].should == '1'
-    r['E'].should == '2'
+    r.should eq(
+      'A' => '[]',
+      'B' => '{}',
+      'C' => nil,
+      'D' => '1',
+      'E' => '2'
+    )
   end
 
   it "set spawn_options" do
