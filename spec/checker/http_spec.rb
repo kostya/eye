@@ -17,13 +17,13 @@ describe "Eye::Checker::Http" do
 
     it "initialize" do
       subject.instance_variable_get(:@kind).should == Net::HTTPSuccess
-      subject.instance_variable_get(:@pattern).should == /OK/
       subject.instance_variable_get(:@open_timeout).should == 3
       subject.instance_variable_get(:@read_timeout).should == 2
+      subject.pattern.should == /OK/
     end
 
     it "without url" do
-      chhttp(:url => nil).uri.should == URI.parse('http://127.0.0.1')
+      expect{ chhttp(:url => nil).uri }.to raise_error
     end
 
     it "get_value" do
