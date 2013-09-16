@@ -24,6 +24,9 @@ class Eye::Trigger
   def self.get_class(type)
     klass = eval("Eye::Trigger::#{TYPES[type]}") rescue nil
     raise "Unknown trigger #{type}" unless klass
+    if deps = klass.depends_on
+      Array(deps).each { |d| require d }
+    end
     klass
   end
 
@@ -99,6 +102,9 @@ class Eye::Trigger
     type = name.underscore.to_sym
     Eye::Trigger::TYPES[type] = name
     Eye::Trigger.const_set(name, base)
+  end
+
+  def self.depends_on
   end
 
   class Custom < Eye::Trigger

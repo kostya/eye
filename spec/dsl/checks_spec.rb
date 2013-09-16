@@ -489,4 +489,42 @@ describe "Eye::Dsl checks" do
 
   end
 
+  it 'checker depends_on' do
+    conf = <<-E
+      class Asdf22 < Eye::Checker::Custom
+        def self.depends_on
+          %w{ bla_gem }
+        end
+      end
+
+      Eye.application("bla") do
+        process("1") do
+          pid_file "1.pid"
+          check :asdf22
+        end
+      end
+    E
+
+    expect{ Eye::Dsl.parse_apps(conf) }.to raise_error(LoadError)
+  end
+
+  it 'trigger depends_on' do
+    conf = <<-E
+      class Asdf23 < Eye::Trigger::Custom
+        def self.depends_on
+          %w{ bla_gem }
+        end
+      end
+
+      Eye.application("bla") do
+        process("1") do
+          pid_file "1.pid"
+          trigger :asdf23
+        end
+      end
+    E
+
+    expect{ Eye::Dsl.parse_apps(conf) }.to raise_error(LoadError)
+  end
+
 end

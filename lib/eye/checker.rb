@@ -32,6 +32,9 @@ class Eye::Checker
   def self.get_class(type)
     klass = eval("Eye::Checker::#{TYPES[type]}") rescue nil
     raise "Unknown checker #{type}" unless klass
+    if deps = klass.depends_on
+      Array(deps).each { |d| require d }
+    end
     klass
   end
 
@@ -170,6 +173,9 @@ class Eye::Checker
     type = name.underscore.to_sym
     Eye::Checker::TYPES[type] = name
     Eye::Checker.const_set(name, base)
+  end
+
+  def self.depends_on
   end
 
   class CustomCell < Eye::Checker
