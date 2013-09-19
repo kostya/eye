@@ -19,7 +19,7 @@ class Eye::Checker
   param :times, [Fixnum, Array], nil, 1
   param :fires, [Symbol, Array], nil, nil, [:stop, :restart, :unmonitor, :nothing, :start, :delete]
   param :initial_grace, [Fixnum, Float]
-  param :initial_skip_until_ok, [TrueClass, FalseClass]
+  param :skip_initial_fails, [TrueClass, FalseClass]
 
   def self.name_and_class(type)
     type = type.to_sym
@@ -105,9 +105,9 @@ class Eye::Checker
       result = false if bad_count >= min_tries
     end
 
-    if initial_skip_until_ok
+    if skip_initial_fails
       if @good_value
-        @options[:initial_skip_until_ok] = nil
+        @options[:skip_initial_fails] = nil
       else
         result = true
       end
