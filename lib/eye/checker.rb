@@ -18,6 +18,7 @@ class Eye::Checker
   param :every, [Fixnum, Float], false, 5
   param :times, [Fixnum, Array], nil, 1
   param :fires, [Symbol, Array], nil, nil, [:stop, :restart, :unmonitor, :nothing, :start, :delete]
+  param :initial_grace, [Fixnum, Float]
 
   def self.name_and_class(type)
     type = type.to_sym
@@ -53,6 +54,7 @@ class Eye::Checker
     @options = options
     @type = options[:type]
     @full_name = @process.full_name if @process
+    @initialized_at = Time.now
 
     debug "create checker, with #{options}"
 
@@ -83,6 +85,13 @@ class Eye::Checker
   end
 
   def check
+    if initial_grace && !@initial_grace_skipped && (Time.now - @initialized_at < initial_grace)
+      debug 'skipped initial grace'
+      return true
+    else
+      @initial_grace_skipped = true
+    end
+
     @value = get_value_safe
     @values << {:value => @value, :good => good?(value)}
 
