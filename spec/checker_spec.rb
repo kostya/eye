@@ -165,9 +165,9 @@ describe "Eye::Checker" do
     end
   end
 
-  describe "initial_grace" do
+  describe "skip_initial_fails" do
     before :each do
-      @c = Checker1.new(1, {:times => 2, :bla => 1, :initial_skip_until_ok => true})
+      @c = Checker1.new(1, {:times => 2, :bla => 1, :skip_initial_fails => true})
     end
 
     it "should work" do
