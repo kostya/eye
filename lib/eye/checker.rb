@@ -19,6 +19,7 @@ class Eye::Checker
   param :times, [Fixnum, Array], nil, 1
   param :fires, [Symbol, Array], nil, nil, [:stop, :restart, :unmonitor, :nothing, :start, :delete]
   param :initial_grace, [Fixnum, Float]
+  param :initial_skip_until_ok, [TrueClass, FalseClass]
 
   def self.name_and_class(type)
     type = type.to_sym
@@ -85,15 +86,16 @@ class Eye::Checker
   end
 
   def check
-    if initial_grace && !@initial_grace_skipped && (Time.now - @initialized_at < initial_grace)
+    if initial_grace && (Time.now - @initialized_at < initial_grace)
       debug 'skipped initial grace'
       return true
     else
-      @initial_grace_skipped = true
+      @options[:initial_grace] = nil
     end
 
     @value = get_value_safe
-    @values << {:value => @value, :good => good?(value)}
+    @good_value = good?(value)
+    @values << {:value => @value, :good => @good_value}
 
     result = true
     @check_count += 1
@@ -101,6 +103,14 @@ class Eye::Checker
     if @values.size == max_tries
       bad_count = @values.count{|v| !v[:good] }
       result = false if bad_count >= min_tries
+    end
+
+    if initial_skip_until_ok
+      if @good_value
+        @options[:initial_skip_until_ok] = nil
+      else
+        result = true
+      end
     end
 
     info "#{last_human_values} => #{result ? 'OK' : 'Fail'}"
