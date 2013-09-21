@@ -1,4 +1,9 @@
-0.4.1.dev
+0.4.2
+-----
+* add checker options :initial_grace, :skip_initial_fails
+* allow deleting env variables (#15)
+
+0.4.1
 ---------
 * add nop checker for periodic restart
 * catch errors in custom checkers, triggers
