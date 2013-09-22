@@ -10,8 +10,9 @@ if ENV['COV']
 end
 
 if ENV['COVA']
+  ENV["COVERALLS_SILENT"] = '1'
   require 'coveralls'
-  Coveralls.wear!
+  Coveralls.wear_merged!
 end
 
 # preload
@@ -61,6 +62,8 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
+    SimpleCov.command_name "RSpec:#{Process.pid}#{ENV['TEST_ENV_NUMBER']}" if defined?(SimpleCov)
+
     clear_pids
 
     @log = C.base[:stdout]
