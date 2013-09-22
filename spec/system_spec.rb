@@ -89,6 +89,7 @@ describe "Eye::System" do
       args = [{"A"=>"1", "B"=>nil, "C"=>"3"}, "echo", "1",
         {:pgroup=>true, :chdir=>"/", :out=>["/tmp/1", "a"], :err=>["/tmp/2", "a"]}]
       mock(Process).spawn(*args){ 1234555 }
+      mock(Process).detach( 1234555 )
       Eye::System::daemonize("echo 1", :environment => {'A' => 1, 'B' => nil, 'C' => 3},
         :stdout => "/tmp/1", :stderr => "/tmp/2")
     end
