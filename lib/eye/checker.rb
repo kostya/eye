@@ -55,7 +55,7 @@ class Eye::Checker
   def initialize(pid, options = {}, process = nil)
     @process = process
     @pid = pid
-    @options = options
+    @options = options.dup
     @type = options[:type]
     @full_name = @process.full_name if @process
     @initialized_at = Time.now
