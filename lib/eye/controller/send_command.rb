@@ -35,8 +35,11 @@ private
 
   rescue Error => ex
     log_ex(ex)
-
     {:error => ex.message}
+
+  rescue Celluloid::DeadActorError => ex
+    log_ex(ex)
+    {:error => "'#{ex.message}', try again!"}
   end
 
   def remove_object_from_tree(obj)
