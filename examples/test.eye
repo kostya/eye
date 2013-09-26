@@ -78,8 +78,8 @@ Eye.application "test" do
     start_command "bundle exec thin start -R thin.ru -p 33233 -d -l thin.log -P thin.pid"
     stop_signals [:QUIT, 2.seconds, :TERM, 1.seconds, :KILL]
 
-    check :http, :url => "http://127.0.0.1:33233/hello", :pattern => /World/, :every => 5.seconds,
-                 :times => [2, 3], :timeout => 1.second
+    check :http, :url => "http://127.0.0.1:33233/hello", :pattern => /World/,
+                 :every => 5.seconds, :times => [2, 3], :timeout => 1.second
   end
 
 end
