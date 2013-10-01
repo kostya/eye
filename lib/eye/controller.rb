@@ -11,6 +11,8 @@ require 'active_support/core_ext/array/extract_options'
 require_relative 'utils/celluloid_klass'
 require_relative 'utils/pmap'
 
+require_relative 'utils/leak_19'
+
 # Extend all objects with logger
 Object.send(:include, Eye::Logger::ObjectExt)
 
