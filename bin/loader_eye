@@ -30,9 +30,9 @@ OptionParser.new do |opts|
 
 end.parse!
 
-Eye::Settings.ensure_eye_dir
+Eye::Local.ensure_eye_dir
 
-socket_path = options[:socket_path] || Eye::Settings.socket_path
+socket_path = options[:socket_path] || Eye::Local.socket_path
 server = Eye::Server.new(socket_path)
 
 Eye::Logger.log_level = options[:debug] ? Logger::DEBUG : Logger::INFO

@@ -143,7 +143,7 @@ module Eye::System
       o.update(err: [config[:stderr], 'a']) if config[:stderr]
       o.update(in: config[:stdin]) if config[:stdin]
 
-      if Eye::Settings.root?
+      if Eye::Local.root?
         o.update(uid: Etc.getpwnam(config[:uid]).uid) if config[:uid]
         o.update(gid: Etc.getpwnam(config[:gid]).gid) if config[:gid]
       end

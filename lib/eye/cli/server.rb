@@ -23,7 +23,7 @@ private
 
   def server_start_foregraund(conf = nil)
     ensure_loader_path
-    Eye::Settings.ensure_eye_dir
+    Eye::Local.ensure_eye_dir
 
     if server_started?
       _cmd(:quit) && sleep(1) # stop previous server
@@ -38,7 +38,7 @@ private
 
   def server_start(configs)
     ensure_loader_path
-    Eye::Settings.ensure_eye_dir
+    Eye::Local.ensure_eye_dir
 
     ensure_stop_previous_server
 
@@ -48,13 +48,13 @@ private
 
     pid = Process.spawn(ruby_path, loader_path, *args, opts)
     Process.detach(pid)
-    File.open(Eye::Settings.pid_path, 'w'){|f| f.write(pid) }
+    File.open(Eye::Local.pid_path, 'w'){|f| f.write(pid) }
 
     unless wait_server
       error! "server not runned in 15 seconds, something crazy wrong"
     end
 
-    configs.unshift(Eye::Settings.eyeconfig) if File.exists?(Eye::Settings.eyeconfig)
+    configs.unshift(Eye::Local.eyeconfig) if File.exists?(Eye::Local.eyeconfig)
 
     if !configs.empty?
       say_load_result cmd(:load, *configs), :started => true
@@ -64,12 +64,12 @@ private
   end
 
   def ensure_stop_previous_server
-    Eye::Settings.ensure_eye_dir
-    pid = File.read(Eye::Settings.pid_path).to_i rescue nil
+    Eye::Local.ensure_eye_dir
+    pid = File.read(Eye::Local.pid_path).to_i rescue nil
     if pid
       Process.kill(9, pid) rescue nil
     end
-    File.delete(Eye::Settings.pid_path) rescue nil
+    File.delete(Eye::Local.pid_path) rescue nil
     true
   end
 

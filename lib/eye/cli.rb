@@ -72,7 +72,7 @@ class Eye::Cli < Thor
     ensure_stop_previous_server if res != :corrupred_data
 
     # remove pid_file
-    File.delete(Eye::Settings.pid_path) if File.exists?(Eye::Settings.pid_path)
+    File.delete(Eye::Local.pid_path) if File.exists?(Eye::Local.pid_path)
 
     say "quit...", :yellow
   end

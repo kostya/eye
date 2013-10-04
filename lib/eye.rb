@@ -14,7 +14,7 @@ module Eye
   autoload :Group,          'eye/group'
   autoload :Dsl,            'eye/dsl'
   autoload :Application,    'eye/application'
-  autoload :Settings,       'eye/settings'
+  autoload :Local,          'eye/local'
   autoload :Client,         'eye/client'
   autoload :Utils,          'eye/utils'
   autoload :Notify,         'eye/notify'

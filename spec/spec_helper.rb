@@ -70,7 +70,7 @@ RSpec.configure do |config|
     @log = C.base[:stdout]
     FileUtils.rm(@log) rescue nil
 
-    stub(Eye::Settings).dir { C.sample_dir }
+    stub(Eye::Local).dir { C.sample_dir }
 
     $logger.info "================== #{ self.class.description} '#{ example.description }'========================"
   end

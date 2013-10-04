@@ -10,7 +10,7 @@ module Eye::Controller::Status
       :ruby => RUBY_DESCRIPTION,
       :gems => %w|Celluloid Celluloid::IO ActiveSupport StateMachine NIO|.map{|c| gem_version(c) },
       :logger => Eye::Logger.dev,
-      :pid_path => Eye::Settings::pid_path,
+      :pid_path => Eye::Local::pid_path,
       :actors => actors
     }
 

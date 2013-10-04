@@ -2,7 +2,7 @@ module Eye::Cli::Commands
 private
 
   def client
-    @client ||= Eye::Client.new(Eye::Settings.socket_path)
+    @client ||= Eye::Client.new(Eye::Local.socket_path)
   end
 
   def _cmd(cmd, *args)
@@ -15,7 +15,7 @@ private
     res = _cmd(cmd, *args)
 
     if res == :not_started
-      error! "socket(#{Eye::Settings.socket_path}) not found, did you `eye load`?"
+      error! "socket(#{Eye::Local.socket_path}) not found, did you `eye load`?"
     elsif res == :timeouted
       error! "eye does not answer, timeouted..."
     end
