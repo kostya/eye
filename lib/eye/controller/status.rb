@@ -8,7 +8,7 @@ module Eye::Controller::Status
       :about => Eye::ABOUT,
       :resources => Eye::SystemResources.resources($$),
       :ruby => RUBY_DESCRIPTION,
-      :gems => %w|Celluloid Celluloid::IO ActiveSupport StateMachine NIO|.map{|c| gem_version(c) },
+      :gems => %w|Celluloid Celluloid::IO ActiveSupport StateMachine NIO Sigar|.map{|c| gem_version(c) },
       :logger => Eye::Logger.dev,
       :pid_path => Eye::Local::pid_path,
       :actors => actors
