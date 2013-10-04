@@ -1,15 +1,15 @@
 class Eye::Trigger
+  include Eye::Dsl::Validation
+
   autoload :Flapping,   'eye/trigger/flapping'
-  autoload :State,      'eye/trigger/state'
+  autoload :Transition, 'eye/trigger/transition'
   autoload :StopChilds, 'eye/trigger/stop_childs'
 
   # ex: { :type => :flapping, :times => 2, :within => 30.seconds}
 
-  TYPES = {:flapping => "Flapping", :state => "State", :stop_childs => "StopChilds"}
+  TYPES = {:flapping => "Flapping", :transition => "Transition", :stop_childs => "StopChilds"}
 
   attr_reader :message, :options, :process
-
-  extend Eye::Dsl::Validation
 
   def self.name_and_class(type)
     type = type.to_sym
@@ -24,6 +24,9 @@ class Eye::Trigger
   def self.get_class(type)
     klass = eval("Eye::Trigger::#{TYPES[type]}") rescue nil
     raise "Unknown trigger #{type}" unless klass
+    if deps = klass.depends_on
+      Array(deps).each { |d| require d }
+    end
     klass
   end
 
@@ -59,8 +62,9 @@ class Eye::Trigger
     "trigger(#{@options[:type]})"
   end
 
-  def notify(transition)
+  def notify(transition, reason)
     debug "check (:#{transition.event}) :#{transition.from} => :#{transition.to}"
+    @reason = reason
     @transition = transition
 
     check(transition) if filter_transition(transition)
@@ -98,6 +102,9 @@ class Eye::Trigger
     type = name.underscore.to_sym
     Eye::Trigger::TYPES[type] = name
     Eye::Trigger.const_set(name, base)
+  end
+
+  def self.depends_on
   end
 
   class Custom < Eye::Trigger

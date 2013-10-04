@@ -1,4 +1,5 @@
 class Eye::Checker
+  include Eye::Dsl::Validation
 
   autoload :Memory,     'eye/checker/memory'
   autoload :Cpu,        'eye/checker/cpu'
@@ -7,17 +8,20 @@ class Eye::Checker
   autoload :FileSize,   'eye/checker/file_size'
   autoload :Socket,     'eye/checker/socket'
   autoload :Nop,        'eye/checker/nop'
+  autoload :Runtime,    'eye/checker/runtime'
+  autoload :Cputime,    'eye/checker/cputime'
 
   TYPES = {:memory => "Memory", :cpu => "Cpu", :http => "Http",
            :ctime => "FileCTime", :fsize => "FileSize", :socket => "Socket",
-           :nop => "Nop" }
+           :nop => "Nop", :runtime => "Runtime", :cputime => "Cputime" }
 
   attr_accessor :value, :values, :options, :pid, :type, :check_count, :process
 
-  extend Eye::Dsl::Validation
   param :every, [Fixnum, Float], false, 5
   param :times, [Fixnum, Array], nil, 1
   param :fires, [Symbol, Array], nil, nil, [:stop, :restart, :unmonitor, :nothing, :start, :delete]
+  param :initial_grace, [Fixnum, Float]
+  param :skip_initial_fails, [TrueClass, FalseClass]
 
   def self.name_and_class(type)
     type = type.to_sym
@@ -32,6 +36,9 @@ class Eye::Checker
   def self.get_class(type)
     klass = eval("Eye::Checker::#{TYPES[type]}") rescue nil
     raise "Unknown checker #{type}" unless klass
+    if deps = klass.depends_on
+      Array(deps).each { |d| require d }
+    end
     klass
   end
 
@@ -50,9 +57,10 @@ class Eye::Checker
   def initialize(pid, options = {}, process = nil)
     @process = process
     @pid = pid
-    @options = options
+    @options = options.dup
     @type = options[:type]
     @full_name = @process.full_name if @process
+    @initialized_at = Time.now
 
     debug "create checker, with #{options}"
 
@@ -83,8 +91,16 @@ class Eye::Checker
   end
 
   def check
+    if initial_grace && (Time.now - @initialized_at < initial_grace)
+      debug 'skipped initial grace'
+      return true
+    else
+      @options[:initial_grace] = nil
+    end
+
     @value = get_value_safe
-    @values << {:value => @value, :good => good?(value)}
+    @good_value = good?(value)
+    @values << {:value => @value, :good => @good_value}
 
     result = true
     @check_count += 1
@@ -92,6 +108,14 @@ class Eye::Checker
     if @values.size == max_tries
       bad_count = @values.count{|v| !v[:good] }
       result = false if bad_count >= min_tries
+    end
+
+    if skip_initial_fails
+      if @good_value
+        @options[:skip_initial_fails] = nil
+      else
+        result = true
+      end
     end
 
     info "#{last_human_values} => #{result ? 'OK' : 'Fail'}"
@@ -170,6 +194,9 @@ class Eye::Checker
     type = name.underscore.to_sym
     Eye::Checker::TYPES[type] = name
     Eye::Checker.const_set(name, base)
+  end
+
+  def self.depends_on
   end
 
   class CustomCell < Eye::Checker

@@ -11,8 +11,12 @@ require 'active_support/core_ext/array/extract_options'
 require_relative 'utils/celluloid_klass'
 require_relative 'utils/pmap'
 
+require_relative 'utils/leak_19'
+
 # Extend all objects with logger
 Object.send(:include, Eye::Logger::ObjectExt)
+
+Eye::Sigar # needs to preload
 
 class Eye::Controller
   include Celluloid
@@ -22,7 +26,6 @@ class Eye::Controller
   autoload :Commands,       'eye/controller/commands'
   autoload :Status,         'eye/controller/status'
   autoload :SendCommand,    'eye/controller/send_command'
-  autoload :ShowHistory,    'eye/controller/show_history'
   autoload :Options,        'eye/controller/options'
 
   include Eye::Controller::Load
@@ -30,7 +33,6 @@ class Eye::Controller
   include Eye::Controller::Commands
   include Eye::Controller::Status
   include Eye::Controller::SendCommand
-  include Eye::Controller::ShowHistory
   include Eye::Controller::Options
 
   attr_reader :applications, :current_config
@@ -42,7 +44,7 @@ class Eye::Controller
     @current_config = Eye::Config.new
 
     Celluloid::logger = Eye::Logger.new('celluloid')
-    Eye::SystemResources.setup
+    Eye::SystemResources.cache
 
     info "starting #{Eye::ABOUT} (#{$$})"
   end

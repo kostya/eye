@@ -142,6 +142,55 @@ describe "Eye::Checker" do
     end
   end
 
+  describe "initial_grace" do
+    before :each do
+      @c = Checker1.new(1, {:times => 2, :bla => 1, :initial_grace => 2.seconds})
+    end
+
+    it "should work" do
+      stub(@c).get_value{ false }
+      @c.check.should == true
+      @c.check.should == true
+      @c.check.should == true
+
+      sleep 1
+      @c.check.should == true
+      @c.check.should == true
+      @c.check.should == true
+
+      sleep 1
+      @c.check.should == true
+      @c.check.should == false
+      @c.check.should == false
+    end
+  end
+
+  describe "skip_initial_fails" do
+    before :each do
+      @c = Checker1.new(1, {:times => 2, :bla => 1, :skip_initial_fails => true})
+    end
+
+    it "should work" do
+      stub(@c).get_value{ false }
+      @c.check.should == true
+      @c.check.should == true
+
+      sleep 0.1
+      @c.check.should == true
+      @c.check.should == true
+
+      stub(@c).get_value{ true }
+      @c.check.should == true
+      @c.check.should == true
+      @c.check.should == true
+
+      stub(@c).get_value{ false }
+      @c.check.should == true
+      @c.check.should == false
+      @c.check.should == false
+    end
+  end
+
   it "defaults every" do
     @c = Checker1.new(nil, {:times => 3})
     @c.every.should == 5

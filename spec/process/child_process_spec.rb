@@ -34,7 +34,7 @@ describe "ChildProcess" do
     end
 
     it "when one of child is die, should update list" do
-      start_ok_process(C.p3.merge(:monitor_children => {}, :childs_update_period => Eye::SystemResources::PsAxActor::UPDATE_INTERVAL + 1))
+      start_ok_process(C.p3.merge(:monitor_children => {}, :childs_update_period => Eye::SystemResources::cache.expire + 1))
       @process.watchers.keys.should == [:check_alive, :check_childs]
 
       sleep 5 # ensure that childs finds
@@ -47,7 +47,7 @@ describe "ChildProcess" do
       die_process!(died_pid, 9)
 
       # sleep enought for update list
-      sleep (Eye::SystemResources::PsAxActor::UPDATE_INTERVAL * 2 + 1).seconds
+      sleep (Eye::SystemResources::cache.expire * 2 + 1).seconds
 
       new_pids = @process.childs.keys.sort
 
@@ -57,7 +57,7 @@ describe "ChildProcess" do
     end
 
     it "all childs is die, should update list" do
-      start_ok_process(C.p3.merge(:monitor_children => {}, :childs_update_period => Eye::SystemResources::PsAxActor::UPDATE_INTERVAL + 1))
+      start_ok_process(C.p3.merge(:monitor_children => {}, :childs_update_period => Eye::SystemResources::cache.expire + 1))
       @process.watchers.keys.should == [:check_alive, :check_childs]
 
       sleep 5 # ensure that childs finds
@@ -70,7 +70,7 @@ describe "ChildProcess" do
       Eye::System.execute("kill -HUP #{master_pid}")
 
       # sleep enought for update list
-      sleep (Eye::SystemResources::PsAxActor::UPDATE_INTERVAL * 2 + 2).seconds
+      sleep (Eye::SystemResources::cache.expire * 2 + 2).seconds
 
       new_pids = @process.childs.keys.sort
 
@@ -81,7 +81,7 @@ describe "ChildProcess" do
     end
 
     it "when process stop, childs cleans" do
-      start_ok_process(C.p3.merge(:monitor_children => {}, :childs_update_period => Eye::SystemResources::PsAxActor::UPDATE_INTERVAL + 1))
+      start_ok_process(C.p3.merge(:monitor_children => {}, :childs_update_period => Eye::SystemResources::cache.expire + 1))
       sleep 5 # ensure that childs finds
 
       pid = @process.pid

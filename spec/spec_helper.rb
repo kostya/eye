@@ -11,8 +11,9 @@ if ENV['COV']
 end
 
 if ENV['COVA']
+  ENV["COVERALLS_SILENT"] = '1'
   require 'coveralls'
-  Coveralls.wear!
+  Coveralls.wear_merged!
 end
 
 # preload
@@ -27,6 +28,7 @@ end
 
 require 'rspec/mocks'
 require 'fakeweb'
+require 'ostruct'
 
 require File.join(File.dirname(__FILE__), %w{support spec_support})
 require File.join(File.dirname(__FILE__), %w{support load_result})
@@ -59,16 +61,18 @@ RSpec.configure do |config|
   config.mock_with :rr
 
   config.before(:all) do
-    silence_warnings{ Eye::SystemResources::PsAxActor::UPDATE_INTERVAL = 2 }
+    Eye::SystemResources.cache.setup_expire(1.0)
   end
 
   config.before(:each) do
+    SimpleCov.command_name "RSpec:#{Process.pid}#{ENV['TEST_ENV_NUMBER']}" if defined?(SimpleCov)
+
     clear_pids
 
     @log = C.base[:stdout]
     FileUtils.rm(@log) rescue nil
 
-    stub(Eye::Settings).dir { C.sample_dir }
+    stub(Eye::Local).dir { C.sample_dir }
 
     $logger.info "================== #{ self.class.description} '#{ example.description }'========================"
   end

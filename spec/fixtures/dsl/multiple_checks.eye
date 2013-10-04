@@ -1,4 +1,4 @@
-class Cpu2 < Eye::Checker::Custom
+class Cpu9 < Eye::Checker::Custom
   param :below, [Fixnum, Float], true
 
   def initialize(*args)
@@ -22,7 +22,7 @@ Eye.application("bla") do
     start_command "sleep 30"
     daemonize true
     checks :cpu, :below => 100, :times => 3, :every => 10
-    checks :cpu2, :below => 100, :times => 3, :every => 10
+    checks :cpu9, :below => 100, :times => 3, :every => 10
     checks :cpu3, :below => 100, :times => 3, :every => 10
     checks :cpu_4, :below => 100, :times => 3, :every => 10
   end

@@ -71,7 +71,7 @@ describe "Custom checks" do
             daemonize true
 
             check :touch_file, :every => 3.seconds, :fires => [:stop], :file => "#{C.tmp_file}"
-            trigger :state, :event => :stopped, :do => ->{ ::File.delete("#{C.tmp_file}") }
+            trigger :transition, :event => :stopped, :do => ->{ ::File.delete("#{C.tmp_file}") }
           end
         end
     D

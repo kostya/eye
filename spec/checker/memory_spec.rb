@@ -11,7 +11,7 @@ describe "Eye::Checker::Memory" do
     subject{ chmem }
 
     it "get_value" do
-      mock(Eye::SystemResources).memory(123){ 65 }
+      mock(Eye::SystemResources).memory(123){ 66560 }
       subject.get_value.should == 66560
     end
 

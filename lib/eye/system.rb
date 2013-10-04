@@ -55,13 +55,15 @@ module Eye::System
     #   :environment
     #   :stdin, :stdout, :stderr
     def daemonize(cmd, cfg = {})
-      opts = spawn_options(cfg)
-      pid  = Process::spawn(prepare_env(cfg), *Shellwords.shellwords(cmd), opts)
-      Process.detach(pid)
+      pid = ::Process::spawn(prepare_env(cfg), *Shellwords.shellwords(cmd), spawn_options(cfg))
+
       {:pid => pid, :exitstatus => 0}
 
     rescue Errno::ENOENT, Errno::EACCES => ex
       {:error => ex}
+
+    ensure
+      Process.detach(pid) if pid
     end
 
     # Execute cmd with blocking, return status (be careful: inside actor blocks it mailbox, use with defer)
@@ -70,8 +72,7 @@ module Eye::System
     #   :environment
     #   :stdin, :stdout, :stderr
     def execute(cmd, cfg = {})
-      opts = spawn_options(cfg)
-      pid  = Process::spawn(prepare_env(cfg), *Shellwords.shellwords(cmd), opts)
+      pid = ::Process::spawn(prepare_env(cfg), *Shellwords.shellwords(cmd), spawn_options(cfg))
 
       timeout = cfg[:timeout] || 1.second
       status = 0
@@ -142,7 +143,7 @@ module Eye::System
       o.update(err: [config[:stderr], 'a']) if config[:stderr]
       o.update(in: config[:stdin]) if config[:stdin]
 
-      if Eye::Settings.root?
+      if Eye::Local.root?
         o.update(uid: Etc.getpwnam(config[:uid]).uid) if config[:uid]
         o.update(gid: Etc.getpwnam(config[:gid]).gid) if config[:gid]
       end
@@ -156,7 +157,7 @@ module Eye::System
       env = {}
 
       (config[:environment] || {}).each do |k,v|
-        env[k.to_s] = v.to_s if v
+        env[k.to_s] = v && v.to_s
       end
 
       env

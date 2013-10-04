@@ -2,7 +2,7 @@ require File.expand_path('../lib/eye', __FILE__)
 
 Gem::Specification.new do |gem|
   gem.authors       = "Konstantin Makarchev"
-  gem.email         = "kostya27@gmail.com"
+  gem.email         = "eye-rb@googlegroups.com"
 
   gem.description   = gem.summary = \
     %q{Process monitoring tool. Inspired from Bluepill and God. Requires Ruby(MRI) >= 1.9.3-p194. Uses Celluloid and Celluloid::IO.}
@@ -19,10 +19,11 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version     = '>= 1.9.2' # because of celluloid
   gem.required_rubygems_version = '>= 1.3.6'
 
-  gem.add_dependency 'celluloid',     '~> 0.14.0'
-  gem.add_dependency 'celluloid-io',  '~> 0.14.0'
+  gem.add_dependency 'celluloid',     '~> 0.15.0'
+  gem.add_dependency 'celluloid-io',  '~> 0.15.0'
   gem.add_dependency 'state_machine'
   gem.add_dependency 'thor'
+  gem.add_dependency 'sigar'
 
   gem.add_dependency 'reel',          '~> 0.4.0.pre'
   gem.add_dependency 'cuba'

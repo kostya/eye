@@ -1,129 +1,48 @@
 module Eye::Controller::Status
 
-  def info_string(*args)
-    make_str(info_data(*args)).to_s
-  end
-
-  def info_string_short(*args)
-    make_str({:subtree => @applications.map{|a| a.status_data_short } }).to_s
-  end
-
-  def info_string_debug(*args)
+  def debug_data(*args)
     h = args.extract_options!
     actors = Celluloid::Actor.all.map{|actor| actor.__klass__ }.group_by{|a| a}.map{|k,v| [k, v.size]}.sort_by{|a|a[1]}.reverse
 
-    str = <<-S
-About:  #{Eye::ABOUT}
-Info:   #{resources_str(Eye::SystemResources.resources($$))}
-Ruby:   #{RUBY_DESCRIPTION}
-Gems:   #{%w|Celluloid Celluloid::IO ActiveSupport StateMachine NIO|.map{|c| gem_version(c) }}
-Logger: #{Eye::Logger.dev}
-Http:   #{@http ? "#{@http.host}:#{@http.port}" : '-'}
-Socket: #{Eye::Settings::socket_path}
-Pid:    #{Eye::Settings::pid_path}
-Actors: #{actors.inspect}
+    res = {
+      :about => Eye::ABOUT,
+      :resources => Eye::SystemResources.resources($$),
+      :ruby => RUBY_DESCRIPTION,
+      :gems => %w|Celluloid Celluloid::IO ActiveSupport StateMachine NIO Sigar|.map{|c| gem_version(c) },
+      :http => @http ? "#{@http.host}:#{@http.port}" : '-',
+      :logger => Eye::Logger.dev,
+      :pid_path => Eye::Local::pid_path,
+      :actors => actors
+    }
 
-    S
+    res[:config_yaml] = YAML.dump(current_config.to_h) if h[:config].present?
 
-    str += make_str(info_data_debug) + "\n" if h[:processes].present?
-
-    if h[:config].present?
-      str += "\nCurrent config: \n"
-      str += YAML.dump(current_config.to_h)
-    end
-
-    GC.start
-    str
+    res
   end
 
   def info_data(*args)
     {:subtree => info_objects(*args).map{|a| a.status_data } }
   end
 
-private
-
-  def info_data_debug(*args)
-    {:subtree => info_objects(*args).map{|a| a.status_data(true) } }
+  def short_data(*args)
+    {:subtree => @applications.map{|a| a.status_data_short } }
   end
+
+  def history_data(*args)
+    res = {}
+    history_objects(*args).each do |process|
+      res[process.full_name] = process.schedule_history.reject{|c| c[:state] == :check_crash }
+    end
+    res
+  end
+
+private
 
   def info_objects(*args)
     res = []
     return @applications if args.empty?
     matched_objects(*args){|obj| res << obj }
     res
-  end
-
-  def make_str(data, level = -1)
-    return nil if data.blank?
-
-    if data.is_a?(Array)
-      data.map{|el| make_str(el, level) }.compact * "\n"
-    else
-      str = nil
-
-      if data[:name]
-        return make_str(data[:subtree], level) if data[:name] == '__default__'
-
-        off = level * 2
-        off_str = ' ' * off
-        name = (data[:type] == :application && data[:state].blank?) ? "\033[1m#{data[:name]}\033[0m" : data[:name].to_s
-        off_len = (data[:type] == :application && !data[:state].blank?) ? 20 : 35
-        str = off_str + (name + ' ').ljust(off_len - off, data[:state] ? '.' : ' ')
-
-        if data[:debug]
-          str += ' | ' + debug_str(data[:debug])
-
-          # for group show chain data
-          if data[:debug][:chain]
-            str += " (chain: #{data[:debug][:chain].map(&:to_i)})"
-          end
-        elsif data[:state]
-          str += ' ' + data[:state].to_s
-          str += '  (' + resources_str(data[:resources]) + ')' if data[:resources].present? && data[:state].to_sym == :up
-          str += " (#{data[:state_reason]} at #{data[:state_changed_at].to_s(:short)})" if data[:state_reason] && data[:state] == 'unmonitored'
-        elsif data[:current_command]
-          chain_progress = if data[:chain_progress]
-            " #{data[:chain_progress][0]} of #{data[:chain_progress][1]}" rescue ''
-          end
-          str += " \e[1;33m[#{data[:current_command]}#{chain_progress}]\033[0m"
-          str += " (#{data[:chain_commands] * ', '})" if data[:chain_commands]
-        end
-
-      end
-
-      if data[:subtree].nil?
-        str
-      elsif data[:subtree].blank? && data[:type] != :application
-        nil
-      else
-        [str, make_str(data[:subtree], level + 1)].compact * "\n"
-      end
-    end
-  end
-
-  def resources_str(r)
-    return '' if r.blank?
-
-    res = "#{r[:start_time]}, #{r[:cpu]}%"
-    res += ", #{r[:memory] / 1024}Mb" if r[:memory]
-    res += ", <#{r[:pid]}>"
-
-    res
-  end
-
-  def debug_str(debug)
-    return '' unless debug
-
-    q = 'q(' + (debug[:queue] || []) * ',' + ')'
-    w = 'w(' + (debug[:watchers] || []) * ',' + ')'
-
-    [w, q] * '; '
-  end
-
-  def status_applications(app = nil)
-    apps = app.present? ? @applications.select{|a| a.name == app} : nil
-    apps = @applications unless apps
-    apps
   end
 
   def gem_version(klass)
@@ -134,6 +53,19 @@ private
       v = eval("#{klass}::VERSION") rescue ''
     end
     "#{klass}=#{v}"
+  end
+
+  def history_objects(*args)
+    args = ['*'] if args.empty?
+    res = []
+    matched_objects(*args) do |obj|
+      if (obj.is_a?(Eye::Process) || obj.is_a?(Eye::ChildProcess))
+        res << obj
+      else
+        res += obj.processes.to_a
+      end
+    end
+    Eye::Utils::AliveArray.new(res)
   end
 
 end

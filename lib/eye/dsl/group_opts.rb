@@ -3,7 +3,7 @@ class Eye::Dsl::GroupOpts < Eye::Dsl::Opts
   include Eye::Dsl::Chain
 
   def disallow_options
-    [:pid_file, :start_command]
+    [:pid_file, :start_command, :daemonize]
   end
 
   def not_seed_options

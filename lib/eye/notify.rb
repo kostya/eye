@@ -1,6 +1,6 @@
 class Eye::Notify
   include Celluloid
-  extend Eye::Dsl::Validation
+  include Eye::Dsl::Validation
 
   autoload :Mail,     'eye/notify/mail'
   autoload :Jabber,   'eye/notify/jabber'
@@ -10,6 +10,9 @@ class Eye::Notify
   def self.get_class(type)
     klass = eval("Eye::Notify::#{TYPES[type]}") rescue nil
     raise "Unknown notify #{type}" unless klass
+    if deps = klass.depends_on
+      Array(deps).each { |d| require d }
+    end
     klass
   end
 
@@ -90,6 +93,9 @@ class Eye::Notify
     Eye::Notify::TYPES[type] = name
     Eye::Notify.const_set(name, base)
     Eye::Dsl::ConfigOpts.add_notify(type)
+  end
+
+  def self.depends_on
   end
 
   class Custom < Eye::Notify

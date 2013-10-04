@@ -29,21 +29,25 @@ describe "Eye::System" do
   end
 
   it "prepare env" do
-    Eye::System.send(:prepare_env, {}).should include({})
-    Eye::System.send(:prepare_env, {:environment => {'A' => 'B'}}).should include({'A' => 'B'})
-    Eye::System.send(:prepare_env, {:environment => {'A' => 'B'}, :working_dir => "/tmp"}).should include({'A' => 'B'})
+    Eye::System.send(:prepare_env, {}).should eq({})
+    Eye::System.send(:prepare_env, {:environment => {'A' => 'B'}}).should eq({'A' => 'B'})
+    Eye::System.send(:prepare_env, {:environment => {'A' => 'B'}, :working_dir => "/tmp"}).should eq({'A' => 'B'})
 
     r = Eye::System.send(:prepare_env, {:environment => {'A' => [], 'B' => {}, 'C' => nil, 'D' => 1, 'E' => '2'}})
-    r['A'].should == '[]'
-    r['B'].should == '{}'
-    r['C'].should == nil
-    r['D'].should == '1'
-    r['E'].should == '2'
+    r.should eq(
+      'A' => '[]',
+      'B' => '{}',
+      'C' => nil,
+      'D' => '1',
+      'E' => '2'
+    )
   end
 
   it "set spawn_options" do
-    stub(Eye::Settings).root? { true }
+    stub(Eye::Local).root? { true }
     Eye::System.send(:spawn_options, {}).should == {:pgroup => true, :chdir => "/"}
+    Eye::System.send(:spawn_options, {:working_dir => "/tmp"}).should include(:chdir => "/tmp")
+    Eye::System.send(:spawn_options, {:stdout => "/tmp/1", :stderr => "/tmp/2"}).should include(:out => ["/tmp/1", 'a'], :err => ["/tmp/2", 'a'])
     Eye::System.send(:spawn_options, {:uid => "root", :gid => "root"}).should include({:uid => 0, :gid => 0})
   end
 
@@ -79,6 +83,15 @@ describe "Eye::System" do
 
       data = File.read(@log)
       data.should == "some\n"
+    end
+
+    it "should provide all to spawn correctly" do
+      args = [{"A"=>"1", "B"=>nil, "C"=>"3"}, "echo", "1",
+        {:pgroup=>true, :chdir=>"/", :out=>["/tmp/1", "a"], :err=>["/tmp/2", "a"]}]
+      mock(Process).spawn(*args){ 1234555 }
+      mock(Process).detach( 1234555 )
+      Eye::System::daemonize("echo 1", :environment => {'A' => 1, 'B' => nil, 'C' => 3},
+        :stdout => "/tmp/1", :stderr => "/tmp/2")
     end
   end
 

@@ -1,6 +1,6 @@
 require 'fileutils'
 
-module Eye::Settings
+module Eye::Local
   module_function
 
   def dir

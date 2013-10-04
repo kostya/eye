@@ -8,7 +8,7 @@ module Eye::Controller::Helpers
   end
 
   def save_cache
-    File.open(Eye::Settings.cache_path, 'w') { |f| f.write(cache_str) }
+    File.open(Eye::Local.cache_path, 'w') { |f| f.write(cache_str) }
   rescue => ex
     log_ex(ex)
   end

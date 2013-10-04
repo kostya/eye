@@ -9,7 +9,7 @@ class Eye::Checker::Memory < Eye::Checker
   end
 
   def get_value
-    Eye::SystemResources.memory(@pid).to_i * 1024
+    Eye::SystemResources.memory(@pid).to_i
   end
 
   def human_value(value)

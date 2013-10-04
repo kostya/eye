@@ -38,4 +38,6 @@ module Eye::Dsl::Main
     Eye::Dsl.debug "<= config"
   end
 
+  alias settings config
+
 end

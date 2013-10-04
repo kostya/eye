@@ -1,3 +1,5 @@
+require 'xmpp4r'
+
 class Eye::Notify::Jabber < Eye::Notify
 
   # Eye.config do
@@ -11,8 +13,6 @@ class Eye::Notify::Jabber < Eye::Notify
   param :password, String
 
   def execute
-    require 'xmpp4r'
-
     debug "send jabber #{[host, port, user, password]} - #{[contact, message_body]}"
 
     mes = ::Jabber::Message.new(contact, message_body)

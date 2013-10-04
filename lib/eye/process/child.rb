@@ -6,8 +6,9 @@ module Eye::Process::Child
 
   def add_or_update_childs
     return unless self[:monitor_children]
-
     return unless self.up?
+    return if @updating_childs
+    @updating_childs = true
 
     unless self.pid
       warn 'Cant add childs, because no pid'
@@ -41,6 +42,7 @@ module Eye::Process::Child
     h = {:new => new_childs.size, :removed => removed_childs.size, :exists => exist_childs.size }
     debug "childs info: #{ h.inspect }"
 
+    @updating_childs = false
     h
   end
 

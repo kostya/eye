@@ -16,6 +16,8 @@ class DeleteFile < Eye::Trigger::Custom
     if transition.to_name == on
       info "rm \#{file}"
       File.delete(file)
+
+      @rr = @reason
     end
   end
 end
@@ -39,8 +41,14 @@ end
     it "should delete file when stop" do
       File.open(C.tmp_file, 'w'){ |f| f.write "aaa" }
       File.exists?(C.tmp_file).should == true
-      @process.stop
+      @process.send_command :stop
+      sleep 3
       File.exists?(C.tmp_file).should == false
+
+      # check that reason is
+      t = @process.triggers.first
+      res = t.instance_variable_get(:@rr)
+      res.to_s.should == "stop by user"
     end
   end
 

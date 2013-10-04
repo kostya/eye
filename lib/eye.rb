@@ -1,5 +1,5 @@
 module Eye
-  VERSION   = "0.4.1"
+  VERSION   = "0.5.pre"
   ABOUT     = "ReelEye v#{VERSION} (c) 2012-2013 @kostya"
   PROCLINE  = "reel-eye monitoring v#{VERSION}"
 
@@ -14,15 +14,17 @@ module Eye
   autoload :Group,          'eye/group'
   autoload :Dsl,            'eye/dsl'
   autoload :Application,    'eye/application'
-  autoload :Settings,       'eye/settings'
+  autoload :Local,          'eye/local'
   autoload :Client,         'eye/client'
   autoload :Utils,          'eye/utils'
   autoload :Notify,         'eye/notify'
   autoload :Config,         'eye/config'
   autoload :Reason,         'eye/reason'
+  autoload :Sigar,          'eye/sigar'
 
   autoload :Controller,     'eye/controller'
   autoload :Control,        'eye/control'
 
   autoload :Http,           'eye/http'
+  autoload :Cli,            'eye/cli'
 end

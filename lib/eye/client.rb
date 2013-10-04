@@ -13,7 +13,7 @@ class Eye::Client
   end
 
   def attempt_command(pack)
-    Timeout.timeout(Eye::Settings.client_timeout) do
+    Timeout.timeout(Eye::Local.client_timeout) do
       return send_request(pack)
     end
 

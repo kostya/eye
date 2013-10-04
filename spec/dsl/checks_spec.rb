@@ -435,9 +435,9 @@ describe "Eye::Dsl checks" do
           process("1") do
             pid_file "1.pid"
 
-            trigger :state, :from => :a
-            trigger :state2, :to => :b
-            trigger :state_3, :event => :c
+            trigger :transition, :from => :a
+            trigger :transition2, :to => :b
+            trigger :transition_3, :event => :c
           end
         end
       E
@@ -445,29 +445,29 @@ describe "Eye::Dsl checks" do
         "bla" => {:name=>"bla", :groups=>{
           "__default__"=>{:name=>"__default__", :application=>"bla", :processes=>{
             "1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"1.pid", :triggers=>{
-              :state=>{:from=>:a, :type=>:state},
-              :state2=>{:to=>:b, :type=>:state},
-              :state_3=>{:event=>:c, :type=>:state}}}}}}}}
+              :transition=>{:from=>:a, :type=>:transition},
+              :transition2=>{:to=>:b, :type=>:transition},
+              :transition_3=>{:event=>:c, :type=>:transition}}}}}}}}
     end
 
     it "with notriggers" do
       conf = <<-E
         Eye.application("bla") do
-          trigger :state
+          trigger :transition
 
           process("1") do
             pid_file "1.pid"
 
-            notrigger :state
-            trigger :state2, :to => :up
+            notrigger :transition
+            trigger :transition2, :to => :up
           end
         end
       E
       Eye::Dsl.parse_apps(conf).should == {
-        "bla" => {:name=>"bla", :triggers=>{:state=>{:type=>:state}}, :groups=>{
+        "bla" => {:name=>"bla", :triggers=>{:transition=>{:type=>:transition}}, :groups=>{
           "__default__"=>{:name=>"__default__",
-            :triggers=>{:state=>{:type=>:state}}, :application=>"bla", :processes=>{
-              "1"=>{:name=>"1", :triggers=>{:state2=>{:to=>:up, :type=>:state}},
+            :triggers=>{:transition=>{:type=>:transition}}, :application=>"bla", :processes=>{
+              "1"=>{:name=>"1", :triggers=>{:transition2=>{:to=>:up, :type=>:transition}},
               :application=>"bla", :group=>"__default__", :pid_file=>"1.pid"}}}}}}
     end
 
@@ -487,6 +487,44 @@ describe "Eye::Dsl checks" do
       expect{ Eye::Dsl.parse_apps(conf) }.to raise_error(Eye::Dsl::Error)
     end
 
+  end
+
+  it 'checker depends_on' do
+    conf = <<-E
+      class Asdf22 < Eye::Checker::Custom
+        def self.depends_on
+          %w{ bla_gem }
+        end
+      end
+
+      Eye.application("bla") do
+        process("1") do
+          pid_file "1.pid"
+          check :asdf22
+        end
+      end
+    E
+
+    expect{ Eye::Dsl.parse_apps(conf) }.to raise_error(LoadError)
+  end
+
+  it 'trigger depends_on' do
+    conf = <<-E
+      class Asdf23 < Eye::Trigger::Custom
+        def self.depends_on
+          %w{ bla_gem }
+        end
+      end
+
+      Eye.application("bla") do
+        process("1") do
+          pid_file "1.pid"
+          trigger :asdf23
+        end
+      end
+    E
+
+    expect{ Eye::Dsl.parse_apps(conf) }.to raise_error(LoadError)
   end
 
 end
