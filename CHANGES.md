@@ -1,5 +1,10 @@
-0.5.dev
+0.5.pre
 -------
+* rename `state` trigger to `transition`
+* add runtime, cputime checks
+* real cpu check
+* use sigar gem instead of `ps axo`
+* refactor cli
 * update celluloid to 0.15
 
 0.4.2
