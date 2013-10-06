@@ -11,9 +11,9 @@ class Eye::Checker
   autoload :Runtime,    'eye/checker/runtime'
   autoload :Cputime,    'eye/checker/cputime'
 
-  TYPES = {:memory => "Memory", :cpu => "Cpu", :http => "Http",
-           :ctime => "FileCTime", :fsize => "FileSize", :socket => "Socket",
-           :nop => "Nop", :runtime => "Runtime", :cputime => "Cputime" }
+  TYPES = {:memory => 'Memory', :cpu => 'Cpu', :http => 'Http',
+           :ctime => 'FileCTime', :fsize => 'FileSize', :socket => 'Socket',
+           :nop => 'Nop', :runtime => 'Runtime', :cputime => 'Cputime' }
 
   attr_accessor :value, :values, :options, :pid, :type, :check_count, :process
 
@@ -190,7 +190,7 @@ class Eye::Checker
   end
 
   def self.register(base)
-    name = base.to_s.gsub("Eye::Checker::", '')
+    name = base.to_s.gsub('Eye::Checker::', '')
     type = name.underscore.to_sym
     Eye::Checker::TYPES[type] = name
     Eye::Checker.const_set(name, base)

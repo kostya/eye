@@ -29,7 +29,7 @@ class Eye::Dsl::ApplicationOpts < Eye::Dsl::Opts
   end
 
   def process(name, &block)
-    group("__default__"){ process(name.to_s, &block) }
+    group('__default__'){ process(name.to_s, &block) }
   end
 
   alias xgroup nop

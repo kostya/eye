@@ -6,7 +6,7 @@ class Eye::Dsl::ChildProcessOpts < Eye::Dsl::Opts
   end
 
   def triggers(*args)
-    raise Eye::Dsl::Error, "triggers does not allowed in monitor_children"
+    raise Eye::Dsl::Error, 'triggers does not allowed in monitor_children'
   end
 
 end

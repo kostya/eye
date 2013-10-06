@@ -5,7 +5,7 @@ class Eye::Notify
   autoload :Mail,     'eye/notify/mail'
   autoload :Jabber,   'eye/notify/jabber'
 
-  TYPES = {:mail => "Mail", :jabber => "Jabber"}
+  TYPES = {:mail => 'Mail', :jabber => 'Jabber'}
 
   def self.get_class(type)
     klass = eval("Eye::Notify::#{TYPES[type]}") rescue nil
@@ -74,7 +74,7 @@ class Eye::Notify
   end
 
   def execute
-    raise "realize me"
+    raise 'realize me'
   end
 
   param :contact, [String]
@@ -88,7 +88,7 @@ class Eye::Notify
   end
 
   def self.register(base)
-    name = base.to_s.gsub("Eye::Notify::", '')
+    name = base.to_s.gsub('Eye::Notify::', '')
     type = name.underscore.to_sym
     Eye::Notify::TYPES[type] = name
     Eye::Notify.const_set(name, base)

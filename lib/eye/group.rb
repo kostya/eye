@@ -114,7 +114,7 @@ class Eye::Group
   end
 
   def break_chain
-    info "break chain"
+    info 'break chain'
     scheduler_clear_pending_list
     @chain_breaker = true
   end

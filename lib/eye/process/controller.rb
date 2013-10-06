@@ -43,7 +43,7 @@ module Eye::Process::Controller
         info "process from pid_file(#{self.pid}) found and already running, so :up"
         switch :already_running
       else
-        warn "process not found, so :unmonitor"
+        warn 'process not found, so :unmonitor'
         schedule :unmonitor, Eye::Reason.new(:'not found')
       end
     end

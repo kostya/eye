@@ -80,7 +80,7 @@ class Eye::Checker::Socket < Eye::Checker::Defer
 
         unless match
           warn "proc #{expect_data} not matched (#{value[:result].truncate(30)}) answer"
-          value[:notice] = "missing proc validation"
+          value[:notice] = 'missing proc validation'
         end
 
         return match
@@ -104,7 +104,7 @@ class Eye::Checker::Socket < Eye::Checker::Defer
       value[:exception]
     else
       if value[:result] == :listen
-        "listen"
+        'listen'
       else
         res = "#{value[:result].to_s.size}b"
         res += "<#{value[:notice]}>" if value[:notice]
@@ -138,7 +138,7 @@ private
   def _read_data(socket)
     case protocol
     when :em_object
-      content = ""
+      content = ''
       msg_size = socket.recv(4).unpack('N')[0] rescue 0
       content << socket.recv(msg_size - content.length) while content.length < msg_size
       if content.present?

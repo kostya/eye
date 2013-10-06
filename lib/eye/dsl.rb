@@ -20,7 +20,7 @@ class Eye::Dsl
   class << self
     attr_accessor :verbose
 
-    def debug(msg = "")
+    def debug(msg = '')
       puts msg if verbose
     end
 

@@ -7,7 +7,7 @@ class Eye::Trigger
 
   # ex: { :type => :flapping, :times => 2, :within => 30.seconds}
 
-  TYPES = {:flapping => "Flapping", :transition => "Transition", :stop_childs => "StopChilds"}
+  TYPES = {:flapping => 'Flapping', :transition => 'Transition', :stop_childs => 'StopChilds'}
 
   attr_reader :message, :options, :process
 
@@ -86,7 +86,7 @@ class Eye::Trigger
   end
 
   def check(transition)
-    raise "realize me"
+    raise 'realize me'
   end
 
   def run_in_process_context(p)
@@ -98,7 +98,7 @@ class Eye::Trigger
   end
 
   def self.register(base)
-    name = base.to_s.gsub("Eye::Trigger::", '')
+    name = base.to_s.gsub('Eye::Trigger::', '')
     type = name.underscore.to_sym
     Eye::Trigger::TYPES[type] = name
     Eye::Trigger.const_set(name, base)

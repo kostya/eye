@@ -17,7 +17,7 @@ private
     if res == :not_started
       error! "socket(#{Eye::Local.socket_path}) not found, did you `eye load`?"
     elsif res == :timeouted
-      error! "eye does not answer, timeouted..."
+      error! 'eye does not answer, timeouted...'
     end
 
     res
@@ -26,7 +26,7 @@ private
   def say_load_result(res = {}, opts = {})
     error!(res) unless res.is_a?(Hash)
     say_filename = (res.size > 1)
-    say "eye started!", :green if opts[:started]
+    say 'eye started!', :green if opts[:started]
     error = false
     res.each do |filename, _res|
       say "#{filename}: ", nil, true if say_filename
@@ -43,9 +43,9 @@ private
       res[:backtrace].to_a.each{|line| say line, :red }
     else
       if opts[:syntax]
-        say "config ok!", :green if !res[:empty]
+        say 'config ok!', :green if !res[:empty]
       else
-        say "config loaded!", :green if !res[:empty]
+        say 'config loaded!', :green if !res[:empty]
       end
 
       if opts[:print_config]
@@ -60,7 +60,7 @@ private
     if res == :unknown_command
       error! "unknown command :#{_cmd}"
     elsif res == :corrupred_data
-      error! "something crazy wrong, check eye logs!"
+      error! 'something crazy wrong, check eye logs!'
     elsif res.is_a?(Hash)
       if res[:error]
         error! "Error: #{res[:error]}"
