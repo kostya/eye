@@ -116,7 +116,7 @@ load folder with configs:
     $ eye l examples/
     $ eye l examples/*.rb
 
-foregraund load:
+foreground load:
 
     $ eye l CONF -f
 
