@@ -69,7 +69,7 @@ class Eye::Cli < Thor
     res = _cmd(:quit)
 
     # if eye server got crazy, stop by force
-    ensure_stop_previous_server if res != :corrupred_data
+    ensure_stop_previous_server if res != :corrupted_data
 
     # remove pid_file
     File.delete(Eye::Local.pid_path) if File.exists?(Eye::Local.pid_path)
