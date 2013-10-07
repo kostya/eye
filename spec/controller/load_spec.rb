@@ -131,7 +131,7 @@ describe "Eye::Controller::Load" do
 
   it "load + 1 app, and pid_file crossed" do
     subject.load(fixture("dsl/load2.eye")).should_be_ok
-    subject.load(fixture("dsl/load4.eye")).only_value.should include(:error => true, :message => "dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}")
+    subject.load(fixture("dsl/load4.eye")).only_value.should include(:error => true, :message => "duplicate pid_files: {\"/tmp/app3-e1.pid\"=>2}")
 
     subject.short_tree.should == {
       "app3"=>{"__default__"=>{"e1"=>"/tmp/app3-e1.pid"}}}
@@ -139,7 +139,7 @@ describe "Eye::Controller::Load" do
 
   it "check syntax" do
     subject.load(fixture("dsl/load2.eye")).should_be_ok
-    subject.check(fixture("dsl/load4.eye")).only_value.should include(:error => true, :message => "dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}")
+    subject.check(fixture("dsl/load4.eye")).only_value.should include(:error => true, :message => "duplicate pid_files: {\"/tmp/app3-e1.pid\"=>2}")
   end
 
   it "check explain" do
@@ -189,7 +189,7 @@ describe "Eye::Controller::Load" do
     res = subject.load(fixture("dsl/load2{,_dup_pid,_dup2}.eye"))
     res.ok_count.should == 2
     res.errors_count.should == 1
-    res.only_match(/load2_dup_pid\.eye/).should == {:error => true, :message=>"dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}"}
+    res.only_match(/load2_dup_pid\.eye/).should == {:error => true, :message=>"duplicate pid_files: {\"/tmp/app3-e1.pid\"=>2}"}
   end
 
   it "two configs with same pids (should validate final config)" do
@@ -198,7 +198,7 @@ describe "Eye::Controller::Load" do
     res = subject.load(fixture("dsl/load2_*.eye"))
     res.size.should > 1
     res.errors_count.should == 1
-    res.only_match(/load2_dup_pid\.eye/).should == {:error => true, :message=>"dublicate pid_files: {\"/tmp/app3-e1.pid\"=>2}"}
+    res.only_match(/load2_dup_pid\.eye/).should == {:error => true, :message=>"duplicate pid_files: {\"/tmp/app3-e1.pid\"=>2}"}
   end
 
   it "dups of pid_files, but they different with expand" do
@@ -227,7 +227,7 @@ describe "Eye::Controller::Load" do
     p22.object_id.should == p2.object_id
   end
 
-  it "same processes crossed in apps dublicate pids" do
+  it "same processes crossed in apps duplicate pids" do
     subject.load(fixture("dsl/load_dup_ex_names3.eye")).errors_count.should == 1
   end
 

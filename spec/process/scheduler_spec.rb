@@ -75,7 +75,7 @@ describe "Scheduler" do
     @process.test2.should == [1, 2]
   end
 
-  it "should not scheduler dublicates" do
+  it "should not scheduler duplicates" do
     @process.schedule :scheduler_test1, 1
     @process.schedule :scheduler_test1, 1
     @process.schedule :scheduler_test1, 1
@@ -84,7 +84,7 @@ describe "Scheduler" do
     @process.test1_call.should == 2
   end
 
-  it "should scheduler dublicates by with different params" do
+  it "should scheduler duplicates by with different params" do
     @process.schedule :scheduler_test1, 1
     @process.schedule :scheduler_test1, 2
     @process.schedule :scheduler_test1, 3
