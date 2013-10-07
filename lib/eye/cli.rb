@@ -46,7 +46,7 @@ class Eye::Cli < Thor
   end
 
   desc "load [CONF, ...]", "load config (start eye-daemon if not) (-f foreground start)"
-  method_option :foregraund, :type => :boolean, :aliases => "-f"
+  method_option :foreground, :type => :boolean, :aliases => "-f"
   def load(*configs)
     configs.map!{ |c| File.expand_path(c) } if !configs.empty?
 
