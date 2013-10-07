@@ -25,7 +25,7 @@ class Eye::Client
     UNIXSocket.open(@socket_path) do |socket|
       socket.write(pack)
       data = socket.read
-      res = Marshal.load(data) rescue :corrupred_data
+      res = Marshal.load(data) rescue :corrupted_data
     end
   end
 

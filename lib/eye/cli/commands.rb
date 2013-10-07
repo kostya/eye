@@ -59,7 +59,7 @@ private
     res = cmd(_cmd, *args)
     if res == :unknown_command
       error! "unknown command :#{_cmd}"
-    elsif res == :corrupred_data
+    elsif res == :corrupted_data
       error! 'something crazy wrong, check eye logs!'
     elsif res.is_a?(Hash)
       if res[:error]

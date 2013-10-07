@@ -21,7 +21,7 @@ private
     end
   end
 
-  def server_start_foregraund(conf = nil)
+  def server_start_foreground(conf = nil)
     ensure_loader_path
     Eye::Local.ensure_eye_dir
 
