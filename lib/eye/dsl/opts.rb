@@ -110,14 +110,21 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   def scoped(&block)
     h = self.class.new(self.name, self)
     h.instance_eval(&block)
+
     groups = h.config.delete :groups
-    processes = h.config.delete :processes
 
     if groups.present?
       config[:groups] ||= {}
-      config[:groups].merge!(groups)
+      groups.each do |name, cfg|
+        processes = cfg.delete(:processes) || {}
+        config[:groups][name] ||= {}
+        config[:groups][name].merge!(cfg)
+        config[:groups][name][:processes] ||= {}
+        config[:groups][name][:processes].merge!(processes)
+      end
     end
 
+    processes = h.config.delete :processes
     if processes.present?
       config[:processes] ||= {}
       config[:processes].merge!(processes)

@@ -15,6 +15,7 @@ class Eye::Dsl::ApplicationOpts < Eye::Dsl::Opts
 
     opts = Eye::Dsl::GroupOpts.new(name, self)
     opts.instance_eval(&block)
+
     if cfg = opts.config
       @config[:groups] ||= {}
 
