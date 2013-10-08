@@ -433,6 +433,17 @@ describe "Eye::Controller::Load" do
       subject.command(:delete, "app3"); sleep 0.1
       subject.load(fixture('dsl/load4.eye')).should_be_ok
     end
+
+    it "delete from empty app (was an exception)" do
+      with_temp_file(<<-F){ |f| subject.load(f ) }
+        Eye.app(:bla) { }
+        Eye.app(:good) { group(:gr){}; process(:pr){ pid_file '1'} }
+      F
+      subject.command(:delete, "pr")
+      subject.command(:delete, "gr")
+      subject.command(:delete, "good")
+      subject.command(:delete, "bla")
+    end
   end
 
   it "should update only changed apps" do

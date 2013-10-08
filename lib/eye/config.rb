@@ -73,14 +73,14 @@ class Eye::Config
 
   def delete_group(name)
     applications.each do |app_name, app_cfg|
-      app_cfg[:groups].delete(name)
+      (app_cfg[:groups] || {}).delete(name)
     end
   end
 
   def delete_process(name)
     applications.each do |app_name, app_cfg|
-      app_cfg[:groups].each do |gr_name, gr_cfg|
-        gr_cfg[:processes].delete(name)
+      (app_cfg[:groups] || {}).each do |gr_name, gr_cfg|
+        (gr_cfg[:processes] || {}).delete(name)
       end
     end
   end
