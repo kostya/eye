@@ -75,7 +75,7 @@ private
     config_yaml = data.delete(:config_yaml)
 
     data.each do |k, v|
-      s << "#{"#{k.to_s.capitalize}:".ljust(10)} "
+      s << "#{"#{k}:".ljust(10)} "
 
       case k
       when :resources
