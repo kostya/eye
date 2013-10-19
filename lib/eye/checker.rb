@@ -6,14 +6,15 @@ class Eye::Checker
   autoload :Http,       'eye/checker/http'
   autoload :FileCTime,  'eye/checker/file_ctime'
   autoload :FileSize,   'eye/checker/file_size'
+  autoload :FileTouched,'eye/checker/file_touched'
   autoload :Socket,     'eye/checker/socket'
   autoload :Nop,        'eye/checker/nop'
   autoload :Runtime,    'eye/checker/runtime'
   autoload :Cputime,    'eye/checker/cputime'
 
   TYPES = {:memory => 'Memory', :cpu => 'Cpu', :http => 'Http',
-           :ctime => 'FileCTime', :fsize => 'FileSize', :socket => 'Socket',
-           :nop => 'Nop', :runtime => 'Runtime', :cputime => 'Cputime' }
+           :ctime => 'FileCTime', :fsize => 'FileSize', :file_touched => 'FileTouched',
+           :socket => 'Socket', :nop => 'Nop', :runtime => 'Runtime', :cputime => 'Cputime' }
 
   attr_accessor :value, :values, :options, :pid, :type, :check_count, :process
 
