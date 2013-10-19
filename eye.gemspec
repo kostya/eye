@@ -25,12 +25,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'thor'
   gem.add_dependency 'sigar'
 
-  if RUBY_VERSION == '1.9.2'
-    gem.add_dependency 'activesupport', '>= 3', '< 4.0'
-  else
-    gem.add_dependency 'activesupport', '>= 3'
-  end
-
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rspec', '< 2.14'
   gem.add_development_dependency 'rr'
