@@ -8,7 +8,7 @@ class Eye::Checker::FileTouched < Eye::Checker
   end
 
   def good?(value)
-    File.delete(file) if value && remove
+    File.delete(file) if value && delete
     value
   end
 
