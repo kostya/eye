@@ -160,44 +160,6 @@ describe "Eye::Dsl" do
     end
   end
 
-  describe "child process" do
-    it "ok child monitor" do
-      conf = <<-E
-        Eye.application("bla") do
-          process("1") do
-            pid_file "1.pid"
-            monitor_children{ restart_command "kill" }
-          end
-        end
-      E
-      Eye::Dsl.parse_apps(conf).should == {"bla" => {:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :monitor_children=>{:restart_command=>"kill"}, :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
-    end
-
-    it "child invalid command" do
-      conf = <<-E
-        Eye.application("bla") do
-          process("1") do
-            pid_file "1.pid"
-            monitor_children{ restart_some "kill" }
-          end
-        end
-      E
-      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(NoMethodError)
-    end
-
-    it "child pid_file" do
-      conf = <<-E
-        Eye.application("bla") do
-          process("1") do
-            pid_file "1.pid"
-            monitor_children{ pid_file "2.pid" }
-          end
-        end
-      E
-      expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
-    end
-
-  end
 
   it "valid process with proxies" do
     conf = <<-E
