@@ -7,4 +7,4 @@ gem 'nio4r'
 gem 'timers'
 
 gem 'state_machine'
-gem 'sigar'
+gem 'sigar',         '~> 0.7.2'
