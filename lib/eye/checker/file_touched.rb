@@ -4,12 +4,12 @@ class Eye::Checker::FileTouched < Eye::Checker
   param :delete, [TrueClass, FalseClass]
 
   def get_value
-    !File.exists?(file)
+    File.exists?(file)
   end
 
   def good?(value)
     File.delete(file) if value && delete
-    value
+    !value
   end
 
 end

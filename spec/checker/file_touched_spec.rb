@@ -8,10 +8,10 @@ describe "Eye::Checker::FileTouched" do
 
   it "get_value" do
     mock(File).exists?("1"){ true }
-    subject.get_value.should == false
+    subject.get_value.should == true
 
     mock(File).exists?("1"){ false }
-    subject.get_value.should == true
+    subject.get_value.should == false
   end
 
   it "good" do
