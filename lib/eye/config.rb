@@ -57,6 +57,9 @@ class Eye::Config
     all_processes.each do |process_cfg|
       Eye::Process.validate process_cfg
     end
+
+    # just to be sure ENV was not removed
+    ENV[''] rescue raise Eye::Dsl::Error.new("ENV is not a hash '#{ENV.inspect}'")
   end
 
   def processes

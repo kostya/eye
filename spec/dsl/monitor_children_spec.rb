@@ -79,6 +79,6 @@ describe "Eye::Dsl" do
         end
       E
       expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
-    end    
+    end
   end
 end
