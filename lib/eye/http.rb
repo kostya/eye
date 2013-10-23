@@ -1,7 +1,8 @@
-gem 'reel', '~> 0.4.0.pre'
+gem 'reel', '~> 0.4.0'
+gem 'reel-rack'
 gem 'cuba'
 
-require 'reel'
+require 'reel/rack/server'
 
 class Eye::Http
   autoload :Router,   'eye/http/router'
@@ -16,13 +17,7 @@ class Eye::Http
 
   def start
     stop
-
-    @server = Reel::Server.supervise(@host, @port) do |connection|
-      while request = connection.request
-        status, headers, body = @router.call(Rack::MockRequest.env_for(request.url, :method => request.method, :input => request.body))
-        connection.respond(Reel::Response.new(status, headers, body))
-      end
-    end
+    @server = Reel::Rack::Server.supervise(@router, :Host => @host, :Port => port)
   end
 
   def stop
