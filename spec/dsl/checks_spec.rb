@@ -36,34 +36,6 @@ describe "Eye::Dsl checks" do
     Eye::Dsl.parse_apps(conf).should == {"bla" => {:name => "bla", :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :processes=>{"1"=>{:checks=>{:memory=>{:below=>94371840, :every=>5, :type=>:memory}, :cpu=>{:below=>100, :every=>20, :type=>:cpu}}, :pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}, "2"=>{:checks=>{:memory=>{:below=>104857600, :every=>10, :type=>:memory}}, :pid_file=>"2.pid", :application=>"bla", :group=>"__default__", :name=>"2"}}}}}}
   end
 
-  it "checks in monitor_children" do
-    conf = <<-E
-      Eye.application("bla") do
-        process("1") do
-          pid_file "1.pid"
-          monitor_children{
-            checks :cpu,    :below => 100, :every => 20.seconds
-          }
-        end
-      end
-    E
-    Eye::Dsl.parse_apps(conf).should == {"bla" => {:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :monitor_children=>{:checks=>{:cpu=>{:below=>100, :every=>20, :type=>:cpu}}}, :application=>"bla", :group=>"__default__", :name=>"1"}}}}}}
-  end
-
-  it "child should not inherit checks" do
-    conf = <<-E
-      Eye.application("bla") do
-        process("1") do
-          pid_file "1.pid"
-          checks :cpu,    :below => 100, :every => 20.seconds
-          monitor_children{
-          }
-        end
-      end
-    E
-    Eye::Dsl.parse_apps(conf).should == {"bla" => {:name=>"bla", :groups=>{"__default__"=>{:name=>"__default__", :application=>"bla", :processes=>{"1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"1.pid", :checks=>{:cpu=>{:below=>100, :every=>20, :type=>:cpu}}, :monitor_children=>{}}}}}}}
-  end
-
   it "no valid checks" do
     conf = <<-E
       Eye.application("bla") do

@@ -12,7 +12,7 @@ private
 
   def ruby_path
     require 'rbconfig'
-    RbConfig::CONFIG['bindir'] + "/ruby"
+    RbConfig::CONFIG['bindir'] + '/ruby'
   end
 
   def ensure_loader_path
@@ -21,7 +21,7 @@ private
     end
   end
 
-  def server_start_foregraund(conf = nil)
+  def server_start_foreground(conf = nil)
     ensure_loader_path
     Eye::Local.ensure_eye_dir
 
@@ -51,7 +51,7 @@ private
     File.open(Eye::Local.pid_path, 'w'){|f| f.write(pid) }
 
     unless wait_server
-      error! "server not runned in 15 seconds, something crazy wrong"
+      error! 'server not runned in 15 seconds, something crazy wrong'
     end
 
     configs.unshift(Eye::Local.eyeconfig) if File.exists?(Eye::Local.eyeconfig)
@@ -59,7 +59,7 @@ private
     if !configs.empty?
       say_load_result cmd(:load, *configs), :started => true
     else
-      say "started!", :green
+      say 'started!', :green
     end
   end
 

@@ -45,15 +45,15 @@ class Eye::Cli < Thor
     say
   end
 
-  desc "load [CONF, ...]", "load config (start eye-daemon if not) (-f foregraund start)"
-  method_option :foregraund, :type => :boolean, :aliases => "-f"
+  desc "load [CONF, ...]", "load config (start eye-daemon if not) (-f foreground start)"
+  method_option :foreground, :type => :boolean, :aliases => "-f"
   def load(*configs)
     configs.map!{ |c| File.expand_path(c) } if !configs.empty?
 
-    if options[:foregraund]
-      # in foregraund we stop another server, and run just 1 current config version
-      error!("foregraund expected only one config") if configs.size != 1
-      server_start_foregraund(configs.first)
+    if options[:foreground]
+      # in foreground we stop another server, and run just 1 current config version
+      error!("foreground expected only one config") if configs.size != 1
+      server_start_foreground(configs.first)
 
     elsif server_started?
       say_load_result cmd(:load, *configs)
@@ -69,7 +69,7 @@ class Eye::Cli < Thor
     res = _cmd(:quit)
 
     # if eye server got crazy, stop by force
-    ensure_stop_previous_server if res != :corrupred_data
+    ensure_stop_previous_server if res != :corrupted_data
 
     # remove pid_file
     File.delete(Eye::Local.pid_path) if File.exists?(Eye::Local.pid_path)

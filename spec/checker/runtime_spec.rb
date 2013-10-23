@@ -7,7 +7,7 @@ describe "Eye::Checker::Runtime" do
   end
 
   it "get_value" do
-    mock(Eye::SystemResources).start_time(123){ 65 }
+    stub(Eye::SystemResources).start_time(123) { 65 }
     subject.get_value.should == Time.now.to_i - 65
   end
 

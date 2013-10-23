@@ -29,13 +29,13 @@ module Eye::Dsl::Main
   end
 
   def config(&block)
-    Eye::Dsl.debug "=> config"
+    Eye::Dsl.debug '=> config'
 
     opts = Eye::Dsl::ConfigOpts.new
     opts.instance_eval(&block)
     @parsed_config.settings.merge!(opts.config)
 
-    Eye::Dsl.debug "<= config"
+    Eye::Dsl.debug '<= config'
   end
 
   alias settings config

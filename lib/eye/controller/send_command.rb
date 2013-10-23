@@ -78,7 +78,7 @@ private
     end
 
     res = Eye::Utils::AliveArray.new
-    obj_strs.map{|c| c.to_s.split(",")}.flatten.each do |mask|
+    obj_strs.map{|c| c.to_s.split(',')}.flatten.each do |mask|
       objs = find_objects_by_mask(mask.to_s.strip)
       objs.select! { |obj| obj.app_name == h[:application] } if h[:application]
       res += objs

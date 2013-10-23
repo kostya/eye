@@ -23,7 +23,7 @@ class Eye::Dsl::ConfigOpts < Eye::Dsl::PureOpts
 
   def contact(contact_name, contact_type, contact, contact_opts = {})
     raise Eye::Dsl::Error, "unknown contact_type #{contact_type}" unless Eye::Notify::TYPES[contact_type]
-    raise Eye::Dsl::Error, "contact should be a String" unless contact.is_a?(String)
+    raise Eye::Dsl::Error, 'contact should be a String' unless contact.is_a?(String)
 
     notify_hash = @config[contact_type] || (@parent && @parent.config[contact_type]) || Eye::parsed_config.settings[contact_type] || {}
     validate_hash = notify_hash.merge(contact_opts).merge(:type => contact_type)

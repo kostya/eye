@@ -98,26 +98,33 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   end
 
   def set_uid(value)
-    raise Eye::Dsl::Error, ":uid not supported (use ruby >= 2.0)" unless Eye::Local.supported_setsid?
+    raise Eye::Dsl::Error, ':uid not supported (use ruby >= 2.0)' unless Eye::Local.supported_setsid?
     super
   end
 
   def set_gid(value)
-    raise Eye::Dsl::Error, ":gid not supported (use ruby >= 2.0)" unless Eye::Local.supported_setsid?
+    raise Eye::Dsl::Error, ':gid not supported (use ruby >= 2.0)' unless Eye::Local.supported_setsid?
     super
   end
 
   def scoped(&block)
     h = self.class.new(self.name, self)
     h.instance_eval(&block)
+
     groups = h.config.delete :groups
-    processes = h.config.delete :processes
 
     if groups.present?
       config[:groups] ||= {}
-      config[:groups].merge!(groups)
+      groups.each do |name, cfg|
+        processes = cfg.delete(:processes) || {}
+        config[:groups][name] ||= {}
+        config[:groups][name].merge!(cfg)
+        config[:groups][name][:processes] ||= {}
+        config[:groups][name][:processes].merge!(processes)
+      end
     end
 
+    processes = h.config.delete :processes
     if processes.present?
       config[:processes] ||= {}
       config[:processes].merge!(processes)

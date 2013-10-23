@@ -88,7 +88,7 @@ private
 
   def kill_process
     unless self.pid
-      error "try to kill process without pid"
+      error 'try to kill process without pid'
       return
     end
 
@@ -145,7 +145,7 @@ private
 
   def execute_restart_command
     unless self.pid
-      error "try to execute restart_command without pid"
+      error 'try to execute restart_command without pid'
       return
     end
 

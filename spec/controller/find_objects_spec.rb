@@ -134,8 +134,8 @@ describe "find_objects" do
   end
 
 
-  describe "dubls" do
-    subject{ new_controller(fixture("dsl/load_dubls.eye")) }
+  describe "dupls" do
+    subject{ new_controller(fixture("dsl/load_dupls.eye")) }
 
     it "not found" do
       subject.find_objects("zu").should == []
@@ -170,7 +170,7 @@ describe "find_objects" do
   end
 
   describe "exactly matching" do
-    subject{ new_controller(fixture("dsl/load_dubls.eye")) }
+    subject{ new_controller(fixture("dsl/load_dupls.eye")) }
 
     it "find 1 process by short name" do
       objs = subject.find_objects("some")
@@ -241,7 +241,7 @@ describe "find_objects" do
   end
 
   describe "Not allow objects from different apps" do
-    subject{ new_controller(fixture("dsl/load_dubls2.eye")) }
+    subject{ new_controller(fixture("dsl/load_dupls2.eye")) }
 
     it "`admin` should not match anything" do
       expect {
@@ -312,7 +312,7 @@ describe "find_objects" do
   end
 
   describe "matching app in priority" do
-    subject{ new_controller(fixture("dsl/load_dubls3.eye")) }
+    subject{ new_controller(fixture("dsl/load_dupls3.eye")) }
 
     it "`some` should find only app" do
       objs = subject.find_objects("some")

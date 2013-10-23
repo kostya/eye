@@ -126,4 +126,99 @@ describe "with_server feature" do
 
   end
 
+  describe "Merging groups in scoped" do
+    it "double with_server (was a bug)" do
+      stub(Eye::System).host{ "server1" }
+
+      conf = <<-E
+        Eye.application("bla") do
+          with_server "server1" do
+            process("1"){ pid_file "1.pid" }
+          end
+
+          with_server "server1" do
+            process("2"){ pid_file "2.pid" }
+          end
+        end
+      E
+
+      Eye::Dsl.parse_apps(conf).should == {"bla" => {:name=>"bla", :groups=>{"__default__"=>{:name=>"__default__", :application=>"bla", :processes=>{"1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"1.pid"}, "2"=>{:name=>"2", :application=>"bla", :group=>"__default__", :pid_file=>"2.pid"}}}}}}
+    end
+
+    it "double with_server in a group" do
+      stub(Eye::System).host{ "server1" }
+
+      conf = <<-E
+        Eye.application("bla") do
+          group :bla do
+            with_server "server1" do
+              process("1"){ pid_file "1.pid" }
+            end
+
+            with_server "server1" do
+              process("2"){ pid_file "2.pid" }
+            end
+          end
+        end
+      E
+
+      Eye::Dsl.parse_apps(conf).should == {"bla" => {:name=>"bla", :groups=>{"bla"=>{:name=>"bla", :application=>"bla", :processes=>{"1"=>{:name=>"1", :application=>"bla", :group=>"bla", :pid_file=>"1.pid"}, "2"=>{:name=>"2", :application=>"bla", :group=>"bla", :pid_file=>"2.pid"}}}}}}
+    end
+
+    it "double with_server in a group" do
+      stub(Eye::System).host{ "server1" }
+
+      conf = <<-E
+        Eye.application("bla") do
+          with_server "server1" do
+            group :gr1 do
+              process("1"){ pid_file "1.pid" }
+            end
+          end
+
+          with_server "server1" do
+            group :gr1 do
+              process("2"){ pid_file "2.pid" }
+            end
+          end
+        end
+      E
+
+      Eye::Dsl.parse_apps(conf).should == {"bla" => {:name=>"bla", :groups=>{"gr1"=>{:name=>"gr1", :application=>"bla", :processes=>{"1"=>{:name=>"1", :application=>"bla", :group=>"gr1", :pid_file=>"1.pid"}, "2"=>{:name=>"2", :application=>"bla", :group=>"gr1", :pid_file=>"2.pid"}}}}}}
+    end
+
+    it "double with_server in a group" do
+      stub(Eye::System).host{ "server1" }
+
+      conf = <<-E
+        Eye.application("bla") do
+          process("1"){ pid_file "1.pid" }
+
+          with_server "server1" do
+            process("2"){ pid_file "2.pid" }
+          end
+        end
+      E
+
+      Eye::Dsl.parse_apps(conf).should == {"bla" => {:name=>"bla", :groups=>{"__default__"=>{:name=>"__default__", :application=>"bla", :processes=>{"1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"1.pid"}, "2"=>{:name=>"2", :application=>"bla", :group=>"__default__", :pid_file=>"2.pid"}}}}}}
+    end
+
+    it "with scoped" do
+      stub(Eye::System).host{ "server1" }
+
+      conf = <<-E
+        Eye.application("bla") do
+          process("1"){ pid_file "1.pid" }
+
+          scoped do
+            process("2"){ pid_file "2.pid" }
+          end
+        end
+      E
+
+      Eye::Dsl.parse_apps(conf).should == {"bla" => {:name=>"bla", :groups=>{"__default__"=>{:name=>"__default__", :application=>"bla", :processes=>{"1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"1.pid"}, "2"=>{:name=>"2", :application=>"bla", :group=>"__default__", :pid_file=>"2.pid"}}}}}}
+    end
+
+  end
+
 end
