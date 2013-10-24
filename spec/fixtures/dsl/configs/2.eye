@@ -1,1 +1,1 @@
-Eye.config{ http enable: true }
+Eye.config{ http enable: true, host: 'localhost', port: 19999 }

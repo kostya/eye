@@ -261,7 +261,7 @@ describe "Eye::Controller::Load" do
     it "should corrent load config section" do
       subject.load_wrap(fixture("dsl/configs/{1,2}.eye")).should_be_ok(2)
       Eye::Logger.dev.should == "/tmp/a.log"
-      subject.current_config.settings.should == {:logger=>"/tmp/a.log", :http=>{:enable=>true}}
+      subject.current_config.settings.should == {:logger=>"/tmp/a.log", :http=>{:enable=>true, :host=>"localhost", :port=>19999}}
 
       subject.load_wrap(fixture("dsl/configs/3.eye")).should_be_ok
       Eye::Logger.dev.should == "/tmp/a.log"
@@ -273,7 +273,7 @@ describe "Eye::Controller::Load" do
 
       subject.load_wrap(fixture("dsl/configs/2.eye")).should_be_ok
       Eye::Logger.dev.should == nil
-      subject.current_config.settings.should == {:logger=>'', :http=>{:enable=>true}}
+      subject.current_config.settings.should == {:logger=>'', :http=>{:enable=>true, :host=>"localhost", :port=>19999}}
     end
 
     it "should load not settled config option" do
