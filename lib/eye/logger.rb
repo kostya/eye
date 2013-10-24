@@ -66,7 +66,7 @@ class Eye::Logger
       @inner_logger = InnerLogger.new(@dev_fd)
       @inner_logger.level = self.log_level || Logger::INFO
 
-    rescue Errno::ENOENT
+    rescue Errno::ENOENT, Errno::EACCES
       @dev = old_dev
       raise
     end
