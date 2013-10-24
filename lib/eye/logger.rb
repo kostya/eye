@@ -56,6 +56,7 @@ class Eye::Logger
     attr_reader :dev, :log_level
 
     def link_logger(dev)
+      old_dev = @dev
       @dev = dev ? dev.to_s : nil
       @dev_fd = @dev
 
@@ -64,6 +65,10 @@ class Eye::Logger
 
       @inner_logger = InnerLogger.new(@dev_fd)
       @inner_logger.level = self.log_level || Logger::INFO
+
+    rescue Errno::ENOENT
+      @dev = old_dev
+      raise
     end
 
     def log_level=(level)
