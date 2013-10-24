@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'bundler/setup'
 Bundler.require :default
-require 'reel'
+require 'reel/rack/server'
 
 if ENV['COV']
   require 'simplecov'
