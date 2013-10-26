@@ -258,6 +258,19 @@ describe "Eye::Controller::Load" do
       Eye::Logger.dev.should == "/tmp/1.loG"
     end
 
+    it "not set bad logger" do
+      subject.load(fixture("dsl/load_logger.eye")).should_be_ok
+      Eye::Logger.dev.should == "/tmp/1.loG"
+
+      res = nil
+      with_temp_file(<<-S){ |f| res = subject.load(f) }
+        Eye.config { logger "/tmp/asdfasdf/sd/f/sdf/sd/f/sdf/s" }
+      S
+
+      Eye::Logger.dev.should == "/tmp/1.loG"
+      subject.current_config.settings.should == {:logger=>"/tmp/1.loG", :logger_level => 0}
+    end
+
     it "should corrent load config section" do
       subject.load_wrap(fixture("dsl/configs/{1,2}.eye")).should_be_ok(2)
       Eye::Logger.dev.should == "/tmp/a.log"

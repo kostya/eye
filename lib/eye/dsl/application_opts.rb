@@ -27,10 +27,13 @@ class Eye::Dsl::ApplicationOpts < Eye::Dsl::Opts
     end
 
     Eye::Dsl.debug "<= group #{name}"
+    opts
   end
 
   def process(name, &block)
-    group('__default__'){ process(name.to_s, &block) }
+    res = nil
+    group('__default__'){ res = process(name.to_s, &block) }
+    res
   end
 
   alias xgroup nop
