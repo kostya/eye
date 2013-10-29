@@ -34,7 +34,7 @@ private
         elsif data[:state]
           str += ' ' + data[:state].to_s
           str += '  (' + resources_str(data[:resources]) + ')' if data[:resources] && data[:state].to_sym == :up
-          str += " (#{data[:state_reason]} at #{data[:state_changed_at].strftime(DF)})" if data[:state_reason] && data[:state] == 'unmonitored'
+          str += " (#{data[:state_reason]} at #{Eye::Utils.human_time(data[:state_changed_at])})" if data[:state_reason] && data[:state] == 'unmonitored'
         elsif data[:current_command]
           chain_progress = if data[:chain_progress]
             " #{data[:chain_progress][0]} of #{data[:chain_progress][1]}" rescue ''
