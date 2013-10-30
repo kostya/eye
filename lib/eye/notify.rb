@@ -84,7 +84,7 @@ class Eye::Notify
   end
 
   def message_body
-    "#{message_subject} at #{msg_at.strftime(Eye::Cli::Render::DF)}"
+    "#{message_subject} at #{Eye::Utils.human_time2(msg_at)}"
   end
 
   def self.register(base)

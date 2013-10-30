@@ -1,7 +1,5 @@
 module Eye::Cli::Render
 private
-  DF = '%d %b %H:%M'
-
   def render_info(data)
     error!("unexpected server answer #{data.inspect}") unless data.is_a?(Hash)
 
@@ -34,7 +32,7 @@ private
         elsif data[:state]
           str += ' ' + data[:state].to_s
           str += '  (' + resources_str(data[:resources]) + ')' if data[:resources] && data[:state].to_sym == :up
-          str += " (#{data[:state_reason]} at #{Eye::Utils.human_time(data[:state_changed_at])})" if data[:state_reason] && data[:state] == 'unmonitored'
+          str += " (#{data[:state_reason]} at #{Eye::Utils.human_time2(data[:state_changed_at])})" if data[:state_reason] && data[:state] == 'unmonitored'
         elsif data[:current_command]
           chain_progress = if data[:chain_progress]
             " #{data[:chain_progress][0]} of #{data[:chain_progress][1]}" rescue ''
@@ -131,7 +129,7 @@ private
 
   def detail_process_info_string(h)
     state = h[:state].to_s.ljust(14)
-    "#{Time.at(h[:at]).strftime(DF)} - #{state} (#{h[:reason]})\n"
+    "#{Eye::Utils.human_time2(h[:at])} - #{state} (#{h[:reason]})\n"
   end
 
 end
