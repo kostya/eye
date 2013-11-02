@@ -223,7 +223,7 @@ describe "Eye::Controller::Load" do
     p12 = subject.process_by_full_name('app1:p1:server')
     p22 = subject.process_by_full_name('app1:p2:server')
 
-    p12.object_id.should_not == p1.object_id # because of some reasons
+    p12.object_id.should == p1.object_id
     p22.object_id.should == p2.object_id
   end
 
@@ -489,4 +489,57 @@ describe "Eye::Controller::Load" do
     end
   end
 
+  describe "Load double processes with same names (was a bug)" do
+
+    it "2 apps with procecesses with the same name" do
+      cfg = <<-S
+        Eye.app(:app) do
+          group(:gr1) { process(:p) { pid_file "1.pid" } }
+          group(:gr2) { process(:p) { pid_file "2.pid" } }
+        end
+      S
+
+      subject.load_content(cfg)
+      subject.load_content(cfg)
+
+      Celluloid::Actor.all.select { |c| c.class == Eye::Process }.size.should == 2
+    end
+
+    it "2 process in different apps in __default__" do
+      cfg = <<-S
+        Eye.app(:app1) { process(:p) { pid_file "1.pid" } }
+        Eye.app(:app2) { process(:p) { pid_file "2.pid" } }
+      S
+
+      subject.load_content(cfg)
+      subject.load_content(cfg)
+
+      Celluloid::Actor.all.select { |c| c.class == Eye::Process }.size.should == 2
+    end
+
+    it "2 process in different apps" do
+      cfg = <<-S
+        Eye.app(:app1) { group(:gr1) { process(:p) { pid_file "1.pid" } } }
+        Eye.app(:app2) { group(:gr2) { process(:p) { pid_file "2.pid" } } }
+      S
+
+      subject.load_content(cfg)
+      subject.load_content(cfg)
+
+      Celluloid::Actor.all.select { |c| c.class == Eye::Process }.size.should == 2
+      Celluloid::Actor.all.select { |c| c.class == Eye::Group }.size.should == 2
+    end
+
+    it "2 groups" do
+      cfg = <<-S
+        Eye.app(:app1) { group(:gr){} }
+        Eye.app(:app2) { group(:gr){} }
+      S
+
+      subject.load_content(cfg)
+      subject.load_content(cfg)
+
+      Celluloid::Actor.all.select { |c| c.class == Eye::Group }.size.should == 2
+    end
+  end
 end

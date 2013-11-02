@@ -125,13 +125,13 @@ private
     @old_groups = {}
     @old_processes = {}
 
-    app = @applications.detect{|c| c.name == app_name}
+    app = @applications.detect { |c| c.name == app_name }
 
     if app
       app.groups.each do |group|
         @old_groups[group.name] = group
         group.processes.each do |proc|
-          @old_processes[proc.name] = proc
+          @old_processes[group.name + ":" + proc.name] = proc
         end
       end
 
@@ -204,13 +204,17 @@ private
   end
 
   def update_or_create_process(process_name, process_cfg)
-    if @old_processes[process_name]
-      debug "update process #{process_name}"
-      process = @old_processes.delete(process_name)
+    postfix = ":" + process_name
+    name = process_cfg[:group] + postfix
+    key = @old_processes[name] ? name : @old_processes.keys.detect { |n| n.end_with?(postfix) }
+    
+    if @old_processes[key]
+      debug "update process #{name}"
+      process = @old_processes.delete(key)
       process.schedule :update_config, process_cfg, Eye::Reason::User.new(:'load config')
       process
     else
-      debug "create process #{process_name}"
+      debug "create process #{name}"
       process = Eye::Process.new(process_cfg)
       @added_processes << process
       process
