@@ -2,6 +2,8 @@ module Eye::Dsl::Main
   attr_accessor :parsed_config, :parsed_filename
 
   def application(name, &block)
+    Eye::Dsl.check_name(name)
+
     Eye::Dsl.debug "=> app: #{name}"
     opts = Eye::Dsl::ApplicationOpts.new(name)
     opts.instance_eval(&block)

@@ -41,6 +41,10 @@ class Eye::Dsl
     def parse_apps(*args)
       parse(*args).applications
     end
+
+    def check_name(name)
+      raise Error, "not allow ':' in name '#{name}'" if name.to_s.include?(':')
+    end
   end
 end
 

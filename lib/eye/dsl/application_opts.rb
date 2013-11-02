@@ -11,6 +11,7 @@ class Eye::Dsl::ApplicationOpts < Eye::Dsl::Opts
   end
 
   def group(name, &block)
+    Eye::Dsl.check_name(name)
     Eye::Dsl.debug "=> group #{name}"
 
     opts = Eye::Dsl::GroupOpts.new(name, self)

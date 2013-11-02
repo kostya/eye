@@ -207,7 +207,7 @@ private
     postfix = ":" + process_name
     name = process_cfg[:group] + postfix
     key = @old_processes[name] ? name : @old_processes.keys.detect { |n| n.end_with?(postfix) }
-    
+
     if @old_processes[key]
       debug "update process #{name}"
       process = @old_processes.delete(key)
