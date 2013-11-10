@@ -107,6 +107,10 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     super
   end
 
+  def daemonize!
+    set_daemonize true
+  end
+
   def scoped(&block)
     h = self.class.new(self.name, self)
     h.instance_eval(&block)
