@@ -16,18 +16,6 @@ describe "Eye::System" do
     Eye::System.check_pid_alive(nil).should == {:result => false}
   end
 
-  it "ps_aux" do
-    h = Eye::System.ps_aux
-    h.size.should > 10
-    x = h[$$]
-    x.should be
-    x.is_a?(Hash).should be_true
-    x[:ppid].should > 1 # parent pid
-    x[:cpu].should >= 0 # proc
-    x[:rss].should > 1000 # memory
-    x[:start_time].length.should >= 4
-  end
-
   it "prepare env" do
     Eye::System.send(:prepare_env, {}).should eq({})
     Eye::System.send(:prepare_env, {:environment => {'A' => 'B'}}).should eq({'A' => 'B'})
