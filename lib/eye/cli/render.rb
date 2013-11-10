@@ -58,11 +58,7 @@ private
     memory, cpu, start_time, pid = r[:memory], r[:cpu], r[:start_time], r[:pid]
     return '' unless memory && cpu && start_time
 
-    res = "#{Eye::Utils.human_time(start_time)}, #{cpu.to_i}%"
-    res += ", #{memory / 1024 / 1024}Mb"
-    res += ", <#{pid}>"
-
-    res
+    "#{Eye::Utils.human_time(start_time)}, #{cpu.to_i}%, #{memory / 1024 / 1024}Mb, <#{pid}>"
   end
 
   def render_debug_info(data)
