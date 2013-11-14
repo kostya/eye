@@ -24,7 +24,7 @@ private
         is_text = data[:state] || data[:states]
 
         name = (data[:type] == :application && !is_text) ? "\033[1m#{data[:name]}\033[0m" : data[:name].to_s
-        off_len = short_state ? 20 : 35
+        off_len = 35
         str = off_str + (name + ' ').ljust(off_len - off, is_text ? '.' : ' ')
 
         if short_state

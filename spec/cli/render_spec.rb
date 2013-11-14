@@ -71,7 +71,7 @@ S
 
   it "info_string_short should be" do
     controller.load(fixture("dsl/load.eye"))
-    short_string.should == "app1 ............... unmonitored:5\napp2 ............... unmonitored:1"
+    short_string.should == "app1 .............................. unmonitored:5\napp2 .............................. unmonitored:1"
   end
 
   it "history_string" do
