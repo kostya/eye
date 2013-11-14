@@ -111,7 +111,7 @@ private
     history.chunk{|h| [h[:state], h[:reason].to_s] }.each do |_, hist|
       if hist.size >= 3
         res << detail_process_info_string(hist[0])
-        res << detail_process_info_string(:state => "... #{hist.size - 2} times", :reason => '...', :at => hist[-1][:at])
+        res << detail_process_info_string(:state => "... #{hist.size - 2} times", :reason => '...')
         res << detail_process_info_string(hist[-1])
       else
         hist.each do |h|
@@ -125,7 +125,8 @@ private
 
   def detail_process_info_string(h)
     state = h[:state].to_s.ljust(14)
-    "#{Eye::Utils.human_time2(h[:at])} - #{state} (#{h[:reason]})\n"
+    at = h[:at] ? Eye::Utils.human_time2(h[:at]) : '.' * 12
+    "#{at} - #{state} (#{h[:reason]})\n"
   end
 
 end
