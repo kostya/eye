@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "with_server feature" do
 
   it "should load matched by string process" do
-    stub(Eye::System).host{ "server1" }
+    stub(Eye::Local).host{ "server1" }
 
     conf = <<-E
       Eye.application("bla") do
@@ -21,7 +21,7 @@ describe "with_server feature" do
   end
 
   it "should another host conditions" do
-    stub(Eye::System).host{ "server1" }
+    stub(Eye::Local).host{ "server1" }
 
     conf = <<-E
       Eye.application("bla") do
@@ -39,7 +39,7 @@ describe "with_server feature" do
   end
 
   it "should behaves like scoped" do
-    stub(Eye::System).host{ "server1" }
+    stub(Eye::Local).host{ "server1" }
 
     conf = <<-E
       Eye.application("bla") do
@@ -64,7 +64,7 @@ describe "with_server feature" do
     subject{ Eye::Dsl::Opts.new }
 
     it "match string" do
-      stub(Eye::System).host{ "server1" }
+      stub(Eye::Local).host{ "server1" }
       subject.with_server("server1").should == true
       subject.with_server("server2").should == false
       subject.with_server('').should == true
@@ -72,13 +72,13 @@ describe "with_server feature" do
     end
 
     it "match array" do
-      stub(Eye::System).host{ "server1" }
+      stub(Eye::Local).host{ "server1" }
       subject.with_server(%w{ server1 server2}).should == true
       subject.with_server(%w{ server2 server3}).should == false
     end
 
     it "match regexp" do
-      stub(Eye::System).host{ "server1" }
+      stub(Eye::Local).host{ "server1" }
       subject.with_server(%r{server}).should == true
       subject.with_server(%r{myserver}).should == false
     end
@@ -98,7 +98,7 @@ describe "with_server feature" do
     end
 
     it "with_server work" do
-      Eye::System.host = 'mega_server'
+      Eye::Local.host = 'mega_server'
 
       conf = <<-E
         Eye.application("bla"){
@@ -113,7 +113,7 @@ describe "with_server feature" do
     end
 
     it "hostname work" do
-      Eye::System.host = 'supa_server'
+      Eye::Local.host = 'supa_server'
 
       conf = <<-E
         Eye.application("bla"){
@@ -128,7 +128,7 @@ describe "with_server feature" do
 
   describe "Merging groups in scoped" do
     it "double with_server (was a bug)" do
-      stub(Eye::System).host{ "server1" }
+      stub(Eye::Local).host{ "server1" }
 
       conf = <<-E
         Eye.application("bla") do
@@ -146,7 +146,7 @@ describe "with_server feature" do
     end
 
     it "double with_server in a group" do
-      stub(Eye::System).host{ "server1" }
+      stub(Eye::Local).host{ "server1" }
 
       conf = <<-E
         Eye.application("bla") do
@@ -166,7 +166,7 @@ describe "with_server feature" do
     end
 
     it "double with_server in a group" do
-      stub(Eye::System).host{ "server1" }
+      stub(Eye::Local).host{ "server1" }
 
       conf = <<-E
         Eye.application("bla") do
@@ -188,7 +188,7 @@ describe "with_server feature" do
     end
 
     it "double with_server in a group" do
-      stub(Eye::System).host{ "server1" }
+      stub(Eye::Local).host{ "server1" }
 
       conf = <<-E
         Eye.application("bla") do
@@ -204,7 +204,7 @@ describe "with_server feature" do
     end
 
     it "with scoped" do
-      stub(Eye::System).host{ "server1" }
+      stub(Eye::Local).host{ "server1" }
 
       conf = <<-E
         Eye.application("bla") do

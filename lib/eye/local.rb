@@ -55,4 +55,15 @@ module Eye::Local
     RUBY_VERSION >= '2.0'
   end
 
+  def host
+    @host ||= begin
+      require 'socket'
+      Socket.gethostname
+    end
+  end
+
+  def host=(hostname)
+    @host = hostname
+  end
+
 end

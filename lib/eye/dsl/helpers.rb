@@ -8,5 +8,5 @@ end
 
 # host name
 def hostname
-  Eye::System.host
+  Eye::Local.host
 end

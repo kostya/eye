@@ -143,7 +143,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     on_server = true
 
     if glob.present?
-      host = Eye::System.host
+      host = Eye::Local.host
 
       if glob.is_a?(Array)
         on_server = !!glob.any?{|elem| elem == host}

@@ -111,7 +111,7 @@ class Eye::Cli < Thor
   def check(conf)
     conf = File.expand_path(conf) if conf && !conf.empty?
 
-    Eye::System.host = options[:host] if options[:host]
+    Eye::Local.host = options[:host] if options[:host]
     Eye::Dsl.verbose = options[:verbose]
 
     say_load_result Eye::Controller.new.check(conf), :syntax => true
@@ -123,7 +123,7 @@ class Eye::Cli < Thor
   def explain(conf)
     conf = File.expand_path(conf) if conf && !conf.empty?
 
-    Eye::System.host = options[:host] if options[:host]
+    Eye::Local.host = options[:host] if options[:host]
     Eye::Dsl.verbose = options[:verbose]
 
     say_load_result Eye::Controller.new.explain(conf), :print_config => true, :syntax => true
