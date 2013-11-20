@@ -43,11 +43,11 @@ describe "Eye::SystemResources" do
   end
 
   it "should get childs" do
-    pid = fork { at_exit{}; sleep 3; exit }
+    @pid = fork { at_exit{}; sleep 3; exit }
     sleep 0.5
     x = Eye::SystemResources.childs($$)
     x.class.should == Array
-    x.should include(pid)
+    x.should include(@pid)
   end
 
   it "should cache and update when interval" do
