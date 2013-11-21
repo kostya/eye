@@ -128,7 +128,7 @@ describe "find_objects" do
 
     describe "match" do
       it "should match" do
-        subject.match("gr*")[:result].should == ["app1:gr1", "app1:gr2"]
+        subject.command(:match, "gr*")[:result].should == ["app1:gr1", "app1:gr2"]
       end
     end
   end

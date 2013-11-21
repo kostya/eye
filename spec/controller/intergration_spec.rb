@@ -80,7 +80,7 @@ describe "Intergration" do
     @p1.last_scheduled_reason.to_s.should == 'signal by user'
 
     mock(@p1).signal('usr1')
-    @controller.signal('usr1', 'sample1')
+    @controller.command(:signal, 'usr1', 'sample1')
     sleep 0.5
   end
 

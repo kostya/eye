@@ -53,6 +53,21 @@ describe "comamnd spec" do
     end
   end
 
+  it "unknown" do
+    subject.load(fixture("dsl/load.eye")).should_be_ok
+    subject.command(:st33art, "2341234").should == :unknown_command
+  end
+
+  it "ping" do
+    subject.command(:ping).should == :pong
+  end
+
+  it "quit" do
+    mock(Eye::System).send_signal($$, :TERM)
+    mock(Eye::System).send_signal($$, :KILL)
+    subject.command(:quit)
+  end
+
   describe "send_command" do
     it "command load" do
       res = subject.command(:load, fixture("dsl/load.eye"))
