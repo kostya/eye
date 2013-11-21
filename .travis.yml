@@ -3,8 +3,8 @@ rvm:
   - "1.9.2"
   - "1.9.3"
   - "2.0"
-script: bundle exec rake N=15
-#before_script:
-#  - bundle exec rake remove_coverage
-#after_script:
-#  - bundle exec rake coveralls:push
+script: COVA=1 bundle exec rake N=15
+before_script:
+  - bundle exec rake remove_coverage
+after_script:
+  - bundle exec rake coveralls:push
