@@ -4,7 +4,7 @@
 * remove activesupport dependency
 * rename `state` trigger to `transition`
 * add runtime, cputime, file_touched checks
-* real cpu check
+* real cpu check (#9)
 * use sigar gem instead of `ps ax`
 * refactor cli (requires `eye q && eye l` after update gem from 0.4.x)
 * update celluloid to 0.15
