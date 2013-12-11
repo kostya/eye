@@ -32,8 +32,8 @@ class Eye::Cli < Thor
   end
 
   desc "oinfo", "onelined info"
-  def oinfo
-    res = cmd(:short_data)
+  def oinfo(mask = nil)
+    res = cmd(:short_data, *Array(mask))
     say render_info(res)
     say
   end

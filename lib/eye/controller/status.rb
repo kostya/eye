@@ -24,7 +24,7 @@ module Eye::Controller::Status
   end
 
   def short_data(*args)
-    {:subtree => @applications.map{|a| a.status_data_short } }
+    {:subtree => info_objects(*args).select{ |o| o.class == Eye::Application }.map{|a| a.status_data_short } }
   end
 
   def history_data(*args)
