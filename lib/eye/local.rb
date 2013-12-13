@@ -24,7 +24,9 @@ module Eye::Local
   end
 
   def home
-    ENV['EYE_HOME'] || ENV['HOME']
+    h = ENV['EYE_HOME'] || ENV['HOME']
+    raise "HOME undefined, should be HOME or EYE_HOME environment" unless h
+    h
   end
 
   def path(path)
