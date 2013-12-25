@@ -66,26 +66,24 @@ private
 
     s = ""
 
-    config_yaml = data.delete(:config_yaml)
+    if config_yaml = data.delete(:config_yaml)
+      s << config_yaml
 
-    data.each do |k, v|
-      s << "#{"#{k}:".ljust(10)} "
+    else
+      data.each do |k, v|
+        s << "#{"#{k}:".ljust(10)} "
 
-      case k
-      when :resources
-        s << resources_str(v)
-      else
-        s << "#{v}"
+        case k
+        when :resources
+          s << resources_str(v)
+        else
+          s << "#{v}"
+        end
+
+        s << "\n"
       end
 
       s << "\n"
-    end
-
-    s << "\n"
-
-    if config_yaml
-      s << "Current config:\n"
-      s << config_yaml
     end
 
     s
