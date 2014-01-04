@@ -8,11 +8,6 @@ class Eye::Trigger::Flapping < Eye::Trigger
   param :retry_in, [Float, Fixnum]
   param :retry_times, [Fixnum]
 
-  def initialize(*args)
-    super
-    @last_at = nil
-  end
-
   def check(transition)
     on_flapping if transition.event == :crashed && !good?
   end
