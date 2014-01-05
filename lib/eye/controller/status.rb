@@ -11,6 +11,7 @@ module Eye::Controller::Status
       :gems => %w|Celluloid Celluloid::IO StateMachine NIO Sigar|.map{|c| gem_version(c) },
       :logger => Eye::Logger.dev,
       :pid_path => Eye::Local::pid_path,
+      :sock_path => Eye::Local::socket_path,
       :actors => actors
     }
 
