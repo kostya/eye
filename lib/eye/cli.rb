@@ -131,6 +131,8 @@ class Eye::Cli < Thor
 
   desc "watch [MASK]", "interactive processes info"
   def watch(*args)
+    error!("You should install watch utility") if `which watch`.empty?
+
     cmd = if `watch --version 2>&1`.chop > '0.2.0'
       "watch -n 1 --color #{$0} i #{args * ' '}"
     else
