@@ -258,6 +258,13 @@ describe "Eye::Controller::Load" do
       Eye::Logger.dev.should == "/tmp/1.loG"
     end
 
+    it "load logger with rotation" do
+      with_temp_file(<<-S){ |f| res = subject.load(f) }
+        Eye.config { logger "/tmp/1.log", 7, 10000 }
+      S
+      Eye::Logger.dev.should == "/tmp/1.log"
+    end
+
     it "not set bad logger" do
       subject.load(fixture("dsl/load_logger.eye")).should_be_ok
       Eye::Logger.dev.should == "/tmp/1.loG"
@@ -268,25 +275,25 @@ describe "Eye::Controller::Load" do
       S
 
       Eye::Logger.dev.should == "/tmp/1.loG"
-      subject.current_config.settings.should == {:logger=>"/tmp/1.loG", :logger_level => 0}
+      subject.current_config.settings.should == {:logger=>["/tmp/1.loG"], :logger_level => 0}
     end
 
     it "should corrent load config section" do
       subject.load(fixture("dsl/configs/{1,2}.eye")).should_be_ok(2)
       Eye::Logger.dev.should == "/tmp/a.log"
-      subject.current_config.settings.should == {:logger=>"/tmp/a.log", :http=>{:enable=>true}}
+      subject.current_config.settings.should == {:logger=>["/tmp/a.log"], :http=>{:enable=>true}}
 
       subject.load(fixture("dsl/configs/3.eye")).should_be_ok
       Eye::Logger.dev.should == "/tmp/a.log"
-      subject.current_config.settings.should == {:logger=>"/tmp/a.log", :http=>{:enable=>false}}
+      subject.current_config.settings.should == {:logger=>["/tmp/a.log"], :http=>{:enable=>false}}
 
       subject.load(fixture("dsl/configs/4.eye")).should_be_ok
       Eye::Logger.dev.should == nil
-      subject.current_config.settings.should == {:logger=>'', :http=>{:enable=>false}}
+      subject.current_config.settings.should == {:logger=>[nil], :http=>{:enable=>false}}
 
       subject.load(fixture("dsl/configs/2.eye")).should_be_ok
       Eye::Logger.dev.should == nil
-      subject.current_config.settings.should == {:logger=>'', :http=>{:enable=>true}}
+      subject.current_config.settings.should == {:logger=>[nil], :http=>{:enable=>true}}
     end
 
     it "should load not settled config option" do

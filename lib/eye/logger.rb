@@ -53,17 +53,18 @@ class Eye::Logger
   end
 
   class << self
-    attr_reader :dev, :log_level
+    attr_reader :dev, :log_level, :args
 
-    def link_logger(dev)
+    def link_logger(dev, *args)
       old_dev = @dev
       @dev = dev ? dev.to_s : nil
       @dev_fd = @dev
+      @args = args
 
       @dev_fd = STDOUT if @dev.to_s.downcase == 'stdout'
       @dev_fd = STDERR if @dev.to_s.downcase == 'stderr'
 
-      @inner_logger = InnerLogger.new(@dev_fd)
+      @inner_logger = InnerLogger.new(@dev_fd, *args)
       @inner_logger.level = self.log_level || Logger::INFO
 
     rescue Errno::ENOENT, Errno::EACCES
