@@ -72,6 +72,10 @@ class Eye::Logger
       raise
     end
 
+    def reopen
+      link_logger(dev, *args)
+    end
+
     def log_level=(level)
       @log_level = level
       @inner_logger.level = self.log_level if @inner_logger
