@@ -29,6 +29,10 @@ class Eye::Utils::AliveArray
     self.class.new super
   end
 
+  def sort(&block)
+    self.class.new super
+  end
+
   def +(other)
     if other.is_a?(Eye::Utils::AliveArray)
       @arr += other.pure
