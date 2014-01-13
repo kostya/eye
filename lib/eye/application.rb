@@ -23,7 +23,7 @@ class Eye::Application
 
   # sort processes in name order
   def resort_groups
-    @groups = @groups.sort { |a,b| a.name == '__default__' ? 1 : b.name == '__default__' ? -1 : a.name <=> b.name }
+    @groups = @groups.sort { |a, b| a.name == '__default__' ? 1 : (b.name == '__default__' ? -1 : (a.name <=> b.name)) }
   end
 
   def status_data(debug = false)

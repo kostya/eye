@@ -245,6 +245,22 @@ describe "Eye::Controller::Load" do
     p22.object_id.should == p2.object_id
   end
 
+  it "order of applications and groups" do
+      with_temp_file(<<-F){ |f| subject.load(f ) }
+        Eye.app(:app2) { }
+        Eye.app(:app1) {
+          process("p"){ pid_file "1" }
+          group(:gr3){}
+          group(:gr2){}
+          group(:gr1){}
+        }
+      F
+
+    subject.applications.map(&:name).should == %w{app1 app2}
+    app = subject.applications[0]
+    app.groups.map(&:name).should == %w{gr1 gr2 gr3 __default__}
+  end
+
   describe "configs" do
     after(:each){ set_glogger }
 
