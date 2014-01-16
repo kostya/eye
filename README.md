@@ -3,7 +3,6 @@ Eye
 [![Gem Version](https://badge.fury.io/rb/eye.png)](http://rubygems.org/gems/eye)
 [![Build Status](https://secure.travis-ci.org/kostya/eye.png?branch=master)](http://travis-ci.org/kostya/eye)
 [![Coverage Status](https://coveralls.io/repos/kostya/eye/badge.png?branch=master)](https://coveralls.io/r/kostya/eye?branch=master)
-[![Analytics](https://ga-beacon.appspot.com/UA-46851862-1/eye/readme)](https://github.com/igrigorik/ga-beacon)
 
 Process monitoring tool. Inspired from Bluepill and God. Requires Ruby(MRI) >= 1.9.3-p194. Uses Celluloid and Celluloid::IO.
 
