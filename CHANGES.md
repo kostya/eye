@@ -1,3 +1,9 @@
+0.5.1
+-----
+* fix ordering in info (#27)
+* add log rotation (#26)
+* minor load fixes
+
 0.5
 -------
 * little fixes in dsl
