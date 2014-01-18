@@ -16,7 +16,17 @@ Recommended installation on the server (system wide):
     $ sudo ln -sf /usr/local/ruby/1.9.3/bin/eye /usr/local/bin/eye
 
 
-Config example, shows some typical processes and most of the options (see in exampes/ folder):
+###  Why?
+
+We have used god and bluepill in production and always have different bugs (segfaults, crashes, lost processes, kill not-related processes, load problems, deploy problems, ...)
+
+We wanted something more robust and production stable
+
+We wanted features from bluepill and god (+ some new: chains, nested configuring, mask matching, easy debug configs...)
+
+I hope we've got, we are using eye in production and happy.
+
+###  Config example
 
 examples/test.eye
 ```ruby
