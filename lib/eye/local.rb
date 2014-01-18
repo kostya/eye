@@ -24,7 +24,9 @@ module Eye::Local
   end
 
   def home
-    ENV['EYE_HOME'] || ENV['HOME']
+    h = ENV['EYE_HOME'] || ENV['HOME']
+    raise "HOME undefined, should be HOME or EYE_HOME environment" unless h
+    h
   end
 
   def path(path)
@@ -53,6 +55,17 @@ module Eye::Local
 
   def supported_setsid?
     RUBY_VERSION >= '2.0'
+  end
+
+  def host
+    @host ||= begin
+      require 'socket'
+      Socket.gethostname
+    end
+  end
+
+  def host=(hostname)
+    @host = hostname
   end
 
 end

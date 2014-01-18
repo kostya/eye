@@ -139,11 +139,11 @@ describe "Eye::Controller::Load" do
 
   it "check syntax" do
     subject.load(fixture("dsl/load2.eye")).should_be_ok
-    subject.check(fixture("dsl/load4.eye")).only_value.should include(:error => true, :message => "duplicate pid_files: {\"/tmp/app3-e1.pid\"=>2}")
+    subject.command(:check, fixture("dsl/load4.eye")).only_value.should include(:error => true, :message => "duplicate pid_files: {\"/tmp/app3-e1.pid\"=>2}")
   end
 
   it "check explain" do
-    res = subject.explain(fixture("dsl/load2.eye")).only_value
+    res = subject.command(:explain, fixture("dsl/load2.eye")).only_value
     res[:error].should == false
     res[:config].is_a?(Hash).should == true
   end
@@ -223,7 +223,7 @@ describe "Eye::Controller::Load" do
     p12 = subject.process_by_full_name('app1:p1:server')
     p22 = subject.process_by_full_name('app1:p2:server')
 
-    p12.object_id.should_not == p1.object_id # because of some reasons
+    p12.object_id.should == p1.object_id
     p22.object_id.should == p2.object_id
   end
 
@@ -245,6 +245,22 @@ describe "Eye::Controller::Load" do
     p22.object_id.should == p2.object_id
   end
 
+  it "order of applications and groups" do
+      with_temp_file(<<-F){ |f| subject.load(f ) }
+        Eye.app(:app2) { }
+        Eye.app(:app1) {
+          process("p"){ pid_file "1" }
+          group(:gr3){}
+          group(:gr2){}
+          group(:gr1){}
+        }
+      F
+
+    subject.applications.map(&:name).should == %w{app1 app2}
+    app = subject.applications[0]
+    app.groups.map(&:name).should == %w{gr1 gr2 gr3 __default__}
+  end
+
   describe "configs" do
     after(:each){ set_glogger }
 
@@ -258,6 +274,13 @@ describe "Eye::Controller::Load" do
       Eye::Logger.dev.should == "/tmp/1.loG"
     end
 
+    it "load logger with rotation" do
+      with_temp_file(<<-S){ |f| res = subject.load(f) }
+        Eye.config { logger "/tmp/1.log", 7, 10000 }
+      S
+      Eye::Logger.dev.should == "/tmp/1.log"
+    end
+
     it "not set bad logger" do
       subject.load(fixture("dsl/load_logger.eye")).should_be_ok
       Eye::Logger.dev.should == "/tmp/1.loG"
@@ -268,25 +291,25 @@ describe "Eye::Controller::Load" do
       S
 
       Eye::Logger.dev.should == "/tmp/1.loG"
-      subject.current_config.settings.should == {:logger=>"/tmp/1.loG", :logger_level => 0}
+      subject.current_config.settings.should == {:logger=>["/tmp/1.loG"], :logger_level => 0}
     end
 
     it "should corrent load config section" do
       subject.load_wrap(fixture("dsl/configs/{1,2}.eye")).should_be_ok(2)
       Eye::Logger.dev.should == "/tmp/a.log"
-      subject.current_config.settings.should == {:logger=>"/tmp/a.log", :http=>{:enable=>true, :host=>"localhost", :port=>19999}}
+      subject.current_config.settings.should == {:logger=>["/tmp/a.log"], :http=>{:enable=>true, :host=>"localhost", :port=>19999}}
 
       subject.load_wrap(fixture("dsl/configs/3.eye")).should_be_ok
       Eye::Logger.dev.should == "/tmp/a.log"
-      subject.current_config.settings.should == {:logger=>"/tmp/a.log", :http=>{:enable=>false}}
+      subject.current_config.settings.should == {:logger=>["/tmp/a.log"], :http=>{:enable=>false}}
 
       subject.load_wrap(fixture("dsl/configs/4.eye")).should_be_ok
       Eye::Logger.dev.should == nil
-      subject.current_config.settings.should == {:logger=>'', :http=>{:enable=>false}}
+      subject.current_config.settings.should == {:logger=>[nil], :http=>{:enable=>false}}
 
       subject.load_wrap(fixture("dsl/configs/2.eye")).should_be_ok
       Eye::Logger.dev.should == nil
-      subject.current_config.settings.should == {:logger=>'', :http=>{:enable=>true, :host=>"localhost", :port=>19999}}
+      subject.current_config.settings.should == {:logger=>[nil], :http=>{:enable=>true, :host=>"localhost", :port=>19999}}
     end
 
     it "should load not settled config option" do
@@ -489,4 +512,57 @@ describe "Eye::Controller::Load" do
     end
   end
 
+  describe "Load double processes with same names (was a bug)" do
+
+    it "2 apps with procecesses with the same name" do
+      cfg = <<-S
+        Eye.app(:app) do
+          group(:gr1) { process(:p) { pid_file "1.pid" } }
+          group(:gr2) { process(:p) { pid_file "2.pid" } }
+        end
+      S
+
+      subject.load_content(cfg)
+      subject.load_content(cfg)
+
+      Celluloid::Actor.all.select { |c| c.class == Eye::Process }.size.should == 2
+    end
+
+    it "2 process in different apps in __default__" do
+      cfg = <<-S
+        Eye.app(:app1) { process(:p) { pid_file "1.pid" } }
+        Eye.app(:app2) { process(:p) { pid_file "2.pid" } }
+      S
+
+      subject.load_content(cfg)
+      subject.load_content(cfg)
+
+      Celluloid::Actor.all.select { |c| c.class == Eye::Process }.size.should == 2
+    end
+
+    it "2 process in different apps" do
+      cfg = <<-S
+        Eye.app(:app1) { group(:gr1) { process(:p) { pid_file "1.pid" } } }
+        Eye.app(:app2) { group(:gr2) { process(:p) { pid_file "2.pid" } } }
+      S
+
+      subject.load_content(cfg)
+      subject.load_content(cfg)
+
+      Celluloid::Actor.all.select { |c| c.class == Eye::Process }.size.should == 2
+      Celluloid::Actor.all.select { |c| c.class == Eye::Group }.size.should == 2
+    end
+
+    it "2 groups" do
+      cfg = <<-S
+        Eye.app(:app1) { group(:gr){} }
+        Eye.app(:app2) { group(:gr){} }
+      S
+
+      subject.load_content(cfg)
+      subject.load_content(cfg)
+
+      Celluloid::Actor.all.select { |c| c.class == Eye::Group }.size.should == 2
+    end
+  end
 end

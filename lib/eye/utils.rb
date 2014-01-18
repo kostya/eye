@@ -23,4 +23,10 @@ module Eye::Utils
     time.strftime (d1 == d2) ? D1 : D2
   end
 
+  DF = '%d %b %H:%M'
+
+  def self.human_time2(unix_time)
+    Time.at(unix_time.to_i).strftime(DF)
+  end
+
 end

@@ -11,6 +11,8 @@ class Eye::Dsl::GroupOpts < Eye::Dsl::Opts
   end
 
   def process(name, &block)
+    Eye::Dsl.check_name(name)
+
     Eye::Dsl.debug "=> process #{name}"
 
     opts = Eye::Dsl::ProcessOpts.new(name, self)

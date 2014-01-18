@@ -1,12 +1,18 @@
 class Eye::Dsl::ConfigOpts < Eye::Dsl::PureOpts
 
-  create_options_methods([:logger], String)
   create_options_methods([:logger_level], Fixnum)
   create_options_methods([:http], Hash)
 
-  def set_logger(logger)
-    logger.blank? ? super('') : super
+  def logger(*args)
+    if args.empty?
+      @config[:logger]
+    else
+      str = args[0]
+      raise Eye::Dsl::Error, "logger should be a String #{str.inspect}" if !(str.is_a?(String) || str == nil)
+      @config[:logger] = args
+    end
   end
+  alias logger= logger
 
   # ==== contact options ==============================
   def self.add_notify(type)

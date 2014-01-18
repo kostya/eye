@@ -32,8 +32,8 @@ class Eye::Cli < Thor
   end
 
   desc "oinfo", "onelined info"
-  def oinfo
-    res = cmd(:short_data)
+  def oinfo(mask = nil)
+    res = cmd(:short_data, *Array(mask))
     say render_info(res)
     say
   end
@@ -45,7 +45,7 @@ class Eye::Cli < Thor
     say
   end
 
-  desc "load [CONF, ...]", "load config (start eye-daemon if not) (-f foreground start)"
+  desc "load [CONF, ...]", "load config (run eye-daemon if not) (-f foreground load)"
   method_option :foreground, :type => :boolean, :aliases => "-f"
   def load(*configs)
     configs.map!{ |c| File.expand_path(c) } if !configs.empty?
@@ -111,7 +111,7 @@ class Eye::Cli < Thor
   def check(conf)
     conf = File.expand_path(conf) if conf && !conf.empty?
 
-    Eye::System.host = options[:host] if options[:host]
+    Eye::Local.host = options[:host] if options[:host]
     Eye::Dsl.verbose = options[:verbose]
 
     say_load_result Eye::Controller.new.check(conf), :syntax => true
@@ -123,7 +123,7 @@ class Eye::Cli < Thor
   def explain(conf)
     conf = File.expand_path(conf) if conf && !conf.empty?
 
-    Eye::System.host = options[:host] if options[:host]
+    Eye::Local.host = options[:host] if options[:host]
     Eye::Dsl.verbose = options[:verbose]
 
     say_load_result Eye::Controller.new.explain(conf), :print_config => true, :syntax => true
@@ -131,6 +131,8 @@ class Eye::Cli < Thor
 
   desc "watch [MASK]", "interactive processes info"
   def watch(*args)
+    error!("You should install watch utility") if `which watch`.empty?
+
     cmd = if `watch --version 2>&1`.chop > '0.2.0'
       "watch -n 1 --color #{$0} i #{args * ' '}"
     else

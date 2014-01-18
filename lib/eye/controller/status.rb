@@ -10,8 +10,9 @@ module Eye::Controller::Status
       :ruby => RUBY_DESCRIPTION,
       :http => @http ? "#{@http.host}:#{@http.port}" : '-',
       :gems => %w|Celluloid Celluloid::IO StateMachine NIO Sigar|.map{|c| gem_version(c) },
-      :logger => Eye::Logger.dev,
+      :logger => Eye::Logger.args.present? ? [Eye::Logger.dev, *Eye::Logger.args] : Eye::Logger.dev,
       :pid_path => Eye::Local::pid_path,
+      :sock_path => Eye::Local::socket_path,
       :actors => actors
     }
 
@@ -25,7 +26,7 @@ module Eye::Controller::Status
   end
 
   def short_data(*args)
-    {:subtree => @applications.map{|a| a.status_data_short } }
+    {:subtree => info_objects(*args).select{ |o| o.class == Eye::Application }.map{|a| a.status_data_short } }
   end
 
   def history_data(*args)

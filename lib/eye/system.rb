@@ -98,44 +98,12 @@ module Eye::System
       Process.detach(pid) if pid
     end
 
-    # get table
-    # {pid => {:rss =>, :cpu =>, :ppid => , :start_time => }}
-    # slow
-    def ps_aux
-      str = Process.send('`', PS_AUX_CMD).force_encoding('binary')
-      h = {}
-      str.each_line do |line|
-        chunk = line.strip.split(/\s+/)
-        h[chunk[0].to_i] = { :ppid => chunk[1].to_i, :cpu => chunk[2].to_i,
-          :rss => chunk[3].to_i, :start_time => chunk[4] }
-      end
-      h
-    end
-
     # normalize file
     def normalized_file(file, working_dir = nil)
       Pathname.new(file).expand_path(working_dir).to_s
     end
 
-    def host
-      @host ||= begin
-        require 'socket'
-        Socket.gethostname
-      end
-    end
-
-    # set host for tests
-    def host=(hostname)
-      @host = hostname
-    end
-
   private
-
-    PS_AUX_CMD = if RUBY_PLATFORM.include?('darwin')
-      'ps axo pid,ppid,pcpu,rss,start'
-    else
-      'ps axo pid,ppid,pcpu,rss,start_time'
-    end
 
     def spawn_options(config = {})
       o = {pgroup: true, chdir: config[:working_dir] || '/'}

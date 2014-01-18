@@ -1,6 +1,6 @@
 class Eye::Dsl::Opts < Eye::Dsl::PureOpts
 
-  STR_OPTIONS = [ :pid_file, :working_dir, :stdout, :stderr, :stdall, :start_command,
+  STR_OPTIONS = [ :pid_file, :working_dir, :stdout, :stderr, :stdall, :stdin, :start_command,
     :stop_command, :restart_command, :uid, :gid ]
   create_options_methods(STR_OPTIONS, String)
 
@@ -107,6 +107,10 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     super
   end
 
+  def daemonize!
+    set_daemonize true
+  end
+
   def scoped(&block)
     h = self.class.new(self.name, self)
     h.instance_eval(&block)
@@ -139,7 +143,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     on_server = true
 
     if glob.present?
-      host = Eye::System.host
+      host = Eye::Local.host
 
       if glob.is_a?(Array)
         on_server = !!glob.any?{|elem| elem == host}

@@ -53,6 +53,7 @@ Eye::Control.set_proc_line
 server.async.run
 
 trap("INT"){ exit }
+trap("USR1"){ Eye::Logger.reopen }
 trap("USR2"){ GC.start }
 
 sleep

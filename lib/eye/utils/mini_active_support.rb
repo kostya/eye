@@ -50,6 +50,11 @@ class Array
 end
 
 class Numeric
+  def percents
+    self
+  end
+  alias :percent :percents
+
   def seconds
     self
   end

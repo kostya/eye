@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "Eye::Process::Notify" do
   before :each do
-    stub(Eye::System).host{ 'host1' }
+    stub(Eye::Local).host{ 'host1' }
     @process = process(C.p1.merge(:notify => {'vasya' => :info,
       'petya' => :warn, 'somebody' => :warn}))
   end

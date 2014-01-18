@@ -5,7 +5,7 @@ describe "Eye::Controller data spec" do
   before { subject.load(fixture("dsl/load.eye")) }
 
   it "info_data" do
-    res = subject.info_data
+    res = subject.command(:info_data)
     st = res[:subtree]
     st.size.should == 2
     p = st[1][:subtree][0][:subtree][0]
@@ -24,13 +24,13 @@ describe "Eye::Controller data spec" do
 
   it "short_data" do
     sleep 0.2
-    res = subject.short_data
+    res = subject.command(:short_data)
     res.should == {:subtree=>[{:name=>"app1", :type=>:application, :states=>{'unmonitored' => 5}},
       {:name=>"app2", :type=>:application, :states=>{"unmonitored" => 1}}]}
   end
 
   it "debug_data" do
-    res = subject.debug_data
+    res = subject.command(:debug_data)
     res[:resources].should be_a(Hash)
     res[:config_yaml].should == nil
 
@@ -40,7 +40,7 @@ describe "Eye::Controller data spec" do
   end
 
   it "history_data" do
-    h = subject.history_data('app1')
+    h = subject.command(:history_data, 'app1')
     h.size.should == 5
     h.keys.sort.should == ["app1:g4", "app1:g5", "app1:gr1:p1", "app1:gr1:p2", "app1:gr2:q3"]
   end

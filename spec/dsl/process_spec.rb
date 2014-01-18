@@ -34,6 +34,17 @@ describe "Eye::Dsl" do
     Eye::Dsl.parse_apps(conf)['bla'][:environment].should == {'A' => '1.pid'}
   end
 
+  it "not allowed : in names" do
+    conf = <<-E
+      Eye.application("bla") do
+        process("1:2") do
+          pid_file "1.pid"
+        end
+      end
+    E
+    expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
+  end
+
   it "disable process" do
     conf = <<-E
       Eye.application("bla") do

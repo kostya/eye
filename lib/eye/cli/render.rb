@@ -1,7 +1,5 @@
 module Eye::Cli::Render
 private
-  DF = '%d %b %H:%M'
-
   def render_info(data)
     error!("unexpected server answer #{data.inspect}") unless data.is_a?(Hash)
 
@@ -26,7 +24,7 @@ private
         is_text = data[:state] || data[:states]
 
         name = (data[:type] == :application && !is_text) ? "\033[1m#{data[:name]}\033[0m" : data[:name].to_s
-        off_len = short_state ? 20 : 35
+        off_len = 35
         str = off_str + (name + ' ').ljust(off_len - off, is_text ? '.' : ' ')
 
         if short_state
@@ -34,7 +32,7 @@ private
         elsif data[:state]
           str += ' ' + data[:state].to_s
           str += '  (' + resources_str(data[:resources]) + ')' if data[:resources] && data[:state].to_sym == :up
-          str += " (#{data[:state_reason]} at #{data[:state_changed_at].strftime(DF)})" if data[:state_reason] && data[:state] == 'unmonitored'
+          str += " (#{data[:state_reason]} at #{Eye::Utils.human_time2(data[:state_changed_at])})" if data[:state_reason] && data[:state] == 'unmonitored'
         elsif data[:current_command]
           chain_progress = if data[:chain_progress]
             " #{data[:chain_progress][0]} of #{data[:chain_progress][1]}" rescue ''
@@ -60,11 +58,7 @@ private
     memory, cpu, start_time, pid = r[:memory], r[:cpu], r[:start_time], r[:pid]
     return '' unless memory && cpu && start_time
 
-    res = "#{Eye::Utils.human_time(start_time)}, #{cpu.to_i}%"
-    res += ", #{memory / 1024 / 1024}Mb"
-    res += ", <#{pid}>"
-
-    res
+    "#{Eye::Utils.human_time(start_time)}, #{cpu.to_i}%, #{memory / 1024 / 1024}Mb, <#{pid}>"
   end
 
   def render_debug_info(data)
@@ -72,26 +66,24 @@ private
 
     s = ""
 
-    config_yaml = data.delete(:config_yaml)
+    if config_yaml = data.delete(:config_yaml)
+      s << config_yaml
 
-    data.each do |k, v|
-      s << "#{"#{k}:".ljust(10)} "
+    else
+      data.each do |k, v|
+        s << "#{"#{k}:".ljust(10)} "
 
-      case k
-      when :resources
-        s << resources_str(v)
-      else
-        s << "#{v}"
+        case k
+        when :resources
+          s << resources_str(v)
+        else
+          s << "#{v}"
+        end
+
+        s << "\n"
       end
 
       s << "\n"
-    end
-
-    s << "\n"
-
-    if config_yaml
-      s << "Current config:\n"
-      s << config_yaml
     end
 
     s
@@ -117,7 +109,7 @@ private
     history.chunk{|h| [h[:state], h[:reason].to_s] }.each do |_, hist|
       if hist.size >= 3
         res << detail_process_info_string(hist[0])
-        res << detail_process_info_string(:state => "... #{hist.size - 2} times", :reason => '...', :at => hist[-1][:at])
+        res << detail_process_info_string(:state => "... #{hist.size - 2} times", :reason => '...')
         res << detail_process_info_string(hist[-1])
       else
         hist.each do |h|
@@ -131,7 +123,8 @@ private
 
   def detail_process_info_string(h)
     state = h[:state].to_s.ljust(14)
-    "#{Time.at(h[:at]).strftime(DF)} - #{state} (#{h[:reason]})\n"
+    at = h[:at] ? Eye::Utils.human_time2(h[:at]) : '.' * 12
+    "#{at} - #{state} (#{h[:reason]})\n"
   end
 
 end

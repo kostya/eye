@@ -91,7 +91,7 @@ module C
 
   # event machine
   def p4_ports
-    [33231 + process_id * 2, 33232 + process_id * 2]
+    [31231 + process_id * 2, 31232 + process_id * 2]
   end
 
   def p4_sock
@@ -111,7 +111,7 @@ module C
 
   # thin
   def p5_port
-    33334 + process_id
+    31334 + process_id
   end
 
   def p5_pid
