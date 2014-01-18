@@ -1,5 +1,6 @@
 gem 'thor'
 require 'thor'
+require 'json'
 
 class Eye::Cli < Thor
   autoload :Server,     'eye/cli/server'
@@ -15,6 +16,12 @@ class Eye::Cli < Thor
     res = cmd(:info_data, *Array(mask))
     say render_info(res)
     say
+  end
+
+  desc "json_info", "processes info in JSON format"
+  def json_info(mask = nil)
+    res = cmd(:info_data, *Array(mask))
+    say JSON.generate res
   end
 
   desc "status", "processes info (deprecated)"
