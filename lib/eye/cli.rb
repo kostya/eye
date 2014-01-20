@@ -13,6 +13,9 @@ class Eye::Cli < Thor
   desc "info [MASK]", "processes info"
   def info(mask = nil)
     res = cmd(:info_data, *Array(mask))
+    if mask && res[:subtree] && res[:subtree].empty?
+      error!("command :info, objects not found!")
+    end
     say render_info(res)
     say
   end
@@ -41,6 +44,9 @@ class Eye::Cli < Thor
   desc "history [MASK,...]", "processes history"
   def history(*masks)
     res = cmd(:history_data, *masks)
+    if !masks.empty? && res && res.empty?
+      error!("command :history, objects not found!")
+    end
     say render_history(res)
     say
   end
