@@ -43,7 +43,7 @@ class Eye::Dsl
     end
 
     def check_name(name)
-      raise Error, "not allow ':' in name '#{name}'" if name.to_s.include?(':')
+      raise Error, "':' is not allowed in name '#{name}'" if name.to_s.include?(':')
     end
   end
 end
