@@ -26,7 +26,7 @@ class Eye::Notify
     needed_hash = (settings[:contacts] || {})[contact]
 
     if needed_hash.blank?
-      error "not found contact #{contact}! something wrong with config"
+      error "contact #{contact} not found! Something wrong with config"
       return
     end
 
