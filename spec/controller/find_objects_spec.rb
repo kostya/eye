@@ -307,7 +307,7 @@ describe "find_objects" do
 
     it "matched_objects" do
       res = subject.matched_objects("admin")
-      res[:error].should == 'cant match targets from different applications: ["app1:admin", "app2:admin"]'
+      res[:error].should == 'cannot match targets from different applications: ["app1:admin", "app2:admin"]'
     end
   end
 
