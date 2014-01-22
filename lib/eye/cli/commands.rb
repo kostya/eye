@@ -26,7 +26,6 @@ private
   def say_load_result(res = {}, opts = {})
     error!(res) unless res.is_a?(Hash)
     say_filename = (res.size > 1)
-    say 'eye started!', :green if opts[:started]
     error = false
     res.each do |filename, _res|
       say "#{filename}: ", nil, true if say_filename
