@@ -111,6 +111,10 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     set_daemonize true
   end
 
+  def clear_bundler_env
+    env('GEM_PATH' => nil, 'GEM_HOME' => nil, 'RUBYOPT' => nil, 'BUNDLE_BIN_PATH' => nil, 'BUNDLE_GEMFILE' => nil)
+  end
+
   def scoped(&block)
     h = self.class.new(self.name, self)
     h.instance_eval(&block)
