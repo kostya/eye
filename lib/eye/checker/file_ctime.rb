@@ -1,8 +1,7 @@
 class Eye::Checker::FileCTime < Eye::Checker
 
   # Check that file changes (log for example)
-
-  # checks :ctime, :every => 5.seconds, :file => "/tmp/1.log", :times => [3,5]
+  # check :ctime, :every => 5.seconds, :file => "/tmp/1.log", :times => [3,5]
 
   param :file, [String], true
 

@@ -220,4 +220,27 @@ class Eye::Checker
       register(base)
     end
   end
+
+  class Measure < Eye::Checker
+    param :below, [Fixnum, Float]
+    param :above, [Fixnum, Float]
+
+    def good?(value)
+      return false if below && (value > below)
+      return false if above && (value < above)
+      true
+    end
+
+    def measure_str
+      if below && above
+        ">#{human_value(above)}<#{human_value(below)}"
+      elsif below
+        "<#{human_value(below)}"
+      elsif above
+        ">#{human_value(above)}"
+      else
+        '-'
+      end
+    end
+  end
 end

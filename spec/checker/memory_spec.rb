@@ -45,6 +45,67 @@ describe "Eye::Checker::Memory" do
 
   end
 
+  describe "with above" do
+    subject{ chmem(:above => 300.megabytes) }
+
+    it "good" do
+      stub(subject).get_value{ 400.megabytes }
+      subject.check.should == true
+
+      stub(subject).get_value{ 450.megabytes }
+      subject.check.should == true
+    end
+
+    it "good and bad" do
+      stub(subject).get_value{ 450.megabytes }
+      subject.check.should == true
+
+      stub(subject).get_value{ 250.megabytes }
+      subject.check.should == false
+    end
+  end
+
+  describe "with above and below" do
+    subject{ chmem(:above => 300.megabytes, :below => 500.megabytes) }
+
+    it "good" do
+      stub(subject).get_value{ 400.megabytes }
+      subject.check.should == true
+
+      stub(subject).get_value{ 450.megabytes }
+      subject.check.should == true
+    end
+
+    it "good and bad" do
+      stub(subject).get_value{ 450.megabytes }
+      subject.check.should == true
+
+      stub(subject).get_value{ 250.megabytes }
+      subject.check.should == false
+
+      stub(subject).get_value{ 400.megabytes }
+      subject.check.should == true
+
+      stub(subject).get_value{ 550.megabytes }
+      subject.check.should == false
+    end
+  end
+
+  describe "with above and below incorrect" do
+    subject{ chmem(:above => 500.megabytes, :below => 100.megabytes) }
+
+    it "always bad" do
+      stub(subject).get_value{ 400.megabytes }
+      subject.check.should == false
+
+      stub(subject).get_value{ 50.megabytes }
+      subject.check.should == false
+
+      stub(subject).get_value{ 600.megabytes }
+      subject.check.should == false
+    end
+  end
+
   describe "validates" do
     it "ok" do
       Eye::Checker.validate!({:type => :memory, :every => 5.seconds, :times => 1, :below => 10.0.bytes})
