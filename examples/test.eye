@@ -31,6 +31,7 @@ Eye.application 'test' do
       daemonize true
       stdall 'sample1.log'
 
+      # ensure the CPU is below 30% at least 3 out of the last 5 times checked
       check :cpu, below: 30, times: [3, 5]
     end
 
@@ -40,6 +41,7 @@ Eye.application 'test' do
       start_command 'ruby ./sample.rb -d --pid 2.pid --log sample2.log'
       stop_command 'kill -9 {PID}'
 
+      # ensure the memory is below 300Mb the last 3 times checked
       check :memory, below: 300.megabytes, times: 3
     end
   end
