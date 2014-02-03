@@ -54,7 +54,7 @@ describe "Process Restart, emulate some real hard cases" do
     end
   end
 
-  it "restart eye-daemonized lock-process from unmonitored status, and process realy running (WAS a problem)" do
+  it "restart eye-daemonized lock-process from unmonitored status, and process really running (WAS a problem)" do
     start_ok_process(C.p4)
     @pid = @process.pid
     @process.unmonitor

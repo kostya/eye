@@ -36,9 +36,9 @@ module Eye::Process::System
     File.ctime(self[:pid_file_ex]) rescue Time.now
   end
 
-  def process_realy_running?
+  def process_really_running?
     res = Eye::System.check_pid_alive(self.pid)
-    debug "process_realy_running?: (#{self.pid}) #{res.inspect}"
+    debug "process_really_running?: (#{self.pid}) #{res.inspect}"
     !!res[:result]
   end
 

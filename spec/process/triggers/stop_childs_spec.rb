@@ -28,7 +28,7 @@ describe "StopChilds State" do
     @chpids = @process.childs.keys
   end
 
-  it "when process crashed it should kill all chils too" do
+  it "when process crashed it should kill all childs too" do
     @process.childs.size.should == 3
     Eye::System.pid_alive?(@pid).should == true
     @chpids.each { |pid| Eye::System.pid_alive?(pid).should == true }
