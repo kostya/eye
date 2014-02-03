@@ -18,7 +18,7 @@ module Eye::Process::Commands
       switch :started
     else
       error "process (#{self.pid}) failed to start (#{result[:error].inspect})"
-      if process_realy_running?
+      if process_really_running?
         warn "kill, what remains from process (#{self.pid}), because its failed to start (without pid_file impossible to monitoring)"
         send_signal(:KILL)
         sleep 0.2 # little grace
@@ -43,7 +43,7 @@ module Eye::Process::Commands
 
     kill_process
 
-    if process_realy_running?
+    if process_really_running?
       warn 'NOT STOPPED, check command/signals, or tune stop_timeout/stop_grace, seems it was really soft'
 
       switch :unmonitoring, Eye::Reason.new(:'not stopped (soft command)')
@@ -118,7 +118,7 @@ private
         delay = stop_signals.shift
         signal = stop_signals.shift
 
-        if wait_for_condition(delay.to_f, 0.3){ !process_realy_running? }
+        if wait_for_condition(delay.to_f, 0.3){ !process_really_running? }
           info 'has terminated'
           break
         end
@@ -135,7 +135,7 @@ private
       sleep_grace(:stop_grace)
 
       # if process not die here, by default we force kill it
-      if process_realy_running?
+      if process_really_running?
         warn "process not die after TERM and stop_grace #{self[:stop_grace].to_f}s, so send KILL(#{self.pid})"
         send_signal(:KILL)
         sleep 0.1 # little grace
@@ -191,9 +191,9 @@ private
 
     sleep_grace(:start_grace)
 
-    unless process_realy_running?
+    unless process_really_running?
       error "process with pid(#{self.pid}) not found, may be crashed (#{check_logs_str})"
-      return {:error => :not_realy_running}
+      return {:error => :not_really_running}
     end
 
     unless failsafe_save_pid
@@ -231,9 +231,9 @@ private
       return {:error => :pid_not_found}
     end
 
-    unless process_realy_running?
+    unless process_really_running?
       error "exit status #{res[:exitstatus]}, process in pid_file(#{self[:pid_file_ex]})(#{self.pid}) not found, maybe process do not write there actual pid, or just crashed (#{check_logs_str})"
-      return {:error => :not_realy_running}
+      return {:error => :not_really_running}
     end
 
     res[:pid] = self.pid

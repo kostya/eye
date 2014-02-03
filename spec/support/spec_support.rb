@@ -207,7 +207,7 @@ def start_ok_process(cfg = C.p1)
   @process.start
   sleep 0.2
 
-  @process.process_realy_running?.should == true
+  @process.process_really_running?.should == true
   @process.pid.should > 0
   @process.watchers.keys.should == [:check_alive] if !cfg[:check_alive] == false
   @process.state_name.should == :up

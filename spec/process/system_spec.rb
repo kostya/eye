@@ -61,15 +61,15 @@ describe "Eye::Process::System" do
     File.exists?(@process[:pid_file_ex]).should == false
   end
 
-  it "process_realy_running?" do
+  it "process_really_running?" do
     @process.pid = $$
-    @process.process_realy_running?.should == true
+    @process.process_really_running?.should == true
 
     @process.pid = nil
-    @process.process_realy_running?.should == false
+    @process.process_really_running?.should == false
 
     @process.pid = -123434
-    @process.process_realy_running?.should == false
+    @process.process_really_running?.should == false
   end
 
   it "send_signal ok" do

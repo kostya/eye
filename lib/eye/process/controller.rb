@@ -6,7 +6,7 @@ module Eye::Process::Controller
 
   def start
     res = if set_pid_from_file
-      if process_realy_running?
+      if process_really_running?
         info "process from pid_file(#{self.pid}) found and already running, so :up"
         switch :already_running
         :ok

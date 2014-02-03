@@ -3,11 +3,11 @@ module Eye::Process::Monitor
 private
 
   def check_alive_with_refresh_pid_if_needed
-    if process_realy_running?
+    if process_really_running?
       return true
 
     else
-      warn 'process not realy running'
+      warn 'process not really running'
       try_update_pid_from_file
     end
   end
@@ -19,7 +19,7 @@ private
       info "process changed pid to #{newpid}, updating..." if self.pid
       self.pid = newpid
 
-      if process_realy_running?
+      if process_really_running?
         return true
       else
         warn "process with new_pid #{newpid} not found"
@@ -37,7 +37,7 @@ private
     if up?
 
       # check that process runned
-      unless process_realy_running?
+      unless process_really_running?
         warn "check_alive: process(#{self.pid}) not found!"
         notify :info, 'crashed!'
         clear_pid_file if control_pid? && self.pid && load_pid_from_file == self.pid
