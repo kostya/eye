@@ -52,18 +52,18 @@ private
           if control_pid?
             msg += ", reverting to <#{self.pid}> (the pid_file is controlled by eye)"
             unless failsafe_save_pid
-              msg += ", pid_file write failed!"
+              msg += ", pid_file write failed! O_o"
             end
           else
             if ppid == nil
               msg += ", reverting to <#{self.pid}> (the pid_file is empty)"
               unless failsafe_save_pid
-                msg += ", pid_file write failed!"
+                msg += ", pid_file write failed! O_o"
               end
             elsif (Time.now - pid_file_ctime > REWRITE_FACKUP_PIDFILE_PERIOD)
               msg += " over #{REWRITE_FACKUP_PIDFILE_PERIOD}s ago, reverting to <#{self.pid}>"
               unless failsafe_save_pid
-                msg += ", pid_file write failed!"
+                msg += ", pid_file write failed! O_o"
               end
             else
               msg += ', ignoring self-managed pid change'
