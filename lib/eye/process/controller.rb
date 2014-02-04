@@ -60,7 +60,7 @@ module Eye::Process::Controller
     end
 
     remove_watchers
-    remove_childs
+    remove_children
     remove_triggers
 
     terminate

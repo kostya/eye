@@ -11,10 +11,10 @@ module Eye::Process::Watchers
         check_alive
       end
 
-      # monitor childs pids
+      # monitor children pids
       if self[:monitor_children]
-        add_watcher(:check_childs, self[:childs_update_period]) do
-          add_or_update_childs
+        add_watcher(:check_children, self[:children_update_period]) do
+          add_or_update_children
         end
       end
 

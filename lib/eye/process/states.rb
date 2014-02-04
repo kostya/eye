@@ -61,8 +61,8 @@ class Eye::Process
     after_transition any-:up => :up, :do => :add_watchers
     after_transition :up => any-:up, :do => :remove_watchers
 
-    after_transition any-:up => :up, :do => :add_childs
-    after_transition any => [:unmonitored, :down], :do => :remove_childs
+    after_transition any-:up => :up, :do => :add_children
+    after_transition any => [:unmonitored, :down], :do => :remove_children
 
     after_transition :on => :crashed, :do => :on_crashed
   end

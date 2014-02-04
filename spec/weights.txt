@@ -70,5 +70,5 @@
 ./spec/dsl/with_server_spec.rb:0.051446115
 ./spec/process/monitoring_spec.rb:81.432256161
 ./spec/process/triggers/flapping_retry_spec.rb:61.069683404
-./spec/process/triggers/stop_childs_spec.rb:30.395305637
+./spec/process/triggers/stop_children_spec.rb:30.395305637
 ./spec/system_resources_spec.rb:2.023295837

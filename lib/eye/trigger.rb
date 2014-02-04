@@ -3,11 +3,11 @@ class Eye::Trigger
 
   autoload :Flapping,   'eye/trigger/flapping'
   autoload :Transition, 'eye/trigger/transition'
-  autoload :StopChilds, 'eye/trigger/stop_childs'
+  autoload :StopChildren, 'eye/trigger/stop_children'
 
   # ex: { :type => :flapping, :times => 2, :within => 30.seconds}
 
-  TYPES = {:flapping => 'Flapping', :transition => 'Transition', :stop_childs => 'StopChilds'}
+  TYPES = {:flapping => 'Flapping', :transition => 'Transition', :stop_children => 'StopChildren'}
 
   attr_reader :message, :options, :process
 
