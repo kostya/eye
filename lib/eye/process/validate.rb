@@ -12,7 +12,7 @@ module Eye::Process::Validate
 
       if config[:daemonize]
         if spl =~ %r[sh#\-c|#&&#|;#]
-          raise Error, "#{config[:name]}, start_command in daemonize not supported shell concats like '&&'"
+          raise Error, "#{config[:name]}, daemonize does not support concats like '&&' in start_command"
         end
       end
     end

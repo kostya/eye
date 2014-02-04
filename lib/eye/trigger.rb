@@ -3,11 +3,11 @@ class Eye::Trigger
 
   autoload :Flapping,   'eye/trigger/flapping'
   autoload :Transition, 'eye/trigger/transition'
-  autoload :StopChilds, 'eye/trigger/stop_childs'
+  autoload :StopChildren, 'eye/trigger/stop_children'
 
   # ex: { :type => :flapping, :times => 2, :within => 30.seconds}
 
-  TYPES = {:flapping => 'Flapping', :transition => 'Transition', :stop_childs => 'StopChilds'}
+  TYPES = {:flapping => 'Flapping', :transition => 'Transition', :stop_children => 'StopChildren'}
 
   attr_reader :message, :options, :process
 
@@ -23,7 +23,7 @@ class Eye::Trigger
 
   def self.get_class(type)
     klass = eval("Eye::Trigger::#{TYPES[type]}") rescue nil
-    raise "Unknown trigger #{type}" unless klass
+    raise "unknown trigger #{type}" unless klass
     if deps = klass.depends_on
       Array(deps).each { |d| require d }
     end
@@ -86,7 +86,7 @@ class Eye::Trigger
   end
 
   def check(transition)
-    raise 'realize me'
+    raise NotImplementedError
   end
 
   def run_in_process_context(p)

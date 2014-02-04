@@ -6,7 +6,7 @@ module Eye::Process::Commands
     switch :starting
 
     unless self[:start_command]
-      warn 'no start command, so unmonitoring'
+      warn 'no start command found, unmonitoring'
       switch :unmonitoring, Eye::Reason.new(:no_start_command)
       return :no_start_command
     end
@@ -14,12 +14,12 @@ module Eye::Process::Commands
     result = self[:daemonize] ? daemonize_process : execute_process
 
     if !result[:error]
-      debug "process (#{self.pid}) ok started"
+      debug "process <#{self.pid}> started successfully"
       switch :started
     else
-      error "process (#{self.pid}) failed to start (#{result[:error].inspect})"
+      error "process <#{self.pid}> failed to start (#{result[:error].inspect})"
       if process_really_running?
-        warn "kill, what remains from process (#{self.pid}), because its failed to start (without pid_file impossible to monitoring)"
+        warn "killing process <#{self.pid}> due to error (a pid_file is required for monitoring)"
         send_signal(:KILL)
         sleep 0.2 # little grace
       end
@@ -44,7 +44,7 @@ module Eye::Process::Commands
     kill_process
 
     if process_really_running?
-      warn 'NOT STOPPED, check command/signals, or tune stop_timeout/stop_grace, seems it was really soft'
+      warn "process <#{self.pid}> was not stopped; try checking your command/signals or tuning the stop_timeout/stop_grace values"
 
       switch :unmonitoring, Eye::Reason.new(:'not stopped (soft command)')
       nil
@@ -88,20 +88,21 @@ private
 
   def kill_process
     unless self.pid
-      error 'try to kill process without pid'
+      error 'cannot stop a process without a pid'
       return
     end
 
     if self[:stop_command]
       cmd = prepare_command(self[:stop_command])
-      res = execute(cmd, config.merge(:timeout => self[:stop_timeout]))
       info "executing: `#{cmd}` with stop_timeout: #{self[:stop_timeout].to_f}s and stop_grace: #{self[:stop_grace].to_f}s"
+      res = execute(cmd, config.merge(:timeout => self[:stop_timeout]))
 
       if res[:error]
-        error "raised with #{res[:error].inspect}"
 
         if res[:error].class == Timeout::Error
-          error 'you should tune stop_timeout setting'
+          error "stop_command failed with #{res[:error].inspect}; try tuning the stop_timeout value"
+        else
+          error "stop_command failed with #{res[:error].inspect}"
         end
       end
 
@@ -136,7 +137,7 @@ private
 
       # if process not die here, by default we force kill it
       if process_really_running?
-        warn "process not die after TERM and stop_grace #{self[:stop_grace].to_f}s, so send KILL(#{self.pid})"
+        warn "process <#{self.pid}> did not die after TERM, sending KILL"
         send_signal(:KILL)
         sleep 0.1 # little grace
       end
@@ -145,7 +146,7 @@ private
 
   def execute_restart_command
     unless self.pid
-      error 'try to execute restart_command without pid'
+      error 'cannot restart a process without a pid'
       return
     end
 
@@ -155,10 +156,11 @@ private
     res = execute(cmd, config.merge(:timeout => self[:restart_timeout]))
 
     if res[:error]
-      error "restart raised with #{res[:error].inspect}"
 
       if res[:error].class == Timeout::Error
-        error 'you should tune restart_timeout setting'
+        error "restart_command failed with #{res[:error].inspect}; try tuning the restart_timeout value"
+      else
+        error "restart_command failed with #{res[:error].inspect}"
       end
     end
 
@@ -173,10 +175,11 @@ private
     info "daemonizing: `#{self[:start_command]}` with start_grace: #{self[:start_grace].to_f}s, env: #{self[:environment].inspect}, working_dir: #{self[:working_dir]} (pid:#{res[:pid]})"
 
     if res[:error]
+
       if res[:error].message == 'Permission denied - open'
-        error "raised with #{res[:error].inspect}, seems #{[self[:stdout], self[:stderr]]} files are not writable"
+        error "daemonize failed with #{res[:error].inspect}; make sure #{[self[:stdout], self[:stderr]]} are writable"
       else
-        error "raised with #{res[:error].inspect}"
+        error "daemonize failed with #{res[:error].inspect}"
       end
 
       return {:error => res[:error].inspect}
@@ -185,14 +188,14 @@ private
     self.pid = res[:pid]
 
     unless self.pid
-      error 'returned empty pid, WTF O_o'
+      error 'no pid was returned'
       return {:error => :empty_pid}
     end
 
     sleep_grace(:start_grace)
 
     unless process_really_running?
-      error "process with pid(#{self.pid}) not found, may be crashed (#{check_logs_str})"
+      error "process <#{self.pid}> not found, it may have crashed (#{check_logs_str})"
       return {:error => :not_really_running}
     end
 
@@ -211,14 +214,13 @@ private
     start_time = Time.now - time_before
 
     if res[:error]
-      if res[:error].message == 'Permission denied - open'
-        error "raised with #{res[:error].inspect}, seems #{[self[:stdout], self[:stderr]]} files are not writable"
-      else
-        error "raised with #{res[:error].inspect}"
-      end
 
-      if res[:error].class == Timeout::Error
-        error "try to increase start_timeout interval (current #{self[:start_timeout]} seems too small, for process self-daemonization)"
+      if res[:error].message == 'Permission denied - open'
+        error "execution failed with #{res[:error].inspect}; ensure that #{[self[:stdout], self[:stderr]]} are writable"
+      elsif res[:error].class == Timeout::Error
+        error "execution failed with #{res[:error].inspect}; try increasing the start_timeout value (the current value of #{self[:start_timeout]}s seems too short)"
+      else
+        error "execution failed with #{res[:error].inspect}"
       end
 
       return {:error => res[:error].inspect}
@@ -227,25 +229,25 @@ private
     sleep_grace(:start_grace)
 
     unless set_pid_from_file
-      error "exit status #{res[:exitstatus]}, pid_file(#{self[:pid_file_ex]}) does not appears after start_grace #{self[:start_grace].to_f}, check start_command, or tune start_grace (eye dont know what to monitor without pid)"
+      error "exit status #{res[:exitstatus]}, pid_file (#{self[:pid_file_ex]}) did not appear within the start_grace period (#{self[:start_grace].to_f}s); check your start_command, or tune the start_grace value"
       return {:error => :pid_not_found}
     end
 
     unless process_really_running?
-      error "exit status #{res[:exitstatus]}, process in pid_file(#{self[:pid_file_ex]})(#{self.pid}) not found, maybe process do not write there actual pid, or just crashed (#{check_logs_str})"
+      error "exit status #{res[:exitstatus]}, process <#{self.pid}> (from #{self[:pid_file_ex]}) was not found; ensure that the pid_file is being updated correctly, or check your logs (#{check_logs_str})"
       return {:error => :not_really_running}
     end
 
     res[:pid] = self.pid
-    info "process get pid:#{res[:pid]}, pid_file #{self[:pid_file_ex]}, exit status #{res[:exitstatus]}"
+    info "exit status #{res[:exitstatus]}, process <#{res[:pid]}> (from #{self[:pid_file_ex]}) was found"
     res
   end
 
   def check_logs_str
     if !self[:stdout] && !self[:stderr]
-      'maybe should add stdout/err/all logs'
+      'you may want to configure stdout/err/all logs for this process'
     else
-      "check also it stdout/err/all logs #{[self[:stdout], self[:stderr]]}"
+      "you should check the process logs #{[self[:stdout], self[:stderr]]}"
     end
   end
 

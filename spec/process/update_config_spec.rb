@@ -12,48 +12,48 @@ describe "#update_config" do
   end
 
   it "update only env" do
-    @process.watchers.keys.should == [:check_alive, :check_childs, :check_memory, :check_cpu]
-    @process.childs.keys.size.should == 3
-    child_pids = @process.childs.keys
+    @process.watchers.keys.should == [:check_alive, :check_children, :check_memory, :check_cpu]
+    @process.children.keys.size.should == 3
+    child_pids = @process.children.keys
     @process[:environment]["PID_NAME"].should be
 
     @process.update_config(@cfg.merge(:environment => @cfg[:environment].merge({"ENV2" => "SUPER"})))
     sleep 5
 
     @process.state_name.should == :up
-    @process.watchers.keys.should == [:check_alive, :check_childs, :check_memory, :check_cpu]
-    @process.childs.keys.size.should == 3
-    @process.childs.keys.should == child_pids
+    @process.watchers.keys.should == [:check_alive, :check_children, :check_memory, :check_cpu]
+    @process.children.keys.size.should == 3
+    @process.children.keys.should == child_pids
     @process[:environment]["ENV2"].should == "SUPER"
     @process.pid.should == @pid
   end
 
   it "update watchers" do
-    @process.watchers.keys.should == [:check_alive, :check_childs, :check_memory, :check_cpu]
-    @process.childs.keys.size.should == 3
-    child_pids = @process.childs.keys
+    @process.watchers.keys.should == [:check_alive, :check_children, :check_memory, :check_cpu]
+    @process.children.keys.size.should == 3
+    child_pids = @process.children.keys
 
     @process.update_config(@cfg.merge(:checks => C.check_mem))
     sleep 5
 
     @process.state_name.should == :up
-    @process.watchers.keys.should == [:check_alive, :check_childs, :check_memory]
-    @process.childs.keys.size.should == 3
-    @process.childs.keys.should == child_pids
+    @process.watchers.keys.should == [:check_alive, :check_children, :check_memory]
+    @process.children.keys.size.should == 3
+    @process.children.keys.should == child_pids
     @process.pid.should == @pid
   end
 
   it "when disable monitor_children they should remove" do
-    @process.watchers.keys.should == [:check_alive, :check_childs, :check_memory, :check_cpu]
-    @process.childs.keys.size.should == 3
-    child_pids = @process.childs.keys
+    @process.watchers.keys.should == [:check_alive, :check_children, :check_memory, :check_cpu]
+    @process.children.keys.size.should == 3
+    child_pids = @process.children.keys
 
     @process.update_config(@cfg.merge(:monitor_children => nil))
     sleep 5
 
     @process.state_name.should == :up
     @process.watchers.keys.should == [:check_alive, :check_memory, :check_cpu]
-    @process.childs.keys.size.should == 0
+    @process.children.keys.size.should == 0
     @process.pid.should == @pid
   end
 

@@ -9,7 +9,7 @@ class Eye::Notify
 
   def self.get_class(type)
     klass = eval("Eye::Notify::#{TYPES[type]}") rescue nil
-    raise "Unknown notify #{type}" unless klass
+    raise "unknown notifier :#{type}" unless klass
     if deps = klass.depends_on
       Array(deps).each { |d| require d }
     end
@@ -26,7 +26,7 @@ class Eye::Notify
     needed_hash = (settings[:contacts] || {})[contact]
 
     if needed_hash.blank?
-      error "contact #{contact} not found! Something wrong with config"
+      error "contact #{contact} not found; check your configuration"
       return
     end
 
@@ -74,7 +74,7 @@ class Eye::Notify
   end
 
   def execute
-    raise 'realize me'
+    raise NotImplementedError
   end
 
   param :contact, [String]

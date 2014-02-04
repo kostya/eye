@@ -15,8 +15,8 @@ class Eye::SystemResources
       end
     end
 
-    def childs(parent_pid)
-      cache.childs(parent_pid)
+    def children(parent_pid)
+      cache.children(parent_pid)
     end
 
     def start_time(pid) # unixtime
@@ -79,7 +79,7 @@ class Eye::SystemResources
     rescue ArgumentError # when incorrect PID
     end
 
-    def childs(pid)
+    def children(pid)
       if pid
         @ppids[pid] ||= Eye::Sigar.proc_list("State.Ppid.eq=#{pid}")
       else

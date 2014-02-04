@@ -47,25 +47,25 @@ describe "Eye::Process::Config" do
     end
   end
 
-  describe ":childs_update_period" do
+  describe ":children_update_period" do
     it "should set default" do
       @p = Eye::Process.new({:pid_file => '/tmp/1.pid'})
-      @p[:childs_update_period].should == 30.seconds
+      @p[:children_update_period].should == 30.seconds
     end
 
     it "should set from global options" do
-      @p = Eye::Process.new({:pid_file => '/tmp/1.pid', :childs_update_period => 11.seconds})
-      @p[:childs_update_period].should == 11.seconds
+      @p = Eye::Process.new({:pid_file => '/tmp/1.pid', :children_update_period => 11.seconds})
+      @p[:children_update_period].should == 11.seconds
     end
 
     it "should set from monitor_children sub options" do
-      @p = Eye::Process.new({:pid_file => '/tmp/1.pid', :monitor_children => {:childs_update_period => 12.seconds}})
-      @p[:childs_update_period].should == 12.seconds
+      @p = Eye::Process.new({:pid_file => '/tmp/1.pid', :monitor_children => {:children_update_period => 12.seconds}})
+      @p[:children_update_period].should == 12.seconds
     end
 
     it "should set from monitor_children sub options" do
-      @p = Eye::Process.new({:pid_file => '/tmp/1.pid', :childs_update_period => 11.seconds, :monitor_children => {:childs_update_period => 12.seconds}})
-      @p[:childs_update_period].should == 12.seconds
+      @p = Eye::Process.new({:pid_file => '/tmp/1.pid', :children_update_period => 11.seconds, :monitor_children => {:children_update_period => 12.seconds}})
+      @p[:children_update_period].should == 12.seconds
     end
 
   end

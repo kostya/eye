@@ -15,9 +15,9 @@ private
     res = _cmd(cmd, *args)
 
     if res == :not_started
-      error! "socket(#{Eye::Local.socket_path}) not found, did you `eye load`?"
+      error! "socket(#{Eye::Local.socket_path}) not found, did you run `eye load`?"
     elsif res == :timeouted
-      error! 'eye does not answer, timeouted...'
+      error! 'eye timed out without responding...'
     end
 
     res
