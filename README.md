@@ -78,7 +78,7 @@ Eye.application 'test' do
     end
   end
 
-  # daemon with 3 childs
+  # daemon with 3 children
   process :forking do
     pid_file 'forking.pid'
     start_command 'ruby ./forking.rb start'

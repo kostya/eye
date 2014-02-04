@@ -49,19 +49,19 @@ describe "Intergration restart" do
   end
 
   it "restart forking named child" do
-    @p3.wait_for_condition(15, 0.3) { @p3.childs.size == 3 }
-    @childs = @p3.childs.keys
-    @childs.size.should == 3
-    dead_pid = @childs.sample
+    @p3.wait_for_condition(15, 0.3) { @p3.children.size == 3 }
+    @children = @p3.children.keys
+    @children.size.should == 3
+    dead_pid = @children.sample
 
     @controller.send_command(:restart, "child-#{dead_pid}").should == {:result => ["int:forking:child-#{dead_pid}"]}
     sleep 11 # while it
 
-    new_childs = @p3.childs.keys
-    new_childs.size.should == 3
-    new_childs.should_not include(dead_pid)
-    (@childs - [dead_pid]).each do |pid|
-      new_childs.should include(pid)
+    new_children = @p3.children.keys
+    new_children.size.should == 3
+    new_children.should_not include(dead_pid)
+    (@children - [dead_pid]).each do |pid|
+      new_children.should include(pid)
     end
   end
 

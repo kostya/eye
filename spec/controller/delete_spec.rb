@@ -50,8 +50,8 @@ describe "Intergration Delete" do
   end
 
   it "delete application" do
-    @p3.wait_for_condition(15, 0.3) { @p3.childs.size == 3 }
-    @pids += @p3.childs.keys
+    @p3.wait_for_condition(15, 0.3) { @p3.children.size == 3 }
+    @pids += @p3.children.keys
 
     @controller.send_command(:delete, "int")
     sleep 7 # while

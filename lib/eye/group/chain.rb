@@ -3,7 +3,7 @@ module Eye::Group::Chain
 private
 
   def chain_schedule(type, grace, command, *args)
-    info "start #{type} with #{grace}s chain #{command} #{args}"
+    info "starting #{type} with #{grace}s chain #{command} #{args}"
 
     @chain_processes_count = @processes.size
     @chain_processes_current = 0

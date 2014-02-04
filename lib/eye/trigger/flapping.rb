@@ -1,7 +1,7 @@
 class Eye::Trigger::Flapping < Eye::Trigger
 
-  # triggers :flapping, :times => 10, :within => 1.minute,
-  #          :retry_in => 10.minutes, :retry_times => 15
+  # trigger :flapping, :times => 10, :within => 1.minute,
+  #         :retry_in => 10.minutes, :retry_times => 15
 
   param :times, [Fixnum], true, 5
   param :within, [Float, Fixnum], true
