@@ -6,7 +6,7 @@ module Eye::Process::Commands
     switch :starting
 
     unless self[:start_command]
-      warn 'no start command found, unmonitoring'
+      warn 'no :start_command found, unmonitoring'
       switch :unmonitoring, Eye::Reason.new(:no_start_command)
       return :no_start_command
     end
@@ -18,8 +18,9 @@ module Eye::Process::Commands
       switch :started
     else
       error "process <#{self.pid}> failed to start (#{result[:error].inspect})"
+
       if process_really_running?
-        warn "killing process <#{self.pid}> due to error (a pid_file is required for monitoring)"
+        warn "killing <#{self.pid}> due to error"
         send_signal(:KILL)
         sleep 0.2 # little grace
       end
@@ -172,7 +173,7 @@ private
     res = Eye::System.daemonize(self[:start_command], config)
     start_time = Time.now - time_before
 
-    info "daemonizing: `#{self[:start_command]}` with start_grace: #{self[:start_grace].to_f}s, env: #{self[:environment].inspect}, working_dir: #{self[:working_dir]} (pid:#{res[:pid]})"
+    info "daemonizing: `#{self[:start_command]}` with start_grace: #{self[:start_grace].to_f}s, env: #{self[:environment].inspect}, working_dir: #{self[:working_dir]}, <#{res[:pid]}>"
 
     if res[:error]
 
@@ -229,12 +230,12 @@ private
     sleep_grace(:start_grace)
 
     unless set_pid_from_file
-      error "exit status #{res[:exitstatus]}, pid_file (#{self[:pid_file_ex]}) did not appear within the start_grace period (#{self[:start_grace].to_f}s); check your start_command, or tune the start_grace value"
+      error "exit status #{res[:exitstatus]}, pid_file (#{self[:pid_file_ex]}) did not appear within the start_grace period (#{self[:start_grace].to_f}s); check your start_command, or tune the start_grace value (eye expect process to create pid_file in self-daemonization mode)"
       return {:error => :pid_not_found}
     end
 
     unless process_really_running?
-      error "exit status #{res[:exitstatus]}, process <#{self.pid}> (from #{self[:pid_file_ex]}) was not found; ensure that the pid_file is being updated correctly, or check your logs (#{check_logs_str})"
+      error "exit status #{res[:exitstatus]}, process <#{self.pid}> (from #{self[:pid_file_ex]}) was not found; ensure that the pid_file is being updated correctly (#{check_logs_str})"
       return {:error => :not_really_running}
     end
 
