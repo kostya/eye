@@ -21,7 +21,7 @@ class Eye::Process
                 :children, :triggers, :name, :state_reason, :flapping_times
 
   def initialize(config)
-    raise 'pid file should be' unless config[:pid_file]
+    raise 'you must supply a pid_file location' unless config[:pid_file]
 
     @config = prepare_config(config)
 
@@ -34,7 +34,7 @@ class Eye::Process
     @states_history = Eye::Process::StatesHistory.new(100)
     @states_history << :unmonitored
 
-    debug "create with config: #{@config.inspect}"
+    debug "creating with config: #{@config.inspect}"
 
     add_triggers
 

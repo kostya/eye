@@ -23,7 +23,7 @@ class Eye::Trigger
 
   def self.get_class(type)
     klass = eval("Eye::Trigger::#{TYPES[type]}") rescue nil
-    raise "Unknown trigger #{type}" unless klass
+    raise "unknown trigger #{type}" unless klass
     if deps = klass.depends_on
       Array(deps).each { |d| require d }
     end

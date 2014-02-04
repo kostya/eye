@@ -21,7 +21,7 @@ module Eye::Process::Watchers
       # monitor conditional watchers
       start_checkers
     else
-      warn 'try add_watchers, but its already here'
+      warn 'add_watchers failed, watchers are already present'
     end
   end
 
@@ -35,7 +35,7 @@ private
   def add_watcher(type, period = 2, subject = nil, &block)
     return if @watchers[type]
 
-    debug "add watcher #{type}(#{period})"
+    debug "adding watcher: #{type}(#{period})"
 
     timer = every(period.to_f) do
       debug "check #{type}"

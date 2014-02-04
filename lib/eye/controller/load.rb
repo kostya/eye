@@ -11,7 +11,7 @@ module Eye::Controller::Load
   def load(*args)
     h = args.extract_options!
     obj_strs = args.flatten
-    info "load: #{obj_strs}"
+    info "loading: #{obj_strs}"
 
     res = Hash.new
 
@@ -42,7 +42,7 @@ private
   rescue Eye::Dsl::Error, Exception, NoMethodError => ex
     raise if ex.class.to_s.include?('RR') # skip RR exceptions
 
-    error "load: config error <#{filename}>: #{ex.message}"
+    error "loading: config error <#{filename}>: #{ex.message}"
 
     # filter backtrace for user output
     bt = (ex.backtrace || [])
@@ -65,7 +65,7 @@ private
         filename
       end
 
-      debug "load: globbing mask #{mask}"
+      debug "loading: globbing mask #{mask}"
 
       sub = []
       Dir[mask].each do |config_path|
@@ -81,7 +81,7 @@ private
 
   # return: result, config
   def parse_config(filename)
-    debug "parse #{filename}"
+    debug "parsing: #{filename}"
 
     cfg = Eye::Dsl.parse(nil, filename)
     @current_config.merge(cfg).validate! # just validate summary config here
@@ -91,7 +91,7 @@ private
 
   # !!! exclusive operation
   def load_config(filename, config)
-    info "load #{filename}"
+    info "loading: #{filename}"
     new_cfg = @current_config.merge(config)
     new_cfg.validate!
 
@@ -112,7 +112,7 @@ private
 
   # create objects as diff, from configs
   def create_objects(apps_config, changed_apps = [])
-    debug 'create objects'
+    debug 'creating objects'
 
     apps_config.each do |app_name, app_cfg|
       update_or_create_application(app_name, app_cfg.clone) if changed_apps.include?(app_name)
@@ -138,9 +138,9 @@ private
 
       @applications.delete(app)
 
-      debug "update app #{app_name}"
+      debug "updating app: #{app_name}"
     else
-      debug "create app #{app_name}"
+      debug "creating app: #{app_name}"
     end
 
     app = Eye::Application.new(app_name, app_config)
@@ -183,13 +183,13 @@ private
 
   def update_or_create_group(group_name, group_config)
     group = if @old_groups[group_name]
-      debug "update group #{group_name}"
+      debug "updating group: #{group_name}"
       group = @old_groups.delete(group_name)
       group.schedule :update_config, group_config, Eye::Reason::User.new(:'load config')
       group.clear
       group
     else
-      debug "create group #{group_name}"
+      debug "creating group: #{group_name}"
       gr = Eye::Group.new(group_name, group_config)
       @added_groups << gr
       gr
@@ -210,12 +210,12 @@ private
     key = @old_processes[name] ? name : @old_processes.keys.detect { |n| n.end_with?(postfix) }
 
     if @old_processes[key]
-      debug "update process #{name}"
+      debug "updating process: #{name}"
       process = @old_processes.delete(key)
       process.schedule :update_config, process_cfg, Eye::Reason::User.new(:'load config')
       process
     else
-      debug "create process #{name}"
+      debug "creating process: #{name}"
       process = Eye::Process.new(process_cfg)
       @added_processes << process
       process
