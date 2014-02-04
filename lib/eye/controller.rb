@@ -40,7 +40,7 @@ class Eye::Controller
     Celluloid::logger = Eye::Logger.new('celluloid')
     Eye::SystemResources.cache
 
-    info "starting #{Eye::ABOUT} (#{$$})"
+    info "starting #{Eye::ABOUT} <#{$$}>"
   end
 
   def settings
