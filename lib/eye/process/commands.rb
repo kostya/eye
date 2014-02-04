@@ -98,10 +98,11 @@ private
       res = execute(cmd, config.merge(:timeout => self[:stop_timeout]))
 
       if res[:error]
-        error "stop_command failed with #{res[:error].inspect}"
 
         if res[:error].class == Timeout::Error
-          error 'try tuning the stop_timeout value'
+          error "stop_command failed with #{res[:error].inspect}; try tuning the stop_timeout value"
+        else
+          error "stop_command failed with #{res[:error].inspect}"
         end
       end
 
@@ -155,10 +156,11 @@ private
     res = execute(cmd, config.merge(:timeout => self[:restart_timeout]))
 
     if res[:error]
-      error "restart_command failed with #{res[:error].inspect}"
 
       if res[:error].class == Timeout::Error
-        error 'try tuning the restart_timeout value'
+        error "restart_command failed with #{res[:error].inspect}; try tuning the restart_timeout value"
+      else
+        error "restart_command failed with #{res[:error].inspect}"
       end
     end
 
@@ -173,10 +175,11 @@ private
     info "daemonizing: `#{self[:start_command]}` with start_grace: #{self[:start_grace].to_f}s, env: #{self[:environment].inspect}, working_dir: #{self[:working_dir]} (pid:#{res[:pid]})"
 
     if res[:error]
-      error "failed with #{res[:error].inspect}"
 
       if res[:error].message == 'Permission denied - open'
-        error "make sure #{[self[:stdout], self[:stderr]]} are writable"
+        error "daemonize failed with #{res[:error].inspect}; make sure #{[self[:stdout], self[:stderr]]} are writable"
+      else
+        error "daemonize failed with #{res[:error].inspect}"
       end
 
       return {:error => res[:error].inspect}
@@ -211,14 +214,13 @@ private
     start_time = Time.now - time_before
 
     if res[:error]
-      error "failed with #{res[:error].inspect}"
 
       if res[:error].message == 'Permission denied - open'
-        error "ensure that #{[self[:stdout], self[:stderr]]} are writable"
-      end
-
-      if res[:error].class == Timeout::Error
-        error "try increasing the start_timeout value (the current value of #{self[:start_timeout]}s seems too short)"
+        error "execution failed with #{res[:error].inspect}; ensure that #{[self[:stdout], self[:stderr]]} are writable"
+      elsif res[:error].class == Timeout::Error
+        error "execution failed with #{res[:error].inspect}; try increasing the start_timeout value (the current value of #{self[:start_timeout]}s seems too short)"
+      else
+        error "execution failed with #{res[:error].inspect}"
       end
 
       return {:error => res[:error].inspect}
@@ -227,14 +229,12 @@ private
     sleep_grace(:start_grace)
 
     unless set_pid_from_file
-      error "exit status #{res[:exitstatus]}, pid_file (#{self[:pid_file_ex]}) did not appear within the start_grace period (#{self[:start_grace].to_f}s)"
-      error "check your start_command, or tune the start_grace value"
+      error "exit status #{res[:exitstatus]}, pid_file (#{self[:pid_file_ex]}) did not appear within the start_grace period (#{self[:start_grace].to_f}s); check your start_command, or tune the start_grace value"
       return {:error => :pid_not_found}
     end
 
     unless process_really_running?
-      error "exit status #{res[:exitstatus]}, process <#{self.pid}> (from #{self[:pid_file_ex]}) was not found"
-      error "ensure that the pid_file is being updated correctly, or check your logs (#{check_logs_str})"
+      error "exit status #{res[:exitstatus]}, process <#{self.pid}> (from #{self[:pid_file_ex]}) was not found; ensure that the pid_file is being updated correctly, or check your logs (#{check_logs_str})"
       return {:error => :not_really_running}
     end
 
