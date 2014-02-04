@@ -74,7 +74,7 @@ class Eye::Notify
   end
 
   def execute
-    raise 'realize me'
+    raise NotImplementedError
   end
 
   param :contact, [String]

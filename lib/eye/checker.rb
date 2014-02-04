@@ -131,7 +131,7 @@ class Eye::Checker
   end
 
   def get_value
-    raise 'Realize me'
+    raise NotImplementedError
   end
 
   def human_value(value)

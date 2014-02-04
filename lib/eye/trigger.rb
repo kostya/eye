@@ -86,7 +86,7 @@ class Eye::Trigger
   end
 
   def check(transition)
-    raise 'realize me'
+    raise NotImplementedError
   end
 
   def run_in_process_context(p)
