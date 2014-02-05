@@ -67,7 +67,7 @@ describe "Process Stop" do
   end
 
   it "stop process by specific command" do
-    start_ok_process(C.p1.merge(:stop_command => "kill -9 {{PID}}"))
+    start_ok_process(C.p1.merge(:stop_command => "kill -9 {PID}"))
 
     dont_allow(@process).check_crash
     @process.stop_process
@@ -78,7 +78,7 @@ describe "Process Stop" do
   end
 
   it "bad command" do
-    start_ok_process(C.p1.merge(:stop_command => "kill -0 {{PID}}"))
+    start_ok_process(C.p1.merge(:stop_command => "kill -0 {PID}"))
 
     @process.stop_process
 

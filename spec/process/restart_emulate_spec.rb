@@ -7,7 +7,7 @@ describe "Process Restart, emulate some real hard cases" do
       # and than even if old process doesnot die, start another one, (looks like bug, but this is not, it just bad using, commands)
 
       # same situation, when stop command kills so long time, that process cant stop
-      start_ok_process(cfg.merge(:stop_command => "kill -USR1 {{PID}}"))
+      start_ok_process(cfg.merge(:stop_command => "kill -USR1 {PID}"))
       old_pid = @pid
 
       dont_allow(@process).check_crash

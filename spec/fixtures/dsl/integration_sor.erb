@@ -27,7 +27,7 @@ Eye.app("int") do
 
     monitor_children do
       children_update_period 5.seconds
-      restart_command "kill -2 {{PID}}"
+      restart_command "kill -2 {PID}"
     end
   end
 

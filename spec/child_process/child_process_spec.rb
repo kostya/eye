@@ -26,7 +26,7 @@ describe "Eye::ChildProcess" do
     end
 
     it "kill by stop command" do
-      @process = Eye::ChildProcess.new(@pid, {:stop_command => "kill -9 {{PID}}"})
+      @process = Eye::ChildProcess.new(@pid, {:stop_command => "kill -9 {PID}"})
       @process.schedule :restart
 
       sleep 0.5
@@ -34,7 +34,7 @@ describe "Eye::ChildProcess" do
     end
 
     it "should not restart with wrong command" do
-      @process = Eye::ChildProcess.new(@pid, {:stop_command => "kill -0 {{PID}}"})
+      @process = Eye::ChildProcess.new(@pid, {:stop_command => "kill -0 {PID}"})
       @process.schedule :restart
 
       sleep 0.5
