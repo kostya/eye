@@ -1,4 +1,4 @@
-module Eye::Process::Child
+module Eye::Process::Children
 
   def add_children
     add_or_update_children

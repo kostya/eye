@@ -11,7 +11,7 @@ class Eye::Process
   autoload :System,           'eye/process/system'
   autoload :Controller,       'eye/process/controller'
   autoload :StatesHistory,    'eye/process/states_history'
-  autoload :Child,            'eye/process/child'
+  autoload :Children,         'eye/process/children'
   autoload :Trigger,          'eye/process/trigger'
   autoload :Notify,           'eye/process/notify'
   autoload :Scheduler,        'eye/process/scheduler'
@@ -64,7 +64,7 @@ class Eye::Process
   include Eye::Process::System
 
   # manage child methods
-  include Eye::Process::Child
+  include Eye::Process::Children
 
   # manage triggers methods
   include Eye::Process::Trigger
