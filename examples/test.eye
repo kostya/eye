@@ -15,7 +15,7 @@ Eye.application 'test' do
   stdall 'trash.log' # stdout,err logs for processes by default
   env 'APP_ENV' => 'production' # global env for each processes
   trigger :flapping, times: 10, within: 1.minute, retry_in: 10.minutes
-  check :cpu, below: 100, times: 3 # global check for all processes
+  check :cpu, every: 10.seconds, below: 100, times: 3 # global check for all processes
 
   group 'samples' do
     chain grace: 5.seconds # chained start-restart with 5s interval, one by one.
@@ -42,7 +42,7 @@ Eye.application 'test' do
       stop_command 'kill -9 {PID}'
 
       # ensure the memory is below 300Mb the last 3 times checked
-      check :memory, below: 300.megabytes, times: 3
+      check :memory, every: 20.seconds, below: 300.megabytes, times: 3
     end
   end
 
