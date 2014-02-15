@@ -59,8 +59,9 @@ private
     args = ['*'] if args.empty?
     res = []
     matched_objects(*args) do |obj|
-      if (obj.is_a?(Eye::Process) || obj.is_a?(Eye::ChildProcess))
+      if obj.is_a?(Eye::Process)
         res << obj
+      elsif obj.is_a?(Eye::ChildProcess)
       else
         res += obj.processes.to_a
       end
