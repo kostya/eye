@@ -1,3 +1,9 @@
+0.5.2
+-----
+* rename dsl :childs_update_period to :children_update_period
+* grammar fixes
+* add checker option `above`
+
 0.5.1
 -----
 * fix ordering in info (#27)
