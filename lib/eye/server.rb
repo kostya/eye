@@ -26,7 +26,7 @@ class Eye::Server
     begin
       command, *args = Marshal.load(text)
     rescue => ex
-      error "Failed socket read #{ex.message}"
+      error "Failed to read from socket: #{ex.message}"
       return
     end
 

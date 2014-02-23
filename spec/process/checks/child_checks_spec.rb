@@ -12,12 +12,12 @@ describe "ChildProcess" do
       sleep 6
 
       @process.state_name.should == :up
-      @process.childs.keys.should_not == []
-      @process.childs.keys.size.should == 3
-      @process.watchers.keys.should == [:check_alive, :check_childs]
+      @process.children.keys.should_not == []
+      @process.children.keys.size.should == 3
+      @process.watchers.keys.should == [:check_alive, :check_children]
 
-      @childs = @process.childs.values
-      @childs.each do |child|
+      @children = @process.children.values
+      @children.each do |child|
         child.watchers.keys.should == [:check_memory, :check_cpu]
         dont_allow(child).schedule :restart
       end
@@ -25,26 +25,26 @@ describe "ChildProcess" do
       sleep 7
     end
 
-    it "should check childs even when one of them respawned" do
-      start_ok_process(C.p3.merge(:monitor_children => {:checks => join(C.check_mem, C.check_cpu)}, :childs_update_period => Eye::SystemResources::cache.expire + 1))
-      @process.watchers.keys.should == [:check_alive, :check_childs]
+    it "should check children even when one of them respawned" do
+      start_ok_process(C.p3.merge(:monitor_children => {:checks => join(C.check_mem, C.check_cpu)}, :children_update_period => Eye::SystemResources::cache.expire + 1))
+      @process.watchers.keys.should == [:check_alive, :check_children]
 
-      sleep 6 # ensure that childs finds
+      sleep 6 # ensure that children are found
 
-      @process.childs.size.should == 3
+      @process.children.size.should == 3
 
       # now restarting
-      died = @process.childs.keys.sample
+      died = @process.children.keys.sample
       die_process!(died, 9)
 
       # sleep enought for update list
       sleep (Eye::SystemResources::cache.expire * 2 + 3).seconds
 
-      @process.childs.size.should == 3
-      @process.childs.keys.should_not include(died)
+      @process.children.size.should == 3
+      @process.children.keys.should_not include(died)
 
-      @childs = @process.childs.values
-      @childs.each do |child|
+      @children = @process.children.values
+      @children.each do |child|
         child.watchers.keys.should == [:check_memory, :check_cpu]
         dont_allow(child).schedule :restart
       end
@@ -55,12 +55,12 @@ describe "ChildProcess" do
         join(C.check_mem, C.check_cpu(:below => 50, :times => 2))}))
       sleep 6
 
-      @process.childs.size.should == 3
+      @process.children.size.should == 3
 
-      @childs = @process.childs.values
-      crazy = @childs.shift
+      @children = @process.children.values
+      crazy = @children.shift
 
-      @childs.each do |child|
+      @children.each do |child|
         child.watchers.keys.should == [:check_memory, :check_cpu]
         dont_allow(child).schedule :restart
       end
@@ -69,7 +69,7 @@ describe "ChildProcess" do
       stub(Eye::SystemResources).cpu(anything){ 5 }
 
       crazy.watchers.keys.should == [:check_memory, :check_cpu]
-      mock(crazy).notify(:warn, "Bounded cpu(50%): [*55%, *55%] send to [:restart]")
+      mock(crazy).notify(:warn, "Bounded cpu(<50%): [*55%, *55%] send to [:restart]")
       mock(crazy).schedule :restart, anything
 
       sleep 4

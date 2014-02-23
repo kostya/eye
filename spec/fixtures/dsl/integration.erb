@@ -24,8 +24,8 @@ Eye.app("int") do
     stop_command "ruby forking.rb stop"
 
     monitor_children do
-      childs_update_period 5.seconds
-      restart_command "kill -2 {{PID}}"
+      children_update_period 5.seconds
+      restart_command "kill -2 {PID}"
     end
   end
 

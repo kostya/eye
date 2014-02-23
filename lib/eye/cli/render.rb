@@ -1,7 +1,7 @@
 module Eye::Cli::Render
 private
   def render_info(data)
-    error!("unexpected server answer #{data.inspect}") unless data.is_a?(Hash)
+    error!("unexpected server response #{data.inspect}") unless data.is_a?(Hash)
 
     make_str data
   end
@@ -62,7 +62,7 @@ private
   end
 
   def render_debug_info(data)
-    error!("unexpected server answer #{data.inspect}") unless data.is_a?(Hash)
+    error!("unexpected server response #{data.inspect}") unless data.is_a?(Hash)
 
     s = ""
 
@@ -90,7 +90,7 @@ private
   end
 
   def render_history(data)
-    error!("unexpected server answer #{data.inspect}") unless data.is_a?(Hash)
+    error!("unexpected server response #{data.inspect}") unless data.is_a?(Hash)
 
     res = []
     data.each do |name, data|
@@ -103,7 +103,7 @@ private
   def detail_process_info(name, history)
     return if history.empty?
 
-    res = "\033[1m#{name}\033[0m:\n"
+    res = "\033[1m#{name}\033[0m\n"
     history = history.reverse
 
     history.chunk{|h| [h[:state], h[:reason].to_s] }.each do |_, hist|

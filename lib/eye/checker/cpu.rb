@@ -1,11 +1,9 @@
-class Eye::Checker::Cpu < Eye::Checker
+class Eye::Checker::Cpu < Eye::Checker::Measure
 
-  # checks :cpu, :every => 3.seconds, :below => 80, :times => [3,5]
-
-  param :below, [Fixnum, Float], true
+  # check :cpu, :every => 3.seconds, :below => 80, :times => [3,5]
 
   def check_name
-    @check_name ||= "cpu(#{human_value(below)})"
+    @check_name ||= "cpu(#{measure_str})"
   end
 
   def get_value
@@ -14,14 +12,6 @@ class Eye::Checker::Cpu < Eye::Checker
 
   def human_value(value)
     "#{value}%"
-  end
-
-  def good?(value)
-    if below
-      value < below
-    else
-      true
-    end
   end
 
 end

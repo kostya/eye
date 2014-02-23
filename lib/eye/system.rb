@@ -4,7 +4,7 @@ require 'etc'
 
 module Eye::System
   class << self
-    # Check that pid realy exits
+    # Check that pid really exits
     # very fast
     # return result hash
     def check_pid_alive(pid)
@@ -19,7 +19,7 @@ module Eye::System
       {:error => ex}
     end
 
-    # Check that pid realy exits
+    # Check that pid really exits
     # very fast
     # return true/false
     def pid_alive?(pid)
@@ -86,7 +86,7 @@ module Eye::System
 
     rescue Timeout::Error => ex
       if pid
-        warn "[#{cfg[:name]}] send signal 9 to #{pid} (because of timeouted<#{timeout}> execution)"
+        warn "[#{cfg[:name]}] sending :KILL signal to <#{pid}> due to timeout (#{timeout}s)"
         send_signal(pid, 9)
       end
       {:error => ex}

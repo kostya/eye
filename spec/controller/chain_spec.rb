@@ -44,7 +44,7 @@ describe "Intergration chains" do
     r1 = @p1.states_history.detect{|c| c[:state] == :restarting}[:at]
     r2 = @p2.states_history.detect{|c| c[:state] == :restarting}[:at]
 
-    # restart sended, in 5 seconds to each
+    # restart sent, in 5 seconds to each
     (r2 - r1).should be_within(0.2).of(5)
   end
 

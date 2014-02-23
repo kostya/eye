@@ -74,7 +74,7 @@ describe "Eye::Dsl" do
         Eye.application("bla") do
           process("1") do
             pid_file "1.pid"
-            monitor_children{ trigger :stop_childs }
+            monitor_children{ trigger :stop_children }
           end
         end
       E

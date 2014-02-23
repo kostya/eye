@@ -1,13 +1,14 @@
-class Eye::Checker::FileSize < Eye::Checker
+class Eye::Checker::FileSize < Eye::Checker::Measure
 
   # Check that file size changed (log for example)
-
-  # checks :fsize, :every => 5.seconds, :file => "/tmp/1.log", :times => [3,5],
+  # check :fsize, :every => 5.seconds, :file => "/tmp/1.log", :times => [3,5],
   #      :below => 30.kilobytes, :above => 10.kilobytes
 
   param :file, [String], true
-  param :below, [Fixnum, Float]
-  param :above, [Fixnum, Float]
+
+  def check_name
+    @check_name ||= "fsize(#{measure_str})"
+  end
 
   def get_value
     File.size(file) rescue nil
@@ -24,8 +25,7 @@ class Eye::Checker::FileSize < Eye::Checker
 
     return true if diff < 0 # case when logger nulled
 
-    return false if below && diff > below
-    return false if above && diff < above
+    return false unless super(diff)
     return false if diff == 0
 
     true

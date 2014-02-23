@@ -2,7 +2,7 @@ require 'net/http'
 
 class Eye::Checker::Http < Eye::Checker::Defer
 
-  # checks :http, :every => 5.seconds, :times => 1,
+  # check :http, :every => 5.seconds, :times => 1,
   #  :url => "http://127.0.0.1:3000/", :kind => :success, :pattern => /OK/, :timeout => 3.seconds
 
   param :url,           String, true

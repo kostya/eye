@@ -15,9 +15,9 @@ private
     res = _cmd(cmd, *args)
 
     if res == :not_started
-      error! "socket(#{Eye::Local.socket_path}) not found, did you `eye load`?"
+      error! "socket(#{Eye::Local.socket_path}) not found, did you run `eye load`?"
     elsif res == :timeouted
-      error! 'eye does not answer, timeouted...'
+      error! 'eye timed out without responding...'
     end
 
     res
@@ -26,7 +26,6 @@ private
   def say_load_result(res = {}, opts = {})
     error!(res) unless res.is_a?(Hash)
     say_filename = (res.size > 1)
-    say 'eye started!', :green if opts[:started]
     error = false
     res.each do |filename, _res|
       say "#{filename}: ", nil, true if say_filename

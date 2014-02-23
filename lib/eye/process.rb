@@ -11,22 +11,22 @@ class Eye::Process
   autoload :System,           'eye/process/system'
   autoload :Controller,       'eye/process/controller'
   autoload :StatesHistory,    'eye/process/states_history'
-  autoload :Child,            'eye/process/child'
+  autoload :Children,         'eye/process/children'
   autoload :Trigger,          'eye/process/trigger'
   autoload :Notify,           'eye/process/notify'
   autoload :Scheduler,        'eye/process/scheduler'
   autoload :Validate,         'eye/process/validate'
 
   attr_accessor :pid, :watchers, :config, :states_history,
-                :childs, :triggers, :name, :state_reason, :flapping_times
+                :children, :triggers, :name, :state_reason, :flapping_times
 
   def initialize(config)
-    raise 'pid file should be' unless config[:pid_file]
+    raise 'you must supply a pid_file location' unless config[:pid_file]
 
     @config = prepare_config(config)
 
     @watchers = {}
-    @childs = {}
+    @children = {}
     @triggers = []
     @name = @config[:name]
     @flapping_times = 0
@@ -34,7 +34,7 @@ class Eye::Process
     @states_history = Eye::Process::StatesHistory.new(100)
     @states_history << :unmonitored
 
-    debug "create with config: #{@config.inspect}"
+    debug "creating with config: #{@config.inspect}"
 
     add_triggers
 
@@ -63,8 +63,8 @@ class Eye::Process
   # system methods:
   include Eye::Process::System
 
-  # manage childs methods
-  include Eye::Process::Child
+  # manage child methods
+  include Eye::Process::Children
 
   # manage triggers methods
   include Eye::Process::Trigger

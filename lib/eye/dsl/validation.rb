@@ -49,10 +49,10 @@ module Eye::Dsl::Validation
           if value && !value.is_a?(Proc)
             if value.is_a?(Array)
               if (value - self.variants[param]).present?
-                raise Error, "#{value.inspect} should within #{self.variants[param].inspect}"
+                raise Error, "#{value.inspect} should be within #{self.variants[param].inspect}"
               end
             elsif !self.variants[param].include?(value)
-              raise Error, "#{value.inspect} should within #{self.variants[param].inspect}"
+              raise Error, "#{value.inspect} should be within #{self.variants[param].inspect}"
             end
           end
         end

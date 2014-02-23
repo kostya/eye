@@ -18,7 +18,7 @@ Eye.application :puma do
 
     start_command "#{BUNDLE} exec puma --port 33280 --environment #{RAILS_ENV} thin.ru"
     stop_signals [:TERM, 5.seconds, :KILL]
-    restart_command "kill -USR2 {{PID}}"
+    restart_command "kill -USR2 {PID}"
 
     restart_grace 10.seconds # just sleep this until process get up status
                              # (maybe enought to puma soft restart)

@@ -16,69 +16,81 @@ Recommended installation on the server (system wide):
     $ sudo ln -sf /usr/local/ruby/1.9.3/bin/eye /usr/local/bin/eye
 
 
-Config example, shows some typical processes and most of the options (see in exampes/ folder):
+###  Why?
+
+We have used god and bluepill in production and always ran into bugs (segfaults, crashes, lost processes, kill not-related processes, load problems, deploy problems, ...)
+
+We wanted something more robust and production stable.
+
+We wanted the features of bluepill and god, with a few extras like chains, nested configuring, mask matching, easy debug configs
+
+I hope we've success, we're using eye in production and are quite happy.
+
+###  Config example
 
 examples/test.eye
 ```ruby
 # load submodules, here just for example
-Eye.load("./eye/*.rb")
+Eye.load('./eye/*.rb')
 
 # Eye self-configuration section
 Eye.config do
-  logger "/tmp/eye.log"
+  logger '/tmp/eye.log'
 end
 
 # Adding application
-Eye.application "test" do
+Eye.application 'test' do
   # All options inherits down to the config leafs.
   # except `env`, which merging down
 
   working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
-  stdall "trash.log" # stdout,err logs for processes by default
-  env "APP_ENV" => "production" # global env for each processes
-  trigger :flapping, :times => 10, :within => 1.minute, :retry_in => 10.minutes
-  check :cpu, :below => 100, :times => 3 # global check for all processes
+  stdall 'trash.log' # stdout,err logs for processes by default
+  env 'APP_ENV' => 'production' # global env for each processes
+  trigger :flapping, times: 10, within: 1.minute, retry_in: 10.minutes
+  check :cpu, every: 10.seconds, below: 100, times: 3 # global check for all processes
 
-  group "samples" do
-    chain :grace => 5.seconds # chained start-restart with 5s interval, one by one.
+  group 'samples' do
+    chain grace: 5.seconds # chained start-restart with 5s interval, one by one.
 
     # eye daemonized process
     process :sample1 do
-      pid_file "1.pid" # pid_path will be expanded with the working_dir
-      start_command "ruby ./sample.rb"
+      pid_file '1.pid' # pid_path will be expanded with the working_dir
+      start_command 'ruby ./sample.rb'
 
       # when no stop_command or stop_signals, default stop is [:TERM, 0.5, :KILL]
       # default `restart` command is `stop; start`
 
       daemonize true
-      stdall "sample1.log"
+      stdall 'sample1.log'
 
-      check :cpu, :below => 30, :times => [3, 5]
+      # ensure the CPU is below 30% at least 3 out of the last 5 times checked
+      check :cpu, below: 30, times: [3, 5]
     end
 
     # self daemonized process
     process :sample2 do
-      pid_file "2.pid"
-      start_command "ruby ./sample.rb -d --pid 2.pid --log sample2.log"
-      stop_command "kill -9 {PID}"
+      pid_file '2.pid'
+      start_command 'ruby ./sample.rb -d --pid 2.pid --log sample2.log'
+      stop_command 'kill -9 {PID}'
 
-      check :memory, :below => 300.megabytes, :times => 3
+      # ensure the memory is below 300Mb the last 3 times checked
+      check :memory, every: 20.seconds, below: 300.megabytes, times: 3
     end
   end
 
-  # daemon with 3 childs
+  # daemon with 3 children
   process :forking do
-    pid_file "forking.pid"
-    start_command "ruby ./forking.rb start"
-    stop_command "ruby forking.rb stop"
-    stdall "forking.log"
+    pid_file 'forking.pid'
+    start_command 'ruby ./forking.rb start'
+    stop_command 'ruby forking.rb stop'
+    stdall 'forking.log'
 
     start_timeout 10.seconds
     stop_timeout 5.seconds
 
     monitor_children do
-      restart_command "kill -2 {PID}" # for this child process
-      check :memory, :below => 300.megabytes, :times => 3
+      restart_command 'kill -2 {PID}' # for this child process
+      check :memory, below: 300.megabytes, times: 3
     end
   end
 
@@ -90,18 +102,18 @@ Eye.application "test" do
     daemonize true
     stop_signals [:QUIT, 2.seconds, :KILL]
 
-    check :socket, :addr => "tcp://127.0.0.1:33221", :every => 10.seconds, :times => 2,
-                   :timeout => 1.second, :send_data => "ping", :expect_data => /pong/
+    check :socket, addr: 'tcp://127.0.0.1:33221', every: 10.seconds, times: 2,
+                   timeout: 1.second, send_data: 'ping', expect_data: /pong/
   end
 
   # thin process, self daemonized
   process :thin do
-    pid_file "thin.pid"
-    start_command "bundle exec thin start -R thin.ru -p 33233 -d -l thin.log -P thin.pid"
+    pid_file 'thin.pid'
+    start_command 'bundle exec thin start -R thin.ru -p 33233 -d -l thin.log -P thin.pid'
     stop_signals [:QUIT, 2.seconds, :TERM, 1.seconds, :KILL]
 
-    check :http, :url => "http://127.0.0.1:33233/hello", :pattern => /World/,
-                 :every => 5.seconds, :times => [2, 3], :timeout => 1.second
+    check :http, url: 'http://127.0.0.1:33233/hello', pattern: /World/,
+                 every: 5.seconds, times: [2, 3], timeout: 1.second
   end
 
 end
@@ -120,7 +132,7 @@ foreground load:
 
     $ eye l CONF -f
 
-If eye daemon already started and you call `load` command, config will be updated (into eye daemon). New objects(applications, groups, processes) will be added and monitored. Removed from config processes will be removed (and stopped if process has `stop_on_delete true`). Other objects update their configs.
+If the eye daemon has already started and you call the `load` command, the config will be updated (into eye daemon). New objects(applications, groups, processes) will be added and monitored. Processes removed from the config will be removed (and stopped if the process has `stop_on_delete true`). Other objects will update their configs.
 
 
 Process statuses:

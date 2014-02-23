@@ -124,7 +124,7 @@ private
       return apps if apps.size > 0
 
       if objs.map(&:app_name).uniq.size > 1
-        raise Error, "cant match targets from different applications: #{res.map(&:full_name)}"
+        raise Error, "cannot match targets from different applications: #{res.map(&:full_name)}"
       end
     end
 
@@ -150,9 +150,9 @@ private
           res << p if p.name =~ r || p.full_name =~ r
 
           # child matching
-          if p.childs.present?
-            childs = p.childs.values
-            res += childs.select do |ch|
+          if p.children.present?
+            children = p.children.values
+            res += children.select do |ch|
               name = ch.name rescue ''
               full_name = ch.full_name rescue ''
               name =~ r || full_name =~ r

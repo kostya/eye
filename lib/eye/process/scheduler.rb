@@ -4,7 +4,7 @@ module Eye::Process::Scheduler
   def schedule(command, *args, &block)
     if scheduler.alive?
       unless self.respond_to?(command, true)
-        warn "object not support :#{command} to schedule"
+        warn ":#{command} scheduling is unsupported"
         return
       end
 

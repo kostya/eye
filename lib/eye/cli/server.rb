@@ -51,15 +51,15 @@ private
     File.open(Eye::Local.pid_path, 'w'){|f| f.write(pid) }
 
     unless wait_server
-      error! 'server not runned in 15 seconds, something crazy wrong'
+      error! 'server has not started in 15 seconds, something is very wrong'
     end
 
     configs.unshift(Eye::Local.eyeconfig) if File.exists?(Eye::Local.eyeconfig)
 
+    say 'eye started!', :green
+
     if !configs.empty?
-      say_load_result cmd(:load, *configs), :started => true
-    else
-      say 'started!', :green
+      say_load_result cmd(:load, *configs)
     end
   end
 

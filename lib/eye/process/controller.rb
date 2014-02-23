@@ -6,16 +6,16 @@ module Eye::Process::Controller
 
   def start
     res = if set_pid_from_file
-      if process_realy_running?
-        info "process from pid_file(#{self.pid}) found and already running, so :up"
+      if process_really_running?
+        info "process <#{self.pid}> from pid_file is already running"
         switch :already_running
         :ok
       else
-        info "pid_file found, but process in pid_file(#{self.pid}) not found, starting..."
+        info "pid_file found, but process <#{self.pid}> is down, starting..."
         start_process
       end
     else
-      info 'pid_file not found, so starting process...'
+      info 'pid_file not found, starting...'
       start_process
     end
 
@@ -40,10 +40,10 @@ module Eye::Process::Controller
       start
     else
       if try_update_pid_from_file
-        info "process from pid_file(#{self.pid}) found and already running, so :up"
+        info "process <#{self.pid}> from pid_file is already running"
         switch :already_running
       else
-        warn 'process not found, so :unmonitor'
+        warn 'process not found, unmonitoring'
         schedule :unmonitor, Eye::Reason.new(:'not found')
       end
     end
@@ -60,7 +60,7 @@ module Eye::Process::Controller
     end
 
     remove_watchers
-    remove_childs
+    remove_children
     remove_triggers
 
     terminate

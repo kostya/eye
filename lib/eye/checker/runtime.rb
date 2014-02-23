@@ -1,8 +1,6 @@
-class Eye::Checker::Runtime < Eye::Checker
+class Eye::Checker::Runtime < Eye::Checker::Measure
 
   # check :runtime, :every => 1.minute, :below => 120.minutes
-
-  param :below, [Fixnum, Float], true
 
   def get_value
     st = Eye::SystemResources.start_time(@pid)
@@ -15,14 +13,6 @@ class Eye::Checker::Runtime < Eye::Checker
 
   def human_value(value)
     "#{value / 60}m"
-  end
-
-  def good?(value)
-    if below
-      value < below
-    else
-      true
-    end
   end
 
 end

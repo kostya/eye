@@ -16,7 +16,7 @@ describe "Eye::Dsl" do
             daemonize   true
 
             monitor_children do
-              stop_command "kill -9 {{PID}}"
+              stop_command "kill -9 {PID}"
               checks :memory, :every => 30.seconds, :below => 200.megabytes
               checks :cpu, :every => 30.seconds, :below => 10, :times => [3,5]
             end
@@ -52,7 +52,7 @@ describe "Eye::Dsl" do
                 :stdall=>"1.log",
                 :daemonize=>true,
                 :monitor_children=>{
-                  :stop_command=>"kill -9 {{PID}}",
+                  :stop_command=>"kill -9 {PID}",
                   :checks=>{:memory=>{:every=>30, :below=>209715200, :type=>:memory},
                   :cpu=>{:every=>30, :below=>10, :times=>[3, 5], :type=>:cpu}}
                   },

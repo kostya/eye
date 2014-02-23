@@ -23,7 +23,7 @@ describe "Process Restart" do
     end
 
     it "stop_command is #{cfg[:name]}" do
-      start_ok_process(cfg.merge(:stop_command => "kill -9 {{PID}}"))
+      start_ok_process(cfg.merge(:stop_command => "kill -9 {PID}"))
       old_pid = @pid
 
       dont_allow(@process).check_crash
@@ -43,7 +43,7 @@ describe "Process Restart" do
 
     it "restart_command is, and not kill (USR1)" do
       # not trully test, but its ok as should send signal (unicorn case)
-      start_ok_process(cfg.merge(:restart_command => "kill -USR1 {{PID}}"))
+      start_ok_process(cfg.merge(:restart_command => "kill -USR1 {PID}"))
       old_pid = @pid
 
       dont_allow(@process).check_crash
@@ -66,7 +66,7 @@ describe "Process Restart" do
     it "restart_command is #{cfg[:name]} and kills" do
       # not really restartin, just killing
       # so monitor should see that process died, and up it
-      start_ok_process(cfg.merge(:restart_command => "kill -9 {{PID}}"))
+      start_ok_process(cfg.merge(:restart_command => "kill -9 {PID}"))
 
       mock(@process).check_crash
 

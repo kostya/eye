@@ -1,6 +1,6 @@
 class Eye::Checker::Socket < Eye::Checker::Defer
 
-  # checks :socket, :every => 5.seconds, :times => 1,
+  # check :socket, :every => 5.seconds, :times => 1,
   #  :addr => "unix:/var/run/daemon.sock", :timeout => 3.seconds,
   #
   # Available parameters:

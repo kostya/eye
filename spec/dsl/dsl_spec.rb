@@ -88,4 +88,11 @@ describe "Eye::Dsl" do
     end
   end
 
+  it "should set clear_bundler_env" do
+    conf = " Eye.app(:bla){  clear_bundler_env; env 'A' => 1 }"
+    cfg = Eye::Dsl.parse_apps(conf)
+    cfg['bla'][:environment].should == {"GEM_PATH"=>nil, "GEM_HOME"=>nil, "RUBYOPT"=>nil, "BUNDLE_BIN_PATH"=>nil, "BUNDLE_GEMFILE"=>nil, "A" => 1}
+  end
+
+
 end
