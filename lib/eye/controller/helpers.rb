@@ -18,19 +18,23 @@ module Eye::Controller::Helpers
   end
 
   def process_by_name(name)
-    all_processes.detect{|c| c.name == name}
+    name = name.to_s
+    all_processes.detect { |c| c.name == name }
   end
 
   def process_by_full_name(name)
-    all_processes.detect{|c| c.full_name == name }
+    name = name.to_s
+    all_processes.detect { |c| c.full_name == name }
   end
 
   def group_by_name(name)
-    all_groups.detect{|c| c.name == name}
+    name = name.to_s
+    all_groups.detect { |c| c.name == name }
   end
 
   def application_by_name(name)
-    @applications.detect{|c| c.name == name}
+    name = name.to_s
+    @applications.detect { |c| c.name == name }
   end
 
   def all_processes
