@@ -6,6 +6,7 @@ def answer(data)
   case data
     when 'ping' then "pong\n"
     when 'bad' then "what\n"
+    when 'raw' then 'raw_ans'
     when 'timeout' then sleep 5; "ok\n"
     when 'exception' then raise 'haha'
     when 'quit' then EM.stop

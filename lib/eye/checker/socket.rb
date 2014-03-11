@@ -18,7 +18,7 @@ class Eye::Checker::Socket < Eye::Checker::Defer
   param :read_timeout,  [Fixnum, Float]
   param :send_data
   param :expect_data,   [String, Regexp, Proc]
-  param :protocol,      [Symbol], nil, nil, [:default, :em_object]
+  param :protocol,      [Symbol], nil, nil, [:default, :em_object, :raw]
 
   def initialize(*args)
     super
@@ -51,7 +51,11 @@ class Eye::Checker::Socket < Eye::Checker::Defer
           { :result => result }
         end
       rescue Timeout::Error
-        return { :exception => "ReadTimeout<#{@read_timeout}>" }
+        if protocol == :raw
+          return { :result => @buffer }
+        else
+          return { :exception => "ReadTimeout<#{@read_timeout}>" }
+        end
       end
     else
       { :result => :listen }
@@ -144,6 +148,9 @@ private
       if content.present?
         Marshal.load(content) rescue 'corrupted_marshal'
       end
+    when :raw
+      @buffer = ''
+      loop { @buffer << socket.recv(1) }
     else
       socket.readline.chop
     end
