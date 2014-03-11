@@ -92,7 +92,7 @@ describe "Process Start" do
       @process = process(cfg.merge(:start_command => "asdf asdf1 r f324 f324f 32f44f"))
       mock(@process).check_crash
       res = @process.start
-      res.should == {:error=>"#<Errno::ENOENT: No such file or directory - asdf>"}
+      res[:error].should start_with("#<Errno::ENOENT: No such file or directory")
 
       sleep 0.5
 
@@ -106,7 +106,7 @@ describe "Process Start" do
       @process = process(cfg.merge(:stdout => "/var/run/1.log"))
       mock(@process).check_crash
       res = @process.start
-      res.should == {:error=>"#<Errno::EACCES: Permission denied - open>"}
+      res[:error].should start_with("#<Errno::EACCES: Permission denied")
 
       sleep 0.5
 
@@ -120,7 +120,7 @@ describe "Process Start" do
       @process = process(cfg.merge(:start_command => "./sample.rb"))
       mock(@process).check_crash
       res = @process.start
-      res.should == {:error=>"#<Errno::EACCES: Permission denied - ./sample.rb>"}
+      res[:error].should start_with("#<Errno::EACCES: Permission denied")
 
       sleep 0.5
 

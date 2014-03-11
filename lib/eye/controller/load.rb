@@ -34,7 +34,7 @@ module Eye::Controller::Load
 private
 
   # regexp for clean backtrace to show for user
-  BT_REGX = %r[/lib/eye/|lib/celluloid|internal:prelude|logger.rb:|active_support/core_ext|shellwords.rb].freeze
+  BT_REGX = %r[/lib/eye/|lib/celluloid|internal:prelude|logger.rb:|active_support/core_ext|shellwords.rb|kernel/bootstrap].freeze
 
   def catch_load_error(filename = nil, &block)
     { :error => false, :config => yield }
