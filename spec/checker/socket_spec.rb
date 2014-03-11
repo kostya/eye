@@ -18,24 +18,6 @@ describe "Socket Checker" do
   end
 
   ["tcp://127.0.0.1:#{C.p4_ports[0]}", "unix:#{C.p4_sock}"].each do |addr|
-    describe "raw protocol" do
-      before :each do
-        start_ok_process(C.p4)
-      end
-
-      it "good answer" do
-        c = chsock(:addr => addr, :send_data => 'raw', :expect_data => "raw_ans", :timeout => 0.5, :protocol => :raw)
-        c.get_value.should == {:result => 'raw_ans'}
-        c.check.should == true
-      end
-
-      it "timeout when using without :raw" do
-        c = chsock(:addr => addr, :send_data => 'raw', :expect_data => "raw_ans", :timeout => 0.5)
-        c.get_value.should == {:exception => "ReadTimeout<0.5>"}
-        c.check.should == false
-      end
-    end
-
     describe "socket: '#{addr}'" do
       before :each do
         start_ok_process(C.p4)
@@ -89,6 +71,24 @@ describe "Socket Checker" do
         else
           c.get_value[:exception].should include("No such file or directory")
         end
+        c.check.should == false
+      end
+    end
+
+    describe "raw protocol '#{addr}'" do
+      before :each do
+        start_ok_process(C.p4)
+      end
+
+      it "good answer" do
+        c = chsock(:addr => addr, :send_data => 'raw', :expect_data => "raw_ans", :timeout => 0.5, :protocol => :raw)
+        c.get_value.should == {:result => 'raw_ans'}
+        c.check.should == true
+      end
+
+      it "timeout when using without :raw" do
+        c = chsock(:addr => addr, :send_data => 'raw', :expect_data => "raw_ans", :timeout => 0.5)
+        c.get_value.should == {:exception => "ReadTimeout<0.5>"}
         c.check.should == false
       end
     end
