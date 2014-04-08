@@ -54,6 +54,7 @@ describe "sub procs" do
   end
 
   it "include method" do
+    pending if RUBY_ENGINE == 'rbx'
     conf = <<-E
       def add_process(proxy)
         working_dir "/tmp"
