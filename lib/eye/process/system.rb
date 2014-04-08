@@ -37,8 +37,12 @@ module Eye::Process::System
   end
 
   def process_really_running?
-    res = Eye::System.check_pid_alive(self.pid)
-    debug "process_really_running?: (#{self.pid}) #{res.inspect}"
+    process_pid_running?(self.pid)
+  end
+
+  def process_pid_running?(pid)
+    res = Eye::System.check_pid_alive(pid)
+    debug "process_really_running?: (#{pid}) #{res.inspect}"
     !!res[:result]
   end
 

@@ -16,7 +16,10 @@ module Eye::Process::Config
     :auto_start => true, # auto start on monitor action
 
     :children_update_period => 30.seconds,
-    :clear_pid => true # by default clear pid on stop
+    :clear_pid => true, # by default clear pid on stop
+
+    :auto_update_pidfile_grace => 30.seconds,
+    :revert_fuckup_pidfile_grace => 120.seconds,
   }
 
   def prepare_config(new_config)

@@ -31,8 +31,6 @@ private
     end
   end
 
-  REWRITE_FACKUP_PIDFILE_PERIOD = 2.minutes
-
   def check_alive
     if up?
 
@@ -55,16 +53,24 @@ private
               msg += ", pid_file write failed! O_o"
             end
           else
+            changed_ago_s = Time.now - pid_file_ctime
+
             if ppid == nil
               msg += ", reverting to <#{self.pid}> (the pid_file is empty)"
               unless failsafe_save_pid
                 msg += ", pid_file write failed! O_o"
               end
-            elsif (Time.now - pid_file_ctime > REWRITE_FACKUP_PIDFILE_PERIOD)
-              msg += " over #{REWRITE_FACKUP_PIDFILE_PERIOD}s ago, reverting to <#{self.pid}>"
+
+            elsif (changed_ago_s > self[:auto_update_pidfile_grace]) && process_pid_running?(ppid)
+              msg += ", trusting this change, and now monitor <#{ppid}>"
+              self.pid = ppid
+
+            elsif (changed_ago_s > self[:revert_fuckup_pidfile_grace])
+              msg += " over #{self[:revert_fuckup_pidfile_grace]}s ago, reverting to <#{self.pid}>, because <#{ppid}> not alive"
               unless failsafe_save_pid
                 msg += ", pid_file write failed! O_o"
               end
+
             else
               msg += ', ignoring self-managed pid change'
             end
