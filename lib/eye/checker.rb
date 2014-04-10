@@ -180,6 +180,15 @@ class Eye::Checker
     process.instance_exec(&p) if process.alive?
   end
 
+  def fire
+    actions = fires ? Array(fires) : [:restart]
+    process.notify :warn, "Bounded #{check_name}: #{last_human_values} send to #{actions}"
+
+    actions.each do |action|
+      process.schedule action, Eye::Reason.new("bounded #{check_name}")
+    end
+  end
+
   def defer(&block)
     Celluloid::Future.new(&block).value
   end
