@@ -31,7 +31,7 @@ module Eye::Process::Children
 
     if new_children.present?
       new_children.each do |child_pid|
-        self.children[child_pid] = Eye::ChildProcess.new(child_pid, self[:monitor_children], logger.prefix)
+        self.children[child_pid] = Eye::ChildProcess.new(child_pid, self[:monitor_children], logger.prefix, self.pid)
       end
     end
 

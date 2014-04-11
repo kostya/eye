@@ -26,10 +26,11 @@ class Eye::ChildProcess
 
   attr_reader :pid, :name, :full_name, :config, :watchers
 
-  def initialize(pid, config = {}, logger_prefix = nil)
+  def initialize(pid, config = {}, logger_prefix = nil, parent_pid = nil)
     raise 'Empty pid' unless pid
 
     @pid = pid
+    @parent_pid = parent_pid
     @config = prepare_config(config)
     @name = "child-#{pid}"
     @full_name = [logger_prefix, @name] * ':'
@@ -94,4 +95,7 @@ class Eye::ChildProcess
     self_status_data(debug)
   end
 
+  def prepare_command(command) # override
+    super.gsub('{PARENT_PID}', @parent_pid.to_s)
+  end
 end
