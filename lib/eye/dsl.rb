@@ -27,6 +27,7 @@ class Eye::Dsl
     def parse(content = nil, filename = nil)
       Eye.parsed_config = Eye::Config.new
       Eye.parsed_filename = filename
+      Eye.parsed_default_app = nil
 
       content = File.read(filename) if content.blank?
 

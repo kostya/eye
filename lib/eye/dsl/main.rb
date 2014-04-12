@@ -1,14 +1,20 @@
 module Eye::Dsl::Main
-  attr_accessor :parsed_config, :parsed_filename
+  attr_accessor :parsed_config, :parsed_filename, :parsed_default_app
 
   def application(name, &block)
     Eye::Dsl.check_name(name)
+    name = name.to_s
 
     Eye::Dsl.debug "=> app: #{name}"
-    opts = Eye::Dsl::ApplicationOpts.new(name)
-    opts.instance_eval(&block)
 
-    @parsed_config.applications[name.to_s] = opts.config if opts.config
+    if name == '__default__'
+      @parsed_default_app ||= Eye::Dsl::ApplicationOpts.new(name)
+      @parsed_default_app.instance_eval(&block)
+    else
+      opts = Eye::Dsl::ApplicationOpts.new(name, @parsed_default_app)
+      opts.instance_eval(&block)
+      @parsed_config.applications[name] = opts.config if opts.config
+    end
 
     Eye::Dsl.debug "<= app: #{name}"
   end

@@ -24,7 +24,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     @config[:group] = parent.name if parent.is_a?(Eye::Dsl::GroupOpts)
 
     # hack for full name
-    @full_name = parent.full_name if @name == '__default__'
+    @full_name = parent.full_name if @name == '__default__' && parent.respond_to?(:full_name)
   end
 
   def checks(type, opts = {})
