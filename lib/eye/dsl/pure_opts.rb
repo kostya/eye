@@ -79,7 +79,7 @@ class Eye::Dsl::PureOpts
     self.instance_eval(&block) if cond && block
   end
 
-  def include(proc, *args)
+  def use(proc, *args)
     if proc.is_a?(String)
       self.class.with_parsed_file(proc) do |path|
         if File.exists?(path)
