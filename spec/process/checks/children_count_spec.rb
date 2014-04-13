@@ -26,7 +26,7 @@ describe "Eye::Checker::ChildrenCount" do
   end
 
   it "should kill 5 older childs" do
-    @process = start_ok_process(C.p1.merge(:checks => C.check_children_count(:below => 5, :strategy => :kill_old), 
+    @process = start_ok_process(C.p1.merge(:checks => C.check_children_count(:below => 3, :strategy => :kill_old),
       :monitor_children => {}))
 
     10.times { @pids << Eye::System.daemonize("sleep 10")[:pid] }
@@ -35,12 +35,12 @@ describe "Eye::Checker::ChildrenCount" do
 
     sleep 5
 
-    @pids[0...5].each { |p| Eye::System.pid_alive?(p).should be_false }
-    @pids[5..-1].each { |p| Eye::System.pid_alive?(p).should be_true }
+    @pids[0...7].each { |p| Eye::System.pid_alive?(p).should be_false }
+    @pids[7..-1].each { |p| Eye::System.pid_alive?(p).should be_true }
   end
 
   it "should kill 5 newer childs" do
-    @process = start_ok_process(C.p1.merge(:checks => C.check_children_count(:below => 5, :strategy => :kill_new), 
+    @process = start_ok_process(C.p1.merge(:checks => C.check_children_count(:below => 3, :strategy => :kill_new),
       :monitor_children => {}))
 
     10.times { @pids << Eye::System.daemonize("sleep 10")[:pid] }
@@ -49,8 +49,8 @@ describe "Eye::Checker::ChildrenCount" do
 
     sleep 5
 
-    @pids[0...5].each { |p| Eye::System.pid_alive?(p).should be_true }
-    @pids[5..-1].each { |p| Eye::System.pid_alive?(p).should be_false }
+    @pids[0...3].each { |p| Eye::System.pid_alive?(p).should be_true }
+    @pids[3..-1].each { |p| Eye::System.pid_alive?(p).should be_false }
   end
 
 end
