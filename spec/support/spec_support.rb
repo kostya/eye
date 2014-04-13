@@ -163,6 +163,14 @@ module C
     }
   end
 
+  def check_children_count(a = {})
+    {:children_count => {:type => :children_count, :every => 2.seconds, :below => 5, :times => 2}.merge(a)}
+  end
+
+  def check_children_memory(a = {})
+    {:children_memory => {:type => :children_memory, :every => 2.seconds, :below => 50.megabytes, :times => 2}.merge(a)}
+  end
+
   def flapping(a = {})
     {:flapping => { :type => :flapping, :times => 2, :within => 10.seconds }.merge(a)}
   end

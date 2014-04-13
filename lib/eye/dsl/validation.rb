@@ -35,6 +35,15 @@ module Eye::Dsl::Validation
       end
     end
 
+    def del_param(param)
+      param = param.to_sym
+      validates.delete(param)
+      should_bes.delete(param)
+      defaults.delete(param)
+      variants.delete(param)
+      remove_method(param)
+    end
+
     def validate(options = {})
       options.each do |param, value|
         param = param.to_sym
