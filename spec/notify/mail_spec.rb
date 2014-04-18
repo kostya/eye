@@ -11,8 +11,11 @@ describe "Eye::Notify::Mail" do
   it "should send mail" do
     @m = Eye::Notify::Mail.new(@h, @message)
 
+    smtp = Net::SMTP.new 'mx.some.host.ru', 25
+    mock(Net::SMTP).new('mx.some.host.ru', 25){ smtp }
+
     ob = ""
-    mock(Net::SMTP).start('mx.some.host.ru', 25, 'some.host', nil, nil, nil){ ob }
+    mock(smtp).start('some.host', nil, nil, nil){ ob }
 
     @m.execute
 
