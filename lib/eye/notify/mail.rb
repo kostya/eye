@@ -15,6 +15,8 @@ class Eye::Notify::Mail < Eye::Notify
   param :password, String
   param :auth, Symbol, nil, nil, [:plain, :login, :cram_md5]
 
+  param :starttls, [TrueClass, FalseClass]
+
   param :from_mail, String
   param :from_name, String, nil, 'eye'
 
@@ -25,9 +27,11 @@ class Eye::Notify::Mail < Eye::Notify
   def smtp
     args = [host, port, domain, user, password, auth]
     debug "called smtp with #{args}"
+    smtp = Net::SMTP.new host, port
+    smtp.enable_starttls if starttls
 
-    Net::SMTP.start(*args) do |smtp|
-      smtp.send_message(message, from_mail || user, contact)
+    smtp.start(domain, user, password, auth) do |s|
+      s.send_message(message, from_mail || user, contact)
     end
   end
 
