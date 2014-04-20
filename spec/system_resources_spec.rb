@@ -50,6 +50,13 @@ describe "Eye::SystemResources" do
     x.should include(@pid)
   end
 
+  it "should get leaf_child" do
+    @pid = fork { at_exit{}; sleep 3; exit }
+    sleep 0.5
+    x = Eye::SystemResources.leaf_child($$)
+    x.should == @pid
+  end
+
   it "should cache and update when interval" do
     Eye::SystemResources.cache.setup_expire(1)
 

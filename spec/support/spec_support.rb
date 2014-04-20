@@ -127,6 +127,14 @@ module C
     )
   end
 
+  def p6_word
+    '1234_my_sleppie'
+  end
+
+  def p6
+    p1.merge(:start_command => "sh -c 'sleep 10 && echo #{p6_word}'", :use_leaf_child => true, :start_grace => 0.5.seconds)
+  end
+
   def tmp_file
     C.sample_dir + "/1#{process_id}.tmp"
   end

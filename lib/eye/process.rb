@@ -18,7 +18,8 @@ class Eye::Process
   autoload :Validate,         'eye/process/validate'
 
   attr_accessor :pid, :watchers, :config, :states_history,
-                :children, :triggers, :name, :state_reason, :flapping_times
+                :children, :triggers, :name, :state_reason, :flapping_times,
+                :parent_pid
 
   def initialize(config)
     raise 'you must supply a pid_file location' unless config[:pid_file]

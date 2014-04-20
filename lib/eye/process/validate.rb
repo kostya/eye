@@ -10,7 +10,7 @@ module Eye::Process::Validate
       # it should parse with Shellwords and not raise
       spl = Shellwords.shellwords(str) * '#'
 
-      if config[:daemonize]
+      if config[:daemonize] && !config[:use_leaf_child]
         if spl =~ %r[sh#\-c|#&&#|;#]
           raise Error, "#{config[:name]}, daemonize does not support concats like '&&' in start_command"
         end

@@ -32,6 +32,14 @@ class Eye::SystemResources
       end
     end
 
+    # last child in a children tree
+    def leaf_child(pid)
+      c = children(pid)
+      return if c.empty?
+      c += children(c.shift) while c.size > 1
+      c[0]
+    end
+
     def resources(pid)
       { :memory => memory(pid),
         :cpu => cpu(pid),

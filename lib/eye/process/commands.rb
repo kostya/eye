@@ -200,6 +200,17 @@ private
       return {:error => :not_really_running}
     end
 
+    # if we using leaf child stratedy, pid should be used as last child process
+    if self[:use_leaf_child]
+      if lpid = Eye::SystemResources.leaf_child(self.pid)
+        info "leaf child for <#{self.pid}> found: <#{lpid}>, accepting it!"
+        self.parent_pid = self.pid
+        self.pid = lpid
+      else
+        warn "leaf child not found for <#{self.pid}>, skipping it"
+      end
+    end
+
     unless failsafe_save_pid
       return {:error => :cant_write_pid}
     end
