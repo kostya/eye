@@ -1,6 +1,7 @@
 gem 'reel', '~> 0.4.0'
 gem 'reel-rack'
 gem 'cuba'
+gem 'http', '~> 0.5.0'
 
 require 'reel/rack/server'
 

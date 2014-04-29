@@ -28,6 +28,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'reel',          '~> 0.4.0'
   gem.add_dependency 'reel-rack'
   gem.add_dependency 'cuba'
+  gem.add_dependency 'http',          '~> 0.5.0'
 
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rspec', '< 2.14'
