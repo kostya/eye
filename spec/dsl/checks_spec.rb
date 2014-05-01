@@ -461,10 +461,10 @@ describe "Eye::Dsl checks" do
 
   end
 
-  it 'checker depends_on' do
+  it 'checker requires' do
     conf = <<-E
       class Asdf22 < Eye::Checker::Custom
-        def self.depends_on
+        def self.requires
           %w{ bla_gem }
         end
       end
@@ -483,7 +483,7 @@ describe "Eye::Dsl checks" do
   it 'trigger depends_on' do
     conf = <<-E
       class Asdf23 < Eye::Trigger::Custom
-        def self.depends_on
+        def self.requires
           %w{ bla_gem }
         end
       end
