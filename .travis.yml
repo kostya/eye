@@ -2,10 +2,5 @@ language: ruby
 rvm:
   - "1.9.3"
   - "2.0.0"
-  - "2.1.0"
   - "2.1.1"
 script: bundle exec rake N=15
-#before_script:
-#  - bundle exec rake remove_coverage
-#after_script:
-#  - bundle exec rake coveralls:push
