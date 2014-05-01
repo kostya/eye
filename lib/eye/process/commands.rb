@@ -211,7 +211,7 @@ private
       end
     end
 
-    unless failsafe_save_pid
+    if control_pid? && !failsafe_save_pid
       return {:error => :cant_write_pid}
     end
 
