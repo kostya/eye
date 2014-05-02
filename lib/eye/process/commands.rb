@@ -173,7 +173,7 @@ private
     res = Eye::System.daemonize(self[:start_command], config)
     start_time = Time.now - time_before
 
-    info "daemonizing: `#{self[:start_command]}` with start_grace: #{self[:start_grace].to_f}s, env: #{self[:environment].inspect}, working_dir: #{self[:working_dir]}, <#{res[:pid]}>"
+    info "daemonizing: `#{self[:start_command]}` with start_grace: #{self[:start_grace].to_f}s, env: #{self[:environment].inspect}, <#{res[:pid]}> (in #{self[:working_dir]})"
 
     if res[:error]
 
@@ -219,7 +219,7 @@ private
   end
 
   def execute_process
-    info "executing: `#{self[:start_command]}` with start_timeout: #{config[:start_timeout].to_f}s, start_grace: #{self[:start_grace].to_f}s, env: #{self[:environment].inspect}, working_dir: #{self[:working_dir]}"
+    info "executing: `#{self[:start_command]}` with start_timeout: #{config[:start_timeout].to_f}s, start_grace: #{self[:start_grace].to_f}s, env: #{self[:environment].inspect} (in #{self[:working_dir]})"
     time_before = Time.now
 
     res = execute(self[:start_command], config.merge(:timeout => config[:start_timeout]))
