@@ -1,6 +1,7 @@
 require 'shellwords'
 require 'pathname'
 require 'etc'
+require 'timeout'
 
 module Eye::System
   class << self
