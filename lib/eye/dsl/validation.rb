@@ -25,7 +25,7 @@ module Eye::Dsl::Validation
 
       validates[param] = types
       should_bes << param if should_be
-      defaults[param] = default
+      param_default(param, default)
       variants[param] = _variants
 
       return if param == :do
@@ -33,6 +33,11 @@ module Eye::Dsl::Validation
       define_method "#{param}" do
         @options[param] || default
       end
+    end
+
+    def param_default(param, default)
+      param = param.to_sym
+      defaults[param] = default
     end
 
     def del_param(param)

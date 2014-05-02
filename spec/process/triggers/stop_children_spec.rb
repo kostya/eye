@@ -14,7 +14,7 @@ describe "StopChildren State" do
           stdall "trash.log"
           monitor_children { children_update_period 1.second }
           check_alive_period 1
-          trigger :stop_children, :event => [:stopped, :crashed]
+          trigger :stop_children
         end
       end
     D
