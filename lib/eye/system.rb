@@ -104,8 +104,6 @@ module Eye::System
       Pathname.new(file).expand_path(working_dir).to_s
     end
 
-  private
-
     def spawn_options(config = {})
       options = {
         pgroup: true,

@@ -55,4 +55,10 @@ module Eye::Process::Data
     false
   end
 
+  def environment_string
+    s = []
+    @config[:environment].each { |k, v| s << "#{k}=#{v}" }
+    s * ' '
+  end
+
 end
