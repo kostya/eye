@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+$:.unshift File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib]))
+require 'eye'
+
+# Local version of eye
+#  which looking for Eyefile
+#  like foreman
+
+unless Eye::Local.eyefile
+  puts "Not found Eyefile"
+  exit 1
+end
+
+Eye::Local.dir = File.dirname(Eye::Local.eyefile)
+Eye::Local.local_runner = true
+Eye::Cli.start

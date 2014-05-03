@@ -24,6 +24,11 @@ OptionParser.new do |opts|
     options[:logger] = logger
   end
 
+  opts.on( '-dr', '--dir DIR', 'Dir for local runner' ) do |dir|
+    Eye::Local.dir = dir
+    Eye::Local.local_runner = true
+  end
+
   opts.on( '-d', '--debug', 'debug info to logger' ) do
     options[:debug] = true
   end

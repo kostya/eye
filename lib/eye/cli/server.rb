@@ -32,6 +32,7 @@ private
     args = []
     args += ['-c', conf] if conf
     args += ['-l', 'stdout']
+    args += ['--dir', Eye::Local.dir] if Eye::Local.local_runner
 
     Process.exec(ruby_path, loader_path, *args)
   end
@@ -43,6 +44,8 @@ private
     ensure_stop_previous_server
 
     args = []
+    args += ['--dir', Eye::Local.dir] if Eye::Local.local_runner
+
     opts = {:out => '/dev/null', :err => '/dev/null', :in => '/dev/null',
             :chdir => '/', :pgroup => true}
 
@@ -55,6 +58,7 @@ private
     end
 
     configs.unshift(Eye::Local.eyeconfig) if File.exists?(Eye::Local.eyeconfig)
+    configs << Eye::Local.eyefile if Eye::Local.local_runner
 
     say 'eye started!', :green
 
