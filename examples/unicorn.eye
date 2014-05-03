@@ -26,7 +26,7 @@ Eye.application "rails_unicorn" do
     check :cpu, :every => 30, :below => 80, :times => 3
     check :memory, :every => 30, :below => 150.megabytes, :times => [3,5]
 
-    start_timeout 30.seconds
+    start_timeout 100.seconds
     restart_grace 30.seconds
 
     monitor_children do
