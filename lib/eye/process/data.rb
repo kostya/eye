@@ -61,4 +61,14 @@ module Eye::Process::Data
     s * ' '
   end
 
+  def shell_string(dir = true)
+    str = ''
+    str += "cd #{self[:working_dir]} && " if dir
+    str += environment_string
+    str += ' '
+    str += self[:start_command]
+    str += ' &' if self[:daemonize]
+    str
+  end
+
 end
