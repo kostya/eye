@@ -42,9 +42,9 @@ private
       res[:backtrace].to_a.each{|line| say line, :red }
     else
       if opts[:syntax]
-        say 'config ok!', :green if !res[:empty]
+        say 'Config ok!', :green if !res[:empty]
       else
-        say 'config loaded!', :green if !res[:empty]
+        say 'Config loaded!', :green if !res[:empty]
       end
 
       if opts[:print_config]

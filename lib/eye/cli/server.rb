@@ -60,7 +60,7 @@ private
     configs.unshift(Eye::Local.eyeconfig) if File.exists?(Eye::Local.eyeconfig)
     configs << Eye::Local.eyefile if Eye::Local.local_runner
 
-    say 'eye started!', :green
+    say 'Eye started!', :green
 
     if !configs.empty?
       say_load_result cmd(:load, *configs)
