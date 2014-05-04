@@ -62,14 +62,17 @@ private
 
   # stop all processes and wait
   def stop_all(timeout = nil)
-    send_command :stop, 'all'
+    exclusive do
+      send_command :break_chain, 'all'
+      send_command :stop, 'all'
 
-    # wait until all processes goes to unmonitored
-    timeout ||= 100
+      # wait until all processes goes to unmonitored
+      timeout ||= 100
 
-    all_processes.pmap do |p|
-      p.wait_for_condition(timeout, 0.3) do
-        p.state_name == :unmonitored
+      all_processes.pmap do |p|
+        p.wait_for_condition(timeout, 0.3) do
+          p.state_name == :unmonitored
+        end
       end
     end
   end
