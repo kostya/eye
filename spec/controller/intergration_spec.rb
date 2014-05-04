@@ -88,7 +88,7 @@ describe "Intergration" do
     @processes.map(&:state_name).uniq.should == [:up]
     @pids.map { |p| Eye::System.pid_alive?(p) }.uniq.should == [true]
 
-    should_spend(4, 3) do
+    should_spend(4, 3.5) do
       @controller.command(:stop_all)
     end
 

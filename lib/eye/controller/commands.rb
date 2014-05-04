@@ -65,14 +65,14 @@ private
     exclusive do
       send_command :break_chain, 'all'
       send_command :stop, 'all'
+    end
 
-      # wait until all processes goes to unmonitored
-      timeout ||= 100
+    # wait until all processes goes to unmonitored
+    timeout ||= 100
 
-      all_processes.pmap do |p|
-        p.wait_for_condition(timeout, 0.3) do
-          p.state_name == :unmonitored
-        end
+    all_processes.pmap do |p|
+      p.wait_for_condition(timeout, 0.3) do
+        p.state_name == :unmonitored
       end
     end
   end
