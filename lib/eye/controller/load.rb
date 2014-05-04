@@ -11,7 +11,7 @@ module Eye::Controller::Load
   def load(*args)
     h = args.extract_options!
     obj_strs = args.flatten
-    info "loading: #{obj_strs}"
+    info "=> loading: #{obj_strs}"
 
     res = Hash.new
 
@@ -25,7 +25,7 @@ module Eye::Controller::Load
 
     set_proc_line
 
-    info "loaded: #{obj_strs}, selfpid <#{$$}>"
+    info "<= loading: #{obj_strs}, in: <#{$$}>"
 
     res
   end

@@ -1,8 +1,14 @@
 module Eye::Controller::Commands
 
+  NOT_IMPORTANT_COMMANDS = [:info_data, :short_data, :debug_data, :history_data, :ping,
+    :logger_dev, :match, :explain, :check]
+
   # Main method, answer for the client command
   def command(cmd, *args)
-    debug "client command: #{cmd} #{args * ', '}"
+    msg = "command: #{cmd} #{args * ', '}"
+
+    log_str = "=> #{msg}"
+    NOT_IMPORTANT_COMMANDS.include?(cmd) ? debug(log_str) : info(log_str)
 
     start_at = Time.now
     cmd = cmd.to_sym
@@ -46,7 +52,9 @@ module Eye::Controller::Commands
     end
 
     GC.start
-    info "client command: #{cmd} #{args * ', '} (#{Time.now - start_at}s)"
+
+    log_str = "<= #{msg} (#{Time.now - start_at}s)"
+    NOT_IMPORTANT_COMMANDS.include?(cmd) ? debug(log_str) : info(log_str)
 
     res
   end
