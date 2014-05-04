@@ -78,9 +78,20 @@ module Eye::Local
     end
 
     def eyefile
-      @eyefile ||= begin
-        path = File.expand_path("Eyefile")
-        File.exist?(path) ? path : nil
+      @eyefile ||= find_eyefile('.')
+    end
+
+    def find_eyefile(start_from_dir)
+      fromenv = ENV['EYEFILE']
+      return fromenv if fromenv && !fromenv.empty? && File.exist?(fromenv)
+
+      previous = nil
+      current  = File.expand_path(start_from_dir)
+
+      until !File.directory?(current) || current == previous
+        filename = File.join(current, 'Eyefile')
+        return filename if File.file?(filename)
+        current, previous = File.expand_path('..', current), current
       end
     end
 
