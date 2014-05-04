@@ -32,7 +32,10 @@ private
     args = []
     args += ['-c', conf] if conf
     args += ['-l', 'stdout']
-    args += ['--dir', Eye::Local.dir] if Eye::Local.local_runner
+    if Eye::Local.local_runner
+      args += ['--dir', Eye::Local.dir]
+      args += ['-c', Eye::Local.eyefile] unless conf
+    end
 
     Process.exec(ruby_path, loader_path, *args)
   end

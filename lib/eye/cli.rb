@@ -58,7 +58,7 @@ class Eye::Cli < Thor
 
     if options[:foreground]
       # in foreground we stop another server, and run just 1 current config version
-      error!("foreground expected only one config") if configs.size != 1
+      error!("foreground expected only one config") if configs.size > 1
       server_start_foreground(configs.first)
 
     elsif server_started?
