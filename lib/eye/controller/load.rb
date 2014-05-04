@@ -24,7 +24,6 @@ module Eye::Controller::Load
     end
 
     set_proc_line
-    save_cache
 
     info "loaded: #{obj_strs}, selfpid <#{$$}>"
 

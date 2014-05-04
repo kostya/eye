@@ -6,7 +6,6 @@ module Eye::Controller::SendCommand
         remove_object_from_tree(obj)
 
         set_proc_line
-        save_cache
       end
 
       obj.send_command(command)
