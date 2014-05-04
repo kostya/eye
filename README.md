@@ -185,6 +185,7 @@ Log tracing (tail and grep):
 Quit monitoring:
 
     $ eye q(uit)
+    $ eye q -s # stop all processes and quit
 
 Interactive info:
 
