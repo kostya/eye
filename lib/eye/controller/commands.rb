@@ -18,6 +18,8 @@ module Eye::Controller::Commands
         load(*args)
       when :quit
         quit
+      when :stop_all
+        stop_all(*args)
       when :check
         check(*args)
       when :explain
@@ -56,6 +58,20 @@ private
     Eye::System.send_signal($$, :TERM)
     sleep 1
     Eye::System.send_signal($$, :KILL)
+  end
+
+  # stop all processes and wait
+  def stop_all(timeout = nil)
+    send_command :stop, 'all'
+
+    # wait until all processes goes to unmonitored
+    timeout ||= 100
+
+    all_processes.pmap do |p|
+      p.wait_for_condition(timeout, 0.3) do
+        p.state_name == :unmonitored
+      end
+    end
   end
 
 end

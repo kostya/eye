@@ -55,7 +55,11 @@ module Eye::Local
     end
 
     def client_timeout
-      5
+      @client_timeout ||= 5
+    end
+
+    def client_timeout=(cl)
+      @client_timeout = cl
     end
 
     def supported_setsid?

@@ -71,7 +71,20 @@ class Eye::Cli < Thor
   end
 
   desc "quit", "eye-daemon quit"
+  method_option :stop_all, :type => :boolean, :aliases => "-s"
+  method_option :timeout, :type => :string, :aliases => "-t"
   def quit
+    if options[:stop_all]
+      Eye::Local.client_timeout = if options[:timeout]
+        options[:timeout].to_i
+      else
+        10 * 60 # 10 minutes?
+      end
+
+      cmd(:stop_all)
+    end
+
+    Eye::Local.client_timeout = 5
     res = _cmd(:quit)
 
     # if eye server got crazy, stop by force
