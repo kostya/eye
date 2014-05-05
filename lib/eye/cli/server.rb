@@ -30,11 +30,12 @@ private
     end
 
     args = []
-    args += ['-c', conf] if conf
-    args += ['-l', 'stdout']
+    args += ['--config', conf] if conf
+    args += ['--logger', 'stdout']
     if Eye::Local.local_runner
+      args += ['--stop_all']
       args += ['--dir', Eye::Local.dir]
-      args += ['-c', Eye::Local.eyefile] unless conf
+      args += ['--config', Eye::Local.eyefile] unless conf
     end
 
     Process.exec(ruby_path, loader_path, *args)

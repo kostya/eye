@@ -29,6 +29,10 @@ OptionParser.new do |opts|
     Eye::Local.local_runner = true
   end
 
+  opts.on( '-st', '--stop_all', 'Stop all on exit' ) do |stop_all|
+    options[:stop_all] = true
+  end
+
   opts.on( '-d', '--debug', 'debug info to logger' ) do
     options[:debug] = true
   end
@@ -57,8 +61,10 @@ Eye::Control.set_proc_line
 
 server.async.run
 
-trap("INT"){ exit }
-trap("USR1"){ Eye::Logger.reopen }
-trap("USR2"){ GC.start }
+trap("USR1") { Eye::Logger.reopen }
+trap("USR2") { GC.start }
+trap("INT")  { exit }
+
+at_exit { Eye::Control.command(:stop_all) } if options[:stop_all]
 
 sleep
