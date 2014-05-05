@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.version       = Eye::VERSION
   gem.license       = "MIT"
 
-  gem.required_ruby_version     = '>= 1.9.2' # because of celluloid
+  gem.required_ruby_version     = '>= 1.9.2'
   gem.required_rubygems_version = '>= 1.3.6'
 
   gem.add_dependency 'celluloid',     '~> 0.15.0'
@@ -37,5 +37,4 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'xmpp4r'
   gem.add_development_dependency 'coveralls'
   gem.add_development_dependency 'simplecov', '>= 0.8.1'
-  gem.add_development_dependency 'parallel_tests'
 end

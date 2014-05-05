@@ -7,10 +7,10 @@ require 'coveralls/rake/task'
 
 Coveralls::RakeTask.new
 
-task :default => :pspecs
+task :default => :pspec
 
-task :pspecs do
-  Rake::Task['parallel:spec'].invoke(ENV['N'] || 8)
+task :pspec do
+  Rake::Task['parallel:spec'].invoke(ENV['N'] || 10)
 end
 
 RSpec::Core::RakeTask.new(:spec) do |t|
@@ -26,7 +26,7 @@ task :env do
   require 'bundler/setup'
   require 'eye'
   Eye::Controller
-  Eye::Process # preload
+  Eye::Process
 end
 
 desc "graph"
