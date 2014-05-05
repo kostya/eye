@@ -23,7 +23,7 @@ class Eye::Checker
 
   param :every, [Fixnum, Float], false, 5
   param :times, [Fixnum, Array], nil, 1
-  param :fires, [Symbol, Array], nil, nil, [:stop, :restart, :unmonitor, :nothing, :start, :delete]
+  param :fires, [Symbol, Array], nil, nil, [:stop, :restart, :unmonitor, :start, :delete, :nothing, :notify]
   param :initial_grace, [Fixnum, Float]
   param :skip_initial_fails, [TrueClass, FalseClass]
 
