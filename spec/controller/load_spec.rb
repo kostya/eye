@@ -565,4 +565,58 @@ describe "Eye::Controller::Load" do
       Celluloid::Actor.all.select { |c| c.class == Eye::Group }.size.should == 2
     end
   end
+
+  describe "valiadate localize params" do
+    it "validate correct working_dir" do
+      conf = <<-E
+        Eye.application("bla") do
+          process("1") do
+            pid_file "1.pid"
+            working_dir "/tmp"
+          end
+        end
+      E
+      subject.load_content(conf).should_be_ok
+
+      conf = <<-E
+        Eye.application("bla") do
+          process("1") do
+            pid_file "1.pid"
+            working_dir "/tmp/asdfsdf//sdf/asdf/asd/f/asdf"
+          end
+        end
+      E
+      subject.load_content(conf).errors_count.should == 1
+      expect{ Eye::Dsl.parse_apps(conf) }.not_to raise_error(Eye::Process::Validate::Error)
+    end
+
+    [:uid, :gid].each do |s|
+      it "validate user #{s}" do
+        conf = <<-E
+          Eye.application("bla") do
+            process("1") do
+              pid_file "1.pid"
+              #{s} "root"
+            end
+          end
+        E
+        if RUBY_VERSION >= '2.0'
+          subject.load_content(conf).should_be_ok
+        else
+          subject.load_content(conf).errors_count.should == 1
+        end
+
+        conf = <<-E
+          Eye.application("bla") do
+            process("1") do
+              pid_file "1.pid"
+              #{s} "asdfasdff23rf234f323f"
+            end
+          end
+        E
+        subject.load_content(conf).errors_count.should == 1
+      end
+    end
+
+  end
 end

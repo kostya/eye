@@ -83,7 +83,7 @@ private
     debug "parsing: #{filename}"
 
     cfg = Eye::Dsl.parse(nil, filename)
-    @current_config.merge(cfg).validate! # just validate summary config here
+    @current_config.merge(cfg).validate!(false) # just validate summary config here
     Eye.parsed_config = nil # remove link on config, for better gc
     cfg
   end

@@ -21,7 +21,7 @@ class Eye::Config
   end
 
   # raise an error if config wrong
-  def validate!
+  def validate!(localize = true)
     all_processes = processes
 
     # Check blank pid_files
@@ -55,7 +55,7 @@ class Eye::Config
 
     # validate processes with their own validate
     all_processes.each do |process_cfg|
-      Eye::Process.validate process_cfg
+      Eye::Process.validate process_cfg, localize
     end
 
     # just to be sure ENV was not removed
