@@ -68,7 +68,11 @@ class Eye::Trigger
     check(transition) if filter_transition(transition)
 
   rescue Exception, Timeout::Error => ex
-    log_ex(ex)
+    if ex.class == StateMachine::InvalidTransition
+      raise ex
+    else
+      log_ex(ex)
+    end
   end
 
   param :to, [Symbol, Array]
