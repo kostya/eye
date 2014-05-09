@@ -4,7 +4,7 @@ class Reactor
   def initialize(interval, filename)
     @interval = interval
     @filename = filename
-    every(@interval) do 
+    every(@interval) do
       info "check file #{@filename}"
       if cmd = read_file
         execute_command cmd
