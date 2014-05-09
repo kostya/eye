@@ -1,3 +1,5 @@
+require 'celluloid'
+
 class Eye::Notify
   include Celluloid
   include Eye::Dsl::Validation
@@ -48,7 +50,7 @@ class Eye::Notify
     log_ex(ex)
   end
 
-  TIMEOUT = 1.minute
+  TIMEOUT = 1 * 60
 
   def initialize(options = {}, message_h = {})
     @message_h = message_h
