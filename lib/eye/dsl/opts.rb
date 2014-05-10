@@ -91,6 +91,10 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   alias dir working_dir
   alias env environment
 
+  def depend_on(name)
+    @config[:depend_on] = name
+  end
+
   def set_stdall(value)
     super
 

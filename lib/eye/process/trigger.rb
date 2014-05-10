@@ -13,7 +13,6 @@ module Eye::Process::Trigger
   end
 
   def check_triggers(transition)
-    return if unmonitored?
     self.triggers.each { |trigger| trigger.notify(transition, state_reason) }
   end
 
