@@ -22,9 +22,13 @@ class Eye::Dsl::ApplicationOpts < Eye::Dsl::Opts
 
       processes = cfg.delete(:processes) || {}
       @config[:groups][name.to_s] ||= {}
-      @config[:groups][name.to_s].merge!(cfg)
-      @config[:groups][name.to_s][:processes] ||= {}
-      @config[:groups][name.to_s][:processes].merge!(processes)
+      gr = @config[:groups][name.to_s]
+      gr.merge!(cfg)
+      gr[:processes] ||= {}
+      processes.each do |name, c|
+        gr[:processes][name] ||= {}
+        gr[:processes][name].merge!(c)
+      end
     end
 
     Eye::Dsl.debug "<= group #{name}"

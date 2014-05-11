@@ -25,8 +25,6 @@ describe "dependency" do
             daemonize true
             pid_file "#{C.p1_pid}"
             start_grace 3.seconds
-
-            trigger :check_dependency, :names => %w{ b }
           end
 
           process(:b) do
@@ -35,7 +33,7 @@ describe "dependency" do
             pid_file "#{C.p2_pid}"
             start_grace 0.5
 
-            trigger :wait_dependency, :names => %w{ a }, :wait_timeout => 5.seconds
+            depend_on :a, :wait_timeout => 5.seconds
           end
 
         end
@@ -168,8 +166,6 @@ describe "dependency" do
             start_command "sleep 100"
             daemonize true
             pid_file "#{C.p1_pid}"
-
-            trigger :check_dependency, :names => %w{ b }
           end
 
           process(:b) do
@@ -177,7 +173,7 @@ describe "dependency" do
             daemonize true
             pid_file "#{C.p2_pid}"
 
-            trigger :wait_dependency, :names => %w{ a }
+            depend_on :a
           end
 
         end

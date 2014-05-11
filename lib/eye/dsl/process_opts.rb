@@ -15,14 +15,22 @@ class Eye::Dsl::ProcessOpts < Eye::Dsl::Opts
   alias app application
   alias group parent
 
-  def depends_on(names, opts = {})
-    names = Array(names)
-    trigger(:wait_dependency, :names => names)
+  def depend_on(names, opts = {})
+    names = Array(names).map(&:to_s)
+    trigger("wait_dependency_#{unique_num}", {:names => names}.merge(opts))
+    nm = @config[:name]
     names.each do |name|
-      parent.process name do
-        trigger(:check_dependency, { :names => %w{self[:name]} }.merge(opts) )
+      parent.process(name) do
+        trigger("check_dependency_#{unique_num}", :names => [ nm ] )
       end
     end
+  end
+
+private
+
+  def unique_num
+    $unique_num ||= 0
+    $unique_num += 1
   end
 
 end

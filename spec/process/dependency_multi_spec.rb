@@ -22,8 +22,6 @@ describe "dependency multi" do
             start_command "sleep 100"
             daemonize true
             pid_file "#{C.p1_pid}"
-
-            trigger :check_dependency, :names => %w{ b }
           end
 
           process(:b) do
@@ -31,8 +29,7 @@ describe "dependency multi" do
             daemonize true
             pid_file "#{C.p2_pid}"
 
-            trigger :wait_dependency, :names => %w{ a }
-            trigger :check_dependency, :names => %w{ c }
+            depend_on :a
           end
 
           process(:c) do
@@ -40,7 +37,7 @@ describe "dependency multi" do
             daemonize true
             pid_file "#{C.p3_pid}"
 
-            trigger :wait_dependency, :names => %w{ b }
+            depend_on :b
           end
 
         end
@@ -152,16 +149,12 @@ describe "dependency multi" do
             start_command "sleep 100"
             daemonize true
             pid_file "#{C.p1_pid}"
-
-            trigger :check_dependency, :names => %w{ c }
           end
 
           process(:b) do
             start_command "sleep 100"
             daemonize true
             pid_file "#{C.p2_pid}"
-
-            trigger :check_dependency, :names => %w{ c }
           end
 
           process(:c) do
@@ -169,7 +162,7 @@ describe "dependency multi" do
             daemonize true
             pid_file "#{C.p3_pid}"
 
-            trigger :wait_dependency, :names => %w{ a b }
+            depend_on [:a, :b]
           end
 
         end
@@ -259,9 +252,6 @@ describe "dependency multi" do
             start_command "sleep 100"
             daemonize true
             pid_file "#{C.p1_pid}"
-
-            trigger :check_dependency_1, :names => %w{ b }
-            trigger :check_dependency_2, :names => %w{ c }
           end
 
           process(:b) do
@@ -269,7 +259,7 @@ describe "dependency multi" do
             daemonize true
             pid_file "#{C.p2_pid}"
 
-            trigger :wait_dependency, :names => %w{ a }
+            depend_on :a
           end
 
           process(:c) do
@@ -277,7 +267,7 @@ describe "dependency multi" do
             daemonize true
             pid_file "#{C.p3_pid}"
 
-            trigger :wait_dependency, :names => %w{ a }
+            depend_on :a
           end
 
         end

@@ -36,6 +36,8 @@ def process_id
   ENV['TEST_ENV_NUMBER'].to_i
 end
 
+ENV['EYE_FULL_BACKTRACE'] = '1'
+
 $logger_path = File.join(File.dirname(__FILE__), ["spec#{process_id}.log"])
 
 def set_glogger
