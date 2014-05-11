@@ -77,7 +77,7 @@ class Eye::Process
   end
 
   def log_transition(transition)
-    if transition.to_name != transition.from_name || @states_history.last_reason != @state_reason
+    if transition.to_name != transition.from_name || @state_reason.is_a?(Eye::Reason::User)
       @states_history.push transition.to_name, @state_reason
       info "switch :#{transition.event} [:#{transition.from_name} => :#{transition.to_name}] #{@state_reason ? "(reason: #{@state_reason})" : nil}"
     end
