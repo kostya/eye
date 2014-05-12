@@ -9,3 +9,7 @@ To test it:
     tail -f /tmp/eye.log
     tail -f /tmp/saver.log
     echo 'restart' > /tmp/cmd.txt
+
+Also, here http example of gem:
+
+    https://github.com/kostya/eye-http
