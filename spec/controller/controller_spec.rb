@@ -129,4 +129,28 @@ describe "Eye::Controller" do
 
   end
 
+  it "find_nearest_process" do
+    subject.load(fixture("dsl/load_dupls5.eye")).should_be_ok
+
+    p = subject.find_nearest_process('app1:p1')
+    p.full_name.should == 'app1:p1'
+
+    p = subject.find_nearest_process('p1')
+    p.full_name.should == 'app1:a:p1'
+
+    p = subject.find_nearest_process('asdfasdfsd')
+    p.should == nil
+
+    p = subject.find_nearest_process('p1', 'a')
+    p.full_name.should == 'app1:a:p1'
+
+    p = subject.find_nearest_process('p1', '__default__', 'app2')
+    p.full_name.should == 'app2:p1'
+
+    p = subject.find_nearest_process('p3', 'a')
+    p.full_name.should == 'app1:p3'
+
+    p = subject.find_nearest_process('p4', 'a', 'app1')
+    p.full_name.should == 'app2:p4'
+  end
 end

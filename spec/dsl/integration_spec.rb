@@ -283,7 +283,7 @@ describe "Eye::Dsl" do
         :processes=>{
           "1"=>{:working_dir=>"/tmp", :environment=>{"A"=>"1", "C"=>"1"}, :group=>"bla", :application=>"bla", :name=>"1", :pid_file=>"1"},
           "2"=>{:working_dir=>"/tmp", :environment=>{"A"=>"1", "C"=>"1", "D"=>"1"}, :group=>"bla", :application=>"bla", :name=>"2", :pid_file=>"2"}}},
-        "bla2"=>{:name => "bla2", :application => "bla", :working_dir=>"/tmp2", :environment=>{"A"=>"1", "B"=>"1"}, :processes=>{}}}}}
+        "bla2"=>{:name => "bla2", :application => "bla", :working_dir=>"/tmp2", :environment=>{"A"=>"1", "B"=>"1"}}}}}
   end
 
   it "join group spec" do
@@ -366,9 +366,9 @@ describe "Eye::Dsl" do
 
       Eye::Dsl.parse_apps(conf).should == {
         "bla" => {:name=>"bla", :start_timeout=>10, :groups=>{
-          "a"=>{:name=>"a", :start_timeout=>10, :application=>"bla", :processes=>{}},
-          "b"=>{:name=>"b", :start_timeout=>15, :application=>"bla", :processes=>{}},
-          "c"=>{:name=>"c", :start_timeout=>10, :application=>"bla", :processes=>{}}}}}
+          "a"=>{:name=>"a", :start_timeout=>10, :application=>"bla"},
+          "b"=>{:name=>"b", :start_timeout=>15, :application=>"bla"},
+          "c"=>{:name=>"c", :start_timeout=>10, :application=>"bla"}}}}
     end
 
   end

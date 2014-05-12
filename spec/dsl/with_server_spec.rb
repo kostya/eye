@@ -56,8 +56,8 @@ describe "with_server feature" do
     Eye::Dsl.parse_apps(conf).should == {
       "bla" => {:name=>"bla", :environment=>{"A"=>"B"},
         :groups=>{
-          "a"=>{:name=>"a", :environment=>{"A"=>"C"}, :application=>"bla", :processes=>{}},
-          "b"=>{:name=>"b", :environment=>{"A"=>"B"}, :application=>"bla", :processes=>{}}}}}
+          "a"=>{:name=>"a", :environment=>{"A"=>"C"}, :application=>"bla"},
+          "b"=>{:name=>"b", :environment=>{"A"=>"B"}, :application=>"bla"}}}}
   end
 
   describe "matches" do
@@ -109,7 +109,7 @@ describe "with_server feature" do
           end
         }
       E
-      Eye::Dsl.parse_apps(conf).should == {"bla" => {:name=>"bla", :groups=>{"blo"=>{:name=>"blo", :application=>"bla", :working_dir=>"/tmp", :processes=>{}}}}}
+      Eye::Dsl.parse_apps(conf).should == {"bla" => {:name=>"bla", :groups=>{"blo"=>{:name=>"blo", :application=>"bla", :working_dir=>"/tmp"}}}}
     end
 
     it "hostname work" do

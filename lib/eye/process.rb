@@ -30,6 +30,7 @@ class Eye::Process
     @children = {}
     @triggers = []
     @name = @config[:name]
+
     @flapping_times = 0
 
     @states_history = Eye::Process::StatesHistory.new(100)

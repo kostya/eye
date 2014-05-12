@@ -12,6 +12,10 @@ module Eye::Process::Data
     (self[:group] == '__default__') ? nil : self[:group]
   end
 
+  def group_name_pure
+    self[:group]
+  end
+
   def full_name
     @full_name ||= [app_name, group_name, self[:name]].compact.join(':')
   end

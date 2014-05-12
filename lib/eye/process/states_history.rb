@@ -20,7 +20,7 @@ class Eye::Process::StatesHistory < Eye::Utils::Tail
   end
 
   def last_reason
-    last[:reason]
+    last[:reason] rescue nil
   end
 
   def last_state_changed_at

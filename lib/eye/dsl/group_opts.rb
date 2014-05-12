@@ -18,7 +18,8 @@ class Eye::Dsl::GroupOpts < Eye::Dsl::Opts
     opts = Eye::Dsl::ProcessOpts.new(name, self)
     opts.instance_eval(&block)
     @config[:processes] ||= {}
-    @config[:processes][name.to_s] = opts.config if opts.config
+    @config[:processes][name.to_s] ||= {}
+    @config[:processes][name.to_s].merge!(opts.config) if opts.config
 
     Eye::Dsl.debug "<= process #{name}"
     opts

@@ -45,7 +45,7 @@ private
 
     # filter backtrace for user output
     bt = (ex.backtrace || [])
-    bt = bt.reject{|line| line.to_s =~ BT_REGX }
+    bt = bt.reject{|line| line.to_s =~ BT_REGX } unless ENV['EYE_FULL_BACKTRACE']
     error bt.join("\n")
 
     res = { :error => true, :message => ex.message }

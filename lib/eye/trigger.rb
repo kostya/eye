@@ -4,8 +4,12 @@ class Eye::Trigger
   autoload :Flapping,   'eye/trigger/flapping'
   autoload :Transition, 'eye/trigger/transition'
   autoload :StopChildren, 'eye/trigger/stop_children'
+  autoload :WaitDependency, 'eye/trigger/wait_dependency'
+  autoload :CheckDependency, 'eye/trigger/check_dependency'
 
-  TYPES = {:flapping => 'Flapping', :transition => 'Transition', :stop_children => 'StopChildren'}
+  TYPES = {:flapping => 'Flapping', :transition => 'Transition', :stop_children => 'StopChildren',
+    :wait_dependency => 'WaitDependency', :check_dependency => 'CheckDependency'
+  }
 
   attr_reader :message, :options, :process
 
@@ -68,7 +72,7 @@ class Eye::Trigger
     check(transition) if filter_transition(transition)
 
   rescue Exception, Timeout::Error => ex
-    if ex.class == StateMachine::InvalidTransition
+    if ex.class == Eye::Process::StateError
       raise ex
     else
       log_ex(ex)
