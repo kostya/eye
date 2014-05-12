@@ -31,15 +31,18 @@ module Eye::Controller::Helpers
   def find_nearest_process(name, group_name = nil, app_name = nil)
     return process_by_full_name(name) if name.include?(':')
 
+    if app_name
+      app = application_by_name(app_name)
+      app.groups.each do |gr|
+        p = gr.processes.detect { |c| c.name == name }
+        return p if p
+      end
+    end
+
     if group_name
       gr = group_by_name(group_name)
       p = gr.processes.detect { |c| c.name == name }
       return p if p
-    end
-
-    if app_name
-      app = application_by_name(app_name)
-
     end
 
     process_by_name(name)

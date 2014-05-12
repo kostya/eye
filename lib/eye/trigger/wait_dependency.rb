@@ -11,9 +11,11 @@ class Eye::Trigger::WaitDependency < Eye::Trigger
 private
 
   def wait_dependency
-    # TODO: Alive array here
-    processes = names.map { |name| Eye::Control.process_by_name(name) }.compact
+    processes = names.map do |name|
+      Eye::Control.find_nearest_process(name, process.group_name_pure, process.app_name)
+    end.compact
     return if processes.empty?
+    processes = Eye::Utils::AliveArray.new(processes)
 
     processes.each do |p|
       if p.state_name != :up && (should_start == nil || should_start)
