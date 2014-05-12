@@ -123,25 +123,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   def scoped(&block)
     h = self.class.new(self.name, self)
     h.instance_eval(&block)
-
-    groups = h.config.delete :groups
-
-    if groups.present?
-      config[:groups] ||= {}
-      groups.each do |name, cfg|
-        processes = cfg.delete(:processes) || {}
-        config[:groups][name] ||= {}
-        config[:groups][name].merge!(cfg)
-        config[:groups][name][:processes] ||= {}
-        config[:groups][name][:processes].merge!(processes)
-      end
-    end
-
-    processes = h.config.delete :processes
-    if processes.present?
-      config[:processes] ||= {}
-      config[:processes].merge!(processes)
-    end
+    Eye::Utils.deep_merge!(config, h.config)
   end
 
   # execute part of config on particular server

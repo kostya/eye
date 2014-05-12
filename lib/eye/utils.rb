@@ -13,6 +13,23 @@ module Eye::Utils
     end
   end
 
+  # deep merging b into a (a deeply changed)
+  def self.deep_merge!(a, b)
+    b.each do |k, v|
+      next unless v
+      if a[k]
+        if a[k].is_a?(Hash) && v.is_a?(Hash)
+          deep_merge!(a[k], v)
+        else
+          a[k] = v
+        end
+      else
+        a[k] = v
+      end
+    end
+    a
+  end
+
   D1 = '%H:%M'
   D2 = '%b%d'
 

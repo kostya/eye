@@ -17,18 +17,11 @@ class Eye::Dsl::ApplicationOpts < Eye::Dsl::Opts
     opts = Eye::Dsl::GroupOpts.new(name, self)
     opts.instance_eval(&block)
 
-    if cfg = opts.config
-      @config[:groups] ||= {}
+    @config[:groups] ||= {}
+    @config[:groups][name.to_s] ||= {}
 
-      processes = cfg.delete(:processes) || {}
-      @config[:groups][name.to_s] ||= {}
-      gr = @config[:groups][name.to_s]
-      gr.merge!(cfg)
-      gr[:processes] ||= {}
-      processes.each do |name, c|
-        gr[:processes][name] ||= {}
-        gr[:processes][name].merge!(c)
-      end
+    if cfg = opts.config
+      Eye::Utils.deep_merge!(@config[:groups][name.to_s], cfg)
     end
 
     Eye::Dsl.debug "<= group #{name}"

@@ -91,7 +91,7 @@ describe "dependency" do
     it "start :b, and :a not started (crashed), than a somehow up, should reschedule and up" do
       @process_a.config[:start_command] = "asdfasdf asf "
       @process_a.config[:start_grace] = 1.seconds
-      @process_b.config[:triggers][:wait_dependency][:retry_after] = 2.seconds
+      @process_b.config[:triggers].detect{|k, v| k.to_s =~ /wait_dep/}[1][:retry_after] = 2.seconds
       @process_b.send_command :start
       sleep 6
       @process_a.state_name.should == :unmonitored
@@ -108,7 +108,7 @@ describe "dependency" do
 
     it "start :b, and :a started after big timeout (> wait_timeout)" do
       @process_a.config[:start_grace] = 6.seconds
-      @process_b.config[:triggers][:wait_dependency][:retry_after] = 2.seconds
+      @process_b.config[:triggers].detect{|k, v| k.to_s =~ /wait_dep/}[1][:retry_after] = 2.seconds
       @process_b.send_command :start
       sleep 10
 
@@ -123,8 +123,8 @@ describe "dependency" do
     end
 
     it "start :b and should_start = false" do
-      @process_b.config[:triggers][:wait_dependency][:should_start] = false
-      @process_b.config[:triggers][:wait_dependency][:retry_after] = 2.seconds
+      @process_b.config[:triggers].detect{|k, v| k.to_s =~ /wait_dep/}[1][:should_start] = false
+      @process_b.config[:triggers].detect{|k, v| k.to_s =~ /wait_dep/}[1][:retry_after] = 2.seconds
 
       @process_b.send_command :start
       sleep 4
