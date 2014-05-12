@@ -1,3 +1,14 @@
+0.6.rc
+------
+* add processes dependencies (#43)
+* add eye-http gem (https://github.com/kostya/eye-http)
+* add eye plugin example (https://github.com/kostya/eye/tree/master/examples/plugin)
+* add quit option --stop_all (#39)
+* add local eye runner (like foreman, used Eyefile)
+* add use_leaf_child monitoring strategy (to daemonize sh -c '...') (788488a)
+* add children_count, children_memory checks
+* trusting external pid_file changes (#52)
+
 0.5.2
 -----
 * rename dsl :childs_update_period to :children_update_period

@@ -1,5 +1,5 @@
 module Eye
-  VERSION   = "0.6.pre"
+  VERSION   = "0.6.rc"
   ABOUT     = "Eye v#{VERSION} (c) 2012-2014 @kostya"
   PROCLINE  = "eye monitoring v#{VERSION}"
 
