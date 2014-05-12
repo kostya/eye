@@ -34,7 +34,7 @@ describe "Eye::Dsl::Chain" do
           "yy"=>{
             :name=>"yy",
             :chain=>{:start=>{:grace=>5, :action=>:start}, :restart=>{:grace=>5, :action=>:restart}},
-            :application=>"bla", :processes=>{}}}}
+            :application=>"bla"}}}
     }
 
     Eye::Dsl.parse_apps(conf).should == h
@@ -56,8 +56,7 @@ describe "Eye::Dsl::Chain" do
         :groups=>{
           "gr1"=>{:name => "gr1", :application => "bla",
             :chain=>{:start=>{:grace=>5, :action=>:start},
-              :restart=>{:grace=>5, :action=>:restart}},
-              :processes=>{}},
+              :restart=>{:grace=>5, :action=>:restart}}},
           "__default__"=>{:name => "__default__", :application => "bla",
             :processes=>{"p1"=>{:pid_file=>"1", :application=>"bla", :group=>"__default__", :name=>"p1"}}}}}}
 
@@ -83,9 +82,8 @@ describe "Eye::Dsl::Chain" do
         :groups=>{
           "gr1"=>{:name => "gr1", :application => "bla",
             :working_dir=>"/tmp",
-            :chain=>{:start=>{:grace=>5, :action=>:start}, :restart=>{:grace=>5, :action=>:restart}},
-            :processes=>{}},
-          "gr2"=>{:working_dir=>"/tmp", :processes=>{}, :name => "gr2", :application => "bla"}}}}
+            :chain=>{:start=>{:grace=>5, :action=>:start}, :restart=>{:grace=>5, :action=>:restart}}},
+          "gr2"=>{:working_dir=>"/tmp", :name => "gr2", :application => "bla"}}}}
 
     Eye::Dsl.parse_apps(conf).should == h
   end

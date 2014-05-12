@@ -91,10 +91,6 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   alias dir working_dir
   alias env environment
 
-  def depend_on(name)
-    @config[:depend_on] = name
-  end
-
   def set_stdall(value)
     super
 
@@ -123,7 +119,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   def scoped(&block)
     h = self.class.new(self.name, self)
     h.instance_eval(&block)
-    Eye::Utils.deep_merge!(config, h.config)
+    Eye::Utils.deep_merge!(config, h.config, [:groups, :processes])
   end
 
   # execute part of config on particular server

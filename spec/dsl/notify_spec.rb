@@ -32,7 +32,7 @@ describe "Eye::Dsl notify" do
         "bla"=>{:name=>"bla",
           :notify=>{"vasya"=>:warn, "idiots"=>:fatal},
           :groups=>{"gr1"=>{:name=>"gr1",
-            :notify=>{"vasya"=>:warn, "idiots"=>:fatal, "petya"=>:warn, "idiot1"=>:info}, :application=>"bla", :processes=>{}}}}},
+            :notify=>{"vasya"=>:warn, "idiots"=>:fatal, "petya"=>:warn, "idiot1"=>:info}, :application=>"bla"}}}},
       :settings => {
         :mail=>{:host=>"mx.some.host.ru", :port => 25, :type => :mail},
         :contacts=>{
@@ -93,7 +93,7 @@ describe "Eye::Dsl notify" do
       "bla" => {:name=>"bla",
         :notify=>{"vasya"=>:warn},
         :groups=>{"bla"=>{:name=>"bla",
-          :notify=>{"vasya"=>:warn}, :application=>"bla", :processes=>{}}}}}
+          :notify=>{"vasya"=>:warn}, :application=>"bla"}}}}
   end
 
   it "raise on unknown level" do
@@ -118,7 +118,7 @@ describe "Eye::Dsl notify" do
     Eye::Dsl.parse_apps(conf).should == {
       "bla" => {:name=>"bla",
         :notify=>{"vasya"=>:warn},
-        :groups=>{"bla"=>{:name=>"bla", :notify=>{}, :application=>"bla", :processes=>{}}}}}
+        :groups=>{"bla"=>{:name=>"bla", :notify=>{}, :application=>"bla"}}}}
   end
 
   it "add custom notify" do

@@ -189,7 +189,7 @@ describe "Eye::Controller::Load" do
     res = subject.load(fixture("dsl/load2{,_dup_pid,_dup2}.eye"))
     res.ok_count.should == 2
     res.errors_count.should == 1
-    res.only_match(/load2_dup_pid\.eye/).should == {:error => true, :message=>"duplicate pid_files: {\"/tmp/app3-e1.pid\"=>2}"}
+    res.only_match(/load2_dup_pid\.eye/).should include(:error => true, :message=>"duplicate pid_files: {\"/tmp/app3-e1.pid\"=>2}")
   end
 
   it "two configs with same pids (should validate final config)" do
@@ -198,7 +198,7 @@ describe "Eye::Controller::Load" do
     res = subject.load(fixture("dsl/load2_*.eye"))
     res.size.should > 1
     res.errors_count.should == 1
-    res.only_match(/load2_dup_pid\.eye/).should == {:error => true, :message=>"duplicate pid_files: {\"/tmp/app3-e1.pid\"=>2}"}
+    res.only_match(/load2_dup_pid\.eye/).should include(:error => true, :message=>"duplicate pid_files: {\"/tmp/app3-e1.pid\"=>2}")
   end
 
   it "dups of pid_files, but they different with expand" do

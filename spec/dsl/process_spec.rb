@@ -390,4 +390,25 @@ describe "Eye::Dsl" do
               :triggers=>{:wait_dependency_1=>{:names=>["1"], :type=>:wait_dependency}}}}}}}}
   end
 
+  it "depend_on reverse" do
+      conf = <<-E
+        Eye.application("bla") do
+          process("2") do
+            pid_file "2.pid"
+            depend_on '1'
+          end
+          process("1") do
+            pid_file "1.pid"
+          end
+        end
+      E
+      Eye::Dsl.parse_apps(conf).should == {"bla" => {:name=>"bla",
+        :groups=>{"__default__"=>{:name=>"__default__", :application=>"bla",
+          :processes=>{
+            "1"=>{:name=>"1", :application=>"bla", :group=>"__default__",
+              :triggers=>{:check_dependency_4=>{:names=>["2"], :type=>:check_dependency}}, :pid_file=>"1.pid"},
+            "2"=>{:name=>"2", :application=>"bla", :group=>"__default__", :pid_file=>"2.pid",
+              :triggers=>{:wait_dependency_3=>{:names=>["1"], :type=>:wait_dependency}}}}}}}}
+  end
+
 end

@@ -158,7 +158,7 @@ describe "Eye::Dsl getters" do
         end
       end
     E
-    Eye::Dsl.parse_apps(conf).should == {"bla" => {:name => "bla", :working_dir=>"/tmp", :groups=>{"blagr"=>{:name => "blagr", :application => "bla", :working_dir=>"/tmp/1", :processes => {}}}}}
+    Eye::Dsl.parse_apps(conf).should == {"bla" => {:name => "bla", :working_dir=>"/tmp", :groups=>{"blagr"=>{:name => "blagr", :application => "bla", :working_dir=>"/tmp/1"}}}}
   end
 
   describe "back links (application, group)" do
@@ -215,7 +215,7 @@ describe "Eye::Dsl getters" do
       Eye::Dsl.parse_apps(conf).should == {
         "bla" => {:name=>"bla", :working_dir=>"/tmp", :environment=>{"a"=>"bla"}, :groups=>{
           "blagr"=>{:name=>"blagr", :working_dir=>"/tmp",
-            :environment=>{"a"=>"bla", "b"=>"bla", "c"=>"bla", "d"=>"bla"}, :application=>"bla", :processes=>{}}}}}
+            :environment=>{"a"=>"bla", "b"=>"bla", "c"=>"bla", "d"=>"bla"}, :application=>"bla"}}}}
     end
 
   end
