@@ -4,7 +4,7 @@ class Eye::Dsl::ProcessOpts < Eye::Dsl::Opts
     opts = Eye::Dsl::ChildProcessOpts.new
     opts.instance_eval(&block) if block
     @config[:monitor_children] ||= {}
-    @config[:monitor_children].merge!(opts.config)
+    Eye::Utils.deep_merge!(@config[:monitor_children], opts.config)
   end
 
   alias xmonitor_children nop
