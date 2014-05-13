@@ -406,9 +406,58 @@ describe "Eye::Dsl" do
         :groups=>{"__default__"=>{:name=>"__default__", :application=>"bla",
           :processes=>{
             "1"=>{:name=>"1", :application=>"bla", :group=>"__default__",
-              :triggers=>{:check_dependency_4=>{:names=>["2"], :type=>:check_dependency}}, :pid_file=>"1.pid"},
+              :triggers=>{:check_dependency_2=>{:names=>["2"], :type=>:check_dependency}}, :pid_file=>"1.pid"},
             "2"=>{:name=>"2", :application=>"bla", :group=>"__default__", :pid_file=>"2.pid",
-              :triggers=>{:wait_dependency_3=>{:names=>["1"], :type=>:wait_dependency}}}}}}}}
+              :triggers=>{:wait_dependency_1=>{:names=>["1"], :type=>:wait_dependency}}}}}}}}
   end
 
+  it "bug in depend_on #60" do
+    conf = <<-E
+class Bla < Eye::Checker::Custom
+end
+
+Eye.app :dependency do
+  group :bla do
+    check :memory, :below => 100
+
+    process(:a) do
+      start_command "sleep 100"
+      daemonize true
+      pid_file "/tmp/test_process_a.pid"
+      check :cpu, :below => 100
+      check :bla
+      trigger :stop_children
+    end
+
+    process(:b) do
+      start_command "sleep 100"
+      daemonize true
+      pid_file "/tmp/test_process_b.pid"
+      depend_on :a
+    end
+
+    process(:c) do
+      start_command "sleep 100"
+      daemonize true
+      pid_file "/tmp/test_process_c.pid"
+      depend_on :a
+    end
+  end
+end
+    E
+
+    Eye::Dsl.parse_apps(conf).should == {
+      "dependency" => {:name=>"dependency", :groups=>{
+        "bla"=>{:name=>"bla", :application=>"dependency",
+          :checks=>{:memory=>{:below=>100, :type=>:memory}}, :processes=>{
+            "a"=>{:name=>"a", :application=>"dependency",
+              :checks=>{:memory=>{:below=>100, :type=>:memory}, :cpu=>{:below=>100, :type=>:cpu}, :bla=>{:type=>:bla}}, :group=>"bla", :start_command=>"sleep 100", :daemonize=>true, :pid_file=>"/tmp/test_process_a.pid",
+              :triggers=>{:stop_children=>{:type=>:stop_children}, :check_dependency_2=>{:names=>["b"], :type=>:check_dependency}, :check_dependency_4=>{:names=>["c"], :type=>:check_dependency}}},
+            "b"=>{:name=>"b", :application=>"dependency",
+              :checks=>{:memory=>{:below=>100, :type=>:memory}}, :group=>"bla", :start_command=>"sleep 100", :daemonize=>true, :pid_file=>"/tmp/test_process_b.pid",
+              :triggers=>{:wait_dependency_1=>{:names=>["a"], :type=>:wait_dependency}}},
+            "c"=>{:name=>"c", :application=>"dependency",
+              :checks=>{:memory=>{:below=>100, :type=>:memory}}, :group=>"bla", :start_command=>"sleep 100", :daemonize=>true, :pid_file=>"/tmp/test_process_c.pid",
+              :triggers=>{:wait_dependency_3=>{:names=>["a"], :type=>:wait_dependency}}}}}}}}
+  end
 end
