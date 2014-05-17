@@ -1,4 +1,4 @@
-0.6.rc
+0.6
 ------
 * add processes dependencies (#43)
 * add eye-http gem (https://github.com/kostya/eye-http)
@@ -7,6 +7,7 @@
 * add local eye runner (like foreman, used Eyefile)
 * add use_leaf_child monitoring strategy (to daemonize sh -c '...') (788488a)
 * add children_count, children_memory checks
+* add dsl default application options (__default__)
 * trusting external pid_file changes (#52)
 
 0.5.2
