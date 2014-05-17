@@ -8,7 +8,6 @@ class Eye::Trigger::CheckDependency < Eye::Trigger
 private
 
   def check_dependency(to)
-    # TODO: Alive array here
     processes = names.map do |name|
       Eye::Control.find_nearest_process(name, process.group_name_pure, process.app_name)
     end.compact
