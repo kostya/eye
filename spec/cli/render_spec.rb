@@ -78,7 +78,7 @@ S
     controller.load(fixture("dsl/load.eye"))
     str = history_string('*')
     str.should be_a(String)
-    str.size.should > 100
+    str.size.should >= 80
   end
 
 end

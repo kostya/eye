@@ -205,7 +205,7 @@ describe "dependency" do
       @process_a.states_history.states.should == [:unmonitored, :starting, :up, :down, :starting, :up]
       @process_b.states_history.states.should == [:unmonitored, :starting, :up, :restarting, :stopping, :down, :starting, :up]
 
-      @process_a.schedule_history.states.should == [:monitor, :start, :check_crash, :restore, :start]
+      @process_a.schedule_history.states[0,4].should == [:monitor, :start, :check_crash, :restore]
       @process_b.schedule_history.states.should == [:monitor, :restart]
     end
 
