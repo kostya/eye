@@ -4,7 +4,7 @@ module Eye::Controller::Helpers
     str = Eye::PROCLINE
     str += " [#{@applications.map(&:name) * ', '}]" if @applications.present?
     str += " (v #{ENV['EYE_V']})" if ENV['EYE_V']
-    str += " (in #{Eye::Local.dir})" if Eye::Local.local_runner
+    str += " (in #{Eye::Local.dir})"
     $0 = str
   end
 
