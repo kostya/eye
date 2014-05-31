@@ -35,4 +35,4 @@ script
 *.cache
 *.tmp
 /vendor/
-
+*.gz
