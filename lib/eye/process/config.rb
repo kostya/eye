@@ -37,6 +37,7 @@ module Eye::Process::Config
 
     h[:stdout] = Eye::System.normalized_file(h[:stdout], h[:working_dir]) if h[:stdout]
     h[:stderr] = Eye::System.normalized_file(h[:stderr], h[:working_dir]) if h[:stderr]
+    h[:stdall] = Eye::System.normalized_file(h[:stdall], h[:working_dir]) if h[:stdall]
 
     h[:environment] = Eye::System.prepare_env(h)
 
