@@ -115,6 +115,7 @@ module Eye::System
       options[:in]    = config[:stdin] if config[:stdin]
       options[:umask] = config[:umask] if config[:umask]
       options[:close_others] = false if config[:preserve_fds]
+      options[:unsetenv_others] = true if config[:clear_env]
 
       if Eye::Local.root?
         options[:uid] = Etc.getpwnam(config[:uid]).uid if config[:uid]

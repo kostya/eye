@@ -36,6 +36,7 @@ describe "Eye::System" do
     Eye::System.send(:spawn_options, {}).should == {:pgroup => true, :chdir => "/"}
     Eye::System.send(:spawn_options, {:working_dir => "/tmp"}).should include(:chdir => "/tmp")
     Eye::System.send(:spawn_options, {:stdout => "/tmp/1", :stderr => "/tmp/2"}).should include(:out => ["/tmp/1", 'a'], :err => ["/tmp/2", 'a'])
+    Eye::System.send(:spawn_options, {:clear_env => true}).should include({:unsetenv_others => true})
 
     # root user exists
     mock(Etc).getpwnam('root') { OpenStruct.new(:uid => 0) }
