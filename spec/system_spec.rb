@@ -36,7 +36,14 @@ describe "Eye::System" do
     Eye::System.send(:spawn_options, {}).should == {:pgroup => true, :chdir => "/"}
     Eye::System.send(:spawn_options, {:working_dir => "/tmp"}).should include(:chdir => "/tmp")
     Eye::System.send(:spawn_options, {:stdout => "/tmp/1", :stderr => "/tmp/2"}).should include(:out => ["/tmp/1", 'a'], :err => ["/tmp/2", 'a'])
-    Eye::System.send(:spawn_options, {:uid => "root", :gid => "root"}).should include({:uid => 0, :gid => 0})
+
+    # root user exists
+    mock(Etc).getpwnam('root') { OpenStruct.new(:uid => 0) }
+    # user asdf does not exist
+    stub(Etc).getpwnam('asdf') { raise "can't find user for asdf" }
+    # However, group asdf does exist
+    mock(Etc).getgrnam('asdf') { OpenStruct.new(:gid => 1234) }
+    Eye::System.send(:spawn_options, {:uid => "root", :gid => "asdf"}).should include({:uid => 0, :gid => 1234})
   end
 
   describe "daemonize" do
