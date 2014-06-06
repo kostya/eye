@@ -118,7 +118,7 @@ module Eye::System
 
       if Eye::Local.root?
         options[:uid] = Etc.getpwnam(config[:uid]).uid if config[:uid]
-        options[:gid] = Etc.getpwnam(config[:gid]).gid if config[:gid]
+        options[:gid] = Etc.getgrnam(config[:gid]).gid if config[:gid]
       end
 
       options
