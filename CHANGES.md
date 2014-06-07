@@ -1,3 +1,9 @@
+0.6.1
+------
+* Add log rotation gem (https://github.com/kostya/eye-rotate)
+* Add option to clear environment variables #64
+* Get group names from /etc/group via Etc#getgrnam #63
+
 0.6
 ------
 * add processes dependencies (#43)
