@@ -368,6 +368,33 @@ describe "Eye::Dsl" do
     end
   end
 
+  it "validate stop_signals" do
+    conf = <<-E
+      Eye.application("bla"){ process("1") { pid_file "1.pid"; stop_signals [:QUIT, :KILL] } }
+    E
+    expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Process::Validate::Error)
+
+    conf = <<-E
+      Eye.application("bla"){ process("1") { pid_file "1.pid"; stop_signals [:QUIT] } }
+    E
+    expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Process::Validate::Error)
+
+    conf = <<-E
+      Eye.application("bla"){ process("1") { pid_file "1.pid"; stop_signals [:QUIT, 10] } }
+    E
+    expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Process::Validate::Error)
+
+    conf = <<-E
+      Eye.application("bla"){ process("1") { pid_file "1.pid"; stop_signals [9, 15] } }
+    E
+    expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Process::Validate::Error)
+
+    conf = <<-E
+      Eye.application("bla"){ process("1") { pid_file "1.pid"; stop_signals ['kill', 15] } }
+    E
+    expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Process::Validate::Error)
+  end
+
   it "depend_on" do
       conf = <<-E
         Eye.application("bla") do
