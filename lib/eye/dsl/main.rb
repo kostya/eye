@@ -25,14 +25,21 @@ module Eye::Dsl::Main
   def load(glob = '')
     return if glob.blank?
 
+    loaded = false
     Eye::Dsl::Opts.with_parsed_file(glob) do |mask|
       Dir[mask].each do |path|
+        loaded = true
         Eye::Dsl.debug "=> load #{path}"
         Eye.parsed_filename = path
         res = Kernel.load(path)
         Eye.info "load: subload #{path} (#{res})"
         Eye::Dsl.debug "<= load #{path}"
       end
+    end
+
+    unless loaded
+      puts "Warning! Eye.load not found: '#{glob}'"
+      warn "not found: '#{glob}'"
     end
   end
 
