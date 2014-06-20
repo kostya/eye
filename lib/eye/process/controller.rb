@@ -70,4 +70,10 @@ module Eye::Process::Controller
     send_signal(sig) if self.pid
   end
 
+  def user_command(name)
+    if self[:user_commands] && c = self[:user_commands][name.to_sym]
+      execute_user_command(name, c)
+    end
+  end
+
 end

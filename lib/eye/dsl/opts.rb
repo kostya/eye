@@ -68,6 +68,19 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   alias trigger triggers
   alias notrigger notriggers
 
+  def command(cmd, arg)
+    @config[:user_commands] ||= {}
+
+    if arg.is_a?(Array)
+      validate_signals(arg)
+    elsif arg.is_a?(String)
+    else
+      raise Eye::Dsl::Error, "unknown command #{cmd.inspect} type should be String or Array"
+    end
+
+    @config[:user_commands][cmd.to_sym] = arg
+  end
+
   def notify(contact, level = :warn)
     unless Eye::Process::Notify::LEVELS[level]
       raise Eye::Dsl::Error, "level should be in #{Eye::Process::Notify::LEVELS.keys}"

@@ -20,6 +20,8 @@ module Eye::Controller::Commands
         exclusive{ send_command(cmd, *args) }
       when :signal
         signal(*args)
+      when :user_command
+        user_command(*args)
       when :load
         load(*args)
       when :quit

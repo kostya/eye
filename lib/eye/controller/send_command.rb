@@ -22,6 +22,12 @@ module Eye::Controller::SendCommand
     end
   end
 
+  def user_command(cmd, *args)
+    matched_objects(*args) do |obj|
+      obj.send_command :user_command, cmd
+    end
+  end
+
 private
 
   class Error < Exception; end

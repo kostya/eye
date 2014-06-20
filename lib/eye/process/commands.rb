@@ -277,4 +277,27 @@ private
     sleep grace
   end
 
+  def execute_user_command(name, cmd)
+    info "executing user command #{name} #{cmd.inspect}"
+
+    # cmd is string, or array of signals
+    if cmd.is_a?(String)
+      res = execute(cmd, config.merge(:timeout => 120))
+      error "cmd #{cmd} error #{res.inspect}" if res[:error]
+    elsif cmd.is_a?(Array)
+      signals = cmd.clone
+      signal = signals.shift
+      send_signal(signal)
+
+      while signals.present?
+        delay = signals.shift
+        signal = signals.shift
+        sleep (delay.to_f)
+        send_signal(signal) if signal
+      end
+    else
+      warn "unknown user command #{c}"
+    end
+  end
+
 end

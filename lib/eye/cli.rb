@@ -158,6 +158,11 @@ class Eye::Cli < Thor
   rescue Interrupt
   end
 
+  desc "user_command CMD [MASK]", "execute user_command (dsl command)"
+  def user_command(cmd, *args)
+    send_command(:user_command, cmd, *args)
+  end
+
 private
 
   def error!(msg)

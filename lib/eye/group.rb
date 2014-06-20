@@ -113,6 +113,10 @@ class Eye::Group
     async_schedule :signal, sig
   end
 
+  def user_command(cmd)
+    async_schedule :user_command, cmd
+  end
+
   def break_chain
     info 'break chain'
     scheduler_clear_pending_list
