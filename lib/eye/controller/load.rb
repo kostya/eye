@@ -25,7 +25,7 @@ module Eye::Controller::Load
 
     set_proc_line
 
-    info "<= loading: #{obj_strs}, in: <#{$$}>"
+    info "<= loading: #{obj_strs}"
 
     res
   end
