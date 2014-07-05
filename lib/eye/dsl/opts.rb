@@ -82,6 +82,11 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     @config[:notify].delete(contact.to_s)
   end
 
+  def set_stop_signals(value)
+    super
+    validate_signals(value)
+  end
+
   def set_environment(value)
     raise Eye::Dsl::Error, "environment should be a hash, but not #{value.inspect}" unless value.is_a?(Hash)
     @config[:environment] ||= {}
@@ -146,6 +151,20 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     end
 
     on_server
+  end
+
+private
+
+  def validate_signals(signals = nil)
+    return unless signals
+    raise Eye::Dsl::Error, "signals should be Array" unless signals.is_a?(Array)
+    s = signals.clone
+    while s.present?
+      sig = s.shift
+      timeout = s.shift
+      raise Eye::Dsl::Error, "signal should be String, Symbol, Fixnum, not #{sig.inspect}" if sig && ![String, Symbol, Fixnum].include?(sig.class)
+      raise Eye::Dsl::Error, "signal sleep should be Numeric, not #{timeout.inspect}" if timeout && ![Fixnum, Float].include?(timeout.class)
+    end
   end
 
 end

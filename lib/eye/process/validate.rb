@@ -28,16 +28,6 @@ module Eye::Process::Validate
         raise Error, "working_dir '#{config[:working_dir]}' is invalid" unless File.directory?(config[:working_dir])
       end
     end
-
-    if config[:stop_signals]
-      s = config[:stop_signals].clone
-      while s.present?
-        sig = s.shift
-        timeout = s.shift
-        raise Error, "signal should be String, Symbol, Fixnum, not #{sig.inspect}" if sig && ![String, Symbol, Fixnum].include?(sig.class)
-        raise Error, "signal sleep should be Numeric, not #{timeout.inspect}" if timeout && ![Fixnum, Float].include?(timeout.class)
-      end
-    end
   end
 
 end
