@@ -24,13 +24,13 @@ class Eye::Server
     text = socket.read
 
     begin
-      command, *args = Marshal.load(text)
+      cmd, *args = Marshal.load(text)
     rescue => ex
       error "Failed to read from socket: #{ex.message}"
       return
     end
 
-    response = command(command, *args)
+    response = command(cmd, *args)
     socket.write(Marshal.dump(response))
 
   rescue Errno::EPIPE
