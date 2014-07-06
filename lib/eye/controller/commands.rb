@@ -17,13 +17,13 @@ module Eye::Controller::Commands
       when :start, :stop, :restart, :unmonitor, :monitor, :break_chain
         send_command(cmd, *args)
       when :delete
-        exclusive{ send_command(cmd, *args) }
+        exclusive { send_command(cmd, *args) }
       when :signal
         signal(*args)
       when :user_command
         user_command(*args)
       when :load
-        load(*args)
+        exclusive { load(*args) }
       when :quit
         quit
       when :stop_all

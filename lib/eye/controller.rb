@@ -31,8 +31,6 @@ class Eye::Controller
 
   attr_reader :applications, :current_config
 
-  exclusive :load # load is hard command, so better to run it safely blocked
-
   def initialize
     @applications = []
     @current_config = Eye::Config.new
