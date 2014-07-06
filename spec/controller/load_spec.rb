@@ -3,6 +3,16 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "Eye::Controller::Load" do
   subject{ Eye::Controller.new }
 
+  it "command load exclusive" do
+    futures = []
+    should_spend(1.2, 0.2) do
+      futures << subject.future.command('load', fixture("dsl/just_sleep.eye"))
+      futures << subject.future.command('load', fixture("dsl/just_sleep.eye"))
+
+      futures.map(&:value).map{ |r| r.values.first[:error] }.should == [false, false]
+    end
+  end
+
   it "should set :current_config as Eye::Config class" do
     subject.load(fixture("dsl/load.eye"))
 
