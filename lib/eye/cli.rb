@@ -88,7 +88,7 @@ class Eye::Cli < Thor
     # remove pid_file
     File.delete(Eye::Local.pid_path) if File.exists?(Eye::Local.pid_path)
 
-    say "Quit :(", :yellow
+    say "Quit ಠ╭╮ಠ", :yellow
   end
 
   [:start, :stop, :restart, :unmonitor, :monitor, :delete, :match].each do |_cmd|
