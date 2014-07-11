@@ -1,5 +1,19 @@
 module Eye::Cli::Render
 private
+  def render_status(data)
+    return [1, "unexpected server response #{data.inspect}"] unless data.is_a?(Hash)
+    data = data[:subtree]
+    return [1, "match #{data.size} objects (#{data.map{|d| d[:name]}}), but expected only 1 process"] if data.size != 1
+    process = data[0]
+    return [1, "unknown status for :#{process[:type]}=#{process[:name]}"] unless process[:type] == :process
+
+    state = process[:state].to_sym
+    return [0, ''] if state == :up
+    return [3, ''] if state == :unmonitored
+
+    [4, "process #{process[:name]} state :#{state}"]
+  end
+
   def render_info(data)
     error!("unexpected server response #{data.inspect}") unless data.is_a?(Hash)
 

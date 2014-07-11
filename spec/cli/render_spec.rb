@@ -26,6 +26,10 @@ describe "Eye::Cli" do
     cli.send(:render_history, controller.history_data(*args)).clean_info
   end
 
+  def status(*args)
+    cli.send(:render_status, controller.info_data(*args))
+  end
+
   it "render_info" do
     app1 = <<S
 app1
@@ -79,6 +83,21 @@ S
     str = history_string('*')
     str.should be_a(String)
     str.size.should >= 80
+  end
+
+  it "render_status" do
+    controller.load(fixture("dsl/load.eye"))
+    status('p1').should == [3, '']
+    status('gr2').should == [1, "unknown status for :group=gr2"]
+    status('gr').should == [1, "match 2 objects ([\"gr1\", \"gr2\"]), but expected only 1 process"]
+
+    p = controller.process_by_name('p1')
+
+    p.state = :restarting
+    status('p1').should == [4, "process p1 state :restarting"]
+
+    p.state = :up
+    status('p1').should == [0, '']
   end
 
 end

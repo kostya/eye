@@ -22,10 +22,12 @@ class Eye::Cli < Thor
     say
   end
 
-  desc "status", "processes info (deprecated)"
-  def status
-    say ":status is deprecated, use :info instead", :yellow
-    info
+  desc "status NAME", "return exit status for process name 0-up, 3-unmonitored"
+  def status(name)
+    res = cmd(:info_data, *Array(name))
+    es, msg = render_status(res)
+    say(msg, :red) if msg && !msg.empty?
+    exit(es)
   end
 
   desc "xinfo", "eye-deamon info (-c show current config)"
