@@ -205,8 +205,7 @@ Process states and events:
 [![Eye](https://raw.github.com/kostya/stuff/master/eye/mprocess.png)](https://raw.github.com/kostya/stuff/master/eye/process.png)
 
 
-EyeHttp Gem:
-
-    https://github.com/kostya/eye-http
+[EyeHttp Gem](https://github.com/kostya/eye-http)
+[Eye related projects](https://github.com/kostya/eye/wiki/Related-projects)
 
 Thanks `Bluepill` for the nice config ideas.
