@@ -1,3 +1,10 @@
+0.6.2
+-----
+* Add user defined command #65
+* eye status PROCESS_NAME, now return exit status for process name (0: up, 3: unmonitored) #68
+* test pid from pid_file for eye-lwp (hackety), probably fix #62
+* fix exclusive `eye load`
+
 0.6.1
 ------
 * Add log rotation gem (https://github.com/kostya/eye-rotate)
