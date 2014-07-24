@@ -35,7 +35,7 @@ module Eye::Local
     end
 
     def path(path)
-      File.join(dir, path)
+      File.expand_path(path, dir)
     end
 
     def ensure_eye_dir
