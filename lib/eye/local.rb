@@ -5,7 +5,7 @@ module Eye::Local
     def dir
       @dir ||= begin
         if root?
-        '/var/run/eye'
+          '/var/run/eye'
         else
           File.expand_path(File.join(home, '.eye'))
         end
@@ -39,7 +39,7 @@ module Eye::Local
     end
 
     def ensure_eye_dir
-      FileUtils.mkdir_p( dir )
+      FileUtils.mkdir_p(dir)
     end
 
     def socket_path
