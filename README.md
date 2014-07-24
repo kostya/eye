@@ -206,6 +206,7 @@ Process states and events:
 
 
 [EyeHttp Gem](https://github.com/kostya/eye-http)
+
 [Eye related projects](https://github.com/kostya/eye/wiki/Related-projects)
 
 Thanks `Bluepill` for the nice config ideas.
