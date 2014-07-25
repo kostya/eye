@@ -10,7 +10,7 @@ class Eye::Logger
       super
 
       self.formatter = Proc.new do |s, d, p, m|
-        "#{d.strftime(FORMAT)} $#{$$} #{s.ljust(5)} -- #{m}\n"
+        "#{d.strftime(FORMAT)} #{s.ljust(5)} -- #{m}\n"
       end
     end
   end
