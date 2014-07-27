@@ -55,14 +55,14 @@ module Eye::Process::System
 
   def process_pid_running?(pid)
     res = Eye::System.check_pid_alive(pid)
-    debug "process_really_running?: (#{pid}) #{res.inspect}"
+    debug "process_really_running?: <#{pid}> #{res.inspect}"
     !!res[:result]
   end
 
   def send_signal(code)
     res = Eye::System.send_signal(self.pid, code)
 
-    msg = "send_signal #{code} to #{self.pid}"
+    msg = "send_signal #{code} to <#{self.pid}>"
     msg += ", error<#{res[:error]}>" if res[:error]
     info msg
 
