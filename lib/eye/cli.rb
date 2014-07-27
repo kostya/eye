@@ -13,13 +13,20 @@ class Eye::Cli < Thor
   include Eye::Cli::Render
 
   desc "info [MASK]", "processes info"
+  method_option :json, :type => :boolean, :aliases => "-j"
   def info(mask = nil)
     res = cmd(:info_data, *Array(mask))
     if mask && res[:subtree] && res[:subtree].empty?
       error!("command :info, objects not found!")
     end
-    say render_info(res)
-    say
+
+    if options[:json]
+      require 'json'
+      say JSON.dump(res)
+    else
+      say render_info(res)
+      say
+    end
   end
 
   desc "status NAME", "return exit status for process name 0-up, 3-unmonitored"
