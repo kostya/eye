@@ -12,7 +12,7 @@ class Eye::Dsl::ApplicationOpts < Eye::Dsl::Opts
 
   def group(name, &block)
     Eye::Dsl.check_name(name)
-    Eye::Dsl.debug "=> group #{name}"
+    Eye::Dsl.debug { "=> group #{name}" }
 
     opts = Eye::Dsl::GroupOpts.new(name, self)
     opts.instance_eval(&block)
@@ -24,7 +24,7 @@ class Eye::Dsl::ApplicationOpts < Eye::Dsl::Opts
       Eye::Utils.deep_merge!(@config[:groups][name.to_s], cfg)
     end
 
-    Eye::Dsl.debug "<= group #{name}"
+    Eye::Dsl.debug { "<= group #{name}" }
     opts
   end
 

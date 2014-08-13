@@ -35,10 +35,10 @@ private
   def add_watcher(type, period = 2, subject = nil, &block)
     return if @watchers[type]
 
-    debug "adding watcher: #{type}(#{period})"
+    debug { "adding watcher: #{type}(#{period})" }
 
     timer = every(period.to_f) do
-      debug "check #{type}"
+      debug { "check #{type}" }
       block.call(subject)
     end
 

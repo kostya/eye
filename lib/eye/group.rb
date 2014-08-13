@@ -15,7 +15,7 @@ class Eye::Group
     @config = config
     @processes = Eye::Utils::AliveArray.new
     @hidden = (name == '__default__')
-    debug 'created'
+    debug { 'created' }
   end
 
   def logger_tag

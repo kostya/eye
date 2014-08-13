@@ -27,9 +27,9 @@ module Eye::Process::Scheduler
   end
 
   def schedule_in(interval, command, *args, &block)
-    debug "schedule_in #{interval} :#{command} #{args}"
+    debug { "schedule_in #{interval} :#{command} #{args}" }
     after(interval.to_f) do
-      debug "scheduled_in #{interval} :#{command} #{args}"
+      debug { "scheduled_in #{interval} :#{command} #{args}" }
       schedule(command, *args, &block)
     end
   end

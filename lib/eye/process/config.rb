@@ -58,7 +58,7 @@ module Eye::Process::Config
     @full_name = nil
     @logger = nil
 
-    debug "updating config to: #{@config.inspect}"
+    debug { "updating config to: #{@config.inspect}" }
 
     remove_triggers
     add_triggers

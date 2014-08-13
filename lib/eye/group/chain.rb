@@ -26,14 +26,14 @@ private
       break if @chain_breaker
     end
 
-    debug "chain finished #{Time.now - started_at}s"
+    debug { "chain finished #{Time.now - started_at}s" }
 
     @chain_processes_count = nil
     @chain_processes_current = nil
   end
 
   def chain_schedule_process(process, type, command, *args)
-    debug "chain_schedule_process #{process.name} #{type} #{command}"
+    debug { "chain_schedule_process #{process.name} #{type} #{command}" }
 
     if type == :sync
       # sync command, with waiting

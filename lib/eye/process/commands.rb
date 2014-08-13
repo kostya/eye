@@ -1,7 +1,7 @@
 module Eye::Process::Commands
 
   def start_process
-    debug 'start_process command'
+    debug { 'start_process command' }
 
     switch :starting
 
@@ -14,7 +14,7 @@ module Eye::Process::Commands
     result = self[:daemonize] ? daemonize_process : execute_process
 
     if !result[:error]
-      debug "process <#{self.pid}> started successfully"
+      debug { "process <#{self.pid}> started successfully" }
       switch :started
     else
       error "process <#{self.pid}> failed to start (#{result[:error].inspect})"
@@ -38,7 +38,7 @@ module Eye::Process::Commands
   end
 
   def stop_process
-    debug 'stop_process command'
+    debug { 'stop_process command' }
 
     switch :stopping
 
@@ -64,7 +64,7 @@ module Eye::Process::Commands
   end
 
   def restart_process
-    debug 'restart_process command'
+    debug { 'restart_process command' }
 
     switch :restarting
 
@@ -131,7 +131,7 @@ private
       sleep_grace(:stop_grace)
 
     else # default command
-      debug "executing: `kill -TERM #{self.pid}` with stop_grace: #{self[:stop_grace].to_f}s"
+      debug { "executing: `kill -TERM #{self.pid}` with stop_grace: #{self[:stop_grace].to_f}s" }
       send_signal(:TERM)
 
       sleep_grace(:stop_grace)

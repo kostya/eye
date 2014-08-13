@@ -26,7 +26,7 @@ class Eye::Notify::Mail < Eye::Notify
 
   def smtp
     args = [host, port, domain, user, password, auth]
-    debug "called smtp with #{args}"
+    debug { "called smtp with #{args}" }
     smtp = Net::SMTP.new host, port
     smtp.enable_starttls if starttls
 

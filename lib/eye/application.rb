@@ -6,7 +6,7 @@ class Eye::Application
     @groups = Eye::Utils::AliveArray.new
     @name = name
     @config = config
-    debug 'created'
+    debug { 'created' }
   end
 
   def logger_tag

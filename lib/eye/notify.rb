@@ -56,7 +56,7 @@ class Eye::Notify
     @message_h = message_h
     @options = options
 
-    debug "created notifier #{options}"
+    debug { "created notifier #{options}" }
   end
 
   def logger_sub_tag
@@ -69,9 +69,9 @@ class Eye::Notify
   end
 
   def notify
-    debug "start notify #{@message_h}"
+    debug { "start notify #{@message_h}" }
     execute
-    debug "end notify #{@message_h}"
+    debug { "end notify #{@message_h}" }
     terminate
   end
 

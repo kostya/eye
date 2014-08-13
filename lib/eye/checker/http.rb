@@ -33,7 +33,7 @@ class Eye::Checker::Http < Eye::Checker::Defer
     {:result => res}
 
   rescue Timeout::Error => ex
-    debug ex.inspect
+    debug { ex.inspect }
 
     if defined?(Net::OpenTimeout) # for ruby 2.0
       mes = ex.class.is_a?(Net::OpenTimeout) ? "OpenTimeout<#{@open_timeout}>" : "ReadTimeout<#{@read_timeout}>"

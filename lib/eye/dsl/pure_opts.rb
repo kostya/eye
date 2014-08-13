@@ -83,9 +83,9 @@ class Eye::Dsl::PureOpts
     if proc.is_a?(String)
       self.class.with_parsed_file(proc) do |path|
         if File.exists?(path)
-          Eye::Dsl.debug "=> load #{path}"
+          Eye::Dsl.debug { "=> load #{path}" }
           self.instance_eval(File.read(path))
-          Eye::Dsl.debug "<= load #{path}"
+          Eye::Dsl.debug { "<= load #{path}" }
         end
       end
     else

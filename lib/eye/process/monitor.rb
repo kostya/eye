@@ -26,7 +26,7 @@ private
         return false
       end
     else
-      debug 'process was not found'
+      debug { 'process was not found' }
       return false
     end
   end
@@ -97,7 +97,7 @@ private
         schedule :unmonitor, Eye::Reason.new(:crashed)
       end
     else
-      debug 'check crashed: skipped, process is not in down'
+      debug { 'check crashed: skipped, process is not in down' }
     end
   end
 

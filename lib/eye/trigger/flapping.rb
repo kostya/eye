@@ -27,7 +27,7 @@ private
   end
 
   def on_flapping
-    debug 'flapping recognized!!!'
+    debug { 'flapping recognized!!!' }
 
     process.notify :error, 'flapping!'
     process.schedule :unmonitor, Eye::Reason.new(:flapping)

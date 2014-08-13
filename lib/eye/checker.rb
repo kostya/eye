@@ -66,7 +66,7 @@ class Eye::Checker
     @full_name = @process.full_name if @process
     @initialized_at = Time.now
 
-    debug "create checker, with #{options}"
+    debug { "create checker, with #{options}" }
 
     @value = nil
     @values = Eye::Utils::Tail.new(max_tries)
@@ -96,7 +96,7 @@ class Eye::Checker
 
   def check
     if initial_grace && (Time.now - @initialized_at < initial_grace)
-      debug 'skipped initial grace'
+      debug { 'skipped initial grace' }
       return true
     else
       @options[:initial_grace] = nil

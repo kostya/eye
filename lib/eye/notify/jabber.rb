@@ -13,7 +13,7 @@ class Eye::Notify::Jabber < Eye::Notify
   param :password, String
 
   def execute
-    debug "send jabber #{[host, port, user, password]} - #{[contact, message_body]}"
+    debug { "send jabber #{[host, port, user, password]} - #{[contact, message_body]}" }
 
     mes = ::Jabber::Message.new(contact, message_body)
     mes.set_type(:normal)

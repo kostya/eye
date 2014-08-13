@@ -49,7 +49,7 @@ class Eye::Trigger
     @process = process
     @full_name = @process.full_name if @process
 
-    debug "add #{options}"
+    debug { "add #{options}" }
   end
 
   def inspect
@@ -65,7 +65,7 @@ class Eye::Trigger
   end
 
   def notify(transition, reason)
-    debug "check (:#{transition.event}) :#{transition.from} => :#{transition.to}"
+    debug { "check (:#{transition.event}) :#{transition.from} => :#{transition.to}" }
     @reason = reason
     @transition = transition
 

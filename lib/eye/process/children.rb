@@ -40,7 +40,7 @@ module Eye::Process::Children
     end
 
     h = {:new => new_children.size, :removed => removed_children.size, :exists => exist_children.size }
-    debug "children info: #{ h.inspect }"
+    debug { "children info: #{ h.inspect }" }
 
     @updating_children = false
     h
