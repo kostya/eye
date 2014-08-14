@@ -43,7 +43,11 @@ class Eye::Logger
   Logger::Severity.constants.each do |level|
     method_name = level.to_s.downcase
     define_method method_name do |msg = nil, &block|
-      self.class.inner_logger.send(method_name, "#{prefix_str}#{msg}", &block)
+      if block
+        self.class.inner_logger.send(method_name) { "#{prefix_str}#{block.call}" }
+      else
+        self.class.inner_logger.send(method_name, "#{prefix_str}#{msg}")
+      end
     end
   end
 
