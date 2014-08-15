@@ -1,5 +1,4 @@
 require 'shellwords'
-require 'pathname'
 require 'etc'
 require 'timeout'
 
@@ -101,7 +100,7 @@ module Eye::System
 
     # normalize file
     def normalized_file(file, working_dir = nil)
-      Pathname.new(file).expand_path(working_dir).to_s
+      File.expand_path(file, working_dir)
     end
 
     def spawn_options(config = {})

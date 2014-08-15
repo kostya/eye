@@ -106,11 +106,10 @@ private
   def self.with_parsed_file(file_name)
     saved_parsed_filename = Eye.parsed_filename
 
-    require 'pathname'
 
     real_filename = Eye.parsed_filename && File.symlink?(Eye.parsed_filename) ? File.readlink(Eye.parsed_filename) : Eye.parsed_filename
     dirname = File.dirname(real_filename) rescue nil
-    path = Pathname.new(file_name).expand_path(dirname).to_s
+    path = File.expand_path(file_name, dirname)
 
     Eye.parsed_filename = path
     yield path
