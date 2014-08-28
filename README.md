@@ -209,4 +209,6 @@ Process states and events:
 
 [Eye related projects](https://github.com/kostya/eye/wiki/Related-projects)
 
+[Articles](https://github.com/kostya/eye/wiki/Articles)
+
 Thanks `Bluepill` for the nice config ideas.
