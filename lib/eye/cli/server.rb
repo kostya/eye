@@ -14,7 +14,7 @@ private
 
   def ruby_path
     require 'rbconfig'
-    RbConfig::CONFIG['bindir'] + '/ruby'
+    File.join RbConfig::CONFIG['bindir'], RbConfig::CONFIG['ruby_install_name']
   end
 
   def ensure_loader_path
