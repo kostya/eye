@@ -13,7 +13,6 @@ private
   end
 
   def ruby_path
-    require 'rbconfig'
     RbConfig.ruby
   end
 
