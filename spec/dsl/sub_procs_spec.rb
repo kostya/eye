@@ -91,4 +91,22 @@ describe "sub procs" do
     Eye::Dsl.parse_apps(nil, fixture("dsl/include_test2.eye")).should == {"test2" => {:name=>"test2", :groups=>{"ha"=>{:name=>"ha", :application=>"test2", :environment=>{"a"=>"b"}, :processes=>{"bla"=>{:name=>"bla", :application=>"test2", :environment=>{"a"=>"b"}, :group=>"ha", :pid_file=>"10"}}}}}}
   end
 
+  describe "test extend with module" do
+    it "extend with def" do
+      conf = <<-E
+        module Eye::FFF
+          def bla
+            working_dir "/tmp/11"
+          end
+        end
+
+        Eye.application("bla") do
+          extend Eye::FFF
+          bla
+        end
+      E
+      Eye::Dsl.parse_apps(conf).should == {"bla" => {:working_dir=>"/tmp/11", :name => "bla"}}
+    end
+  end
+
 end
