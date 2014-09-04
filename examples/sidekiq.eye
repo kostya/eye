@@ -6,7 +6,7 @@ module Eye
       rails_env = env['RAILS_ENV']
     
       process(name) do
-        start_command "ruby ./bin/sidekiq -e #{rails_env} -C ./config/sidekiq.#{rails_env}.yml"
+        start_command "bin/sidekiq -e #{rails_env} -C ./config/sidekiq.#{rails_env}.yml"
         pid_file "tmp/pids/#{name}.pid"
         stdall "log/#{name}.log"
         daemonize true
