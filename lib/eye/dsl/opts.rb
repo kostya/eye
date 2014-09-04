@@ -13,7 +13,6 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   create_options_methods(INTERVAL_OPTIONS, [Fixnum, Float])
 
   create_options_methods([:environment], Hash)
-  create_options_methods([:stop_signals], Array)
   create_options_methods([:umask], Fixnum)
 
 
@@ -95,9 +94,18 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     @config[:notify].delete(contact.to_s)
   end
 
-  def set_stop_signals(value)
-    super
-    validate_signals(value)
+  def stop_signals(*args)
+    if args.count == 0
+      return @config[:stop_signals]
+    end
+
+    signals = Array(args).flatten
+    validate_signals(signals)
+    @config[:stop_signals] = signals
+  end
+
+  def stop_signals=(s)
+    stop_signals(s)
   end
 
   def set_environment(value)

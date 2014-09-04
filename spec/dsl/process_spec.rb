@@ -244,6 +244,32 @@ describe "Eye::Dsl" do
 
   end
 
+  describe "stop_signals" do
+    it "set" do
+      conf = <<-E
+        Eye.app("bla") { process('1') { pid_file '1'; stop_signals :Quit, 1 } }
+      E
+      r = Eye::Dsl.parse_apps(conf)
+      r['bla'][:groups]['__default__'][:processes]['1'][:stop_signals].should == [:Quit, 1]
+
+      conf = <<-E
+        Eye.app("bla") { process('1') { pid_file '1'; stop_signals [:Quit, 1] } }
+      E
+      r = Eye::Dsl.parse_apps(conf)
+      r['bla'][:groups]['__default__'][:processes]['1'][:stop_signals].should == [:Quit, 1]
+    end
+
+    it "get" do
+      conf = <<-E
+        Eye.app("bla") { pp = process('1') { pid_file '1'; stop_signals :Quit, 1 }
+          process('2') { pid_file '2'; stop_signals pp.stop_signals }
+        }
+      E
+      r = Eye::Dsl.parse_apps(conf)
+      r['bla'][:groups]['__default__'][:processes]['2'][:stop_signals].should == [:Quit, 1]
+    end
+  end
+
   describe "validation" do
     it "bad string" do
       conf = "Eye.app('bla'){ self.working_dir = {} }"
@@ -381,6 +407,11 @@ describe "Eye::Dsl" do
 
     conf = <<-E
       Eye.application("bla"){ process("1") { pid_file "1.pid"; stop_signals [:QUIT, 10] } }
+    E
+    expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error
+
+    conf = <<-E
+      Eye.application("bla"){ process("1") { pid_file "1.pid"; stop_signals :QUIT, 10 } }
     E
     expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error
 
