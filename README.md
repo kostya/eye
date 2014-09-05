@@ -24,7 +24,7 @@ We wanted something more robust and production stable.
 
 We wanted the features of bluepill and god, with a few extras like chains, nested configuring, mask matching, easy debug configs
 
-I hope we've success, we're using eye in production and are quite happy.
+I hope we've succeeded, we're using eye in production and are quite happy.
 
 ###  Config example
 
