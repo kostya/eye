@@ -610,10 +610,10 @@ describe "Eye::Controller::Load" do
             end
           end
         E
-        if RUBY_VERSION >= '2.0'
-          subject.load_content(conf).should_be_ok
-        else
+        if RUBY_VERSION < '2.0' || (s == :gid && RUBY_PLATFORM.include?('darwin'))
           subject.load_content(conf).errors_count.should == 1
+        else
+          subject.load_content(conf).should_be_ok
         end
 
         conf = <<-E

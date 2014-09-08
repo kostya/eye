@@ -44,6 +44,7 @@ describe "Eye::SystemResources" do
 
   it "should get children" do
     @pid = fork { at_exit{}; sleep 3; exit }
+    Process.detach(@pid)
     sleep 0.5
     x = Eye::SystemResources.children($$)
     x.class.should == Array
@@ -52,6 +53,7 @@ describe "Eye::SystemResources" do
 
   it "should get leaf_child" do
     @pid = fork { at_exit{}; sleep 3; exit }
+    Process.detach(@pid)
     sleep 0.5
     x = Eye::SystemResources.leaf_child($$)
     x.should == @pid
