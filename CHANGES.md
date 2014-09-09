@@ -4,6 +4,7 @@
 * Revert check by procline, this was hack, fix for #62 should be in 0.7
 * Fix ruby path, and expand_paths #69, #75
 * Add json info `eye info -j`
+* Rename local runner to `leye`
 
 0.6.2
 -----
