@@ -292,7 +292,10 @@ private
       while signals.present?
         delay = signals.shift
         signal = signals.shift
-        sleep (delay.to_f)
+        if wait_for_condition(delay.to_f, 0.3){ !process_really_running? }
+          info 'has terminated'
+          break
+        end
         send_signal(signal) if signal
       end
     else
