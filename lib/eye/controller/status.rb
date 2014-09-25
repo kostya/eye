@@ -9,7 +9,7 @@ module Eye::Controller::Status
       :resources => Eye::SystemResources.resources($$),
       :ruby => RUBY_DESCRIPTION,
       :gems => %w|Celluloid Celluloid::IO StateMachine NIO Timers Sigar|.map{|c| gem_version(c) },
-      :logger => Eye::Logger.args.present? ? [Eye::Logger.dev, *Eye::Logger.args] : Eye::Logger.dev,
+      :logger => Eye::Logger.args.present? ? [Eye::Logger.dev.to_s, *Eye::Logger.args] : Eye::Logger.dev.to_s,
       :pid_path => Eye::Local::pid_path,
       :sock_path => Eye::Local::socket_path,
       :actors => actors

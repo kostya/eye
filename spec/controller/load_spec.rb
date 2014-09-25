@@ -304,6 +304,20 @@ describe "Eye::Controller::Load" do
       subject.current_config.settings.should == {:logger=>["/tmp/1.loG"], :logger_level => 0}
     end
 
+    it "not set bad logger" do
+      with_temp_file(<<-S){ |f| res = subject.load(f) }
+        Eye.config { logger 1 }
+      S
+      Eye::Logger.dev.should be
+    end
+
+    it "set custom logger" do
+      with_temp_file(<<-S){ |f| res = subject.load(f) }
+        Eye.config { logger Logger.new('/tmp/eye_temp.log') }
+      S
+      Eye::Logger.dev.instance_variable_get(:@logdev).filename.should == '/tmp/eye_temp.log'
+    end
+
     it "should corrent load config section" do
       subject.load(fixture("dsl/configs/{1,2}.eye")).should_be_ok(2)
       Eye::Logger.dev.should == "/tmp/a.log"

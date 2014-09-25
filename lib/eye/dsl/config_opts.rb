@@ -7,8 +7,6 @@ class Eye::Dsl::ConfigOpts < Eye::Dsl::PureOpts
     if args.empty?
       @config[:logger]
     else
-      str = args[0]
-      raise Eye::Dsl::Error, "logger should be a String #{str.inspect}" if !(str.is_a?(String) || str == nil)
       @config[:logger] = args
     end
   end
