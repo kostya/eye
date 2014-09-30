@@ -38,7 +38,7 @@ describe "dependency" do
 
         end
       D
-      with_temp_file(conf){ |f| @c.load(f) }
+      @c.load_content(conf)
       sleep 0.5
       @process_a = @c.process_by_name("a")
       @process_a.state_name.should == :unmonitored
@@ -178,7 +178,7 @@ describe "dependency" do
 
         end
       D
-      with_temp_file(conf){ |f| @c.load(f) }
+      @c.load_content(conf)
       @process_a = @c.process_by_name("a")
       @process_b = @c.process_by_name("b")
       [@process_a, @process_b].each do |p|

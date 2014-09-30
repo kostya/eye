@@ -33,7 +33,7 @@ Eye.application("bla") do
 end
       D
 
-      with_temp_file(cfg){ |f| @c.load(f) }
+      @c.load_content(cfg)
       sleep 5
       @process = @c.process_by_name("1")
     end
@@ -78,7 +78,7 @@ Eye.application("bla") do
 end
       D
 
-      with_temp_file(cfg){ |f| @c.load(f) }
+      @c.load_content(cfg)
       sleep 5
       @process = @c.process_by_name("1")
     end
@@ -125,7 +125,7 @@ Eye.application("bla") do
 end
       D
 
-      with_temp_file(cfg){ |f| @c.load(f) }
+      @c.load_content(cfg)
       sleep 5
       @process = @c.process_by_name("1")
     end
@@ -160,7 +160,7 @@ end
         end
         #{@app}
       D
-      with_temp_file(conf){ |f| @c.load(f) }
+      @c.load_content(conf)
       @process = @c.process_by_name("1")
       @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
 
@@ -177,7 +177,7 @@ end
         end
         #{@app}
       D
-      with_temp_file(conf){ |f| @c.load(f) }
+      @c.load_content(conf)
       @process = @c.process_by_name("1")
       @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
 
@@ -194,7 +194,7 @@ end
         end
         #{@app}
       D
-      with_temp_file(conf){ |f| @c.load(f) }
+      @c.load_content(conf)
       @process = @c.process_by_name("1")
       @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
 
@@ -211,7 +211,7 @@ end
         end
         #{@app}
       D
-      with_temp_file(conf){ |f| @c.load(f) }
+      @c.load_content(conf)
       @process = @c.process_by_name("1")
       @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
 
@@ -228,7 +228,7 @@ end
         end
         #{@app}
       D
-      with_temp_file(conf){ |f| @c.load(f) }
+      @c.load_content(conf)
       @process = @c.process_by_name("1")
       @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
 

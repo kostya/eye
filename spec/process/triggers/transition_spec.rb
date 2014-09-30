@@ -19,7 +19,7 @@ describe "Trigger Transition" do
         end
       D
 
-      with_temp_file(cfg){ |f| @c.load(f) }
+      @c.load_content(cfg)
       sleep 5
       @process = @c.process_by_name("1")
     end
@@ -46,7 +46,7 @@ describe "Trigger Transition" do
         end
       D
 
-      with_temp_file(cfg){ |f| @c.load(f) }
+      @c.load_content(cfg)
       sleep 5
       @process = @c.process_by_name("1")
     end
@@ -78,7 +78,7 @@ describe "Trigger Transition" do
         end
       D
 
-      with_temp_file(cfg){ |f| @c.load(f) }
+      @c.load_content(cfg)
       sleep 5
       @process = @c.process_by_name("1")
     end
@@ -107,7 +107,7 @@ describe "Trigger Transition" do
         end
       D
 
-      with_temp_file(cfg){ |f| @c.load(f) }
+      @c.load_content(cfg)
       sleep 5
       @process = @c.process_by_name("1")
     end
@@ -140,7 +140,7 @@ describe "Trigger Transition" do
         end
       D
 
-      with_temp_file(cfg){ |f| @c.load(f) }
+      @c.load_content(cfg)
       sleep 5
       @process = @c.process_by_name("fork")
       @process.wait_for_condition(15, 0.3) { @process.children.size == 3 }
@@ -198,7 +198,7 @@ describe "Trigger Transition" do
         end
       D
 
-      with_temp_file(cfg){ |f| @c.load(f) }
+      @c.load_content(cfg)
       @process = @c.process_by_name("1")
       @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
 
@@ -220,7 +220,7 @@ describe "Trigger Transition" do
         end
       D
 
-      with_temp_file(cfg){ |f| @c.load(f) }
+      @c.load_content(cfg)
       @process = @c.process_by_name("1")
       @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
 
@@ -242,7 +242,7 @@ describe "Trigger Transition" do
         end
       D
 
-      with_temp_file(cfg){ |f| @c.load(f) }
+      @c.load_content(cfg)
       @process = @c.process_by_name("1")
       @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
 

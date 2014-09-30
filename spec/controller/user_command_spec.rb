@@ -17,7 +17,7 @@ describe "Controller user_command" do
       end
     D
 
-    with_temp_file(cfg){ |f| subject.load(f) }
+    subject.load_content(cfg)
     sleep 0.5
 
     File.exists?(C.tmp_file).should == false
@@ -41,7 +41,7 @@ describe "Controller user_command" do
       end
     D
 
-    with_temp_file(cfg){ |f| subject.load(f) }
+    subject.load_content(cfg)
     sleep 0.5
 
     @process = subject.process_by_name("proc")

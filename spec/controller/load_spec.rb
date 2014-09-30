@@ -256,15 +256,15 @@ describe "Eye::Controller::Load" do
   end
 
   it "order of applications and groups" do
-      with_temp_file(<<-F){ |f| subject.load(f ) }
-        Eye.app(:app2) { }
-        Eye.app(:app1) {
-          process("p"){ pid_file "1" }
-          group(:gr3){}
-          group(:gr2){}
-          group(:gr1){}
-        }
-      F
+    subject.load_content(<<-F)
+      Eye.app(:app2) { }
+      Eye.app(:app1) {
+        process("p"){ pid_file "1" }
+        group(:gr3){}
+        group(:gr2){}
+        group(:gr1){}
+      }
+    F
 
     subject.applications.map(&:name).should == %w{app1 app2}
     app = subject.applications[0]
@@ -285,7 +285,7 @@ describe "Eye::Controller::Load" do
     end
 
     it "load logger with rotation" do
-      with_temp_file(<<-S){ |f| res = subject.load(f) }
+      subject.load_content(<<-S)
         Eye.config { logger "/tmp/1.log", 7, 10000 }
       S
       Eye::Logger.dev.should == "/tmp/1.log"
@@ -295,8 +295,7 @@ describe "Eye::Controller::Load" do
       subject.load(fixture("dsl/load_logger.eye")).should_be_ok
       Eye::Logger.dev.should == "/tmp/1.loG"
 
-      res = nil
-      with_temp_file(<<-S){ |f| res = subject.load(f) }
+      res = subject.load_content(<<-S)
         Eye.config { logger "/tmp/asdfasdf/sd/f/sdf/sd/f/sdf/s" }
       S
 
@@ -305,16 +304,12 @@ describe "Eye::Controller::Load" do
     end
 
     it "not set bad logger" do
-      with_temp_file(<<-S){ |f| res = subject.load(f) }
-        Eye.config { logger 1 }
-      S
+      subject.load_content(" Eye.config { logger 1 } ")
       Eye::Logger.dev.should be
     end
 
     it "set custom logger" do
-      with_temp_file(<<-S){ |f| res = subject.load(f) }
-        Eye.config { logger Logger.new('/tmp/eye_temp.log') }
-      S
+      subject.load_content(" Eye.config { logger Logger.new('/tmp/eye_temp.log') } ")
       Eye::Logger.dev.instance_variable_get(:@logdev).filename.should == '/tmp/eye_temp.log'
     end
 
@@ -495,7 +490,7 @@ describe "Eye::Controller::Load" do
     end
 
     it "delete from empty app (was an exception)" do
-      with_temp_file(<<-F){ |f| subject.load(f ) }
+      subject.load_content(<<-F)
         Eye.app(:bla) { }
         Eye.app(:good) { group(:gr){}; process(:pr){ pid_file '1'} }
       F

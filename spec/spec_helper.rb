@@ -22,7 +22,7 @@ Eye::Process
 class Eye::Controller
   public :find_objects, :remove_object_from_tree, :matched_objects
   def load_erb(file); with_erb_file(file){|f| self.load(f) }; end
-  def load_content(cont); with_temp_file(cont){|f| self.load(f) }; end
+  def load_content(cont); res = nil; with_temp_file(cont){|f| res = self.load(f) }; res; end
 end
 
 require 'rspec/mocks'

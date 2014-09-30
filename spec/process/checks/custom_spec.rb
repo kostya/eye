@@ -35,7 +35,7 @@ describe "Custom checks" do
           end
         end
     D
-      with_temp_file(conf){ |f| @c.load(f) }
+      @c.load_content(conf)
       sleep 3
       @process = @c.process_by_name("1")
       @process.watchers.keys.should == [:check_alive, :check_custom_check]
@@ -75,7 +75,7 @@ describe "Custom checks" do
           end
         end
     D
-      with_temp_file(conf){ |f| @c.load(f) }
+      @c.load_content(conf)
       sleep 3
       @process = @c.process_by_name("1")
     end
@@ -119,7 +119,7 @@ describe "Custom checks" do
         end
         #{@app}
       D
-      with_temp_file(conf){ |f| @c.load(f) }
+      @c.load_content(conf)
       @process = @c.process_by_name("1")
       @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
 
@@ -138,7 +138,7 @@ describe "Custom checks" do
         end
         #{@app}
       D
-      with_temp_file(conf){ |f| @c.load(f) }
+      @c.load_content(conf)
       @process = @c.process_by_name("1")
       @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
 
@@ -156,7 +156,7 @@ describe "Custom checks" do
         end
         #{@app}
       D
-      with_temp_file(conf){ |f| @c.load(f) }
+      @c.load_content(conf)
       @process = @c.process_by_name("1")
       @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
 
@@ -174,7 +174,7 @@ describe "Custom checks" do
         end
         #{@app}
       D
-      with_temp_file(conf){ |f| @c.load(f) }
+      @c.load_content(conf)
       @process = @c.process_by_name("1")
       @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
 
@@ -192,7 +192,7 @@ describe "Custom checks" do
         end
         #{@app}
       D
-      with_temp_file(conf){ |f| @c.load(f) }
+      @c.load_content(conf)
       @process = @c.process_by_name("1")
       @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
 
