@@ -37,7 +37,7 @@ module Eye::Controller::Commands
       when :ping
         :pong
       when :logger_dev
-        Eye::Logger.dev
+        Eye::Logger.dev.to_s
 
       # object commands, for api
       when :info_data
