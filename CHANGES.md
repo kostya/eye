@@ -1,7 +1,3 @@
-0.7.pre
--------
-* Update Celluloid to 0.16.0
-
 0.6.2
 -----
 * Add user defined command #65
