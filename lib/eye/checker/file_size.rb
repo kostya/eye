@@ -8,7 +8,7 @@ class Eye::Checker::FileSize < Eye::Checker::Measure
 
   def initialize(*args)
     super
-    self.file = process.expand_path(file)
+    self.file = process.expand_path(file) if process && file
   end
 
   def check_name

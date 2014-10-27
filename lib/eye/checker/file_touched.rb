@@ -5,7 +5,7 @@ class Eye::Checker::FileTouched < Eye::Checker
 
   def initialize(*args)
     super
-    self.file = process.expand_path(file)
+    self.file = process.expand_path(file) if process && file
   end
 
   def get_value
