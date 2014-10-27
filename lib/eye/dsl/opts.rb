@@ -94,7 +94,14 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     @config[:notify].delete(contact.to_s)
   end
 
+  def set_stop_command(cmd)
+    raise Eye::Dsl::Error, "cannot use both stop_signals and stop_command" if @config[:stop_signals]
+    super
+  end
+
   def stop_signals(*args)
+    raise Eye::Dsl::Error, "cannot use both stop_signals and stop_command" if @config[:stop_command]
+
     if args.count == 0
       return @config[:stop_signals]
     end
