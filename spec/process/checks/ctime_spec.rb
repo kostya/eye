@@ -11,6 +11,8 @@ describe "Check CTime" do
     start_ok_process(@c)
 
     @process.watchers.keys.should == [:check_alive, :check_ctime]
+    sbj = @process.watchers[:check_ctime][:subject]
+    sbj.file.should == "#{C.sample_dir}/#{C.log_name}"
 
     @process.stop
 

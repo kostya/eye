@@ -34,6 +34,10 @@ module Eye::Dsl::Validation
         value = @options[param]
         value.nil? ? default : value
       end
+
+      define_method "#{param}=" do |value|
+        @options[param] = value
+      end
     end
 
     def param_default(param, default)

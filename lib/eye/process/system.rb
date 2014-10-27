@@ -96,4 +96,8 @@ module Eye::Process::System
     false
   end
 
+  def expand_path(path)
+    File.expand_path(path, self[:working_dir])
+  end
+
 end
