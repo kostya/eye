@@ -78,7 +78,7 @@ class Eye::Checker
   end
 
   def logger_tag
-    @process.logger.prefix
+    @process.logger.prefix if @process
   end
 
   def logger_sub_tag
