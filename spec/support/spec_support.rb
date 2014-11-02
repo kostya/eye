@@ -89,7 +89,8 @@ module C
       :pid_file => sample_dir + "/" + p3_pid,
       :children_update_period => Eye::SystemResources::cache.expire + 1,
       :stop_timeout => 5.seconds,
-      :start_timeout => 15.seconds
+      :start_timeout => 15.seconds,
+      :notify => { "abcd" => :warn }
     )
   end
 
