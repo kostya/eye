@@ -48,12 +48,14 @@ module Eye::Process::Children
   end
 
   def remove_children
-    if children.present?
-      children.keys.each{|child_pid| remove_child(child_pid) }
-    end
+    children.each_key { |child_pid| clear_child(child_pid) }
   end
 
   def remove_child(child_pid)
+    clear_child(child_pid)
+  end
+
+  def clear_child(child_pid)
     child = self.children.delete(child_pid)
     child.destroy if child && child.alive?
   end
