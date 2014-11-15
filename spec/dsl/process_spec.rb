@@ -518,4 +518,44 @@ end
               :checks=>{:memory=>{:below=>100, :type=>:memory}}, :group=>"bla", :start_command=>"sleep 100", :daemonize=>true, :pid_file=>"/tmp/test_process_c.pid",
               :triggers=>{:wait_dependency_3=>{:names=>["a"], :type=>:wait_dependency}}}}}}}}
   end
+
+  describe "load_env" do
+    it "from file" do
+      conf = <<-E
+        Eye.application("bla") do
+          load_env "#{fixture('dsl/env1')}"
+        end
+      E
+      Eye::Dsl.parse_apps(conf)['bla'][:environment].should == {"A"=>"11", "B" => "12"}
+    end
+
+    it "file not found" do
+      conf = <<-E
+        Eye.application("bla") do
+          load_env "#{fixture('dsl/env2')}"
+        end
+      E
+      expect{Eye::Dsl.parse_apps(conf)}.to raise_error
+    end
+
+    it "file not found, but ignore option" do
+      conf = <<-E
+        Eye.application("bla") do
+          load_env "#{fixture('dsl/env2')}", false
+        end
+      E
+      Eye::Dsl.parse_apps(conf)['bla'][:environment].should == nil
+    end
+
+    it "expand path from working_dir" do
+      conf = <<-E
+        Eye.application("bla") do
+          working_dir "#{File.dirname(fixture('dsl/env1'))}"
+          load_env "env1"
+        end
+      E
+      Eye::Dsl.parse_apps(conf)['bla'][:environment].should == {"A"=>"11", "B" => "12"}
+    end
+  end
+
 end

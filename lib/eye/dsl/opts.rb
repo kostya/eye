@@ -181,6 +181,32 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     on_server
   end
 
+  def load_env(filename = '~/.env', raise_when_no_file = true)
+    fnames = [File.expand_path(filename, @config[:working_dir]),
+      File.expand_path(filename)].uniq
+    filenames = fnames.select { |f| File.exists?(f) }
+
+    if filenames.size < 1
+      unless raise_when_no_file
+        warn "load_env not found file: '#{filenames.first}'"
+        return
+      else
+        raise Eye::Dsl::Error, "load_env not found in #{fnames}"
+      end
+    end
+    raise Eye::Dsl::Error, "load_env conflict filenames: #{filenames}" if filenames.size > 1
+
+    content = File.read(filenames.first)
+    info "load_env from '#{filenames.first}'"
+
+    env_vars = content.split("\n")
+    env_vars.each do |e|
+      next unless e.include?('=')
+      k, v = e.split('=')
+      env k => v
+    end
+  end
+
 private
 
   def validate_signals(signals = nil)
