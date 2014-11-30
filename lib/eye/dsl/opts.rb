@@ -202,8 +202,8 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     env_vars = content.split("\n")
     env_vars.each do |e|
       next unless e.include?('=')
-      k, v = e.split('=')
-      env k => v
+      k, *v = e.split('=')
+      env k => v.join('=')
     end
   end
 

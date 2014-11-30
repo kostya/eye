@@ -526,7 +526,7 @@ end
           load_env "#{fixture('dsl/env1')}"
         end
       E
-      Eye::Dsl.parse_apps(conf)['bla'][:environment].should == {"A"=>"11", "B" => "12"}
+      Eye::Dsl.parse_apps(conf)['bla'][:environment].should == {"A"=>"11", "B" => "12=13"}
     end
 
     it "file not found" do
@@ -554,7 +554,7 @@ end
           load_env "env1"
         end
       E
-      Eye::Dsl.parse_apps(conf)['bla'][:environment].should == {"A"=>"11", "B" => "12"}
+      Eye::Dsl.parse_apps(conf)['bla'][:environment].should == {"A"=>"11", "B" => "12=13"}
     end
   end
 
