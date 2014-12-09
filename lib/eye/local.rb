@@ -55,7 +55,7 @@ module Eye::Local
     end
 
     def client_timeout
-      @client_timeout ||= 5
+      @client_timeout ||= (ENV['EYE_CLIENT_TIMEOUT'] || 5).to_i
     end
 
     def client_timeout=(cl)
