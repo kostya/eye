@@ -54,8 +54,12 @@ module Eye::Local
       path("processes#{ENV['EYE_V']}.cache")
     end
 
+    def default_client_timeout
+      (ENV['EYE_CLIENT_TIMEOUT'] || 5).to_i
+    end
+
     def client_timeout
-      @client_timeout ||= (ENV['EYE_CLIENT_TIMEOUT'] || 5).to_i
+      @client_timeout ||= default_client_timeout
     end
 
     def client_timeout=(cl)

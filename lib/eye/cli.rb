@@ -90,7 +90,7 @@ class Eye::Cli < Thor
       cmd(:stop_all, options[:timeout].to_i)
     end
 
-    Eye::Local.client_timeout = 5
+    Eye::Local.client_timeout = Eye::Local.default_client_timeout
     res = _cmd(:quit)
 
     # if eye server got crazy, stop by force
