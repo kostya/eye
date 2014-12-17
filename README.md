@@ -205,10 +205,11 @@ Process states and events:
 [![Eye](https://raw.github.com/kostya/stuff/master/eye/mprocess.png)](https://raw.github.com/kostya/stuff/master/eye/process.png)
 
 
-[EyeHttp Gem](https://github.com/kostya/eye-http)
-
 [Eye related projects](https://github.com/kostya/eye/wiki/Related-projects)
 
 [Articles](https://github.com/kostya/eye/wiki/Articles)
+
+[Using Env variables](https://github.com/kostya/eye/wiki/Using-ENV-variables-in-config)
+
 
 Thanks `Bluepill` for the nice config ideas.
