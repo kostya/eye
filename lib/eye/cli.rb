@@ -73,6 +73,7 @@ class Eye::Cli < Thor
       server_start_foreground(configs.first)
 
     elsif server_started?
+      configs << Eye::Local.eyefile if Eye::Local.local_runner
       say_load_result cmd(:load, *configs)
 
     else

@@ -86,8 +86,8 @@ module Eye::Local
     end
 
     def find_eyefile(start_from_dir)
-      fromenv = ENV['EYEFILE']
-      return fromenv if fromenv && !fromenv.empty? && File.exist?(fromenv)
+      fromenv = ENV['EYE_FILE']
+      return fromenv if fromenv && !fromenv.empty? && File.file?(fromenv)
 
       previous = nil
       current  = File.expand_path(start_from_dir)

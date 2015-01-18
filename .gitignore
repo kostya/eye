@@ -36,3 +36,4 @@ script
 *.tmp
 /vendor/
 *.gz
+.eye
