@@ -2,6 +2,17 @@
 -------
 * Update Celluloid to 0.16.0
 
+0.6.4
+-----
+* leye: rename env variable EYEFILE to EYE_FILE
+* leye: add options --eyefile and --eyehome #102
+* leye: now store pid and sock into "DIR(eyefile)/.eye" (requires to leye quit && leye load)
+* add dsl load_env method
+* add trigger executing helpers :execute_sync, :execute_async
+* add [triggers example](https://github.com/kostya/eye/blob/master/examples/triggers.eye)
+* fix user command expand {PID} #104
+* add EYE_CLIENT_TIMEOUT variable to set client timeout #99
+
 0.6.3
 -----
 * Add custom logger #81
