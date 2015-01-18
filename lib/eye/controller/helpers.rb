@@ -2,6 +2,7 @@ module Eye::Controller::Helpers
 
   def set_proc_line
     str = Eye::PROCLINE
+    str = 'l' + str if Eye::Local.local_runner
     str += " [#{@applications.map(&:name) * ', '}]" if @applications.present?
     str += " (v #{ENV['EYE_V']})" if ENV['EYE_V']
     str += " (in #{Eye::Local.dir})"

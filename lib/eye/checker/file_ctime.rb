@@ -5,6 +5,11 @@ class Eye::Checker::FileCTime < Eye::Checker
 
   param :file, [String], true
 
+  def initialize(*args)
+    super
+    self.file = process.expand_path(file) if process && file
+  end
+
   def get_value
     File.ctime(file) rescue nil
   end

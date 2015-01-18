@@ -76,6 +76,18 @@ module Eye::Process::System
     defer{ Eye::System::execute cmd, cfg }
   end
 
+  def execute_sync(cmd, opts = {:timeout => 1.second})
+    res = execute cmd, self.config.merge(opts)
+    info "execute_sync `#{cmd}` with res: #{res}"
+    res
+  end
+
+  def execute_async(cmd, opts = {})
+    res = Eye::System.daemonize(cmd, self.config.merge(opts))
+    info "execute_async `#{cmd}` with res: #{res}"
+    res
+  end
+
   def failsafe_load_pid
     pid = load_pid_from_file
 
@@ -94,6 +106,10 @@ module Eye::Process::System
   rescue => ex
     log_ex(ex)
     false
+  end
+
+  def expand_path(path)
+    File.expand_path(path, self[:working_dir])
   end
 
 end

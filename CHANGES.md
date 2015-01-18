@@ -1,3 +1,7 @@
+0.7.pre
+-------
+* Update Celluloid to 0.16.0
+
 0.6.3
 -----
 * Add custom logger #81

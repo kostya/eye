@@ -282,6 +282,7 @@ private
 
     # cmd is string, or array of signals
     if cmd.is_a?(String)
+      cmd = prepare_command(cmd)
       res = execute(cmd, config.merge(:timeout => 120))
       error "cmd #{cmd} error #{res.inspect}" if res[:error]
     elsif cmd.is_a?(Array)

@@ -18,6 +18,7 @@ describe "ChildProcess" do
       @process.watchers.keys.should == [:check_alive, :check_children]
 
       child = @process.children.values.first
+      child[:notify].should == { "abcd" => :warn }
       child.watchers.keys.should == []
     end
 

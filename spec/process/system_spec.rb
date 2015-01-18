@@ -104,6 +104,29 @@ describe "Eye::Process::System" do
     end
   end
 
+  it "execute_sync helper" do
+    filename = "asdfasdfsd.tmp"
+    full_filename = C.working_dir + "/" + filename
+    FileUtils.rm(full_filename) rescue nil
+    File.exists?(full_filename).should == false
+    res = @process.execute_sync("touch #{filename}")
+    File.exists?(full_filename).should == true
+    FileUtils.rm(full_filename) rescue nil
+    res[:exitstatus].should == 0
+  end
+
+  it "execute_async helper" do
+    filename = "asdfasdfsd.tmp"
+    full_filename = C.working_dir + "/" + filename
+    FileUtils.rm(full_filename) rescue nil
+    File.exists?(full_filename).should == false
+    res = @process.execute_async("touch #{filename}")
+    sleep 0.2
+    File.exists?(full_filename).should == true
+    FileUtils.rm(full_filename) rescue nil
+    res[:exitstatus].should == 0
+  end
+
   context "#wait_for_condition" do
     subject{ Eye::Process.new(C.p1) }
 

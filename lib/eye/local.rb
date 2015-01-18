@@ -54,8 +54,12 @@ module Eye::Local
       path("processes#{ENV['EYE_V']}.cache")
     end
 
+    def default_client_timeout
+      (ENV['EYE_CLIENT_TIMEOUT'] || 5).to_i
+    end
+
     def client_timeout
-      @client_timeout ||= 5
+      @client_timeout ||= default_client_timeout
     end
 
     def client_timeout=(cl)
@@ -82,8 +86,8 @@ module Eye::Local
     end
 
     def find_eyefile(start_from_dir)
-      fromenv = ENV['EYEFILE']
-      return fromenv if fromenv && !fromenv.empty? && File.exist?(fromenv)
+      fromenv = ENV['EYE_FILE']
+      return fromenv if fromenv && !fromenv.empty? && File.file?(fromenv)
 
       previous = nil
       current  = File.expand_path(start_from_dir)

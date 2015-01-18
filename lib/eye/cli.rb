@@ -73,6 +73,7 @@ class Eye::Cli < Thor
       server_start_foreground(configs.first)
 
     elsif server_started?
+      configs << Eye::Local.eyefile if Eye::Local.local_runner
       say_load_result cmd(:load, *configs)
 
     else
@@ -90,7 +91,7 @@ class Eye::Cli < Thor
       cmd(:stop_all, options[:timeout].to_i)
     end
 
-    Eye::Local.client_timeout = 5
+    Eye::Local.client_timeout = Eye::Local.default_client_timeout
     res = _cmd(:quit)
 
     # if eye server got crazy, stop by force

@@ -43,6 +43,17 @@ describe "Eye::Checker::Http" do
       subject.human_value(subject.get_value).should == mes
     end
 
+    if defined?(Net::OpenTimeout)
+      it "get_value OpenTimeout exception" do
+        a = ""
+        stub(subject).session{ a }
+        stub(subject.session).start{ raise Net::OpenTimeout, "open timeout" }
+
+        subject.get_value.should == {:exception => "OpenTimeout<3.0>"}
+        subject.human_value(subject.get_value).should == "OpenTimeout<3.0>"
+      end
+    end
+
     it "get_value raised" do
       a = ""
       stub(subject).session{ a }

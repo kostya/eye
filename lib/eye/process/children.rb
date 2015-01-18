@@ -31,7 +31,8 @@ module Eye::Process::Children
 
     if new_children.present?
       new_children.each do |child_pid|
-        self.children[child_pid] = Eye::ChildProcess.new(child_pid, self[:monitor_children], logger.prefix, self.pid)
+        cfg = self[:monitor_children].try :update, :notify => self[:notify]
+        self.children[child_pid] = Eye::ChildProcess.new(child_pid, cfg, logger.prefix, self.pid)
       end
     end
 
@@ -47,12 +48,14 @@ module Eye::Process::Children
   end
 
   def remove_children
-    if children.present?
-      children.keys.each{|child_pid| remove_child(child_pid) }
-    end
+    children.each_key { |child_pid| clear_child(child_pid) }
   end
 
   def remove_child(child_pid)
+    clear_child(child_pid)
+  end
+
+  def clear_child(child_pid)
     child = self.children.delete(child_pid)
     child.destroy if child && child.alive?
   end

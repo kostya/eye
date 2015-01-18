@@ -6,11 +6,26 @@ require 'eye'
 #  which looking for Eyefile
 #  like foreman
 
+while true
+  if ARGV[0] == '--eyefile'
+    ARGV.shift
+    ENV['EYE_FILE'] = File.expand_path(ARGV.shift.to_s)
+  elsif ARGV[0] == '--eyehome'
+    ARGV.shift
+    ENV['EYE_HOME'] = File.expand_path(ARGV.shift.to_s)
+  else
+    break
+  end
+end
+
 unless Eye::Local.eyefile
-  puts "Not found Eyefile"
+  puts "\033[31mNot found Eyefile (in #{File.expand_path('.')})\033[0m"
   exit 1
 end
 
-Eye::Local.dir = File.dirname(Eye::Local.eyefile)
+unless ENV.key?('EYE_HOME')
+  Eye::Local.dir = File.join(File.dirname(Eye::Local.eyefile), '.eye')
+end
+
 Eye::Local.local_runner = true
 Eye::Cli.start

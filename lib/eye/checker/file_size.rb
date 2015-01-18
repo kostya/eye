@@ -6,6 +6,11 @@ class Eye::Checker::FileSize < Eye::Checker::Measure
 
   param :file, [String], true
 
+  def initialize(*args)
+    super
+    self.file = process.expand_path(file) if process && file
+  end
+
   def check_name
     @check_name ||= "fsize(#{measure_str})"
   end
