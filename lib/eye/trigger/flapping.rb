@@ -30,7 +30,7 @@ private
     debug { 'flapping recognized!!!' }
 
     process.notify :error, 'flapping!'
-    process.schedule :unmonitor, Eye::Reason.new(:flapping)
+    process.schedule :unmonitor, Eye::Reason::Flapping.new(:flapping)
 
     return unless retry_in
     return if retry_times && process.flapping_times >= retry_times
