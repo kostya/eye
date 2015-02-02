@@ -78,4 +78,15 @@ module Eye::Process::Config
     !!self[:daemonize]
   end
 
+  def skip_group_action?(action)
+    if sga = self[:skip_group_actions]
+      res = sga[action]
+      if res == true
+        res
+      elsif res.is_a?(Array)
+        res.include?(self.state_name)
+      end
+    end
+  end
+
 end

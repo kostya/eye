@@ -48,6 +48,16 @@ describe "Intergration chains" do
     (r2 - r1).should be_within(0.2).of(5)
   end
 
+  it "process have skip_group_action, skip that action" do
+    stub(@p2).skip_group_action?(:restart) { true }
+
+    @controller.send_command(:restart, "samples")
+    sleep 9
+
+    @p1.schedule_history.states.should == [:monitor, :restart]
+    @p2.schedule_history.states.should == [:monitor]
+  end
+
   it "if processes dead in chain restart, nothing raised" do
     @controller.send_command(:restart, "samples")
     sleep 3

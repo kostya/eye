@@ -207,6 +207,11 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     end
   end
 
+  def skip_group_action(act, val = true)
+    @config[:skip_group_actions] ||= {}
+    @config[:skip_group_actions][act] = val
+  end
+
 private
 
   def validate_signals(signals = nil)

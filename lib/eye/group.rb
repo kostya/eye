@@ -137,7 +137,7 @@ private
     info "send to all processes #{command} #{args.present? ? args*',' : nil}"
 
     @processes.each do |process|
-      process.send_command(command, *args)
+      process.send_command(command, *args) unless process.skip_group_action?(command)
     end
   end
 

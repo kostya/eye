@@ -24,6 +24,8 @@ class Eye::Dsl::ProcessOpts < Eye::Dsl::Opts
         trigger("check_dependency_#{unique_num}", :names => [ nm ] )
       end
     end
+
+    skip_group_action(:restart, [:up, :down, :starting, :stopping, :restarting])
   end
 
 private

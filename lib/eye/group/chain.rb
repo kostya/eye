@@ -12,6 +12,11 @@ private
     started_at = Time.now
 
     @processes.each do | process |
+      if process.skip_group_action?(command)
+        @chain_processes_current = @chain_processes_current.to_i + 1
+        next
+      end
+
       chain_schedule_process(process, type, command, *args)
 
       @chain_processes_current = @chain_processes_current.to_i + 1

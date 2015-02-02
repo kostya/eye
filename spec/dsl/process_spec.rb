@@ -445,7 +445,7 @@ describe "Eye::Dsl" do
               :triggers=>{
                 :check_dependency_2=>{:names=>["2"], :type=>:check_dependency}}},
             "2"=>{:name=>"2", :application=>"bla", :group=>"__default__", :pid_file=>"2.pid",
-              :triggers=>{:wait_dependency_1=>{:names=>["1"], :type=>:wait_dependency}}}}}}}}
+              :triggers=>{:wait_dependency_1=>{:names=>["1"], :type=>:wait_dependency}}, :skip_group_actions => {:restart => [:up, :down, :starting, :stopping, :restarting]}}}}}}}
   end
 
   it "depend_on reverse" do
@@ -466,7 +466,7 @@ describe "Eye::Dsl" do
             "1"=>{:name=>"1", :application=>"bla", :group=>"__default__",
               :triggers=>{:check_dependency_2=>{:names=>["2"], :type=>:check_dependency}}, :pid_file=>"1.pid"},
             "2"=>{:name=>"2", :application=>"bla", :group=>"__default__", :pid_file=>"2.pid",
-              :triggers=>{:wait_dependency_1=>{:names=>["1"], :type=>:wait_dependency}}}}}}}}
+              :triggers=>{:wait_dependency_1=>{:names=>["1"], :type=>:wait_dependency}}, :skip_group_actions => {:restart => [:up, :down, :starting, :stopping, :restarting]}}}}}}}
   end
 
   it "bug in depend_on #60" do
@@ -513,10 +513,19 @@ end
               :triggers=>{:stop_children=>{:type=>:stop_children}, :check_dependency_2=>{:names=>["b"], :type=>:check_dependency}, :check_dependency_4=>{:names=>["c"], :type=>:check_dependency}}},
             "b"=>{:name=>"b", :application=>"dependency",
               :checks=>{:memory=>{:below=>100, :type=>:memory}}, :group=>"bla", :start_command=>"sleep 100", :daemonize=>true, :pid_file=>"/tmp/test_process_b.pid",
-              :triggers=>{:wait_dependency_1=>{:names=>["a"], :type=>:wait_dependency}}},
+              :triggers=>{:wait_dependency_1=>{:names=>["a"], :type=>:wait_dependency}}, :skip_group_actions => {:restart => [:up, :down, :starting, :stopping, :restarting]}},
             "c"=>{:name=>"c", :application=>"dependency",
               :checks=>{:memory=>{:below=>100, :type=>:memory}}, :group=>"bla", :start_command=>"sleep 100", :daemonize=>true, :pid_file=>"/tmp/test_process_c.pid",
-              :triggers=>{:wait_dependency_3=>{:names=>["a"], :type=>:wait_dependency}}}}}}}}
+              :triggers=>{:wait_dependency_3=>{:names=>["a"], :type=>:wait_dependency}}, :skip_group_actions => {:restart => [:up, :down, :starting, :stopping, :restarting]}}}}}}}
+  end
+
+  it "skip_group_action" do
+    conf = <<-E
+      Eye.application("bla") do
+        skip_group_action :restart
+      end
+    E
+    Eye::Dsl.parse_apps(conf)['bla'][:skip_group_actions].should == {:restart => true}
   end
 
   describe "load_env" do
