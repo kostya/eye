@@ -374,5 +374,18 @@ describe "dependency" do
       @process_a.states_history.states.should == [:unmonitored, :starting, :up, :restarting, :stopping, :down, :starting, :up]
       @process_a.schedule_history.states.should == [:monitor, :start]
     end
+
+    it ":b was unmonitored, should successfully restart :a" do
+      @c.send_command :unmonitor, 'b'
+
+      @process_a.restart
+      sleep 1.5
+
+      @process_a.state_name.should == :up
+      @process_b.state_name.should == :unmonitored
+      Eye::System.pid_alive?(@pid_a).should == false
+      @process_a.states_history.states.should == [:unmonitored, :starting, :up, :restarting, :stopping, :down, :starting, :up]
+      @process_a.schedule_history.states.should == [:monitor, :start]
+    end
   end
 end
