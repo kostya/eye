@@ -79,8 +79,6 @@ class Eye::Checker::Http < Eye::Checker::Defer
     end
   end
 
-private
-
   def session
     Net::HTTP.new(@uri.host, @uri.port).tap do |session|
       if @uri.scheme == 'https'
