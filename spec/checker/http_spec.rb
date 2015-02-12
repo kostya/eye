@@ -184,6 +184,15 @@ describe "Eye::Checker::Http" do
         expect(subject.read_timeout).to eq(15)
       end
     end
+
+    context "when proxy is given" do
+      let(:http_checker) { chhttp(proxy_url: 'http://localhost:1080') }
+
+      it "sets proxy accoring to given value" do
+        expect(subject.proxy_address).to eq('localhost')
+        expect(subject.proxy_port).to eq(1080)
+      end
+    end
   end
 
 end

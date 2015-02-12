@@ -6,6 +6,7 @@ class Eye::Checker::Http < Eye::Checker::Defer
   #  :url => "http://127.0.0.1:3000/", :kind => :success, :pattern => /OK/, :timeout => 3.seconds
 
   param :url,           String, true
+  param :proxy_url,     String
   param :pattern,       [String, Regexp]
   param :kind,          [String, Fixnum, Symbol]
   param :timeout,       [Fixnum, Float]
@@ -18,6 +19,7 @@ class Eye::Checker::Http < Eye::Checker::Defer
     super
 
     @uri = URI.parse(url)
+    @proxy_uri = URI.parse(proxy_url) if proxy_url
     @kind = case kind
               when Fixnum then Net::HTTPResponse::CODE_TO_OBJ[kind]
               when String, Symbol then Net.const_get("HTTP#{kind.to_s.camelize}") rescue Net::HTTPSuccess
@@ -80,15 +82,25 @@ class Eye::Checker::Http < Eye::Checker::Defer
   end
 
   def session
-    Net::HTTP.new(@uri.host, @uri.port).tap do |session|
+    net_http.tap do |session|
       if @uri.scheme == 'https'
         require 'net/https'
         session.use_ssl = true
         session.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end
+
       session.open_timeout = @open_timeout
       session.read_timeout = @read_timeout
     end
   end
 
+  private
+
+  def net_http
+    if @proxy_uri
+      Net::HTTP.new(@uri.host, @uri.port, @proxy_uri.host, @proxy_uri.port)
+    else
+      Net::HTTP.new(@uri.host, @uri.port)
+    end
+  end
 end
