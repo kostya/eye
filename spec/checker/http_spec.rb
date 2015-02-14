@@ -123,7 +123,7 @@ describe "Eye::Checker::Http" do
   end
 
   describe "session" do
-    subject { http_checker.session }
+    subject { http_checker.send :session }
 
     context "when scheme is http" do
       let(:http_checker) { chhttp }

@@ -81,6 +81,8 @@ class Eye::Checker::Http < Eye::Checker::Defer
     end
   end
 
+private
+
   def session
     net_http.tap do |session|
       if @uri.scheme == 'https'
@@ -93,8 +95,6 @@ class Eye::Checker::Http < Eye::Checker::Defer
       session.read_timeout = @read_timeout
     end
   end
-
-  private
 
   def net_http
     if @proxy_uri
