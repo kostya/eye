@@ -51,7 +51,7 @@ class Eye::SystemResources
     end
 
     def cache
-      @cache ||= Cache.new
+      Celluloid::Actor[:system_resources_cache]
     end
   end
 
@@ -98,4 +98,6 @@ class Eye::SystemResources
     end
   end
 
+  # Setup global sigar singleton here
+  Cache.supervise_as(:system_resources_cache)
 end
