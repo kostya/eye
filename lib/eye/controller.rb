@@ -10,7 +10,9 @@ require_relative 'utils/mini_active_support'
 # Extend all objects with logger
 Object.send(:include, Eye::Logger::ObjectExt)
 
-Eye::Sigar # needs to preload
+# needs to preload
+Eye::Sigar
+Eye::SystemResources
 
 class Eye::Controller
   include Celluloid
@@ -36,7 +38,6 @@ class Eye::Controller
     @current_config = Eye::Config.new
 
     Celluloid::logger = Eye::Logger.new('celluloid')
-    Eye::SystemResources.cache
 
     info "starting #{Eye::ABOUT} <#{$$}>"
   end
