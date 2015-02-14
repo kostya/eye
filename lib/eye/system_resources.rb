@@ -6,7 +6,9 @@ class Eye::SystemResources
   class << self
 
     def memory(pid)
-      cache.proc_mem(pid).try(:resident)
+      if mem = cache.proc_mem(pid)
+        mem.resident
+      end
     end
 
     def cpu(pid)
