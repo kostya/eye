@@ -48,7 +48,7 @@ describe "Controller user_command" do
     Eye::System.pid_alive?(@process.pid).should == true
 
     subject.command('user_command', 'abcd', 'app')
-    sleep 0.8
+    sleep 1
 
     Eye::System.pid_alive?(@process.pid).should == false
   end
