@@ -4,8 +4,4 @@ rvm:
   - "2.0.0"
   - "2.1"
   - "2.2"
-script: COVA=1 bundle exec rake N=15
-before_script:
-  - bundle exec rake remove_coverage
-after_script:
-  - bundle exec rake coveralls:push
+script: bundle exec rake N=15
