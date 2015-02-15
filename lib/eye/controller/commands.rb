@@ -75,6 +75,7 @@ private
     exclusive do
       send_command :break_chain, 'all'
       send_command :stop, 'all'
+      send_command :freeze, 'all'
     end
 
     # wait until all processes goes to unmonitored

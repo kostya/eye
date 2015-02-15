@@ -175,4 +175,23 @@ describe "Scheduler" do
       @process.test3.should == [1,2,3]
     end
   end
+
+  describe "when scheduler_freeze not accept new commands" do
+    it "should schedule to future" do
+      @process.schedule(:scheduler_test3, 1, 2, 3)
+      sleep 0.01
+      @process.test3.should == [1, 2, 3]
+
+      @process.scheduler_freeze
+      @process.schedule(:scheduler_test3, 5)
+      @process.schedule(:scheduler_test3, 6)
+      sleep 0.1
+      @process.test3.should == [1, 2, 3]
+
+      @process.scheduler_unfreeze
+      @process.schedule(:scheduler_test3, 7)
+      sleep 0.1
+      @process.test3.should == [7]
+    end
+  end
 end

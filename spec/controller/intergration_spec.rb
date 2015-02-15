@@ -90,6 +90,7 @@ describe "Intergration" do
 
     should_spend(4, 3.5) do
       @controller.command(:stop_all)
+      @controller.command(:restart) # should not be affected
     end
 
     @processes.map(&:state_name).uniq.should == [:unmonitored]

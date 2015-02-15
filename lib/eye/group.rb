@@ -123,6 +123,10 @@ class Eye::Group
     @chain_breaker = true
   end
 
+  def freeze
+    async_schedule :freeze
+  end
+
   def clear
     @processes = Eye::Utils::AliveArray.new
   end
