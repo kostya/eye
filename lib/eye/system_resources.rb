@@ -61,6 +61,9 @@ class Eye::SystemResources
     attr_reader :expire
 
     def initialize
+      @memory = {}
+      @cpu = {}
+      @ppids = {}
       clear
       setup_expire
     end
@@ -72,9 +75,9 @@ class Eye::SystemResources
     end
 
     def clear
-      @memory = {}
-      @cpu = {}
-      @ppids = {}
+      @memory.clear
+      @cpu.clear
+      @ppids.clear
     end
 
     def proc_mem(pid)
