@@ -35,6 +35,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'sinatra'
   gem.add_development_dependency 'thin'
   gem.add_development_dependency 'xmpp4r'
+  gem.add_development_dependency 'slack-notifier'
   gem.add_development_dependency 'coveralls'
   gem.add_development_dependency 'simplecov', '>= 0.8.1'
   gem.add_development_dependency 'parallel_tests'
