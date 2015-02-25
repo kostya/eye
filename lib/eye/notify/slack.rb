@@ -8,13 +8,13 @@ class Eye::Notify::Slack < Eye::Notify
   # end
 
   param :webhook_url, String, true
-  param :channel,     String, true
-  param :username,    String, true
+  param :channel,     String, nil, "#default"
+  param :username,    String, nil, "eye"
 
   param :icon, String
 
   def execute
-    debug { "send jabber #{[channel, username]} - #{[contact, message_body]}" }
+    debug { "send slack #{[channel, username]} - #{[contact, message_body]}" }
 
     options = {
       channel:  channel,
