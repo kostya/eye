@@ -200,6 +200,10 @@ Eye daemon info:
     $ eye x(info)
     $ eye x -c # for show current config
 
+Local Eye version LEye (like foreman):
+
+[LEye](https://github.com/kostya/eye/wiki/What-is-loader_eye-and-leye)
+
 Process states and events:
 
 [![Eye](https://raw.github.com/kostya/stuff/master/eye/mprocess.png)](https://raw.github.com/kostya/stuff/master/eye/process.png)
@@ -209,7 +213,7 @@ Process states and events:
 
 [Articles](https://github.com/kostya/eye/wiki/Articles)
 
-[Using Env variables](https://github.com/kostya/eye/wiki/Using-ENV-variables-in-config)
+[Wiki](https://github.com/kostya/eye/wiki)
 
 
 Thanks `Bluepill` for the nice config ideas.
