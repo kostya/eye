@@ -40,7 +40,7 @@ module Eye::Process::Data
 
     if @states_history
       h.merge!( state_changed_at: @states_history.last_state_changed_at.to_i,
-                state_reason: @states_history.last_reason )
+                state_reason: @states_history.last_reason.to_s )
     end
 
     h.merge!(debug: debug_data) if debug
