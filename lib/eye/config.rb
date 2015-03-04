@@ -8,11 +8,14 @@ class Eye::Config
   end
 
   def merge(other_config)
-    Eye::Config.new(@settings.merge(other_config.settings), @applications.merge(other_config.applications))
+    new_settings = {}
+    Eye::Utils.deep_merge!(new_settings, @settings)
+    Eye::Utils.deep_merge!(new_settings, other_config.settings)
+    Eye::Config.new(new_settings, @applications.merge(other_config.applications))
   end
 
   def merge!(other_config)
-    @settings.merge!(other_config.settings)
+    Eye::Utils.deep_merge!(@settings, other_config.settings)
     @applications.merge!(other_config.applications)
   end
 

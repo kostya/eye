@@ -585,6 +585,11 @@ describe "Eye::Controller::Load" do
     end
   end
 
+  it "contacts bug #118" do
+    subject.load(fixture("dsl/contact1.eye"), fixture("dsl/contact2.eye"))
+    subject.settings[:contacts].keys.sort.should == %w{contact1 contact2}
+  end
+
   describe "valiadate localize params" do
     it "validate correct working_dir" do
       conf = <<-E
