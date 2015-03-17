@@ -86,6 +86,22 @@ describe "Eye::Dsl" do
     Eye::Dsl.parse_apps(conf).should == {"bla"=>{:name => "bla", :groups=>{"__default__"=>{:name => "__default__", :application => "bla", :processes=>{"1"=>{:pid_file=>"1.pid", :application=>"bla", :group=>"__default__", :name=>"1"}, "2"=>{:pid_file=>"2.pid", :application=>"bla", :group=>"__default__", :name=>"2"}}}}}}
   end
 
+  it "process with def and without proxy, O_o this works!!!" do
+    conf = <<-E
+      def add_process(name)
+        process(name) do
+          pid_file "\#{name}.pid"
+        end
+      end
+
+      Eye.application("bla") do
+        add_process("1")
+        group(:gr){ add_process("2") }
+      end
+    E
+    Eye::Dsl.parse_apps(conf).should == {"bla"=>{:name=>"bla", :groups=>{"__default__"=>{:name=>"__default__", :application=>"bla", :processes=>{"1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"1.pid"}}}, "gr"=>{:name=>"gr", :application=>"bla", :processes=>{"2"=>{:name=>"2", :application=>"bla", :group=>"gr", :pid_file=>"2.pid"}}}}}}
+  end
+
   it "process with constant" do
     conf = <<-E
       BLA = "1.pid"
