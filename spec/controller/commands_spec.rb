@@ -101,15 +101,26 @@ describe "comamnd spec" do
       sleep 0.5
       cmd = :unmonitor
 
-      any_instance_of(Eye::Process) do |p|
-        dont_allow(p).send_command(cmd)
-      end
+      subject.send_command cmd, "gr1"
+      sleep 0.5
 
-      mock(@p1).send_command(cmd)
-      mock(@p2).send_command(cmd)
+      @p1.schedule_history.states.should == [:monitor, :unmonitor]
+      @p2.schedule_history.states.should == [:monitor, :unmonitor]
+      @p3.schedule_history.states.should == [:monitor]
+    end
+
+    it "stop group with skip_group_action for @p2" do
+      sleep 0.5
+      cmd = :stop
+
+      stub(@p2).skip_group_action?(:stop) { true }
 
       subject.send_command cmd, "gr1"
       sleep 0.5
+
+      @p1.schedule_history.states.should == [:monitor, :stop]
+      @p2.schedule_history.states.should == [:monitor]
+      @p3.schedule_history.states.should == [:monitor]
     end
 
     it "delete obj" do

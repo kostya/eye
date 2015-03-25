@@ -76,4 +76,8 @@ module Eye::Process::Controller
     end
   end
 
+  def freeze
+    scheduler_freeze
+  end
+
 end

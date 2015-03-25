@@ -201,10 +201,16 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
 
     env_vars = content.split("\n")
     env_vars.each do |e|
+      e = e.gsub(/#.+$/, '').strip
       next unless e.include?('=')
-      k, *v = e.split('=')
-      env k => v.join('=')
+      k, v = e.split('=', 2)
+      env k => v
     end
+  end
+
+  def skip_group_action(act, val = true)
+    @config[:skip_group_actions] ||= {}
+    @config[:skip_group_actions][act] = val
   end
 
 private

@@ -157,7 +157,7 @@ describe "dependency" do
         # dependency :b -> :a
         #   :b want :a to be upped
 
-        Eye.app :d do
+        Eye.app :app do
           working_dir "#{C.sample_dir}"
           start_grace 0.5
           check_alive_period 0.5
@@ -332,10 +332,8 @@ describe "dependency" do
       @process_b.schedule_history.states.should == [:monitor]
     end
 
-    it "restart send to both" do
-      pending
-      @process_a.send_command :restart
-      @process_b.send_command :restart
+    it "restart send to group" do
+      @c.send_command :restart, 'app'
       sleep 3.5
 
       @process_a.state_name.should == :up
@@ -347,8 +345,8 @@ describe "dependency" do
       @process_a.states_history.states.should == [:unmonitored, :starting, :up, :restarting, :stopping, :down, :starting, :up]
       @process_b.states_history.states.should == [:unmonitored, :starting, :up, :restarting, :stopping, :down, :starting, :up]
 
-      @process_a.schedule_history.states.should == [:monitor, :start]
-      @process_b.schedule_history.states.should == [:monitor]
+      @process_a.schedule_history.states.should == [:monitor, :start, :restart, :start]
+      @process_b.schedule_history.states.should == [:monitor, :restart]
     end
 
     it ":a was deleted, should successfully restart :b" do
@@ -373,6 +371,36 @@ describe "dependency" do
       Eye::System.pid_alive?(@pid_a).should == false
       @process_a.states_history.states.should == [:unmonitored, :starting, :up, :restarting, :stopping, :down, :starting, :up]
       @process_a.schedule_history.states.should == [:monitor, :start]
+    end
+
+    it ":b was unmonitored, should successfully restart :a, and not restart :b" do
+      @c.send_command :unmonitor, 'b'
+      sleep 0.2
+
+      @process_a.restart
+      sleep 1.5
+
+      @process_a.state_name.should == :up
+      @process_b.state_name.should == :unmonitored
+      Eye::System.pid_alive?(@pid_a).should == false
+      @process_a.states_history.states.should == [:unmonitored, :starting, :up, :restarting, :stopping, :down, :starting, :up]
+      @process_a.schedule_history.states.should == [:monitor, :start]
+      @process_b.schedule_history.states.should == [:monitor, :unmonitor]
+    end
+
+    it ":b was unmonitored, when restart group, should restart a and b" do
+      @c.send_command :unmonitor, 'b'
+      sleep 0.2
+
+      @c.send_command :restart, 'app'
+      sleep 2.5
+
+      @process_a.state_name.should == :up
+      @process_b.state_name.should == :up
+      Eye::System.pid_alive?(@pid_a).should == false
+      @process_a.states_history.states.should == [:unmonitored, :starting, :up, :restarting, :stopping, :down, :starting, :up]
+      @process_a.schedule_history.states.should == [:monitor, :start, :restart, :start]
+      @process_b.schedule_history.states.should == [:monitor, :unmonitor, :restart]
     end
   end
 end

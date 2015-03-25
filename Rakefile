@@ -2,15 +2,17 @@
 
 require "bundler/gem_tasks"
 require 'rspec/core/rake_task'
-require 'parallel_tests/tasks'
 require 'coveralls/rake/task'
 
 Coveralls::RakeTask.new
 
 task :default => :pspec
 
+desc "run parallel tests"
 task :pspec do
-  Rake::Task['parallel:spec'].invoke(ENV['N'] || 10)
+  dirname = File.expand_path(File.dirname(__FILE__))
+  cmd = "bundle exec parallel_rspec -n #{ENV['N'] || 10} --runtime-log '#{dirname}/spec/weights.txt' #{dirname}/spec"
+  abort unless system(cmd)
 end
 
 RSpec::Core::RakeTask.new(:spec) do |t|

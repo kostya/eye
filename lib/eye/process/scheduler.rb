@@ -3,6 +3,11 @@ module Eye::Process::Scheduler
   # ex: schedule :update_config, config, "reason: update_config"
   def schedule(command, *args, &block)
     if scheduler.alive?
+      if scheduler_freeze?
+        warn ":#{command} ignoring to schedule, because scheduler is freeze"
+        return
+      end
+
       unless self.respond_to?(command, true)
         warn ":#{command} scheduling is unsupported"
         return
@@ -67,6 +72,18 @@ module Eye::Process::Scheduler
 
   def schedule_history
     @schedule_history ||= Eye::Process::StatesHistory.new(50)
+  end
+
+  def scheduler_freeze
+    @scheduler_freeze = true
+  end
+
+  def scheduler_unfreeze
+    @scheduler_freeze = nil
+  end
+
+  def scheduler_freeze?
+    @scheduler_freeze
   end
 
 private

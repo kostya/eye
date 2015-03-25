@@ -28,7 +28,7 @@ I hope we've succeeded, we're using eye in production and are quite happy.
 
 ###  Config example
 
-examples/test.eye
+examples/test.eye ([more examples](https://github.com/kostya/eye/tree/master/examples))
 ```ruby
 # load submodules, here just for example
 Eye.load('./eye/*.rb')
@@ -200,16 +200,23 @@ Eye daemon info:
     $ eye x(info)
     $ eye x -c # for show current config
 
+Local Eye version LEye (like foreman):
+
+[LEye](https://github.com/kostya/eye/wiki/What-is-loader_eye-and-leye)
+
 Process states and events:
 
 [![Eye](https://raw.github.com/kostya/stuff/master/eye/mprocess.png)](https://raw.github.com/kostya/stuff/master/eye/process.png)
 
+How to write Eye extensions, plugins, gems:
+
+[Eye-http](https://github.com/kostya/eye-http) [Eye-rotate](https://github.com/kostya/eye-rotate) [Eye-hipchat](https://github.com/tmeinlschmidt/eye-hipchat) [Plugin example](https://github.com/kostya/eye/tree/master/examples/plugin)
 
 [Eye related projects](https://github.com/kostya/eye/wiki/Related-projects)
 
 [Articles](https://github.com/kostya/eye/wiki/Articles)
 
-[Using Env variables](https://github.com/kostya/eye/wiki/Using-ENV-variables-in-config)
+[Wiki](https://github.com/kostya/eye/wiki)
 
 
 Thanks `Bluepill` for the nice config ideas.

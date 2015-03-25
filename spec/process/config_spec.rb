@@ -47,6 +47,23 @@ describe "Eye::Process::Config" do
     end
   end
 
+  it "skip_group_action" do
+    @p = Eye::Process.new({:skip_group_actions => {:stop => true}, :pid_file => '/tmp/1.pid'})
+    @p.skip_group_action?(:stop).should == true
+    @p.skip_group_action?(:restart).should == nil
+  end
+
+  it "skip_group_action? performs array or allowed states" do
+    @p = Eye::Process.new({:skip_group_actions => {:stop => [:up, :down]}, :pid_file => '/tmp/1.pid'})
+    @p.state = :up
+    @p.skip_group_action?(:stop).should == true
+    @p.skip_group_action?(:restart).should == nil
+
+    @p.state = :unmonitored
+    @p.skip_group_action?(:stop).should == false
+    @p.skip_group_action?(:restart).should == nil
+  end
+
   describe ":children_update_period" do
     it "should set default" do
       @p = Eye::Process.new({:pid_file => '/tmp/1.pid'})
