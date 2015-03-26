@@ -1,6 +1,6 @@
 # this is not example, just config for eye stress test
 
-PREFIX = ENV['PRE'] || 1
+PREFIX = ENV['PRE'] || ENV['EYE_V'] || 1
 
 Eye.app :stress_test do
   working_dir "/tmp"
