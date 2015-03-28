@@ -22,7 +22,7 @@ describe "Process Restart, emulate some real hard cases" do
       @process.watchers.keys.should == [:check_alive]
 
       @process.load_pid_from_file.should == @process.pid
-      @process.states_history.end?(:up, :restarting, :stopping, :unmonitored, :starting, :up).should == true
+      @process.states_history.states.should end_with(:up, :restarting, :stopping, :unmonitored, :starting, :up)
 
       File.read(@log).should include("USR1")
     end
@@ -34,7 +34,7 @@ describe "Process Restart, emulate some real hard cases" do
 
       @process.restart
       Eye::System.pid_alive?(@pid).should == true
-      @process.states_history.seq?(:up, :restarting, :up).should == true
+      @process.states_history.states.should seq(:up, :restarting, :up)
     end
 
     it "restart command timeouted" do
@@ -50,7 +50,7 @@ describe "Process Restart, emulate some real hard cases" do
       @process.watchers.keys.should == [:check_alive]
 
       @process.load_pid_from_file.should == @process.pid
-      @process.states_history.end?(:up, :restarting, :up).should == true
+      @process.states_history.states.should end_with(:up, :restarting, :up)
     end
   end
 

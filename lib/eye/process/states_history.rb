@@ -1,5 +1,4 @@
 class Eye::Process::StatesHistory < Eye::Utils::Tail
-
   def push(state, reason = nil, tm = Time.now)
     super(state: state, at: tm.to_i, reason: reason)
   end
@@ -26,41 +25,4 @@ class Eye::Process::StatesHistory < Eye::Utils::Tail
   def last_state_changed_at
     Time.at(last[:at])
   end
-
-  def seq?(*seq)
-    str = states * ','
-    substr = seq.flatten * ','
-    str.include?(substr)
-  end
-
-  def end?(*seq)
-    str = states * ','
-    substr = seq.flatten * ','
-    str.end_with?(substr)
-  end
-
-  def any?(*seq)
-    states.any? do |st|
-      seq.flatten.include?(st)
-    end
-  end
-
-  def noone?(*seq)
-    !states.all? do |st|
-      seq.flatten.include?(st)
-    end
-  end
-
-  def all?(*seq)
-    states.all? do |st|
-      seq.flatten.include?(st)
-    end
-  end
-
-  def state_count(state)
-    states.count do |st|
-      st == state
-    end
-  end
-
 end

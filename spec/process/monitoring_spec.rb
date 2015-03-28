@@ -20,7 +20,7 @@ describe "Process Monitoring" do
       Eye::System.pid_alive?(@pid).should == true
 
       @process.state_name.should == :up
-      @process.states_history.seq?(:down, :starting, :up).should == true
+      @process.states_history.states.should seq(:down, :starting, :up)
       @process.watchers.keys.should == [:check_alive]
       @process.load_pid_from_file.should == @process.pid
     end
@@ -41,7 +41,7 @@ describe "Process Monitoring" do
       Eye::System.pid_alive?(@pid).should == true
 
       @process.state_name.should == :up
-      @process.states_history.seq?(:down, :starting, :up).should == true
+      @process.states_history.states.should seq(:down, :starting, :up)
       @process.watchers.keys.should == [:check_alive]
       @process.load_pid_from_file.should == @process.pid
     end
@@ -60,7 +60,7 @@ describe "Process Monitoring" do
 
     @process.state_name.should == :unmonitored
     @process.watchers.keys.should == []
-    @process.states_history.end?(:up, :down, :unmonitored).should == true
+    @process.states_history.states.should end_with(:up, :down, :unmonitored)
     @process.load_pid_from_file.should == nil
   end
 

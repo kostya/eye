@@ -82,8 +82,8 @@ describe "Process Start" do
       end
 
       # should try to up process many times
-      @process.states_history.seq?(:unmonitored, :starting, :down, :starting).should == true
-      @process.states_history.all?(:unmonitored, :starting, :down).should == true
+      @process.states_history.states.should seq(:unmonitored, :starting, :down, :starting)
+      @process.states_history.states.should contain_only(:unmonitored, :starting, :down)
 
       @process.watchers.keys.should == []
     end
@@ -99,7 +99,7 @@ describe "Process Start" do
       @process.pid.should == nil
       @process.load_pid_from_file.should == nil
       [:starting, :down].should include(@process.state_name)
-      @process.states_history.all?(:unmonitored, :starting, :down).should == true
+      @process.states_history.states.should contain_only(:unmonitored, :starting, :down)
     end
 
     it "start PROBLEM with stdout permissions" do
@@ -113,7 +113,7 @@ describe "Process Start" do
       @process.pid.should == nil
       @process.load_pid_from_file.should == nil
       [:starting, :down].should include(@process.state_name)
-      @process.states_history.all?(:unmonitored, :starting, :down).should == true
+      @process.states_history.states.should contain_only(:unmonitored, :starting, :down)
     end
 
     it "start PROBLEM binary permissions" do
@@ -127,7 +127,7 @@ describe "Process Start" do
       @process.pid.should == nil
       @process.load_pid_from_file.should == nil
       [:starting, :down].should include(@process.state_name)
-      @process.states_history.all?(:unmonitored, :starting, :down).should == true
+      @process.states_history.states.should contain_only(:unmonitored, :starting, :down)
     end
 
   end
@@ -140,8 +140,8 @@ describe "Process Start" do
     sleep 1
 
     [:starting, :down].should include(@process.state_name)
-    @process.states_history.seq?(:unmonitored, :starting, :down, :starting).should == true
-    @process.states_history.all?(:unmonitored, :starting, :down).should == true
+    @process.states_history.states.should seq(:unmonitored, :starting, :down, :starting)
+    @process.states_history.states.should contain_only(:unmonitored, :starting, :down)
 
     @process.watchers.keys.should == []
   end
@@ -156,8 +156,8 @@ describe "Process Start" do
     sleep 1
 
     [:starting, :down].should include(@process.state_name)
-    @process.states_history.seq?(:unmonitored, :starting, :down, :starting).should == true
-    @process.states_history.all?(:unmonitored, :starting, :down).should == true
+    @process.states_history.states.should seq(:unmonitored, :starting, :down, :starting)
+    @process.states_history.states.should contain_only(:unmonitored, :starting, :down)
 
     @process.watchers.keys.should == []
   end
@@ -184,8 +184,8 @@ describe "Process Start" do
 
     [:starting, :down].should include(@process.state_name)
 
-    @process.states_history.seq?(:unmonitored, :starting, :down, :starting).should == true
-    @process.states_history.all?(:unmonitored, :starting, :down).should == true
+    @process.states_history.states.should seq(:unmonitored, :starting, :down, :starting)
+    @process.states_history.states.should contain_only(:unmonitored, :starting, :down)
   end
 
   it "long process with #{C.p2[:name]} but start_timeout is OK" do
@@ -208,8 +208,8 @@ describe "Process Start" do
 
     [:starting, :down].should include(@process.state_name)
 
-    @process.states_history.seq?(:unmonitored, :starting, :down, :starting).should == true
-    @process.states_history.all?(:unmonitored, :starting, :down).should == true
+    @process.states_history.states.should seq(:unmonitored, :starting, :down, :starting)
+    @process.states_history.states.should contain_only(:unmonitored, :starting, :down)
   end
 
   it "bad config daemonize self daemonized process pid the same" do

@@ -101,7 +101,7 @@ describe "Process Controller" do
 
       Eye::System.pid_alive?(@pid).should == false
       @process.state_name.should == :unmonitored
-      @process.states_history.end?(:down, :unmonitored).should == true
+      @process.states_history.states.should end_with(:down, :unmonitored)
 
       # should clear pid
       @process.pid.should == nil
@@ -116,7 +116,7 @@ describe "Process Controller" do
 
       Eye::System.pid_alive?(@pid).should == true
       @process.state_name.should == :unmonitored
-      @process.states_history.end?(:stopping, :unmonitored).should == true
+      @process.states_history.states.should end_with(:stopping, :unmonitored)
 
       # should clear pid
       @process.pid.should == nil

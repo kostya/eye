@@ -251,3 +251,15 @@ def new_controller(filename)
     c.load(filename)
   end
 end
+
+RSpec::Matchers.define :contain_only do |*expected|
+  match do |actual|
+    actual.uniq.sort == expected.flatten.sort
+  end
+end
+
+RSpec::Matchers.define :seq do |*expected|
+  match do |actual|
+    actual.join(',').include?(expected.flatten.join(','))
+  end
+end

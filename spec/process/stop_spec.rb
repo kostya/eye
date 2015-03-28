@@ -46,7 +46,7 @@ describe "Process Stop" do
     Eye::System.pid_alive?(@pid).should == false
     @process.pid.should == @pid
     @process.state_name.should == :down
-    @process.states_history.end?(:up, :stopping, :down).should == true
+    @process.states_history.states.should end_with(:up, :stopping, :down)
     @process.watchers.keys.should == []
     @process.load_pid_from_file.should == nil
   end
@@ -61,7 +61,7 @@ describe "Process Stop" do
     Eye::System.pid_alive?(@pid).should == false
     @process.pid.should == @pid
     @process.state_name.should == :down
-    @process.states_history.end?(:up, :stopping, :down).should == true
+    @process.states_history.states.should end_with(:up, :stopping, :down)
     @process.watchers.keys.should == []
     @process.load_pid_from_file.should == nil
   end
