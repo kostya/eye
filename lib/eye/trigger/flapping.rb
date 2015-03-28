@@ -8,6 +8,11 @@ class Eye::Trigger::Flapping < Eye::Trigger
   param :retry_in, [Float, Fixnum]
   param :retry_times, [Fixnum]
 
+  def initialize(*args)
+    super
+    @flapping_times = 0
+  end
+
   def check(transition)
     on_flapping if transition.event == :crashed && !good?
   end
@@ -33,9 +38,10 @@ private
     process.schedule :unmonitor, Eye::Reason::Flapping.new(:flapping)
 
     return unless retry_in
-    return if retry_times && process.flapping_times >= retry_times
+    return if retry_times && @flapping_times >= retry_times
 
-    process.schedule_in(retry_in.to_f, :retry_start_after_flapping)
+    @flapping_times += 1
+    process.schedule_in(retry_in.to_f, :conditional_start, Eye::Reason::Flapping.new('retry start after flapping'))
   end
 
 end

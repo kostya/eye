@@ -32,14 +32,6 @@ module Eye::Process::Trigger
     start
   end
 
-  def retry_start_after_flapping
-    return unless unmonitored?
-    return unless state_reason.is_a?(Eye::Reason::Flapping)
-
-    schedule :start, Eye::Reason.new(:'retry start after flapping')
-    self.flapping_times += 1
-  end
-
 private
 
   def add_trigger(cfg = {})

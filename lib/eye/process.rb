@@ -19,7 +19,7 @@ class Eye::Process
 
   attr_accessor :pid, :parent_pid,
                 :watchers, :config, :states_history,
-                :children, :triggers, :name, :state_reason, :flapping_times
+                :children, :triggers, :name, :state_reason
 
   def initialize(config)
     raise 'you must supply a pid_file location' unless config[:pid_file]
@@ -30,8 +30,6 @@ class Eye::Process
     @children = {}
     @triggers = []
     @name = @config[:name]
-
-    @flapping_times = 0
 
     @states_history = Eye::Process::StatesHistory.new(100)
     @states_history << :unmonitored
