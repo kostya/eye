@@ -19,4 +19,5 @@ class Eye::Reason
   end
 
   class Flapping < Eye::Reason; end
+  class StartingGuard < Eye::Reason; end
 end

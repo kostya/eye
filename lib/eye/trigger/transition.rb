@@ -5,11 +5,7 @@ class Eye::Trigger::Transition < Eye::Trigger
   param :do, [Proc, Symbol]
 
   def check(trans)
-    act = @options[:do]
-    if act
-      instance_exec(&@options[:do]) if act.is_a?(Proc)
-      send(act, process) if act.is_a?(Symbol)
-    end
+    exec_proc :do
   end
 
 end

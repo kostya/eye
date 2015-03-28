@@ -52,4 +52,13 @@ Eye.app :triggers do
     }
   end
 
+  # process d cant start, until file /tmp/bla contains string 'bla'
+  process :d do
+    pid_file "/tmp/d.pid"
+    start_command "sleep 100"
+    daemonize true
+
+    trigger :starting_guard, every: 5.seconds, should: -> { `cat /tmp/bla` =~ /bla/ }
+  end
+
 end

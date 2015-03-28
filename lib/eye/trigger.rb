@@ -6,9 +6,10 @@ class Eye::Trigger
   autoload :StopChildren, 'eye/trigger/stop_children'
   autoload :WaitDependency, 'eye/trigger/wait_dependency'
   autoload :CheckDependency, 'eye/trigger/check_dependency'
+  autoload :StartingGuard, 'eye/trigger/starting_guard'
 
   TYPES = {:flapping => 'Flapping', :transition => 'Transition', :stop_children => 'StopChildren',
-    :wait_dependency => 'WaitDependency', :check_dependency => 'CheckDependency'
+    :wait_dependency => 'WaitDependency', :check_dependency => 'CheckDependency', :starting_guard => 'StartingGuard'
   }
 
   attr_reader :message, :options, :process
@@ -97,6 +98,17 @@ class Eye::Trigger
 
   def run_in_process_context(p)
     process.instance_exec(&p) if process.alive?
+  end
+
+  def exec_proc(name = :do)
+    act = @options[name]
+    if act
+      res = instance_exec(&@options[name]) if act.is_a?(Proc)
+      res = send(act, process) if act.is_a?(Symbol)
+      res
+    else
+      true
+    end
   end
 
   def defer(&block)
