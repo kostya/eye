@@ -33,7 +33,7 @@ describe "dependency" do
             pid_file "#{C.p2_pid}"
             start_grace 0.5
 
-            depend_on :a, :wait_timeout => 5.seconds
+            depend_on :a
           end
 
         end
@@ -69,13 +69,14 @@ describe "dependency" do
       @process_b.state_name.should == :up
 
       @process_a.states_history.states.should == [:unmonitored, :starting, :up]
-      @process_b.states_history.states.should == [:unmonitored, :starting, :up]
+      @process_b.states_history.states.should end_with(:unmonitored, :starting, :up)
 
       @process_a.schedule_history.states.should == [:monitor, :unmonitor, :start]
-      @process_b.schedule_history.states.should == [:monitor, :unmonitor, :start]
+      @process_b.schedule_history.states.should == [:monitor, :unmonitor, :start, :conditional_start]
     end
 
     it "start :b, and :a not started (crashed)" do
+      @process_b.config[:triggers].detect{|k, v| k.to_s =~ /wait_dep/}[1][:times] = 3
       @process_a.config[:start_command] = "asdfasdf asf "
       @process_b.send_command :start
 
@@ -85,13 +86,14 @@ describe "dependency" do
       @process_a.state_name.should == :unmonitored
       @process_b.state_name.should == :unmonitored
 
-      @process_b.states_history.states.should == [:unmonitored, :starting, :unmonitored]
+      @process_b.states_history.states.should == [:unmonitored, :starting, :unmonitored, :starting, :unmonitored, :starting, :unmonitored]
     end
 
     it "start :b, and :a not started (crashed), than a somehow up, should reschedule and up" do
       @process_a.config[:start_command] = "asdfasdf asf "
       @process_a.config[:start_grace] = 1.seconds
-      @process_b.config[:triggers].detect{|k, v| k.to_s =~ /wait_dep/}[1][:retry_after] = 2.seconds
+      @process_b.config[:triggers].detect{|k, v| k.to_s =~ /wait_dep/}[1][:times] = 2
+      @process_b.config[:triggers].detect{|k, v| k.to_s =~ /wait_dep/}[1][:retry_in] = 2.seconds
       @process_b.send_command :start
       sleep 6
       @process_a.state_name.should == :unmonitored
@@ -103,12 +105,12 @@ describe "dependency" do
       @process_a.state_name.should == :up
       @process_b.state_name.should == :up
 
-      @process_b.states_history.states.should == [:unmonitored, :starting, :unmonitored, :starting, :up]
+      @process_b.states_history.states.should == [:unmonitored, :starting, :unmonitored, :starting, :unmonitored, :starting, :up]
     end
 
     it "start :b, and :a started after big timeout (> wait_timeout)" do
       @process_a.config[:start_grace] = 6.seconds
-      @process_b.config[:triggers].detect{|k, v| k.to_s =~ /wait_dep/}[1][:retry_after] = 2.seconds
+      @process_b.config[:triggers].detect{|k, v| k.to_s =~ /wait_dep/}[1][:retry_in] = 2.seconds
       @process_b.send_command :start
       sleep 10
 
@@ -116,10 +118,10 @@ describe "dependency" do
       @process_b.state_name.should == :up
 
       @process_a.states_history.states.should == [:unmonitored, :starting, :up]
-      @process_b.states_history.states.should == [:unmonitored, :starting, :unmonitored, :starting, :up]
+      @process_b.states_history.states.should == [:unmonitored, :starting, :unmonitored, :starting, :unmonitored, :starting, :up]
 
       @process_a.schedule_history.states.should == [:monitor, :unmonitor, :start]
-      @process_b.schedule_history.states.should == [:monitor, :unmonitor, :start, :start]
+      @process_b.schedule_history.states.should == [:monitor, :unmonitor, :start, :conditional_start, :conditional_start]
     end
 
     it "start :b and should_start = false" do
@@ -141,10 +143,10 @@ describe "dependency" do
       @process_b.state_name.should == :up
 
       @process_a.states_history.states.should == [:unmonitored, :starting, :up]
-      @process_b.states_history.states.should == [:unmonitored, :starting, :unmonitored, :starting, :up]
+      @process_b.states_history.states.should == [:unmonitored, :starting, :unmonitored, :starting, :unmonitored, :starting, :unmonitored, :starting, :up]
 
       @process_a.schedule_history.states.should == [:monitor, :unmonitor]
-      @process_b.schedule_history.states.should == [:monitor, :unmonitor, :start, :start]
+      @process_b.schedule_history.states.should == [:monitor, :unmonitor, :start, :conditional_start, :conditional_start, :conditional_start]
     end
   end
 
@@ -357,8 +359,8 @@ describe "dependency" do
 
       @process_b.state_name.should == :up
       Eye::System.pid_alive?(@pid_b).should == false
-      @process_b.states_history.states.should == [:unmonitored, :starting, :up, :restarting, :stopping, :down, :starting, :up]
-      @process_b.schedule_history.states.should == [:monitor]
+      @process_b.states_history.states.should == [:unmonitored, :starting, :up, :restarting, :stopping, :down, :starting, :unmonitored, :starting, :up]
+      @process_b.schedule_history.states.should == [:monitor, :conditional_start]
     end
 
     it ":b was deleted, should successfully restart :a" do
@@ -403,4 +405,53 @@ describe "dependency" do
       @process_b.schedule_history.states.should == [:monitor, :unmonitor, :restart]
     end
   end
+
+  describe "flapping bug" do
+    before :each do
+      @c = Eye::Controller.new
+      silence_warnings { Eye::Control = @c }
+
+      conf = <<-D
+        Eye.app :app do
+          working_dir "#{C.sample_dir}"
+          start_grace 0.5
+          check_alive_period 0.5
+          trigger :flapping, :times => 3, :within => 5.seconds, :retry_in => 15.seconds
+
+          process(:a) do
+            start_command "asdfsdf asdf asdf as"
+            daemonize true
+            pid_file "#{C.p1_pid}"
+          end
+
+          process(:b) do
+            start_command "sleep 100"
+            daemonize true
+            pid_file "#{C.p2_pid}"
+            depend_on :a, :retry_in => 5.seconds
+          end
+
+        end
+      D
+      @c.load_content(conf)
+      @process_a = @c.process_by_name("a")
+      @process_b = @c.process_by_name("b")
+    end
+
+    it "should not up by dependency if master process flapped" do
+      sleep 20
+      p @process_a.states_history.states
+      p @process_a.schedule_history.states
+
+      p @process_b.states_history.states
+      p @process_b.schedule_history.states
+
+      @process_a.state_name.should == :unmonitored
+      @process_b.state_name.should == :unmonitored
+
+      @process_a.states_history.states.should == [:unmonitored, :starting, :down, :starting, :down, :starting, :down, :unmonitored]
+      @process_b.states_history.states.should == [:unmonitored, :starting, :unmonitored, :starting, :unmonitored, :starting]
+    end
+  end
+
 end

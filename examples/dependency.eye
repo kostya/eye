@@ -1,5 +1,9 @@
 # process dependencies example
 
+Eye.config do
+  logger "/tmp/eye.log"
+end
+
 Eye.app :dependency do
   process(:a) do
     start_command "sleep 100"

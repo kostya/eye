@@ -1,48 +1,38 @@
-class Eye::Trigger::WaitDependency < Eye::Trigger
+class Eye::Trigger::WaitDependency < Eye::Trigger::StartingGuard
   param :names, [Array], true
-  param :wait_timeout, [Numeric], nil, 15.seconds
-  param :retry_after, [Numeric], nil, 1.minute
   param :should_start, [TrueClass, FalseClass]
 
-  def check(transition)
-    wait_dependency if transition.to_name == :starting
-  end
+  param_default :every, 0.2
+  param_default :times, 7
+  param_default :retry_in, 1.minute
+  param_default :retry_times, 5
 
 private
 
-  def wait_dependency
-    processes = names.map do |name|
-      Eye::Control.find_nearest_process(name, process.group_name_pure, process.app_name)
-    end.compact
-    return if processes.empty?
-    processes = Eye::Utils::AliveArray.new(processes)
+  def guard
+    if (@retry_count == 0 || @reason.class != Eye::Reason::StartingGuard)
+      processes = names.map do |name|
+        Eye::Control.find_nearest_process(name, process.group_name_pure, process.app_name)
+      end.compact
+      return if processes.empty?
+      @processes = Eye::Utils::AliveArray.new(processes)
 
-    processes.each do |p|
-      if p.state_name != :up && (should_start == nil || should_start)
-        p.schedule :start, Eye::Reason.new(:start_dependency)
-      end
+      try_start if (should_start == nil || should_start)
     end
 
     res = true
-
-    processes.pmap do |p|
-      name = p.name
-
-      res &= process.wait_for_condition(wait_timeout, 0.5) do
-        info "wait for #{name} until it :up"
-        p.state_name == :up
-      end
+    @processes.pmap do |p|
+      info { "wait for #{p.full_name} until it :up" }
+      res &= process.wait_for_condition(2.seconds, 0.2) { p.state_name == :up }
     end
+    res
+  end
 
-    unless res
-      warn "not waited for #{names} to be up"
-      process.switch :unmonitoring
-
-      if retry_after
-        process.schedule_in retry_after, :start, Eye::Reason.new(:wait_dependency)
+  def try_start
+    @processes.each do |p|
+      if p.state_name != :up
+        p.schedule :start, Eye::Reason.new(:start_dependency)
       end
-
-      raise Eye::Process::StateError.new('stop transition because dependency is not up')
     end
   end
 
