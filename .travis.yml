@@ -4,4 +4,4 @@ rvm:
   - "2.0.0"
   - "2.1"
   - "2.2"
-script: bundle exec rake N=15
+script: bundle exec rake split_test N=15

@@ -15,6 +15,13 @@ task :pspec do
   abort unless system(cmd)
 end
 
+desc "run parallel split tests"
+task :split_test do
+  dirname = File.expand_path(File.dirname(__FILE__))
+  cmd = "PARALLEL_SPLIT_TEST_PROCESSES=#{ENV['N'] || 10} bundle exec parallel_split_test #{dirname}/spec"
+  abort unless system(cmd)
+end
+
 RSpec::Core::RakeTask.new(:spec) do |t|
   t.verbose = false
 end
