@@ -35,8 +35,8 @@ describe "Eye::Checker::ChildrenCount" do
 
     sleep 5
 
-    @pids[0...7].each { |p| Eye::System.pid_alive?(p).should be_false }
-    @pids[7..-1].each { |p| Eye::System.pid_alive?(p).should be_true }
+    @pids[0...7].each { |p| Eye::System.pid_alive?(p).should == false }
+    @pids[7..-1].each { |p| Eye::System.pid_alive?(p).should == true }
   end
 
   it "should kill 5 newer childs" do
@@ -49,8 +49,8 @@ describe "Eye::Checker::ChildrenCount" do
 
     sleep 5
 
-    @pids[0...3].each { |p| Eye::System.pid_alive?(p).should be_true }
-    @pids[3..-1].each { |p| Eye::System.pid_alive?(p).should be_false }
+    @pids[0...3].each { |p| Eye::System.pid_alive?(p).should == true }
+    @pids[3..-1].each { |p| Eye::System.pid_alive?(p).should == false }
   end
 
 end

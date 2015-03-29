@@ -98,7 +98,7 @@ describe "Eye::Dsl" do
     E
 
     if RUBY_VERSION >= '2.0'
-      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error
     else
       expect{Eye::Dsl.parse_apps(conf)}.to raise_error(Eye::Dsl::Error)
     end

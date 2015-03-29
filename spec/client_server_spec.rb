@@ -44,7 +44,7 @@ describe "Eye::Client, Eye::Server" do
     @server.async.run
     sleep 0.1
     @client.attempt_command('trash').should == :corrupted_data
-    @server.alive?.should be_true
+    @server.alive?.should == true
   end
 
 end

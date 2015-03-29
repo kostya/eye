@@ -611,7 +611,7 @@ describe "Eye::Controller::Load" do
         end
       E
       subject.load_content(conf).errors_count.should == 1
-      expect{ Eye::Dsl.parse_apps(conf) }.not_to raise_error(Eye::Process::Validate::Error)
+      expect{ Eye::Dsl.parse_apps(conf) }.not_to raise_error
     end
 
     [:uid, :gid].each do |s|

@@ -303,10 +303,10 @@ describe "Eye::Dsl" do
 
     it "good string" do
       conf = "Eye.app('bla'){ self.working_dir = nil }"
-      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error
 
       conf = "Eye.app('bla'){ self.working_dir = 'bla' }"
-      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error
     end
 
     it "bad bool" do
@@ -325,13 +325,13 @@ describe "Eye::Dsl" do
 
     it "good bool" do
       conf = "Eye.app('bla'){ self.clear_pid = nil }"
-      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error
 
       conf = "Eye.app('bla'){ self.clear_pid = true }"
-      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error
 
       conf = "Eye.app('bla'){ self.clear_pid = false }"
-      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error
     end
 
     it "bad interval" do
@@ -350,13 +350,13 @@ describe "Eye::Dsl" do
 
     it "good interval" do
       conf = "Eye.app('bla'){ self.start_timeout = nil }"
-      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error
 
       conf = "Eye.app('bla'){ self.start_timeout = 10.seconds }"
-      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error
 
       conf = "Eye.app('bla'){ self.start_timeout = 1.5.seconds }"
-      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Dsl::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error
     end
 
   end
@@ -394,7 +394,7 @@ describe "Eye::Dsl" do
           end
         end
       E
-      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Process::Validate::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error
     end
 
     it "not validate non-daemonize command" do
@@ -406,7 +406,7 @@ describe "Eye::Dsl" do
           end
         end
       E
-      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error(Eye::Process::Validate::Error)
+      expect{Eye::Dsl.parse_apps(conf)}.not_to raise_error
     end
   end
 

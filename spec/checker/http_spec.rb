@@ -129,7 +129,7 @@ describe "Eye::Checker::Http" do
       let(:http_checker) { chhttp }
 
       it "does not use SSL" do
-        expect(subject.use_ssl?).to be_false
+        expect(subject.use_ssl?).not_to be
       end
     end
 
@@ -137,7 +137,7 @@ describe "Eye::Checker::Http" do
       let(:http_checker) { chhttp(url: "https://google.com") }
 
       it "uses SSL" do
-        expect(subject.use_ssl?).to be_true
+        expect(subject.use_ssl?).to be
       end
 
       it "sets veryfy_mode" do
