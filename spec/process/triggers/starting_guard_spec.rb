@@ -11,6 +11,7 @@ describe "Trigger StartingGuard" do
           start_command "sleep 30"
           daemonize true
           #{trigger}
+          start_grace 0.5
         end
       end
     D
@@ -118,6 +119,21 @@ describe "Trigger StartingGuard" do
         sleep 3
         @process.state_name.should == :starting
       end
+    end
+  end
+
+  describe "should reset retry_count" do
+    before :each do
+      process("trigger :starting_guard, every: 0.5, times: 6, should: ->{ @x ||= 0; @x += 1; if @x == 5; @x = 0; end } ")
+    end
+
+    it "should be up" do
+      sleep 4
+      @process.state_name.should == :up
+
+      @process.schedule :restart
+      sleep 4
+      @process.state_name.should == :up
     end
   end
 

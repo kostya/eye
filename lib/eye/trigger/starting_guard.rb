@@ -29,6 +29,8 @@ class Eye::Trigger::StartingGuard < Eye::Trigger
 
     if condition
       info "ok, process ready to start #{condition.inspect}"
+      @retry_count = 0
+      @reretry_count = 0
       return
     else
       info "false executed condition"
