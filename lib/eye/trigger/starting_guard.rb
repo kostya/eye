@@ -25,7 +25,7 @@ class Eye::Trigger::StartingGuard < Eye::Trigger
 
   def check_start
     @retry_count += 1
-    condition = exec_proc(:should)
+    condition = defer { exec_proc(:should) }
 
     if condition
       info "ok, process ready to start #{condition.inspect}"

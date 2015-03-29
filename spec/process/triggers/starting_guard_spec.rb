@@ -107,4 +107,18 @@ describe "Trigger StartingGuard" do
       @process.states_history.states.should == [:unmonitored, :starting, :unmonitored, :starting, :unmonitored, :starting, :unmonitored, :unmonitored]
     end
   end
+
+  describe "should not block actor, use defer" do
+    before :each do
+      process("trigger :starting_guard, every: 1, should: ->{ x = `sleep 5 && echo 1`; x.to_i } ")
+    end
+
+    it "should be up" do
+      should_spend(3) do
+        sleep 3
+        @process.state_name.should == :starting
+      end
+    end
+  end
+
 end
