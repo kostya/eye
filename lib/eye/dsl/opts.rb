@@ -196,16 +196,8 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     end
     raise Eye::Dsl::Error, "load_env conflict filenames: #{filenames}" if filenames.size > 1
 
-    content = File.read(filenames.first)
     info "load_env from '#{filenames.first}'"
-
-    env_vars = content.split("\n")
-    env_vars.each do |e|
-      e = e.gsub(/#.+$/, '').strip
-      next unless e.include?('=')
-      k, v = e.split('=', 2)
-      env k => v
-    end
+    Eye::Utils.load_env(filenames.first).each { |k, v| env k => v }
   end
 
   def skip_group_action(act, val = true)

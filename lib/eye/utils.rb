@@ -42,4 +42,17 @@ module Eye::Utils
     Time.at(unix_time.to_i).strftime(DF)
   end
 
+  def self.load_env(filename)
+    content = File.read(filename)
+    env_vars = content.split("\n")
+    h = {}
+    env_vars.each do |e|
+      e = e.gsub(/#.+$/, '').strip
+      next unless e.include?('=')
+      k, v = e.split('=', 2)
+      h[k] = v
+    end
+    h
+  end
+
 end
