@@ -55,4 +55,9 @@ module Eye::Dsl::Main
 
   alias settings config
 
+  def shared
+    require 'ostruct'
+    @shared_object ||= OpenStruct.new
+  end
+
 end

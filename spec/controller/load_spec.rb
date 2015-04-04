@@ -590,6 +590,20 @@ describe "Eye::Controller::Load" do
     subject.settings[:contacts].keys.sort.should == %w{contact1 contact2}
   end
 
+  it "using shared object" do
+    cfg1 = <<-S
+      Eye.shared.bla = {"1" => "2"}
+    S
+
+    cfg2 = <<-S2
+      Eye.app(:app2) { process(:p) { pid_file "2.pid"; env Eye.shared.bla; env "3" => "4" } }
+    S2
+
+    subject.load_content(cfg1)
+    subject.load_content(cfg2)
+    subject.process_by_name('p').config[:environment].should == {"1" => "2", "3" => "4"}
+  end
+
   describe "valiadate localize params" do
     it "validate correct working_dir" do
       conf = <<-E
