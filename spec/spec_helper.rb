@@ -23,6 +23,7 @@ class Eye::Controller
   public :find_objects, :remove_object_from_tree, :matched_objects
   def load_erb(file); with_erb_file(file){|f| self.load(f) }; end
   def load_content(cont); res = nil; with_temp_file(cont){|f| res = self.load(f) }; res; end
+  def load_contents(*conts); res = nil; with_temp_file(cont){|f| res = self.load(f) }; res; end
 end
 
 require 'rspec/mocks'
@@ -78,6 +79,9 @@ RSpec.configure do |config|
     stub(Eye::Local).dir { C.sample_dir }
 
     $logger.info "================== #{ self.class.description} '#{ example.description }'========================"
+
+    Eye::Dsl
+    Eye.parsed_default_app = nil
   end
 
   config.after(:each) do

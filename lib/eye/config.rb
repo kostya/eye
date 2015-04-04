@@ -20,7 +20,14 @@ class Eye::Config
   end
 
   def to_h
-    {:settings => @settings, :applications => @applications}
+    h = {}
+    h[:settings] = @settings
+    if Eye.respond_to?(:parsed_default_app)
+      d = Eye.parsed_default_app
+      h[:defaults] = d ? d.config : {}
+    end
+    h[:applications] = @applications
+    h
   end
 
   # raise an error if config wrong

@@ -1,6 +1,6 @@
 class Eye::Application
 
-  attr_reader :groups, :name
+  attr_reader :groups, :name, :config
 
   def initialize(name, config = {})
     @groups = Eye::Utils::AliveArray.new

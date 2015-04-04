@@ -604,6 +604,113 @@ describe "Eye::Controller::Load" do
     subject.process_by_name('p').config[:environment].should == {"1" => "2", "3" => "4"}
   end
 
+  describe "default app" do
+    it "load in one config" do
+      cfg1 = <<-S
+        Eye.app :__default__ do
+          env "A" => "B"
+        end
+        Eye.app :some do
+        end
+      S
+      subject.load_content(cfg1)
+      subject.application_by_name('some').config[:environment].should == {"A" => "B"}
+      subject.application_by_name('__default__').should == nil
+      subject.application_by_name('some').config[:application].should be_nil
+    end
+
+    it "should merge defaults in one config" do
+      cfg1 = <<-S
+        Eye.app :__default__ do
+          env "A" => "B"
+        end
+        Eye.app :__default__ do
+          env "C" => "D"
+        end
+        Eye.app :some do
+        end
+      S
+      subject.load_content(cfg1)
+      subject.application_by_name('some').config[:environment].should == {"A" => "B", "C" => "D"}
+      subject.application_by_name('__default__').should == nil
+    end
+
+    it "should rewrite defaults in one config" do
+      cfg1 = <<-S
+        Eye.app :__default__ do
+          stop_signals :term, 10
+        end
+        Eye.app :__default__ do
+          stop_signals :term, 11
+        end
+        Eye.app :some do
+        end
+      S
+      subject.load_content(cfg1)
+      subject.application_by_name('some').config[:stop_signals].should == [:term, 11]
+    end
+
+    it "should rewrite defaults check in one config" do
+      cfg1 = <<-S
+        Eye.app :__default__ do
+          check :memory, :below => 10
+        end
+        Eye.app :__default__ do
+          check :memory, :below => 11
+        end
+        Eye.app :some do
+        end
+      S
+      subject.load_content(cfg1)
+      subject.application_by_name('some').config[:checks].should == {:memory=>{:below=>11, :type=>:memory}}
+    end
+
+    it "should not accept group and process inside __default__ app" do
+      cfg1 = <<-S
+        Eye.app :__default__ do
+          stdall "/tmp/2"
+          group :bla do
+            process(:a) { pid_file '/tmp/1' }
+          end
+        end
+        Eye.app :some do
+        end
+      S
+      subject.load_content(cfg1)
+      subject.application_by_name('some').config[:groups].should == nil
+      subject.application_by_name('some').config[:stdall].should == '/tmp/2'
+    end
+
+    it "load two configs per one load" do
+      subject.load(fixture('dsl/default1.eye'), fixture('dsl/default2.eye'))
+      subject.application_by_name('some').config[:environment].should == {"A" => "B"}
+      subject.application_by_name('__default__').should == nil
+    end
+
+    it "load in two configs" do
+      subject.load(fixture('dsl/default1.eye'))
+      subject.load(fixture('dsl/default2.eye'))
+      subject.application_by_name('some').config[:environment].should == {"A" => "B"}
+      subject.application_by_name('__default__').should == nil
+    end
+
+    it "load in two configs, with merge default" do
+      subject.load(fixture('dsl/default1.eye'))
+      subject.load(fixture('dsl/default3.eye'))
+      subject.application_by_name('some').config[:environment].should == {"A" => "B", "C" => "D"}
+      subject.application_by_name('__default__').should == nil
+    end
+
+    it "load in two configs, with merge default" do
+      subject.load(fixture('dsl/default4.eye'))
+      subject.load(fixture('dsl/default2.eye'))
+      appcfg = subject.application_by_name('some').config
+      subject.application_by_name('__default__').should == nil
+      appcfg[:checks].keys.should == [:memory]
+      appcfg[:triggers].keys.should == [:stop_children]
+    end
+  end
+
   describe "valiadate localize params" do
     it "validate correct working_dir" do
       conf = <<-E

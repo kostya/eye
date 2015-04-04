@@ -19,7 +19,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   def initialize(name = nil, parent = nil)
     super(name, parent)
 
-    @config[:application] = parent.name if parent.is_a?(Eye::Dsl::ApplicationOpts)
+    @config[:application] = parent.name if parent.is_a?(Eye::Dsl::ApplicationOpts) && parent.name != '__default__'
     @config[:group] = parent.name if parent.is_a?(Eye::Dsl::GroupOpts)
 
     # hack for full name
