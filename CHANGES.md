@@ -1,5 +1,10 @@
 0.7.pre
 -------
+* add trigger starting_guard
+* fix multiple contacts #118
+* add slack notifier #115
+* some fixes in depend_on
+* some fixes in flapping
 * Update Celluloid to 0.16.0
 
 0.6.4
