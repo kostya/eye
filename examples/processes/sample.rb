@@ -95,7 +95,7 @@ end
 puts "Started #{ARGV.inspect}, #{options.inspect}, #{ENV["ENV1"]}"
 
 if options[:lock_file]
-  if File.exists?(options[:lock_file])
+  if File.exist?(options[:lock_file])
     puts "Lock file exists, exiting"
     exit 1
   else
@@ -124,7 +124,7 @@ loop do
   puts "tick"
 
   if options[:watch_file]
-    if File.exists?(options[:watch_file])
+    if File.exist?(options[:watch_file])
       puts "watch file finded"
       File.unlink(options[:watch_file])
 
