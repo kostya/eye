@@ -53,7 +53,7 @@ optparse.parse!
 module Sample
   def puts(mes = "")
     tm = Time.now
-    STDOUT.puts "#{tm.to_s} (#{tm.to_f}) - #{mes}"
+    STDOUT.puts "#{tm} (#{tm.to_f}) - #{mes}"
     STDOUT.flush
   end
 
