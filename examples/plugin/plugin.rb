@@ -13,7 +13,7 @@ class Reactor
   end
 
   def read_file
-    if File.exists?(@filename)
+    if File.exist?(@filename)
       cmd = File.read(@filename).chop
       File.delete(@filename) rescue nil
       cmd
