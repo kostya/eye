@@ -78,7 +78,7 @@ describe "Eye::Controller" do
   it "should save cache file" do
     FileUtils.rm(Eye::Local.cache_path) rescue nil
     subject.load(fixture("dsl/load.eye"))
-    File.exists?(Eye::Local.cache_path).should == false
+    File.exist?(Eye::Local.cache_path).should == false
   end
 
   it "should delete all apps" do

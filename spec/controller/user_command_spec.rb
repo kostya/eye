@@ -20,10 +20,10 @@ describe "Controller user_command" do
     subject.load_content(cfg)
     sleep 0.5
 
-    File.exists?(C.tmp_file).should == false
+    File.exist?(C.tmp_file).should == false
     subject.command('user_command', 'abcd', 'proc')
     sleep 0.5
-    File.exists?(C.tmp_file).should == true
+    File.exist?(C.tmp_file).should == true
   end
 
   it "should execute signals cmd" do

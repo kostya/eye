@@ -184,7 +184,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   def load_env(filename = '~/.env', raise_when_no_file = true)
     fnames = [File.expand_path(filename, @config[:working_dir]),
       File.expand_path(filename)].uniq
-    filenames = fnames.select { |f| File.exists?(f) }
+    filenames = fnames.select { |f| File.exist?(f) }
 
     if filenames.size < 1
       unless raise_when_no_file

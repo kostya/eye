@@ -26,9 +26,9 @@ describe "Trigger Transition" do
 
     it "should delete file when stop" do
       File.open(C.tmp_file, 'w'){ |f| f.write "aaa" }
-      File.exists?(C.tmp_file).should == true
+      File.exist?(C.tmp_file).should == true
       @process.stop
-      File.exists?(C.tmp_file).should == false
+      File.exist?(C.tmp_file).should == false
     end
   end
 
@@ -53,10 +53,10 @@ describe "Trigger Transition" do
 
     it "should delete file when stop" do
       File.open(C.tmp_file, 'w'){ |f| f.write "aaa" }
-      File.exists?(C.tmp_file).should == true
+      File.exist?(C.tmp_file).should == true
       force_kill_pid(@process.pid)
       sleep 5
-      File.exists?(C.tmp_file).should == false
+      File.exist?(C.tmp_file).should == false
     end
   end
 
@@ -85,10 +85,10 @@ describe "Trigger Transition" do
 
     it "should delete file when stop" do
       File.open(C.tmp_file, 'w'){ |f| f.write "aaa" }
-      File.exists?(C.tmp_file).should == true
+      File.exist?(C.tmp_file).should == true
       force_kill_pid(@process.pid)
       sleep 5
-      File.exists?(C.tmp_file).should == false
+      File.exist?(C.tmp_file).should == false
     end
   end
 
@@ -113,9 +113,9 @@ describe "Trigger Transition" do
     end
 
     it "should delete file when stop" do
-      File.exists?(C.tmp_file).should == true
+      File.exist?(C.tmp_file).should == true
       @process.stop
-      File.exists?(C.tmp_file).should == false
+      File.exist?(C.tmp_file).should == false
     end
   end
 

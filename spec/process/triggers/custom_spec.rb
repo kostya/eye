@@ -40,10 +40,10 @@ end
 
     it "should delete file when stop" do
       File.open(C.tmp_file, 'w'){ |f| f.write "aaa" }
-      File.exists?(C.tmp_file).should == true
+      File.exist?(C.tmp_file).should == true
       @process.send_command :stop
       sleep 3
-      File.exists?(C.tmp_file).should == false
+      File.exist?(C.tmp_file).should == false
 
       # check that reason is
       t = @process.triggers.first
@@ -85,10 +85,10 @@ end
 
     it "should delete file when stop" do
       File.open(C.tmp_file, 'w'){ |f| f.write "aaa" }
-      File.exists?(C.tmp_file).should == true
+      File.exist?(C.tmp_file).should == true
       force_kill_pid(@process.pid)
       sleep 5
-      File.exists?(C.tmp_file).should == false
+      File.exist?(C.tmp_file).should == false
     end
   end
 
@@ -131,9 +131,9 @@ end
     end
 
     it "should delete file when stop" do
-      File.exists?(C.tmp_file).should == true
+      File.exist?(C.tmp_file).should == true
       @process.stop
-      File.exists?(C.tmp_file).should == false
+      File.exist?(C.tmp_file).should == false
     end
   end
 

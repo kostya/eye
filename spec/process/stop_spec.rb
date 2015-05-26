@@ -109,7 +109,7 @@ describe "Process Stop" do
     Eye::System.pid_alive?(@pid).should == false
     @process.state_name.should == :down
 
-    File.exists?(wf).should == false
+    File.exist?(wf).should == false
 
     data = File.read(@log)
     data.should include("watch file finded")

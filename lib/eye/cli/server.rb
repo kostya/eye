@@ -9,7 +9,7 @@ private
 
   def loader_path
     filename = File.expand_path(File.join(File.dirname(__FILE__), %w[.. .. .. bin loader_eye]))
-    File.exists?(filename) ? filename : nil
+    File.exist?(filename) ? filename : nil
   end
 
   def ruby_path
@@ -62,7 +62,7 @@ private
       error! 'server has not started in 15 seconds, something is very wrong'
     end
 
-    configs.unshift(Eye::Local.eyeconfig) if File.exists?(Eye::Local.eyeconfig)
+    configs.unshift(Eye::Local.eyeconfig) if File.exist?(Eye::Local.eyeconfig)
     configs << Eye::Local.eyefile if Eye::Local.local_runner
 
     say 'Eye started! ㋡', :green

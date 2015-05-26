@@ -7,18 +7,18 @@ describe "Eye::Checker::FileTouched" do
   end
 
   it "get_value" do
-    mock(File).exists?("1"){ true }
+    mock(File).exist?("1"){ true }
     subject.get_value.should == true
 
-    mock(File).exists?("1"){ false }
+    mock(File).exist?("1"){ false }
     subject.get_value.should == false
   end
 
   it "good" do
-    mock(File).exists?("1"){ true }
+    mock(File).exist?("1"){ true }
     subject.check.should == false
 
-    mock(File).exists?("1"){ false }
+    mock(File).exist?("1"){ false }
     subject.check.should == true
   end
 end

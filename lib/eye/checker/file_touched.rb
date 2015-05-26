@@ -9,7 +9,7 @@ class Eye::Checker::FileTouched < Eye::Checker
   end
 
   def get_value
-    File.exists?(file)
+    File.exist?(file)
   end
 
   def good?(value)

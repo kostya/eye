@@ -2,7 +2,7 @@ cwd = File.expand_path(File.join(File.dirname(__FILE__), %w[ ../ ../ ]))
 
 config_path = File.join(cwd, %w{ config dj.yml } )
 
-workers_count = if File.exists?(config_path)
+workers_count = if File.exist?(config_path)
   YAML.load_file(config_path).try(:[], :workers) || 5
 else
   5

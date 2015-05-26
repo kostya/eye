@@ -59,7 +59,7 @@ describe "Custom checks" do
           param :file, [String], true
 
           def get_value
-            !File.exists?(file)
+            !File.exist?(file)
           end
         end
 
@@ -91,7 +91,7 @@ describe "Custom checks" do
 
       @process.state_name.should == :unmonitored
 
-      File.exists?(C.tmp_file).should == false
+      File.exist?(C.tmp_file).should == false
     end
   end
 

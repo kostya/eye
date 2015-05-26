@@ -237,7 +237,7 @@ describe "Process Start" do
 
     # to ensure kill this process
     sleep 1
-    if File.exists?(C.just_pid)
+    if File.exist?(C.just_pid)
       @process.pid = File.read(C.just_pid).to_i
     end
   end

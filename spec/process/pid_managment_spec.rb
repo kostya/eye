@@ -21,14 +21,14 @@ require File.dirname(__FILE__) + '/../spec_helper'
     it "someone remove pid_file. should rewrite" do
       start_ok_process(cfg)
       old_pid = @pid
-      File.exists?(cfg[:pid_file]).should == true
+      File.exist?(cfg[:pid_file]).should == true
 
       FileUtils.rm(cfg[:pid_file]) # someone removes it (bad man)
-      File.exists?(cfg[:pid_file]).should == false
+      File.exist?(cfg[:pid_file]).should == false
 
       sleep 5 # wait until monitor understand it
 
-      File.exists?(cfg[:pid_file]).should == true
+      File.exist?(cfg[:pid_file]).should == true
       @process.pid.should == old_pid
       @process.load_pid_from_file.should == @process.pid
       @process.state_name.should == :up

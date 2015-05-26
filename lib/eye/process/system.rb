@@ -3,7 +3,7 @@ require 'timeout'
 module Eye::Process::System
 
   def load_pid_from_file
-    res = if File.exists?(self[:pid_file_ex])
+    res = if File.exist?(self[:pid_file_ex])
       _pid = File.read(self[:pid_file_ex]).to_i
       _pid > 0 ? _pid : nil
     end
