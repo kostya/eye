@@ -105,13 +105,7 @@ private
 
   def render_history(data)
     error!("unexpected server response #{data.inspect}") unless data.is_a?(Hash)
-
-    res = []
-    data.each do |name, data|
-      res << detail_process_info(name, data)
-    end
-
-    res * "\n"
+    data.map { |name, history| detail_process_info(name, history) }.join("\n")
   end
 
   def detail_process_info(name, history)

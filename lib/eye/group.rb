@@ -76,9 +76,9 @@ class Eye::Group
 
     case command
       when :delete
-        delete *args
+        delete(*args)
       when :break_chain
-        break_chain *args
+        break_chain(*args)
       else
         schedule command, *args, Eye::Reason::User.new(command)
     end

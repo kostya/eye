@@ -9,7 +9,7 @@ module Eye::Controller::Load
   end
 
   def load(*args)
-    h = args.extract_options!
+    args.extract_options!
     obj_strs = args.flatten
     info "=> loading: #{obj_strs}"
 
