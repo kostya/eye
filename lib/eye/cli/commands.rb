@@ -67,7 +67,7 @@ private
         if res == []
           error! "command :#{command}, objects not found!"
         else
-          say "command :#{command} sent to [#{res * ", "}]"
+          say "command :#{command} sent to [#{res * ', '}]"
         end
       end
     else

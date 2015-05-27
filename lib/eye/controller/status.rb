@@ -2,7 +2,7 @@ module Eye::Controller::Status
 
   def debug_data(*args)
     h = args.extract_options!
-    actors = Celluloid::Actor.all.map{|actor| actor.__klass__ }.group_by{|a| a}.map{|k,v| [k, v.size]}.sort_by{|a|a[1]}.reverse
+    actors = Celluloid::Actor.all.map{|actor| actor.__klass__ }.group_by{|a| a}.map{|k,v| [k, v.size]}.sort_by{ |a| a[1] }.reverse
 
     res = {
       :about => Eye::ABOUT,

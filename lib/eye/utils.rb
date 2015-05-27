@@ -33,7 +33,7 @@ module Eye::Utils
     time = Time.at(unix_time.to_i)
     d1 = time.to_date
     d2 = Time.now.to_date
-    time.strftime (d1 == d2) ? D1 : D2
+    time.strftime((d1 == d2) ? D1 : D2)
   end
 
   DF = '%d %b %H:%M'

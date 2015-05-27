@@ -92,7 +92,7 @@ if options[:daemonize]
   daemonize(options[:pid_file], options[:log_file], options[:daemonize_delay])
 end
 
-puts "Started #{ARGV.inspect}, #{options.inspect}, #{ENV["ENV1"]}"
+puts "Started #{ARGV.inspect}, #{options.inspect}, #{ENV['ENV1']}"
 
 if options[:lock_file]
   if File.exist?(options[:lock_file])

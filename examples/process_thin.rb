@@ -10,7 +10,7 @@ def thin(proxy, port)
     "-R thin.ru",
     "--tag #{proxy.app.name}.#{proxy.name}",
     "-t 60",
-    "-e #{proxy.env["RAILS_ENV"]}",
+    "-e #{proxy.env['RAILS_ENV']}",
     "-c #{proxy.working_dir}",
     "-a 127.0.0.1"
   ]

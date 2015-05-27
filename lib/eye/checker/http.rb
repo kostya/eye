@@ -23,8 +23,7 @@ class Eye::Checker::Http < Eye::Checker::Defer
     @kind = case kind
               when Fixnum then Net::HTTPResponse::CODE_TO_OBJ[kind]
               when String, Symbol then Net.const_get("HTTP#{kind.to_s.camelize}") rescue Net::HTTPSuccess
-            else
-              Net::HTTPSuccess
+              else Net::HTTPSuccess
             end
     @open_timeout = (open_timeout || 3).to_f
     @read_timeout = (read_timeout || timeout || 15).to_f

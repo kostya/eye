@@ -101,8 +101,6 @@ class Eye::Dsl::PureOpts
 
   def nop(*args, &block); end
 
-private
-
   def self.with_parsed_file(file_name)
     saved_parsed_filename = Eye.parsed_filename
 

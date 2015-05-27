@@ -108,12 +108,9 @@ class Eye::Notify
     end
   end
 
-private
-
   %w{at host message name full_name pid level}.each do |name|
     define_method("msg_#{name}") do
       @message_h[name.to_sym]
     end
   end
-
 end

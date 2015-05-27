@@ -58,12 +58,7 @@ private
     return res if obj_strs.empty?
 
     obj_strs.each do |filename|
-      mask = if File.directory?(filename)
-        File.join filename, '{*.eye}'
-      else
-        filename
-      end
-
+      mask = File.directory?(filename) ? File.join(filename, '{*.eye}') : filename
       debug { "loading: globbing mask #{mask}" }
 
       sub = []
