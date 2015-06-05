@@ -152,6 +152,8 @@ test
   thin ............................ up  (21:53, 2%, 54Mb, <4228>)
 ```
 
+    $ eye i -j # show info in JSON format
+
 ### Commands:
 
     start, stop, restart, delete, monitor, unmonitor
