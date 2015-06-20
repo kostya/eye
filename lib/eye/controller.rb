@@ -1,7 +1,6 @@
 require 'celluloid'
 require 'yaml'
 
-require_relative 'utils/celluloid_klass'
 require_relative 'utils/pmap'
 
 require_relative 'utils/leak_19'

@@ -68,7 +68,7 @@ describe "Eye::Controller" do
     p6 = gr4.processes[0]
     p_check(p6, 'z1', "app2-z1.pid")
 
-    subject.__klass__.should == "Eye::Controller"
+    subject.wrapped_object.class.to_s.should == "Eye::Controller"
   end
 
   it "raise when load config" do
