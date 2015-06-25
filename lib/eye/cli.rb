@@ -110,6 +110,12 @@ class Eye::Cli < Thor
     end
   end
 
+  desc "force_restart MASK[,...]", "restart by stop;start (not by restart_command)"
+  def force_restart(*masks)
+    send_command(:stop, *masks)
+    send_command(:start, *masks)
+  end
+
   desc "signal SIG MASK[,...]", "send signal to app,group or process"
   def signal(sig, *masks)
     send_command(:signal, sig, *masks)
