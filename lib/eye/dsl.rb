@@ -35,7 +35,7 @@ class Eye::Dsl
         Kernel.eval(content, Eye::BINDING, filename.to_s)
       end
 
-      Eye.parsed_config.validate!(false)
+      Eye.parsed_config.validate!
       Eye.parsed_config
     end
 

@@ -78,7 +78,7 @@ private
     debug { "parsing: #{filename}" }
 
     cfg = Eye::Dsl.parse(nil, filename)
-    @current_config.merge(cfg).validate!(false) # just validate summary config here
+    @current_config.merge(cfg).validate! # just validate summary config here
     Eye.parsed_config = nil # remove link on config, for better gc
     cfg
   end
@@ -87,7 +87,7 @@ private
   def load_config(filename, config)
     info "loading: #{filename}"
     new_cfg = @current_config.merge(config)
-    new_cfg.validate!
+    new_cfg.validate!(config.application_names)
 
     load_options(new_cfg.settings)
     create_objects(new_cfg.applications, config.application_names)

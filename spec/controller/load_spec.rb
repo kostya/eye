@@ -628,6 +628,31 @@ describe "Eye::Controller::Load" do
       expect{ Eye::Dsl.parse_apps(conf) }.not_to raise_error
     end
 
+    it "when load new project, and old working_dir for another project is invalid" do
+      conf = <<-E
+        Eye.application("bla") do
+          process("1") do
+            pid_file "1.pid"
+            working_dir "/tmp"
+          end
+        end
+      E
+      subject.load_content(conf).should_be_ok
+
+      # patch here controller config, to emulate spec
+      subject.current_config.applications['bla'][:groups]['__default__'][:processes]['1'][:working_dir] = '/tmp2'
+
+      conf = <<-E
+        Eye.application("bla2") do
+          process("2") do
+            pid_file "2.pid"
+            working_dir "/tmp"
+          end
+        end
+      E
+      subject.load_content(conf).should_be_ok
+    end
+
     [:uid, :gid].each do |s|
       it "validate user #{s}" do
         conf = <<-E
