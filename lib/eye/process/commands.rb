@@ -170,7 +170,7 @@ private
 
   def daemonize_process
     time_before = Time.now
-    res = Eye::System.daemonize(self[:start_command], config)
+    res = daemonize(self[:start_command], config)
     start_time = Time.now - time_before
 
     info "daemonizing: `#{self[:start_command]}` with start_grace: #{self[:start_grace].to_f}s, env: '#{environment_string}', <#{res[:pid]}> (in #{self[:working_dir]})"

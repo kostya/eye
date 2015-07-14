@@ -76,16 +76,20 @@ module Eye::Process::System
     defer{ Eye::System::execute cmd, cfg }
   end
 
+  def daemonize(cmd, cfg = {})
+    Eye::System.daemonize(cmd, cfg)
+  end
+
   def execute_sync(cmd, opts = {:timeout => 1.second})
-    res = execute cmd, self.config.merge(opts)
-    info "execute_sync `#{cmd}` with res: #{res}"
-    res
+    execute(cmd, self.config.merge(opts)).tap do |res|
+      info "execute_sync `#{cmd}` with res: #{res}"
+    end
   end
 
   def execute_async(cmd, opts = {})
-    res = Eye::System.daemonize(cmd, self.config.merge(opts))
-    info "execute_async `#{cmd}` with res: #{res}"
-    res
+    daemonize(cmd, self.config.merge(opts)).tap do |res|
+      info "execute_async `#{cmd}` with res: #{res}"
+    end
   end
 
   def failsafe_load_pid
