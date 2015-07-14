@@ -73,7 +73,9 @@ module Eye::Process::System
   end
 
   def execute(cmd, cfg = {})
-    defer{ Eye::System::execute cmd, cfg }
+    defer { Eye::System::execute cmd, cfg }.tap do |res|
+      notify(:debug, "Bad exit status of command #{cmd.inspect}(#{res[:exitstatus].inspect})") if res[:exitstatus] != 0
+    end
   end
 
   def daemonize(cmd, cfg = {})
