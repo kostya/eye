@@ -53,6 +53,10 @@ module Eye::Process::Scheduler
     info "<= #{command}"
 
     schedule_history.push(command, reason, @last_scheduled_at.to_i)
+
+    if parent = self.try(:parent)
+      parent.schedule_history.push("#{command}_child", reason, @last_scheduled_at.to_i)
+    end
   end
 
   def scheduler_actions_list

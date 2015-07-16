@@ -32,7 +32,7 @@ module Eye::Process::Children
     if new_children.present?
       new_children.each do |child_pid|
         cfg = self[:monitor_children].try :update, :notify => self[:notify]
-        self.children[child_pid] = Eye::ChildProcess.new(child_pid, cfg, logger.prefix, self.pid)
+        self.children[child_pid] = Eye::ChildProcess.new(child_pid, cfg, logger.prefix, current_actor)
       end
     end
 

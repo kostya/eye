@@ -63,6 +63,8 @@ describe "Intergration restart" do
     (@children - [dead_pid]).each do |pid|
       new_children.should include(pid)
     end
+
+    @p3.schedule_history.states.should include("restart_child")
   end
 
   it "restart missing" do
