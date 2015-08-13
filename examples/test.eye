@@ -10,6 +10,9 @@ end
 Eye.application 'test' do
   # All options inherits down to the config leafs.
   # except `env`, which merging down
+  
+  uid "user_name" # run app as a user_name (optional)
+  gid "group_name" # run app as a group_name (optional)
 
   working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
   stdall 'trash.log' # stdout,err logs for processes by default
