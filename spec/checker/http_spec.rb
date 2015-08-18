@@ -22,6 +22,10 @@ describe "Eye::Checker::Http" do
       subject.pattern.should == /OK/
     end
 
+    it "correctly set http status" do
+      chhttp(:kind => 200).instance_variable_get(:@kind).should == Net::HTTPOK
+    end
+
     it "without url" do
       expect{ chhttp(:url => nil).uri }.to raise_error
     end

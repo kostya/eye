@@ -21,7 +21,7 @@ class Eye::Checker::Http < Eye::Checker::Defer
     @uri = URI.parse(url)
     @proxy_uri = URI.parse(proxy_url) if proxy_url
     @kind = case kind
-              when Fixnum then Net::HTTPResponse::CODE_TO_OBJ[kind]
+              when Fixnum then Net::HTTPResponse::CODE_TO_OBJ[kind.to_s]
               when String, Symbol then Net.const_get("HTTP#{kind.to_s.camelize}") rescue Net::HTTPSuccess
               else Net::HTTPSuccess
             end
