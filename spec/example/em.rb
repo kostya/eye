@@ -46,6 +46,17 @@ class EchoObj < EM::Connection
   end
 end
 
+class SslServ < EM::Connection
+  def post_init
+    start_tls
+  end
+
+  def receive_data(data)
+    puts "ssl received: #{data}"
+    send_data(data + ":1\n")
+  end
+end
+
 trap "TERM" do
   EM.stop
    FileUtils.rm($sock) rescue nil
@@ -54,9 +65,11 @@ end
 EM.run do
   $port1 = (ARGV[0] || 33231).to_i
   $port2 = (ARGV[1] || 33232).to_i
+  $port3 = (ARGV[3] || 33233).to_i
   $sock = (ARGV[2] || "/tmp/em_test_sock_spec")
   EM.start_server '127.0.0.1', $port1, Echo
   EM.start_server '127.0.0.1', $port2, EchoObj
   EM.start_server $sock, nil, Echo
+  EM.start_server '127.0.0.1', $port3, SslServ
   puts 'started'
 end

@@ -96,7 +96,7 @@ module C
 
   # event machine
   def p4_ports
-    [31231 + process_id * 2, 31232 + process_id * 2]
+    [31231 + process_id * 3, 31232 + process_id * 3, 31233 + process_id * 3]
   end
 
   def p4_sock
@@ -107,7 +107,7 @@ module C
     base.merge(
       :pid_file => "#{sample_dir}/em#{process_id}.pid",
       :name => "em",
-      :start_command => "ruby em.rb #{p4_ports[0]} #{p4_ports[1]} #{p4_sock}",
+      :start_command => "ruby em.rb #{p4_ports[0]} #{p4_ports[1]} #{p4_sock} #{p4_ports[2]}",
       :daemonize => true,
       :start_grace => 3.5,
       :stop_grace => 0.7
