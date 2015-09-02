@@ -28,7 +28,7 @@ class Eye::Application
 
   def status_data(debug = false)
     h = { name: @name, type: :application, subtree: @groups.map{|gr| gr.status_data(debug) }}
-    h.merge!(debug: debug_data) if debug
+    h[:debug] = debug_data if debug
     h
   end
 

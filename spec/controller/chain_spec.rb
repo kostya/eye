@@ -7,7 +7,7 @@ describe "Intergration chains" do
     end
 
     @samples = @controller.all_groups.detect{|c| c.name == 'samples'}
-    @samples.config.merge!(:chain => C.restart_async)
+    @samples.config[:chain] = C.restart_async
   end
 
   after :each do
@@ -15,7 +15,7 @@ describe "Intergration chains" do
   end
 
   it "restart group with chain sync" do
-    @samples.config.merge!(:chain => C.restart_sync)
+    @samples.config[:chain] = C.restart_sync
 
     @controller.send_command(:restart, "samples")
     sleep 15 # while they restarting

@@ -49,7 +49,7 @@ class Eye::Group
 
     h = { name: name, type: :group, subtree: plist }
 
-    h.merge!(debug: debug_data) if debug
+    h[:debug] = debug_data if debug
 
     # show current chain
     if current_scheduled_command

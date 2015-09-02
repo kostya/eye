@@ -49,7 +49,7 @@ private
     error bt.join("\n")
 
     res = { :error => true, :message => ex.message }
-    res.merge!(:backtrace => bt) if bt.present?
+    res[:backtrace] = bt if bt.present?
     res
   end
 

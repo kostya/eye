@@ -43,8 +43,8 @@ module Eye::Process::Data
                 state_reason: @states_history.last_reason.to_s )
     end
 
-    h.merge!(debug: debug_data) if debug
-    h.merge!(current_command: current_scheduled_command) if current_scheduled_command
+    h[:debug] = debug_data if debug
+    h[:current_command] = current_scheduled_command if current_scheduled_command
 
     h
   end

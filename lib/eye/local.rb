@@ -12,9 +12,7 @@ module Eye::Local
       end
     end
 
-    def dir=(d)
-      @dir = d
-    end
+    attr_writer :dir, :client_timeout, :host
 
     def eyeconfig
       if root?
@@ -62,10 +60,6 @@ module Eye::Local
       @client_timeout ||= default_client_timeout
     end
 
-    def client_timeout=(cl)
-      @client_timeout = cl
-    end
-
     def supported_setsid?
       RUBY_VERSION >= '2.0'
     end
@@ -75,10 +69,6 @@ module Eye::Local
         require 'socket'
         Socket.gethostname
       end
-    end
-
-    def host=(hostname)
-      @host = hostname
     end
 
     def eyefile

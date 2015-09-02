@@ -39,7 +39,7 @@ private
 
     timer = every(period.to_f) do
       debug { "check #{type}" }
-      block.call(subject)
+      yield subject
     end
 
     @watchers[type] ||= {:timer => timer, :subject => subject}

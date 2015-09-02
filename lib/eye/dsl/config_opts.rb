@@ -23,7 +23,7 @@ class Eye::Dsl::ConfigOpts < Eye::Dsl::PureOpts
     end
   end
 
-  Eye::Notify::TYPES.keys.each { |name| add_notify(name) }
+  Eye::Notify::TYPES.each_key { |name| add_notify(name) }
 
   def contact(contact_name, contact_type, contact, contact_opts = {})
     raise Eye::Dsl::Error, "unknown contact_type #{contact_type}" unless Eye::Notify::TYPES[contact_type]

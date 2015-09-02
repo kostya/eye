@@ -30,7 +30,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     nac = Eye::Checker.name_and_class(type.to_sym)
     raise Eye::Dsl::Error, "unknown checker type #{type}" unless nac
 
-    opts.merge!(:type => nac[:type])
+    opts[:type] = nac[:type]
     Eye::Checker.validate!(opts)
 
     @config[:checks] ||= {}
@@ -41,7 +41,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     nac = Eye::Trigger.name_and_class(type.to_sym)
     raise Eye::Dsl::Error, "unknown trigger type #{type}" unless nac
 
-    opts.merge!(:type => nac[:type])
+    opts[:type] = nac[:type]
     Eye::Trigger.validate!(opts)
 
     @config[:triggers] ||= {}
