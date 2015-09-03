@@ -514,6 +514,8 @@ describe "Eye::Controller::Load" do
   end
 
   describe "load multiple" do
+    after(:each){ set_glogger }
+
     it "ok load 2 configs" do
       subject.load(fixture("dsl/configs/1.eye"), fixture("dsl/configs/2.eye")).should_be_ok(2)
     end

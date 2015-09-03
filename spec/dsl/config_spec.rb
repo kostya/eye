@@ -8,7 +8,7 @@ describe "Eye::Dsl::Config" do
         logger "/tmp/1.loG"
       end
     E
-    Eye::Dsl.parse(conf).to_h.should == {:applications => {}, :settings => {:logger => ["/tmp/1.loG"]}}
+    Eye::Dsl.parse(conf).to_h.should == {:applications => {}, :settings => {:logger => ["/tmp/1.loG"]}, :defaults => {}}
   end
 
   it "logger with params" do
@@ -17,7 +17,7 @@ describe "Eye::Dsl::Config" do
         logger "/tmp/1.loG", 'dayly', 1_000_000
       end
     E
-    Eye::Dsl.parse(conf).to_h.should == {:applications => {}, :settings => {:logger => ["/tmp/1.loG", 'dayly', 1_000_000]}}
+    Eye::Dsl.parse(conf).to_h.should == {:applications => {}, :settings => {:logger => ["/tmp/1.loG", 'dayly', 1_000_000]}, :defaults => {}}
   end
 
   it "should merge sections" do
@@ -33,7 +33,7 @@ describe "Eye::Dsl::Config" do
 
     E
     Eye::Dsl.parse(conf).to_h.should == {:applications => {}, :settings => {:logger => ["/tmp/2.log"],
-      :logger_level => 2}}
+      :logger_level => 2}, :defaults => {}}
   end
 
 end
