@@ -6,7 +6,7 @@ end
 
 Eye.app :syslog_test do
   process :some do
-  	pid_file "/tmp/syslog_test.pid"
+    pid_file "/tmp/syslog_test.pid"
     start_command "ruby -e 'loop { p Time.now; sleep 1 }'"
     daemonize!
     stdall syslog
