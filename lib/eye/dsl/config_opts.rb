@@ -12,6 +12,13 @@ class Eye::Dsl::ConfigOpts < Eye::Dsl::PureOpts
   end
   alias logger= logger
 
+  def syslog(name = 'eye', *args)
+    require 'syslog/logger'
+    Syslog::Logger.new(name, *args)
+  rescue LoadError
+    raise Eye::Dsl::Error, "logger syslog requires Ruby >= 2.0"
+  end
+
   # ==== contact options ==============================
   def self.add_notify(type)
     create_options_methods([type], Hash)

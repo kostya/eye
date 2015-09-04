@@ -313,6 +313,15 @@ describe "Eye::Controller::Load" do
       Eye::Logger.dev.instance_variable_get(:@logdev).filename.should == '/tmp/eye_temp.log'
     end
 
+    it "set syslog" do
+      subject.load_content(" Eye.config { logger syslog } ")
+      if RUBY_VERSION <= '1.9.3'
+        Eye::Logger.dev.should be_a(String)
+      else
+        Eye::Logger.dev.should be_a(Syslog::Logger)
+      end
+    end
+
     it "should corrent load config section" do
       subject.load(fixture("dsl/configs/{1,2}.eye")).should_be_ok(2)
       Eye::Logger.dev.should == "/tmp/a.log"

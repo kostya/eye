@@ -72,6 +72,29 @@ class Eye::Config
     ENV[''] rescue raise Eye::Dsl::Error.new("ENV is not a hash '#{ENV.inspect}'")
   end
 
+  def transform!
+    all_processes = processes
+
+    # transform syslog option
+    all_processes.each do |process|
+      out = process[:stdout] && process[:stdout].start_with?(':syslog')
+      err = process[:stderr] && process[:stderr].start_with?(':syslog')
+      if err || out
+        redir = err ? '2>&1' : ''
+        process[:stdout] = nil if out
+        process[:stderr] = nil if err
+
+        escaped_start_command = process[:start_command].to_s.gsub(%{"}, %{\\"})
+
+        names = [process[:application], process[:group] == '__default__' ? nil :  process[:group], process[:name]].compact
+        logger = "logger -t \"#{names.join(':')}\""
+
+        process[:start_command] = %{sh -c "#{escaped_start_command} #{redir} | #{logger}"}
+        process[:use_leaf_child] = true if process[:daemonize]
+      end
+    end
+  end
+
   def processes
     applications.values.map{|e| (e[:groups] || {}).values.map{|c| (c[:processes] || {}).values} }.flatten
   end

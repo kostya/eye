@@ -170,4 +170,33 @@ describe "Process Controller" do
     end
   end
 
+  describe "syslog" do
+    before :each do
+      @c = Eye::Controller.new
+      conf = <<-D
+        Eye.app :bla do
+          process(:a) do
+            start_command "ruby -e 'loop {p 1; sleep 1; File.open(\\"#{C.tmp_file}\\", \\"w\\")}'"
+            daemonize true
+            pid_file "#{C.p1_pid}"
+            start_grace 3.seconds
+            stdall syslog
+          end
+        end
+      D
+      File.exist?(C.tmp_file).should == false
+      @c.load_content(conf)
+      @process = @c.process_by_name(:a)
+      sleep 4
+    end
+
+    it "should ok up process" do
+      @process.state_name.should == :up
+      File.exist?(C.tmp_file).should == true
+      args = Eye::Sigar.proc_args(@process.pid).join(' ')
+      args.should start_with('ruby')
+      args.should_not include('sh')
+    end
+  end
+
 end
