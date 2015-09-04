@@ -51,12 +51,33 @@ describe "Eye::SystemResources" do
     x.should include(@pid)
   end
 
-  it "should get leaf_child" do
-    @pid = fork { at_exit{}; sleep 3; exit }
-    Process.detach(@pid)
-    sleep 0.5
-    x = Eye::SystemResources.leaf_child($$)
-    x.should == @pid
+  describe "leaf_child" do
+    it "should get leaf_child" do
+      @pid = fork { at_exit{}; sleep 3; exit }
+      Process.detach(@pid)
+      sleep 0.5
+      x = Eye::SystemResources.leaf_child($$)
+      x.should == @pid
+    end
+
+    it "complex leaf_child" do
+      pid = Process.spawn(*Shellwords.shellwords('sh -c "sleep 10 | logger"'))
+      x = Eye::SystemResources.leaf_child($$)
+      args = Eye::Sigar.proc_args(x).join ' '
+      args.should_not include('sh')
+      args.should_not include('logger')
+      args.should start_with('sleep')
+    end
+
+    it "super complex leaf_child" do
+      str = "/bin/sh #{C.sample_dir}/leaf_child.sh | logger"
+      pid = Process.spawn(*Shellwords.shellwords('sh -c "' + str + '"'))
+      Process.detach(pid)
+      sleep 0.5
+      x = Eye::SystemResources.leaf_child($$)
+      args = Eye::Sigar.proc_args(x).join ' '
+      args.should == 'sleep 15'
+    end
   end
 
   it "should cache and update when interval" do

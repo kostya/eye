@@ -1,4 +1,5 @@
 # output eye logger to syslog, and process stdout to syslog too
+#   experimental feature, in some cases may be unstable
 
 Eye.config do
   logger syslog

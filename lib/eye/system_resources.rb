@@ -36,10 +36,25 @@ class Eye::SystemResources
 
     # last child in a children tree
     def leaf_child(pid)
+      if dc = deep_children(pid)
+        dc.detect do |child|
+          args = Eye::Sigar.proc_args(child)[0] rescue ''
+          !args.start_with?('logger') && child != pid
+        end
+      end
+    end
+
+    def deep_children(pid)
+      Array(pid_or_children(pid)).flatten.sort_by { |pid| -pid }
+    end
+
+    def pid_or_children(pid)
       c = children(pid)
-      return if c.empty?
-      c += children(c.shift) while c.size > 1
-      c[0]
+      if !c || c.empty?
+        pid
+      else
+        c.map { |ppid| pid_or_children(ppid) }
+      end
     end
 
     def resources(pid)
