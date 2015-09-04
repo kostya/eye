@@ -205,6 +205,10 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     @config[:skip_group_actions][act] = val
   end
 
+  def syslog
+    ':syslog'
+  end
+
 private
 
   def validate_signals(signals = nil)
