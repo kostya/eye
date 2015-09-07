@@ -14,12 +14,12 @@ module Eye::Local
 
     attr_writer :dir, :client_timeout, :host
 
+    def global_eyeconfig
+      '/etc/eye.conf'
+    end
+
     def eyeconfig
-      if root?
-        '/etc/eye.conf'
-      else
-        File.expand_path(File.join(home, '.eyeconfig'))
-      end
+      File.expand_path(File.join(home, '.eyeconfig'))
     end
 
     def root?

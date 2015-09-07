@@ -62,6 +62,7 @@ private
       error! 'server has not started in 15 seconds, something is very wrong'
     end
 
+    configs.unshift(Eye::Local.global_eyeconfig) if File.exist?(Eye::Local.global_eyeconfig)
     configs.unshift(Eye::Local.eyeconfig) if File.exist?(Eye::Local.eyeconfig)
     configs << Eye::Local.eyefile if Eye::Local.local_runner
 
