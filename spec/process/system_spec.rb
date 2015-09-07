@@ -115,6 +115,11 @@ describe "Eye::Process::System" do
     res[:exitstatus].should == 0
   end
 
+  it "execute_sync helper should return stdout" do
+    res = @process.execute_sync("echo 1")
+    res[:exitstatus].should == 0
+  end
+
   it "execute_async helper" do
     filename = "asdfasdfsd.tmp"
     full_filename = C.working_dir + "/" + filename

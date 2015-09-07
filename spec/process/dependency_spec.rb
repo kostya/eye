@@ -403,4 +403,52 @@ describe "dependency" do
       @process_b.schedule_history.states.should == [:monitor, :unmonitor, :restart]
     end
   end
+
+  describe "flapping bug" do
+    before :each do
+      @c = Eye::Controller.new
+      silence_warnings { Eye::Control = @c }
+
+      conf = <<-D
+        Eye.app :app do
+          working_dir "#{C.sample_dir}"
+          start_grace 0.5
+          check_alive_period 0.5
+          trigger :flapping, :times => 3, :within => 5.seconds, :retry_in => 15.seconds
+
+          process(:a) do
+            start_command "asdfsdf asdf asdf as"
+            daemonize true
+            pid_file "#{C.p1_pid}"
+          end
+
+          process(:b) do
+            start_command "sleep 100"
+            daemonize true
+            pid_file "#{C.p2_pid}"
+            depend_on :a, :wait_timeout => 3.seconds, :retry_after => 5.seconds
+          end
+
+        end
+      D
+      @c.load_content(conf)
+      @process_a = @c.process_by_name("a")
+      @process_b = @c.process_by_name("b")
+    end
+
+    it "should not up by dependency if master process flapped" do
+      sleep 20
+      p @process_a.states_history.states
+      p @process_a.schedule_history.states
+
+      p @process_b.states_history.states
+      p @process_b.schedule_history.states
+
+      @process_a.state_name.should == :unmonitored
+      @process_b.state_name.should == :unmonitored
+
+      @process_a.states_history.states.should == [:unmonitored, :starting, :down, :starting, :down, :starting, :down, :unmonitored]
+      @process_b.states_history.states.should == [:unmonitored, :starting, :unmonitored, :starting, :unmonitored, :starting]
+    end
+  end
 end
