@@ -10,7 +10,7 @@ end
 Eye.application 'test' do
   # All options inherits down to the config leafs.
   # except `env`, which merging down
-  
+
   # uid "user_name" # run app as a user_name (optional) - available only on ruby >= 2.0
   # gid "group_name" # run app as a group_name (optional) - available only on ruby >= 2.0
 
