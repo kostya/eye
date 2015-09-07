@@ -1,3 +1,4 @@
+# part of thin-farm.eye config
 
 def thin(proxy, port)
   name = "thin-#{port}"

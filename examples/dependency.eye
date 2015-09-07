@@ -1,4 +1,4 @@
-# process dependencies :b -> :a
+# process dependencies example
 
 Eye.app :dependency do
   process(:a) do

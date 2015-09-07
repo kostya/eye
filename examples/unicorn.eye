@@ -1,4 +1,4 @@
-# Example: now to run unicorn, and monitor its child processes
+# Example: how to run unicorn, and monitor its child processes
 
 RUBY = '/usr/local/ruby/1.9.3/bin/ruby' # ruby on the server
 RAILS_ENV = 'production'
