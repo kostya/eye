@@ -25,8 +25,9 @@ describe "Eye::Controller data spec" do
   it "short_data" do
     sleep 0.2
     res = subject.command(:short_data)
-    res.should == {:subtree=>[{:name=>"app1", :type=>:application, :states=>{'unmonitored' => 5}},
-      {:name=>"app2", :type=>:application, :states=>{"unmonitored" => 1}}]}
+    res.should == {:subtree=>[{:name=>"app1", :type=>:application, :subtree=>[{:name=>"gr1", :type=>:group, :states=>{"unmonitored"=>2}},
+        {:name=>"gr2", :type=>:group, :states=>{"unmonitored"=>1}}, {:name=>"default", :type=>:group, :states=>{"unmonitored"=>2}}]},
+        {:name=>"app2", :type=>:application, :subtree=>[{:name=>"default", :type=>:group, :states=>{"unmonitored"=>1}}]}]}
   end
 
   it "debug_data" do

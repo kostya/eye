@@ -34,7 +34,7 @@ private
         off = level * 2
         off_str = ' ' * off
 
-        short_state = (data[:type] == :application && data[:states])
+        short_state = ((data[:type] == :application || data[:type] == :group) && data[:states])
         is_text = data[:state] || data[:states]
 
         name = (data[:type] == :application && !is_text) ? "\033[1m#{data[:name]}\033[0m" : data[:name].to_s

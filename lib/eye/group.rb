@@ -67,6 +67,15 @@ class Eye::Group
     h
   end
 
+  def status_data_short
+    h = Hash.new
+    @processes.each do |p|
+      h[p.state] ||= 0
+      h[p.state] += 1
+    end
+    { name: (@name == '__default__' ? 'default' : @name), type: :group, states: h }
+  end
+
   def debug_data
     {:queue => scheduler_actions_list, :chain => chain_status}
   end

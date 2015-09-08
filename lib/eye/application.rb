@@ -33,14 +33,7 @@ class Eye::Application
   end
 
   def status_data_short
-    h = Hash.new
-    @groups.each do |c|
-      c.processes.each do |p|
-        h[p.state] ||= 0
-        h[p.state] += 1
-      end
-    end
-    { name: @name, type: :application, states: h}
+    { name: @name, type: :application, subtree: @groups.map(&:status_data_short) }
   end
 
   def debug_data
