@@ -1,3 +1,7 @@
+0.8.pre
+-------
+* Update Celluloid to 0.17.0
+
 0.7
 -------
 * add `stdall syslog`, example: https://github.com/kostya/eye/blob/master/examples/syslog.eye
