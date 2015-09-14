@@ -2,11 +2,17 @@
 -------
 * add `stdall syslog`, example: https://github.com/kostya/eye/blob/master/examples/syslog.eye
 * added check `ssl_socket` #125
-* add trigger starting_guard
+* some fixes with `eye q -s`
+* fixed `__default__` apps
+* default loaded configs with first eye start, is: `/etc/eye.conf`, and `~/.eyeconfig`
+* add trigger `starting_guard`
+* fix `load_env` function
 * fix multiple contacts #118
 * add slack notifier #115
 * some fixes in depend_on
 * some fixes in flapping
+* add proxy_url to http check
+* process with children, shows children history now
 * Update Celluloid to 0.16.0
 
 0.6.4
