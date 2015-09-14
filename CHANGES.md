@@ -1,5 +1,7 @@
-0.7.pre
+0.7
 -------
+* add `stdall syslog`, example: https://github.com/kostya/eye/blob/master/examples/syslog.eye
+* added check `ssl_socket` #125
 * add trigger starting_guard
 * fix multiple contacts #118
 * add slack notifier #115
