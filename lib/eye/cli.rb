@@ -21,8 +21,7 @@ class Eye::Cli < Thor
     end
 
     if options[:json]
-      require 'json'
-      say JSON.dump(res)
+      say_json(res)
     else
       say render_info(res)
       say
@@ -39,27 +38,42 @@ class Eye::Cli < Thor
 
   desc "xinfo", "eye-deamon info (-c show current config)"
   method_option :config, :type => :boolean, :aliases => "-c"
+  method_option :json, :type => :boolean, :aliases => "-j"
   def xinfo
     res = cmd(:debug_data, :config => options[:config])
-    say render_debug_info(res)
-    say
+    if options[:json]
+      say_json(res)
+    else
+      say render_debug_info(res)
+      say
+    end
   end
 
   desc "oinfo", "onelined info"
+  method_option :json, :type => :boolean, :aliases => "-j"
   def oinfo(mask = nil)
     res = cmd(:short_data, *Array(mask))
-    say render_info(res)
-    say
+    if options[:json]
+      say_json(res)
+    else
+      say render_info(res)
+      say
+    end
   end
 
   desc "history [MASK,...]", "processes history"
+  method_option :json, :type => :boolean, :aliases => "-j"
   def history(*masks)
     res = cmd(:history_data, *masks)
     if !masks.empty? && res && res.empty?
       error!("command :history, objects not found!")
     end
-    say render_history(res)
-    say
+    if options[:json]
+      say_json(res)
+    else
+      say render_history(res)
+      say
+    end
   end
 
   desc "load [CONF, ...]", "load config (run eye-daemon if not) (-f foreground load)"
@@ -200,6 +214,11 @@ private
     else
       error! "log file not found #{log_file.inspect}"
     end
+  end
+
+  def say_json(obj)
+    require 'json'
+    say JSON.dump(obj)
   end
 
   def self.exit_on_failure?
