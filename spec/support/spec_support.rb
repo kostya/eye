@@ -230,7 +230,7 @@ def start_ok_process(cfg = C.p1)
 
   @process.process_really_running?.should == true
   @process.pid.should > 0
-  @process.watchers.keys.should == [:check_alive] if !cfg[:check_alive] == false
+  @process.watchers.keys.should == [:check_alive, :check_identity] if !cfg[:check_alive] == false
   @process.state_name.should == :up
   @pid = @process.pid
   Eye::System.pid_alive?(@pid).should == true
@@ -242,6 +242,14 @@ def die_process!(pid, signal = :kill, int = 0.3)
   Eye::System.send_signal(pid, signal)
   sleep int.to_f
   Eye::System.pid_alive?(pid).should == false
+end
+
+def change_ctime(filename, t = Time.now, now = false)
+  if now
+    system "touch #{filename}"
+  else
+    system "touch -t #{t.strftime('%Y%m%d%H%M')} #{filename}"
+  end
 end
 
 require_relative 'rr_celluloid'

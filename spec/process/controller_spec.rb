@@ -110,7 +110,7 @@ describe "Process Controller" do
     it "if cant kill process, moving to unmonitored too" do
       start_ok_process(C.p1.merge(:stop_command => "which ruby"))
 
-      @process.watchers.keys.should == [:check_alive]
+      @process.watchers.keys.should == [:check_alive, :check_identity]
 
       @process.stop
 

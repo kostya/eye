@@ -14,7 +14,7 @@ describe "ChildProcess" do
       @process.state_name.should == :up
       @process.children.keys.should_not == []
       @process.children.keys.size.should == 3
-      @process.watchers.keys.should == [:check_alive, :check_children]
+      @process.watchers.keys.should == [:check_alive, :check_identity, :check_children]
 
       @children = @process.children.values
       @children.each do |child|
@@ -27,7 +27,7 @@ describe "ChildProcess" do
 
     it "should check children even when one of them respawned" do
       start_ok_process(C.p3.merge(:monitor_children => {:checks => join(C.check_mem, C.check_cpu)}, :children_update_period => Eye::SystemResources::cache.expire + 1))
-      @process.watchers.keys.should == [:check_alive, :check_children]
+      @process.watchers.keys.should == [:check_alive, :check_identity, :check_children]
 
       sleep 6 # ensure that children are found
 

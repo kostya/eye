@@ -10,7 +10,7 @@ describe "Check FSize" do
   it "should start periodical watcher" do
     start_ok_process(@c)
 
-    @process.watchers.keys.should == [:check_alive, :check_fsize]
+    @process.watchers.keys.should == [:check_alive, :check_identity, :check_fsize]
 
     @process.stop
 

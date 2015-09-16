@@ -19,7 +19,7 @@ describe "Process Restart, emulate some real hard cases" do
       Eye::System.pid_alive?(@pid).should == true
 
       @process.state_name.should == :up
-      @process.watchers.keys.should == [:check_alive]
+      @process.watchers.keys.should == [:check_alive, :check_identity]
 
       @process.load_pid_from_file.should == @process.pid
       @process.states_history.states.should end_with(:up, :restarting, :stopping, :unmonitored, :starting, :up)
@@ -47,7 +47,7 @@ describe "Process Restart, emulate some real hard cases" do
       Eye::System.pid_alive?(@pid).should == true
 
       @process.state_name.should == :up
-      @process.watchers.keys.should == [:check_alive]
+      @process.watchers.keys.should == [:check_alive, :check_identity]
 
       @process.load_pid_from_file.should == @process.pid
       @process.states_history.states.should end_with(:up, :restarting, :up)

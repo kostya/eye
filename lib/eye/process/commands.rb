@@ -41,6 +41,8 @@ module Eye::Process::Commands
 
     switch :stopping
 
+    return unless check_identity
+
     kill_process
 
     if process_really_running?
@@ -68,6 +70,7 @@ module Eye::Process::Commands
     switch :restarting
 
     if self[:restart_command]
+      return unless check_identity
       if execute_restart_command
         sleep_grace(:restart_grace)
       end
@@ -275,6 +278,8 @@ private
   end
 
   def execute_user_command(name, cmd)
+    return unless check_identity
+
     info "executing user command #{name} #{cmd.inspect}"
 
     # cmd is string, or array of signals

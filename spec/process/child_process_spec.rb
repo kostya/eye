@@ -15,7 +15,7 @@ describe "ChildProcess" do
       @process.state_name.should == :up
       @process.children.keys.should_not == []
       @process.children.keys.size.should == 3
-      @process.watchers.keys.should == [:check_alive, :check_children]
+      @process.watchers.keys.should == [:check_alive, :check_identity, :check_children]
 
       child = @process.children.values.first
       child[:notify].should == { "abcd" => :warn }
@@ -25,18 +25,18 @@ describe "ChildProcess" do
     it "should not monitoring when process has children and disable option" do
       start_ok_process(C.p3)
       @process.children.should == {}
-      @process.watchers.keys.should == [:check_alive]
+      @process.watchers.keys.should == [:check_alive, :check_identity]
     end
 
     it "should not monitoring when process has no children and enable option" do
       start_ok_process(C.p1.merge(:monitor_children => {}))
       @process.children.should == {}
-      @process.watchers.keys.should == [:check_alive, :check_children]
+      @process.watchers.keys.should == [:check_alive, :check_identity, :check_children]
     end
 
     it "when one child dies, should update list" do
       start_ok_process(C.p3.merge(:monitor_children => {}, :children_update_period => Eye::SystemResources::cache.expire + 1))
-      @process.watchers.keys.should == [:check_alive, :check_children]
+      @process.watchers.keys.should == [:check_alive, :check_identity, :check_children]
 
       sleep 5 # ensure that children are found
 
@@ -59,7 +59,7 @@ describe "ChildProcess" do
 
     it "all children die, should update list" do
       start_ok_process(C.p3.merge(:monitor_children => {}, :children_update_period => Eye::SystemResources::cache.expire + 1))
-      @process.watchers.keys.should == [:check_alive, :check_children]
+      @process.watchers.keys.should == [:check_alive, :check_identity, :check_children]
 
       sleep 5 # ensure that children are found
 
@@ -86,7 +86,7 @@ describe "ChildProcess" do
       sleep 5 # ensure that children are found
 
       pid = @process.pid
-      @process.watchers.keys.should == [:check_alive, :check_children]
+      @process.watchers.keys.should == [:check_alive, :check_identity, :check_children]
       @process.children.size.should == 3
 
       @process.stop

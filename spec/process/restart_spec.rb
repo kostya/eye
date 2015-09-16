@@ -17,7 +17,7 @@ describe "Process Restart" do
 
       @process.state_name.should == :up
       @process.states_history.states.should seq(:up, :restarting, :stopping, :down, :starting, :up)
-      @process.watchers.keys.should == [:check_alive]
+      @process.watchers.keys.should == [:check_alive, :check_identity]
 
       @process.load_pid_from_file.should == @process.pid
     end
@@ -36,7 +36,7 @@ describe "Process Restart" do
       Eye::System.pid_alive?(@process.pid).should == true
 
       @process.state_name.should == :up
-      @process.watchers.keys.should == [:check_alive]
+      @process.watchers.keys.should == [:check_alive, :check_identity]
 
       @process.load_pid_from_file.should == @process.pid
     end
@@ -55,7 +55,7 @@ describe "Process Restart" do
       Eye::System.pid_alive?(@pid).should == true
 
       @process.state_name.should == :up
-      @process.watchers.keys.should == [:check_alive]
+      @process.watchers.keys.should == [:check_alive, :check_identity]
 
       @process.load_pid_from_file.should == @process.pid
       @process.states_history.states.should end_with(:up, :restarting, :up)
@@ -93,7 +93,7 @@ describe "Process Restart" do
       Eye::System.pid_alive?(@process.pid).should == true
 
       @process.state_name.should == :up
-      @process.watchers.keys.should == [:check_alive]
+      @process.watchers.keys.should == [:check_alive, :check_identity]
       @process.states_history.states.should seq(:restarting, :stopping, :down, :starting, :up)
 
       @process.load_pid_from_file.should == @process.pid

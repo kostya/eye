@@ -30,6 +30,31 @@ module Eye::Process::System
     File.ctime(self[:pid_file_ex]) rescue Time.now
   end
 
+  def get_identity
+    File.mtime(self[:pid_file_ex])
+  rescue Errno::ENOENT
+    nil
+  end
+
+  def compare_identity(pid = self.pid)
+    return :ok unless self[:check_identity]
+    return :no_pid unless pid
+    id = get_identity
+    return :no_pid_file unless id
+    st = Eye::SystemResources.start_time(pid)
+    return :no_start_time unless st
+    st1 = st.to_i
+    id1 = id.to_i
+    if (id1 - st1).abs > self[:check_identity_grace]
+      msg = "pid_file: '#{Eye::Utils.human_time2(id)}', process: '#{Eye::Utils.human_time2(st)}' (#{Eye::SystemResources.args(pid)})"
+      res = (id1 < st1) ? :fail : :touched
+      warn "compare_identity: #{res}, #{msg}"
+      res
+    else
+      :ok
+    end
+  end
+
   def process_really_running?
     process_pid_running?(self.pid)
   end

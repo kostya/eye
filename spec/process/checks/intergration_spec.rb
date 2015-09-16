@@ -12,7 +12,7 @@ describe "Process Integration checks" do
   it "should start periodical watcher" do
     start_ok_process(@c)
 
-    @process.watchers.keys.should == [:check_alive, :check_cpu, :check_memory, :check_ctime, :check_http]
+    @process.watchers.keys.should == [:check_alive, :check_identity, :check_cpu, :check_memory, :check_ctime, :check_http]
 
     @process.stop
 

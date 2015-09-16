@@ -11,6 +11,12 @@ module Eye::Process::Watchers
         check_alive
       end
 
+      if self[:check_identity]
+        add_watcher(:check_identity, self[:check_identity_period]) do
+          check_identity
+        end
+      end
+
       # monitor children pids
       if self[:monitor_children]
         add_watcher(:check_children, self[:children_update_period]) do

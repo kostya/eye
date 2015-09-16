@@ -24,7 +24,7 @@ describe "Process Start" do
     @process.load_pid_from_file.should == @pid
 
     @process.state_name.should == :up
-    @process.watchers.keys.should == [:check_alive]
+    @process.watchers.keys.should == [:check_alive, :check_identity]
   end
 
   it "process started and up, receive command start" do
@@ -32,12 +32,12 @@ describe "Process Start" do
     @process.start.should == {:pid=>@process.pid, :exitstatus => 0}
     sleep 0.5
     @process.state_name.should == :up
-    @process.watchers.keys.should == [:check_alive]
+    @process.watchers.keys.should == [:check_alive, :check_identity]
 
     @process.start.should == :ok
     sleep 1
     @process.state_name.should == :up
-    @process.watchers.keys.should == [:check_alive]
+    @process.watchers.keys.should == [:check_alive, :check_identity]
   end
 
   [C.p1, C.p2].each do |cfg|
@@ -51,7 +51,7 @@ describe "Process Start" do
       @process.load_pid_from_file.should == @pid
 
       @process.state_name.should == :up
-      @process.watchers.keys.should == [:check_alive]
+      @process.watchers.keys.should == [:check_alive, :check_identity]
     end
 
     it "pid_file already exists, but process not, with config #{cfg[:name]}" do

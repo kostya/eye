@@ -38,7 +38,7 @@ describe "Custom checks" do
       @c.load_content(conf)
       sleep 3
       @process = @c.process_by_name("1")
-      @process.watchers.keys.should == [:check_alive, :check_custom_check]
+      @process.watchers.keys.should == [:check_alive, :check_identity, :check_custom_check]
     end
 
     it "should not restart" do

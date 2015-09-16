@@ -11,7 +11,7 @@ describe "Process Memory check" do
   it "should start periodical watcher" do
     start_ok_process(@c)
 
-    @process.watchers.keys.should == [:check_alive, :check_memory]
+    @process.watchers.keys.should == [:check_alive, :check_identity, :check_memory]
 
     @process.stop
 

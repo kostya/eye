@@ -70,9 +70,33 @@ describe "Controller user_command" do
     Eye::System.pid_alive?(@process.pid).should == true
 
     subject.command('user_command', 'abcd', 'app')
-    sleep 2
+    sleep 2.5
 
     Eye::System.pid_alive?(@process.pid).should == false
+  end
+
+  it "check identity before execute user_command" do
+    cfg = <<-D
+      Eye.application("app") do
+        process("proc") do
+          pid_file "#{C.p1_pid}"
+          start_command "sleep 10"
+          daemonize!
+          start_grace 0.3
+
+          command :abcd, "touch #{C.tmp_file}"
+        end
+      end
+    D
+
+    subject.load_content(cfg)
+    @process = subject.process_by_name("proc")
+    File.exist?(C.tmp_file).should == false
+    sleep 1
+    change_ctime(C.p1_pid, 5.days.ago)
+    subject.command('user_command', 'abcd', 'proc')
+    sleep 1
+    File.exist?(C.tmp_file).should == false
   end
 
 end

@@ -10,7 +10,7 @@ describe "Check CTime" do
   it "should start periodical watcher" do
     start_ok_process(@c)
 
-    @process.watchers.keys.should == [:check_alive, :check_ctime]
+    @process.watchers.keys.should == [:check_alive, :check_identity, :check_ctime]
     sbj = @process.watchers[:check_ctime][:subject]
     sbj.file.should == "#{C.sample_dir}/#{C.log_name}"
 
@@ -22,7 +22,7 @@ describe "Check CTime" do
 
   it "if ctime changes should_not restart" do
     start_ok_process(@c)
-    @process.watchers.keys.should == [:check_alive, :check_ctime]
+    @process.watchers.keys.should == [:check_alive, :check_identity, :check_ctime]
 
     dont_allow(@process).schedule(:restart)
 

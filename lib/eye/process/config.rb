@@ -4,6 +4,10 @@ module Eye::Process::Config
     :keep_alive => true, # restart when crashed
     :check_alive_period => 5.seconds,
 
+    :check_identity => true,
+    :check_identity_period => 60.seconds,
+    :check_identity_grace => 60.seconds,
+
     :start_timeout => 15.seconds,
     :stop_timeout => 10.seconds,
     :restart_timeout => 10.seconds,

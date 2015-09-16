@@ -24,7 +24,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
       Eye::System.pid_alive?(@pid).should == true
 
       @process.state_name.should == :up
-      @process.watchers.keys.should == [:check_alive]
+      @process.watchers.keys.should == [:check_alive, :check_identity]
       @process.load_pid_from_file.should == @process.pid
     end
 
@@ -56,7 +56,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
       Eye::System.pid_alive?(@pid).should == true
 
       @process.state_name.should == :up
-      @process.watchers.keys.should == [:check_alive]
+      @process.watchers.keys.should == [:check_alive, :check_identity]
 
       @pids << old_pid # to gc this process too
     end
@@ -78,7 +78,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
       Eye::System.pid_alive?(old_pid).should == true
 
       @process.state_name.should == :up
-      @process.watchers.keys.should == [:check_alive]
+      @process.watchers.keys.should == [:check_alive, :check_identity]
 
       @pids << old_pid # to gc this process too
     end

@@ -6,7 +6,7 @@ describe "Multiple checks" do
     r = @c.load(fixture("dsl/multiple_checks.eye"))
     sleep 3
     @process = @c.process_by_name("1")
-    @process.watchers.keys.should == [:check_alive, :check_cpu, :check_cpu9, :check_cpu3, :check_cpu_4]
+    @process.watchers.keys.should == [:check_alive, :check_identity, :check_cpu, :check_cpu9, :check_cpu3, :check_cpu_4]
     @process.watchers[:check_cpu][:subject].class.should == Eye::Checker::Cpu
     @process.watchers[:check_cpu9][:subject].class.should == Cpu9
     @process.watchers[:check_cpu3][:subject].class.should == Eye::Checker::Cpu
