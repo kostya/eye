@@ -61,8 +61,21 @@ Eye::Control.set_proc_line
 
 server.async.run
 
+gem 'heap_dump'
+require 'heap_dump'
+require 'json'
+
 trap("USR1") { Eye::Logger.reopen }
-trap("USR2") { GC.start }
+trap("USR2") do
+  stat = HeapDump.count_objects(["Eye", "Celluloid", "Timers"])
+  #HeapDump.dump("/tmp/dump_#{$$}_#{Time.now}.json")
+  obj = JSON.parse(stat)
+  bt = obj['basic_types'].sort
+  ut = obj['user_types'].sort
+  s = ""; ut.each { |k, v| s += "#{k}: #{v}\n" }
+  File.open("/tmp/stat_#{$$}_#{Time.now}.json", 'w') { |f| f.write(s) }
+end
+
 trap("INT")  { Eye::Logger.info("INT signal <#{$$}>"); exit }
 trap("QUIT") { Eye::Logger.info("QUIT signal <#{$$}>"); exit }
 trap("TERM") { Eye::Logger.info("TERM signal <#{$$}>"); exit }
