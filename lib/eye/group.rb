@@ -70,8 +70,9 @@ class Eye::Group
   def status_data_short
     h = Hash.new
     @processes.each do |p|
-      h[p.state] ||= 0
-      h[p.state] += 1
+      state = p.state
+      h[state] ||= 0
+      h[state] += 1
     end
     { name: (@name == '__default__' ? 'default' : @name), type: :group, states: h }
   end
