@@ -1,4 +1,4 @@
-require 'celluloid'
+require 'celluloid/current'
 
 class Eye::SystemResources
 
