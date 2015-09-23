@@ -71,7 +71,7 @@ module Eye::Process::Commands
     if self[:restart_command]
       execute_restart_command
       sleep_grace(:restart_grace)
-      result = check_alive_with_refresh_pid_if_needed
+      result = process_really_running? || (load_external_pid_file == :ok)
       switch(result ? :restarted : :crashed)
     else
       stop_process

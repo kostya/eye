@@ -2,32 +2,22 @@ module Eye::Process::Monitor
 
 private
 
-  def check_alive_with_refresh_pid_if_needed
-    if process_really_running?
-      return true
-
-    else
-      warn 'process not really running'
-      try_update_pid_from_file
-    end
-  end
-
-  def try_update_pid_from_file
-    # if pid file was rewritten
+  def load_external_pid_file
     newpid = load_pid_from_file
-    if newpid != self.pid
-      info "process <#{self.pid}> changed pid to <#{newpid}>, updating..." if self.pid
-      self.pid = newpid
+    if !newpid
+      self.pid = nil
+      info "load_external_pid_file: no pid_file"
+      return :no_pid_file
+    end
 
-      if process_really_running?
-        return true
-      else
-        warn "process <#{newpid}> was not found"
-        return false
-      end
+    if process_pid_running?(newpid)
+      self.pid = newpid
+      info "load_external_pid_file: process <#{self.pid}> from pid_file found and already running"
+      :ok
     else
-      debug { 'process was not found' }
-      return false
+      self.pid = nil
+      info "load_external_pid_file: pid_file found, but process <#{newpid}> not found"
+      :not_running
     end
   end
 
