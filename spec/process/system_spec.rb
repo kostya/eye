@@ -27,10 +27,19 @@ describe "Eye::Process::System" do
     @process.failsafe_load_pid.should == nil
   end
 
-  it "set_pid_from_file" do
-    File.open(@process[:pid_file_ex], 'w'){|f| f.write(12345) }
-    @process.set_pid_from_file
-    @process.pid.should == 12345
+  it "load_external_pid_file" do
+    @process.send(:load_external_pid_file).should == :no_pid_file
+
+    File.open(@process[:pid_file_ex], 'w'){|f| f.write(123455) }
+    @process.send(:load_external_pid_file).should == :not_running
+    @process.pid.should == nil
+
+    @pid = Eye::System.daemonize("ruby sample.rb", :working_dir => C.p1[:working_dir])[:pid]
+
+    File.open(@process[:pid_file_ex], 'w'){|f| f.write(@pid) }
+    @process.send(:load_external_pid_file).should == :ok
+    @process.pid.should == @pid
+
     @process.pid = nil
   end
 
