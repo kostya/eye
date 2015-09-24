@@ -11,10 +11,6 @@ module Eye::Process::System
     res
   end
 
-  def set_pid_from_file
-    self.pid = load_pid_from_file
-  end
-
   def save_pid_to_file
     if self.pid
       File.open(self[:pid_file_ex], 'w') do |f|

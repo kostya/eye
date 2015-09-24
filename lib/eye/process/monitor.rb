@@ -15,6 +15,7 @@ private
       info "load_external_pid_file: process <#{self.pid}> from pid_file found and already running"
       :ok
     else
+      @last_loaded_pid = newpid
       self.pid = nil
       info "load_external_pid_file: pid_file found, but process <#{newpid}> not found"
       :not_running

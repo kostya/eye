@@ -240,19 +240,17 @@ private
 
     sleep_grace(:start_grace)
 
-    unless set_pid_from_file
+    case load_external_pid_file
+    when :ok
+      info "exit status #{res[:exitstatus]}, process <#{self.pid}> (from #{self[:pid_file_ex]}) was found"
+      res.merge(:pid => self.pid)
+    when :no_pid_file
       error "exit status #{res[:exitstatus]}, pid_file (#{self[:pid_file_ex]}) did not appear within the start_grace period (#{self[:start_grace].to_f}s); check your start_command, or tune the start_grace value (eye expect process to create pid_file in self-daemonization mode)"
-      return {:error => :pid_not_found}
+      { :error => :pid_not_found }
+    when :not_running
+      error "exit status #{res[:exitstatus]}, process <#{@last_loaded_pid}> (from #{self[:pid_file_ex]}) was not found; ensure that the pid_file is being updated correctly (#{check_logs_str})"
+      { :error => :not_really_running }
     end
-
-    unless process_really_running?
-      error "exit status #{res[:exitstatus]}, process <#{self.pid}> (from #{self[:pid_file_ex]}) was not found; ensure that the pid_file is being updated correctly (#{check_logs_str})"
-      return {:error => :not_really_running}
-    end
-
-    res[:pid] = self.pid
-    info "exit status #{res[:exitstatus]}, process <#{res[:pid]}> (from #{self[:pid_file_ex]}) was found"
-    res
   end
 
   def check_logs_str
