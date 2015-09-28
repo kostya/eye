@@ -6,7 +6,7 @@ require 'coveralls/rake/task'
 
 Coveralls::RakeTask.new
 
-task :default => :pspec
+task :default => :split_test
 
 desc "run parallel tests"
 task :pspec do
