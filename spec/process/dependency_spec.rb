@@ -63,7 +63,7 @@ describe "dependency" do
 
     it "start :b" do
       @process_b.send_command :start
-      sleep 4
+      sleep 4.5
 
       @process_a.state_name.should == :up
       @process_b.state_name.should == :up
@@ -98,7 +98,7 @@ describe "dependency" do
       @process_b.state_name.should == :unmonitored
 
       @process_a.config[:start_command] = "sleep 100"
-      sleep 3
+      sleep 3.5
 
       @process_a.state_name.should == :up
       @process_b.state_name.should == :up

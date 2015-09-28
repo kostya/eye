@@ -57,7 +57,7 @@ describe "StopOnDelete behaviour" do
     Eye::System.pid_alive?(@old_pid2).should == false
     Eye::System.pid_alive?(@old_pid3).should == false
 
-    sleep 0.5
+    sleep 1
     Eye::System.pid_alive?(@old_pid1).should == false
 
     actors = Celluloid::Actor.all.map(&:class)

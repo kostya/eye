@@ -80,6 +80,7 @@ S
 
   it "history_string" do
     controller.load(fixture("dsl/load.eye"))
+    sleep 0.3
     str = history_string('*')
     str.should be_a(String)
     str.size.should >= 80
