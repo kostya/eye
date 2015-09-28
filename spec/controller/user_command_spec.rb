@@ -45,7 +45,7 @@ describe "Controller user_command" do
     mock(@process).notify(:debug, anything)
     sleep 0.5
     subject.command('user_command', 'abcd', 'proc')
-    sleep 0.5
+    sleep 1.5
   end
 
   it "should execute signals cmd" do
@@ -70,7 +70,7 @@ describe "Controller user_command" do
     Eye::System.pid_alive?(@process.pid).should == true
 
     subject.command('user_command', 'abcd', 'app')
-    sleep 1
+    sleep 2
 
     Eye::System.pid_alive?(@process.pid).should == false
   end
