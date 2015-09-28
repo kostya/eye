@@ -71,6 +71,7 @@ describe "Process Restart" do
       mock(@process).check_crash
 
       @process.restart
+      sleep 0.5
       Eye::System.pid_alive?(@pid).should == false
       @process.states_history.states.should seq(:up, :restarting, :down)
     end

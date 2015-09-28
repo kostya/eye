@@ -229,7 +229,7 @@ describe "dependency multi" do
       @process_c.state_name.should == :unmonitored
 
       @process_c.schedule :start
-      sleep 5
+      sleep 5.5
 
       @process_a.state_name.should == :up
       @process_b.state_name.should == :up

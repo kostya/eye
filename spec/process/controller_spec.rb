@@ -187,7 +187,7 @@ describe "Process Controller" do
       File.exist?(C.tmp_file).should == false
       @c.load_content(conf)
       @process = @c.process_by_name(:a)
-      sleep 4
+      sleep 4.5
     end
 
     it "should ok up process" do

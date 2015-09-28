@@ -117,7 +117,7 @@ describe "Scheduler" do
     @process.schedule :terminate
     @process.schedule(:scheduler_test1, 1) rescue nil
 
-    sleep 0.2
+    sleep 0.4
     @process.alive?.should == false
     scheduler.alive?.should == false
   end
