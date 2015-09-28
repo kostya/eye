@@ -48,7 +48,7 @@ describe "Trigger StartingGuard" do
     it "should be up" do
       sleep 5
       @process.state_name.should_not == :up
-      sleep 5
+      sleep 5.5
       @process.state_name.should_not == :up
       @process.schedule_history.states.count(:conditional_start).should > 15
     end

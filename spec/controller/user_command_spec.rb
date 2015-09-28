@@ -45,7 +45,7 @@ describe "Controller user_command" do
     mock(@process).notify(:debug, anything)
     sleep 0.5
     subject.command('user_command', 'abcd', 'proc')
-    sleep 1.5
+    sleep 2.0
   end
 
   it "should execute signals cmd" do
