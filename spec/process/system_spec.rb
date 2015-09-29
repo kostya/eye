@@ -13,7 +13,7 @@ describe "Eye::Process::System" do
     @process.load_pid_from_file.should == 12345
 
     FileUtils.rm(@process[:pid_file_ex]) rescue nil
-    @process.load_pid_from_file.should == -1
+    @process.load_pid_from_file.should == nil
   end
 
   it "failsafe_load_pid" do

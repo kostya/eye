@@ -3,7 +3,7 @@ require 'timeout'
 module Eye::Process::System
 
   def load_pid_from_file
-    File.read(self[:pid_file_ex]).to_i rescue -1
+    File.read(self[:pid_file_ex]).to_i rescue nil
   end
 
   def save_pid_to_file
@@ -88,12 +88,12 @@ module Eye::Process::System
   def failsafe_load_pid
     pid = load_pid_from_file
 
-    if pid < 0 # this is can be symlink changed case
+    unless pid # this is can be symlink changed case
       sleep 0.1
       pid = load_pid_from_file
     end
 
-    pid if pid > 0
+    pid if pid && pid > 0
   end
 
   def failsafe_save_pid
