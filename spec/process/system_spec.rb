@@ -7,13 +7,13 @@ describe "Eye::Process::System" do
 
   it "load_pid_from_file" do
     File.open(@process[:pid_file_ex], 'w'){|f| f.write("asdf") }
-    @process.load_pid_from_file.should == nil
+    @process.load_pid_from_file.should == 0
 
     File.open(@process[:pid_file_ex], 'w'){|f| f.write(12345) }
     @process.load_pid_from_file.should == 12345
 
     FileUtils.rm(@process[:pid_file_ex]) rescue nil
-    @process.load_pid_from_file.should == nil
+    @process.load_pid_from_file.should == -1
   end
 
   it "failsafe_load_pid" do
