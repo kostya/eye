@@ -57,6 +57,10 @@ class Eye::SystemResources
       end
     end
 
+    def args(pid)
+      Eye::Sigar.proc_args(pid).join(' ').strip rescue '-'
+    end
+
     def resources(pid)
       { :memory => memory(pid),
         :cpu => cpu(pid),
