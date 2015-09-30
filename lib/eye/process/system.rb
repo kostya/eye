@@ -17,7 +17,8 @@ module Eye::Process::System
     end
   end
 
-  def clear_pid_file
+  def clear_pid_file(check_content = false)
+    return if check_content && self.pid && load_pid_from_file != self.pid
     info "delete pid_file: #{self[:pid_file_ex]}"
     File.unlink(self[:pid_file_ex])
     true

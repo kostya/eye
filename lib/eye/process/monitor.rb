@@ -28,7 +28,7 @@ private
       unless process_really_running?
         warn "check_alive: process <#{self.pid}> not found"
         notify :info, 'crashed!'
-        clear_pid_file if control_pid? && self.pid && load_pid_from_file == self.pid
+        clear_pid_file(true) if control_pid?
 
         switch :crashed, Eye::Reason.new(:crashed)
       else
