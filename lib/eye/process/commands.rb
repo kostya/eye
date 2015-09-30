@@ -25,7 +25,6 @@ module Eye::Process::Commands
         sleep 0.2 # little grace
       end
 
-      self.pid = nil
       switch :crashed
     end
 

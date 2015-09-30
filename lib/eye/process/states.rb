@@ -69,6 +69,7 @@ class Eye::Process
   end
 
   def on_crashed
+    self.pid = nil
     schedule :check_crash, Eye::Reason.new(:crashed)
   end
 
