@@ -20,11 +20,11 @@ module Eye::Process::Data
     @full_name ||= [app_name, group_name, self[:name]].compact.join(':')
   end
 
-  def status_data(debug = false)
-    p_st = self_status_data(debug)
+  def status_data(opts = {})
+    p_st = self_status_data(opts)
 
     if children.present?
-      p_st.merge(:subtree => Eye::Utils::AliveArray.new(children.values).map{|c| c.status_data(debug) } )
+      p_st.merge(:subtree => Eye::Utils::AliveArray.new(children.values).map{|c| c.status_data(opts) } )
     elsif self[:monitor_children] && self.up?
       p_st.merge(:subtree => [{name: '=loading children='}])
     else
@@ -33,7 +33,7 @@ module Eye::Process::Data
     end
   end
 
-  def self_status_data(debug = false)
+  def self_status_data(opts)
     h = { name: name, state: state,
           type: (self.class == Eye::ChildProcess ? :child_process : :process),
           resources: Eye::SystemResources.resources(pid) }
@@ -43,7 +43,8 @@ module Eye::Process::Data
                 state_reason: @states_history.last_reason.to_s )
     end
 
-    h[:debug] = debug_data if debug
+    h[:debug] = debug_data if opts[:debug]
+    h[:procline] = Eye::SystemResources.args(self.pid) if opts[:procline]
     h[:current_command] = current_scheduled_command if current_scheduled_command
 
     h

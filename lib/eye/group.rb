@@ -44,12 +44,12 @@ class Eye::Group
     @processes = @processes.sort_by(&:name)
   end
 
-  def status_data(debug = false)
-    plist = @processes.map{|p| p.status_data(debug) }
+  def status_data(opts = {})
+    plist = @processes.map{|p| p.status_data(opts) }
 
     h = { name: name, type: :group, subtree: plist }
 
-    h[:debug] = debug_data if debug
+    h[:debug] = debug_data if opts[:debug]
 
     # show current chain
     if current_scheduled_command

@@ -26,8 +26,8 @@ class Eye::Application
     @groups = @groups.sort { |a, b| a.hidden ? 1 : (b.hidden ? -1 : (a.name <=> b.name)) }
   end
 
-  def status_data(debug = false)
-    h = { name: @name, type: :application, subtree: @groups.map{|gr| gr.status_data(debug) }}
+  def status_data(opts = {})
+    h = { name: @name, type: :application, subtree: @groups.map{|gr| gr.status_data(opts) }}
     h[:debug] = debug_data if debug
     h
   end

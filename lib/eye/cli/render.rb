@@ -45,7 +45,11 @@ private
           str += ' ' + data[:states].map { |k, v| "#{k}:#{v}" }.join(', ')
         elsif data[:state]
           str += ' ' + data[:state].to_s
-          str += '  (' + resources_str(data[:resources]) + ')' if data[:resources] && data[:state].to_sym == :up
+          if data[:resources] && data[:state].to_sym == :up
+            str += '  (' + resources_str(data[:resources])
+            str += ", <#{data[:procline]}>" if data[:procline]
+            str += ')'
+          end
           str += " (#{data[:state_reason]} at #{Eye::Utils.human_time2(data[:state_changed_at])})" if data[:state_reason] && data[:state] == 'unmonitored'
         elsif data[:current_command]
           chain_progress = if data[:chain_progress]
@@ -54,7 +58,6 @@ private
           str += " \e[1;33m[#{data[:current_command]}#{chain_progress}]\033[0m"
           str += " (#{data[:chain_commands] * ', '})" if data[:chain_commands]
         end
-
       end
 
       if data[:subtree].nil?

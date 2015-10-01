@@ -91,8 +91,8 @@ class Eye::ChildProcess
     send_signal(sig) if self.pid
   end
 
-  def status_data(debug = false)
-    self_status_data(debug)
+  def status_data(opts = {})
+    self_status_data(opts)
   end
 
   def prepare_command(command) # override

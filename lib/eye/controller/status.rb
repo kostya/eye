@@ -23,7 +23,8 @@ module Eye::Controller::Status
   end
 
   def info_data(*args)
-    {:subtree => info_objects(*args).map{|a| a.status_data } }
+    h = args.extract_options!
+    {:subtree => info_objects(*args).map{|a| a.status_data(h) } }
   end
 
   def short_data(*args)
