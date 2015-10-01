@@ -63,9 +63,6 @@ server.async.run
 
 trap("USR1") { Eye::Logger.reopen }
 trap("USR2") { GC.start }
-trap("INT")  { Eye::Logger.info("INT signal <#{$$}>"); exit }
-trap("QUIT") { Eye::Logger.info("QUIT signal <#{$$}>"); exit }
-trap("TERM") { Eye::Logger.info("TERM signal <#{$$}>"); exit }
 
 at_exit { Eye::Control.command(:stop_all) } if options[:stop_all]
 
