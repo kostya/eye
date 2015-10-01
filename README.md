@@ -137,6 +137,10 @@ foreground load:
 
 If the eye daemon has already started and you call the `load` command, the config will be updated (into eye daemon). New objects(applications, groups, processes) will be added and monitored. Processes removed from the config will be removed (and stopped if the process has `stop_on_delete true`). Other objects will update their configs.
 
+Two global configs loaded by default, if it exists (with the first eye load):
+
+    /etc/eye.conf
+    ~/.eyeconfig
 
 Process statuses:
 
