@@ -19,7 +19,7 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version     = '>= 1.9.2'
   gem.required_rubygems_version = '>= 1.3.6'
 
-  gem.add_dependency 'celluloid',     '~> 0.17.0'
+  gem.add_dependency 'celluloid',     '~> 0.17.2'
   gem.add_dependency 'celluloid-io',  '~> 0.17.0'
   gem.add_dependency 'state_machine'
   gem.add_dependency 'thor'
