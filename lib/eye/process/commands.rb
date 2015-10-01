@@ -242,7 +242,6 @@ private
 
     case load_external_pid_file
     when :ok
-      info "exit status #{res[:exitstatus]}, process <#{self.pid}> (from #{self[:pid_file_ex]}) was found"
       res.merge(:pid => self.pid)
     when :no_pid_file
       error "exit status #{res[:exitstatus]}, pid_file (#{self[:pid_file_ex]}) did not appear within the start_grace period (#{self[:start_grace].to_f}s); check your start_command, or tune the start_grace value (eye expect process to create pid_file in self-daemonization mode)"

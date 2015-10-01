@@ -11,7 +11,7 @@ private
       :no_pid_file
     elsif process_pid_running?(newpid)
       self.pid = newpid
-      info "load_external_pid_file: process <#{self.pid}> from pid_file found and already running (#{Eye::SystemResources.args(self.pid)})"
+      info "load_external_pid_file: process <#{self.pid}> from pid_file found and running (#{Eye::SystemResources.args(self.pid)})"
       :ok
     else
       @last_loaded_pid = newpid
