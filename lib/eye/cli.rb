@@ -180,6 +180,7 @@ class Eye::Cli < Thor
   end
 
   desc "watch [MASK]", "interactive processes info"
+  method_option :procline, :type => :boolean, :aliases => "-p"
   def watch(*args)
     error!("You should install watch utility") if `which watch`.empty?
 
@@ -188,6 +189,8 @@ class Eye::Cli < Thor
     else
       "watch -n 1 #{$0} i #{args * ' '}"
     end
+
+    cmd += " -p" if options[:procline]
 
     pid = Process.spawn(cmd)
     Process.waitpid(pid)
