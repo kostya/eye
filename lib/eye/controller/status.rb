@@ -13,8 +13,7 @@ module Eye::Controller::Status
       :dir => Eye::Local.dir,
       :pid_path => Eye::Local::pid_path,
       :sock_path => Eye::Local::socket_path,
-      :actors => actors,
-      :celluloid_backported => $CELLULOID_BACKPORTED
+      :actors => actors
     }
 
     res[:config_yaml] = YAML.dump(current_config.to_h) if h[:config].present?
