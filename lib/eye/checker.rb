@@ -79,11 +79,11 @@ class Eye::Checker
   end
 
   def logger_tag
-    @process.logger.prefix if @process
+    @logger_tag ||= @process ? @process.logger.prefix : nil
   end
 
   def logger_sub_tag
-    "check:#{check_name}"
+    @logger_sub_tag ||= "check:#{check_name}"
   end
 
   def last_human_values

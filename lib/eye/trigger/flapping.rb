@@ -29,8 +29,10 @@ private
   end
 
   def good?
-    states = process.states_history.states_for_period( within, @last_at )
-    down_count = states.count{|st| st == :down }
+    down_count = 0
+    states = process.states_history.states_for_period( within, @last_at ) do |s|
+      down_count += 1 if s[:state] == :down
+    end
 
     if down_count >= times
       @last_at = process.states_history.last_state_changed_at
