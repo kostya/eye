@@ -133,4 +133,27 @@ describe "Flapping retry" do
     # все финал
     h.should be_blank
   end
+
+  describe "reretry_in" do
+    it "reretry_in" do
+      @process = process(@c.merge(:triggers => C.flapping(:times => 2, :within => 2.second,
+        :retry_in => 2.seconds, :retry_times => 1, :reretry_in => 3.seconds)))
+      @process.async.start
+
+      sleep 25
+      reasons = @process.schedule_history.map { |h| h[:reason].to_s }
+      reasons.count { |r| r == "retry start after flapping" }.should >= 2
+      reasons.count { |r| r == "reretry start after flapping" }.should >= 2
+    end
+    it "reretry_in, reretry_times" do
+      @process = process(@c.merge(:triggers => C.flapping(:times => 2, :within => 2.second,
+        :retry_in => 2.seconds, :retry_times => 1, :reretry_in => 3.seconds, :reretry_times => 1)))
+      @process.async.start
+
+      sleep 25
+      reasons = @process.schedule_history.map { |h| h[:reason].to_s }
+      reasons.count { |r| r == "retry start after flapping" }.should == 2
+      reasons.count { |r| r == "reretry start after flapping" }.should == 1
+    end
+  end
 end

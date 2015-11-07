@@ -7,17 +7,26 @@ class Eye::Trigger::Flapping < Eye::Trigger
   param :within, [Float, Fixnum], true
   param :retry_in, [Float, Fixnum]
   param :retry_times, [Fixnum]
+  param :reretry_in, [Float, Fixnum]
+  param :reretry_times, [Fixnum]
 
   def initialize(*args)
     super
-    @flapping_times = 0
+    clear_counters
   end
 
   def check(transition)
-    on_flapping if transition.event == :crashed && !good?
+    if transition.event == :crashed && !good?
+      on_flapping
+    end
   end
 
 private
+
+  def clear_counters
+    @retry_times = 0
+    @reretry_times = 0
+  end
 
   def good?
     states = process.states_history.states_for_period( within, @last_at )
@@ -38,10 +47,18 @@ private
     process.schedule :unmonitor, Eye::Reason::Flapping.new(:flapping)
 
     return unless retry_in
-    return if retry_times && @flapping_times >= retry_times
-
-    @flapping_times += 1
-    process.schedule_in(retry_in.to_f, :conditional_start, Eye::Reason::Flapping.new('retry start after flapping'))
+    if !retry_times || (retry_times && @retry_times < retry_times)
+      @retry_times += 1
+      process.schedule_in(retry_in.to_f, :conditional_start, Eye::Reason::Flapping.new('retry start after flapping'))
+    else
+      if reretry_in
+        if !reretry_times || (reretry_times && @reretry_times < reretry_times)
+          @retry_times = 0
+          @reretry_times += 1
+          process.schedule_in(reretry_in.to_f, :conditional_start, Eye::Reason::Flapping.new('reretry start after flapping'))
+        end
+      end
+    end
   end
 
 end
