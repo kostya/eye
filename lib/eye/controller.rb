@@ -2,8 +2,6 @@ require 'celluloid'
 require 'yaml'
 
 require_relative 'utils/pmap'
-
-require_relative 'utils/leak_19'
 require_relative 'utils/mini_active_support'
 
 # Extend all objects with logger
