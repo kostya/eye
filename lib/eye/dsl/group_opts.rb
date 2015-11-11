@@ -25,8 +25,8 @@ class Eye::Dsl::GroupOpts < Eye::Dsl::Opts
     opts
   end
 
-  alias xprocess nop
-  alias application parent
-  alias app application
+  alias_method :xprocess, :nop
+  alias_method :application, :parent
+  alias_method :app, :application
 
 end

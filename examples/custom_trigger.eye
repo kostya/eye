@@ -12,7 +12,7 @@ class Eye::Trigger::FixCrash < Eye::Trigger::Custom
     compare = [:starting, :down] * times + [:starting, :up]
 
     if states[-compare.length..-1] == compare
-      process.notify(:info, "yahho, process up")
+      process.notify(:info, 'yahho, process up')
     end
   end
 end

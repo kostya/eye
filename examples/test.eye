@@ -66,7 +66,7 @@ Eye.application 'test' do
   end
 
   # eventmachine process, daemonized with eye
-  process :event_machine do |p|
+  process :event_machine do
     pid_file 'em.pid'
     start_command 'ruby em.rb'
     stdout 'em.log'
@@ -86,5 +86,4 @@ Eye.application 'test' do
     check :http, url: 'http://127.0.0.1:33233/hello', pattern: /World/,
                  every: 5.seconds, times: [2, 3], timeout: 1.second
   end
-
 end

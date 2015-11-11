@@ -37,11 +37,11 @@ module Eye::Process::Children
     end
 
     if removed_children.present?
-      removed_children.each{|child_pid| remove_child(child_pid) }
+      removed_children.each { |child_pid| remove_child(child_pid) }
     end
 
-    h = {:new => new_children.size, :removed => removed_children.size, :exists => exist_children.size }
-    debug { "children info: #{ h.inspect }" }
+    h = { :new => new_children.size, :removed => removed_children.size, :exists => exist_children.size }
+    debug { "children info: #{h.inspect}" }
 
     @updating_children = false
     h

@@ -11,7 +11,7 @@ class Eye::Dsl::PureOpts
           end
 
           if types
-            good_type = Array(types).any?{|type| arg.is_a?(type) } || arg.nil?
+            good_type = Array(types).any? { |type| arg.is_a?(type) } || arg.nil?
             raise Eye::Dsl::Error, "bad :#{opt} value #{arg.inspect}, type should be #{types.inspect}" unless good_type
           end
 
@@ -19,7 +19,7 @@ class Eye::Dsl::PureOpts
         end
 
         define_method("get_#{opt}") do
-          @config[ opt.to_sym ]
+          @config[opt.to_sym]
         end
 
         define_method(opt) do |*args|
@@ -50,7 +50,7 @@ class Eye::Dsl::PureOpts
     if parent
       @parent = parent
       if merge_parent_config
-        @config = Eye::Utils::deep_clone(parent.config)
+        @config = Eye::Utils.deep_clone(parent.config)
         parent.not_seed_options.each { |opt| @config.delete(opt) }
       else
         @config = {}
@@ -90,7 +90,7 @@ class Eye::Dsl::PureOpts
       end
     else
       ie = if args.present?
-        lambda{|i| proc[i, *args] }
+        ->(i) { proc[i, *args] }
       else
         proc
       end
@@ -103,7 +103,6 @@ class Eye::Dsl::PureOpts
 
   def self.with_parsed_file(file_name)
     saved_parsed_filename = Eye.parsed_filename
-
 
     real_filename = Eye.parsed_filename && File.symlink?(Eye.parsed_filename) ? File.readlink(Eye.parsed_filename) : Eye.parsed_filename
     dirname = File.dirname(real_filename) rescue nil

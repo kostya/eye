@@ -13,7 +13,7 @@ module Eye::Controller::Load
     obj_strs = args.flatten
     info "=> loading: #{obj_strs}"
 
-    res = Hash.new
+    res = {}
 
     globbing(*obj_strs).each do |filename|
       res[filename] = catch_load_error(filename) do
@@ -35,7 +35,7 @@ private
   # regexp for clean backtrace to show for user
   BT_REGX = %r[/lib/eye/|lib/celluloid|internal:prelude|logger.rb:|active_support/core_ext|shellwords.rb|kernel/bootstrap].freeze
 
-  def catch_load_error(filename = nil, &block)
+  def catch_load_error(filename = nil, &_block)
     { :error => false, :config => yield }
 
   rescue Eye::Dsl::Error, Exception, NoMethodError => ex
@@ -45,7 +45,7 @@ private
 
     # filter backtrace for user output
     bt = (ex.backtrace || [])
-    bt = bt.reject{|line| line.to_s =~ BT_REGX } unless ENV['EYE_FULL_BACKTRACE']
+    bt = bt.reject { |line| line.to_s =~ BT_REGX } unless ENV['EYE_FULL_BACKTRACE']
     error bt.join("\n")
 
     res = { :error => true, :message => ex.message }
@@ -126,7 +126,7 @@ private
       app.groups.each do |group|
         @old_groups[group.name] = group
         group.processes.each do |proc|
-          @old_processes[group.name + ":" + proc.name] = proc
+          @old_processes[group.name + ':' + proc.name] = proc
         end
       end
 
@@ -150,8 +150,8 @@ private
     end
 
     # now, need to clear @old_groups, and @old_processes
-    @old_groups.each{|_, group| group.clear; group.send_command(:delete) }
-    @old_processes.each{|_, process| process.send_command(:delete) if process.alive? }
+    @old_groups.each { |_, group| group.clear; group.send_command(:delete) }
+    @old_processes.each { |_, process| process.send_command(:delete) if process.alive? }
 
     # schedule monitoring for new groups, processes
     added_fully_groups = []
@@ -162,8 +162,8 @@ private
       end
     end
 
-    added_fully_groups.each{|group| group.send_command :monitor }
-    @added_processes.each{|process| process.send_command :monitor }
+    added_fully_groups.each { |group| group.send_command :monitor }
+    @added_processes.each { |process| process.send_command :monitor }
 
     # remove links to prevent memory leaks
     @old_groups = nil
@@ -200,7 +200,7 @@ private
   end
 
   def update_or_create_process(process_name, process_cfg)
-    postfix = ":" + process_name
+    postfix = ':' + process_name
     name = process_cfg[:group] + postfix
     key = @old_processes[name] ? name : @old_processes.keys.detect { |n| n.end_with?(postfix) }
 

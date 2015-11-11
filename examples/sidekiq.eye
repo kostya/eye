@@ -17,7 +17,7 @@ end
 
 Eye.application :sidekiq_test do
   working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
-  env "RAILS_ENV" => 'production'
+  env 'RAILS_ENV' => 'production'
 
   sidekiq_process self, :sidekiq
 end

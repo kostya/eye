@@ -6,19 +6,19 @@ class Eye::Checker
   autoload :Http,       'eye/checker/http'
   autoload :FileCTime,  'eye/checker/file_ctime'
   autoload :FileSize,   'eye/checker/file_size'
-  autoload :FileTouched,'eye/checker/file_touched'
+  autoload :FileTouched, 'eye/checker/file_touched'
   autoload :Socket,     'eye/checker/socket'
   autoload :SslSocket,  'eye/checker/ssl_socket'
   autoload :Nop,        'eye/checker/nop'
   autoload :Runtime,    'eye/checker/runtime'
   autoload :Cputime,    'eye/checker/cputime'
   autoload :ChildrenCount, 'eye/checker/children_count'
-  autoload :ChildrenMemory,'eye/checker/children_memory'
+  autoload :ChildrenMemory, 'eye/checker/children_memory'
 
-  TYPES = {:memory => 'Memory', :cpu => 'Cpu', :http => 'Http',
-           :ctime => 'FileCTime', :fsize => 'FileSize', :file_touched => 'FileTouched',
-           :socket => 'Socket', :nop => 'Nop', :runtime => 'Runtime', :cputime => 'Cputime',
-           :children_count => "ChildrenCount", :children_memory => "ChildrenMemory", :ssl_socket => 'SslSocket' }
+  TYPES = { :memory => 'Memory', :cpu => 'Cpu', :http => 'Http',
+            :ctime => 'FileCTime', :fsize => 'FileSize', :file_touched => 'FileTouched',
+            :socket => 'Socket', :nop => 'Nop', :runtime => 'Runtime', :cputime => 'Cputime',
+            :children_count => 'ChildrenCount', :children_memory => 'ChildrenMemory', :ssl_socket => 'SslSocket' }
 
   attr_accessor :value, :values, :options, :pid, :type, :check_count, :process
 
@@ -30,11 +30,11 @@ class Eye::Checker
 
   def self.name_and_class(type)
     type = type.to_sym
-    return {:name => type, :type => type} if TYPES[type]
+    return { :name => type, :type => type } if TYPES[type]
 
-    if type =~ /\A(.*?)_?[0-9]+\z/
+    if type =~ %r[\A(.*?)_?[0-9]+\z]
       ctype = $1.to_sym
-      return {:name => type, :type => ctype} if TYPES[ctype]
+      return { :name => type, :type => ctype } if TYPES[ctype]
     end
   end
 
@@ -105,13 +105,13 @@ class Eye::Checker
 
     @value = get_value_safe
     @good_value = good?(value)
-    @values << {:value => @value, :good => @good_value}
+    @values << { :value => @value, :good => @good_value }
 
     result = true
     @check_count += 1
 
     if @values.size == max_tries
-      bad_count = @values.count{|v| !v[:good] }
+      bad_count = @values.count { |v| !v[:good] }
       result = false if bad_count >= min_tries
     end
 
@@ -204,7 +204,7 @@ class Eye::Checker
 
   class Defer < Eye::Checker
     def get_value_safe
-      Celluloid::Future.new{ get_value }.value
+      Celluloid::Future.new { get_value }.value
     end
   end
 

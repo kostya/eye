@@ -51,12 +51,12 @@ private
     args = []
     args += ['--dir', Eye::Local.dir] if Eye::Local.local_runner
 
-    opts = {:out => '/dev/null', :err => '/dev/null', :in => '/dev/null',
-            :chdir => '/', :pgroup => true}
+    opts = { :out => '/dev/null', :err => '/dev/null', :in => '/dev/null',
+             :chdir => '/', :pgroup => true }
 
     pid = Process.spawn(ruby_path, loader_path, *args, opts)
     Process.detach(pid)
-    File.open(Eye::Local.pid_path, 'w'){|f| f.write(pid) }
+    File.open(Eye::Local.pid_path, 'w') { |f| f.write(pid) }
 
     unless wait_server
       error! 'server has not started in 15 seconds, something is very wrong'
@@ -85,7 +85,7 @@ private
 
   def wait_server(timeout = 15)
     Timeout.timeout(timeout) do
-      sleep 0.3 while !server_started?
+      sleep 0.3 until server_started?
     end
     true
   rescue Timeout::Error

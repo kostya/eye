@@ -45,7 +45,7 @@ class Eye::Group
   end
 
   def status_data(opts = {})
-    plist = @processes.map{|p| p.status_data(opts) }
+    plist = @processes.map { |p| p.status_data(opts) }
 
     h = { name: name, type: :group, subtree: plist }
 
@@ -68,7 +68,7 @@ class Eye::Group
   end
 
   def status_data_short
-    h = Hash.new
+    h = {}
     @processes.each do |p|
       state = p.state
       h[state] ||= 0
@@ -78,7 +78,7 @@ class Eye::Group
   end
 
   def debug_data
-    {:queue => scheduler_actions_list, :chain => chain_status}
+    { :queue => scheduler_actions_list, :chain => chain_status }
   end
 
   def send_command(command, *args)
@@ -161,7 +161,7 @@ class Eye::Group
 private
 
   def async_schedule(command, *args)
-    info "send to all processes #{command} #{args.present? ? args*',' : nil}"
+    info "send to all processes #{command} #{args.present? ? args * ',' : nil}"
 
     @processes.each do |process|
       process.send_command(command, *args) unless process.skip_group_action?(command)

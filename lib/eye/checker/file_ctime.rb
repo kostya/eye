@@ -15,7 +15,7 @@ class Eye::Checker::FileCTime < Eye::Checker
   end
 
   def human_value(value)
-    if value == nil
+    if value.nil?
       'Err'
     else
       value.strftime('%H:%M')

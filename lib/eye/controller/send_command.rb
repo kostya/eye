@@ -35,16 +35,16 @@ private
   def matched_objects(*args, &block)
     objs = find_objects(*args)
     res = objs.map(&:full_name)
-    objs.each{|obj| block[obj] } if block
-    {:result => res}
+    objs.each { |obj| block[obj] } if block
+    { :result => res }
 
   rescue Error => ex
     log_ex(ex)
-    {:error => ex.message}
+    { :error => ex.message }
 
   rescue Celluloid::DeadActorError => ex
     log_ex(ex)
-    {:error => "'#{ex.message}', try again!"}
+    { :error => "'#{ex.message}', try again!" }
   end
 
   def remove_object_from_tree(obj)
@@ -56,12 +56,12 @@ private
     end
 
     if klass == Eye::Group
-      @applications.each{|app| app.groups.delete(obj) }
+      @applications.each { |app| app.groups.delete(obj) }
       @current_config.delete_group(obj.name)
     end
 
     if klass == Eye::Process
-      @applications.each{|app| app.groups.each{|gr| gr.processes.delete(obj) }}
+      @applications.each { |app| app.groups.each { |gr| gr.processes.delete(obj) } }
       @current_config.delete_process(obj.name)
     end
   end
@@ -76,14 +76,14 @@ private
 
     if obj_strs.size == 1 && (obj_strs[0].to_s.strip == 'all' || obj_strs[0].to_s.strip == '*')
       if h[:application]
-        return @applications.select { |app| app.name == h[:application]}
+        return @applications.select { |app| app.name == h[:application] }
       else
         return @applications.dup
       end
     end
 
     res = Eye::Utils::AliveArray.new
-    obj_strs.map{|c| c.to_s.split(',')}.flatten.each do |mask|
+    obj_strs.map { |c| c.to_s.split(',') }.flatten.each do |mask|
       objs = find_objects_by_mask(mask.to_s.strip)
       objs.select! { |obj| obj.app_name == h[:application] } if h[:application]
       res += objs
@@ -110,7 +110,7 @@ private
 
       # remove inherited targets
       res.each do |obj|
-        sub_object = res.any?{|a| a.sub_object?(obj) }
+        sub_object = res.any? { |a| a.sub_object?(obj) }
         final << obj unless sub_object
       end
 
@@ -142,11 +142,11 @@ private
     r = left_regexp(mask)
 
     # find app
-    res = @applications.select{|a| a.name =~ r || a.full_name =~ r }
+    res = @applications.select { |a| a.name =~ r || a.full_name =~ r }
 
     # find group
     @applications.each do |a|
-      res += a.groups.select{|gr| gr.name =~ r || gr.full_name =~ r }
+      res += a.groups.select { |gr| gr.name =~ r || gr.full_name =~ r }
     end
 
     # find process
@@ -164,7 +164,6 @@ private
               name =~ r || full_name =~ r
             end
           end
-
         end
       end
     end
@@ -174,11 +173,11 @@ private
 
   def left_regexp(mask)
     str = Regexp.escape(mask).gsub('\*', '.*?')
-    %r|\A#{str}|
+    %r[\A#{str}]
   end
 
   def exact_regexp(mask)
     str = Regexp.escape(mask).gsub('\*', '.*?')
-    %r|\A#{str}\z|
+    %r[\A#{str}\z]
   end
 end

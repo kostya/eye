@@ -19,8 +19,8 @@ module Eye::Dsl::Main
     Eye::Dsl.debug { "<= app: #{name}" }
   end
 
-  alias project application
-  alias app application
+  alias_method :project, :application
+  alias_method :app, :application
 
   def load(glob = '')
     return if glob.blank?
@@ -53,7 +53,7 @@ module Eye::Dsl::Main
     Eye::Dsl.debug { '<= config' }
   end
 
-  alias settings config
+  alias_method :settings, :config
 
   def shared
     require 'ostruct'

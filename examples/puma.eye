@@ -13,17 +13,18 @@ Eye.application :puma do
 
   process :puma do
     daemonize true
-    pid_file "puma.pid"
-    stdall "puma.log"
+    pid_file 'puma.pid'
+    stdall 'puma.log'
 
     start_command "#{BUNDLE} exec puma --port 33280 --environment #{RAILS_ENV} thin.ru"
     stop_signals [:TERM, 5.seconds, :KILL]
-    restart_command "kill -USR2 {PID}"
+    restart_command 'kill -USR2 {PID}'
 
-    restart_grace 10.seconds # just sleep this until process get up status
-                             # (maybe enought to puma soft restart)
+    # just sleep this until process get up status
+    # (maybe enought to puma soft restart)
+    restart_grace 10.seconds
 
     check :cpu, :every => 30, :below => 80, :times => 3
-    check :memory, :every => 30, :below => 70.megabytes, :times => [3,5]
+    check :memory, :every => 30, :below => 70.megabytes, :times => [3, 5]
   end
 end

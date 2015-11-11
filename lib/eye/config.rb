@@ -35,9 +35,9 @@ class Eye::Config
     all_processes = processes
 
     # Check blank pid_files
-    no_pid_file = all_processes.select{|c| c[:pid_file].blank? }
+    no_pid_file = all_processes.select { |c| c[:pid_file].blank? }
     if no_pid_file.present?
-      raise Eye::Dsl::Error, "blank pid_file for: #{no_pid_file.map{|c| c[:name]} * ', '}"
+      raise Eye::Dsl::Error, "blank pid_file for: #{no_pid_file.map { |c| c[:name] } * ', '}"
     end
 
     # Check duplicates of the full pid_file
@@ -46,7 +46,7 @@ class Eye::Config
       ex_pid_file = Eye::System.normalized_file(o[:pid_file], o[:working_dir])
       h[ex_pid_file] += 1
     end
-    dupl_pids = dupl_pids.select{|k,v| v>1}
+    dupl_pids = dupl_pids.select { |_, v| v > 1 }
 
     if dupl_pids.present?
       raise Eye::Dsl::Error, "duplicate pid_files: #{dupl_pids.inspect}"
@@ -57,7 +57,7 @@ class Eye::Config
       full_name = "#{o[:application]}:#{o[:group]}:#{o[:name]}"
       h[full_name] += 1
     end
-    dupl_names = dupl_names.select{|k,v| v>1}
+    dupl_names = dupl_names.select { |_, v| v > 1 }
 
     if dupl_names.present?
       raise Eye::Dsl::Error, "duplicate names: #{dupl_names.inspect}"
@@ -86,7 +86,7 @@ class Eye::Config
 
         escaped_start_command = process[:start_command].to_s.gsub(%{"}, %{\\"})
 
-        names = [process[:application], process[:group] == '__default__' ? nil :  process[:group], process[:name]].compact
+        names = [process[:application], process[:group] == '__default__' ? nil : process[:group], process[:name]].compact
         logger = "logger -t \"#{names.join(':')}\""
 
         process[:start_command] = %{sh -c "#{escaped_start_command} #{redir} | #{logger}"}
@@ -96,7 +96,7 @@ class Eye::Config
   end
 
   def processes
-    applications.values.map{|e| (e[:groups] || {}).values.map{|c| (c[:processes] || {}).values} }.flatten
+    applications.values.map { |e| (e[:groups] || {}).values.map { |c| (c[:processes] || {}).values } }.flatten
   end
 
   def application_names
@@ -108,14 +108,14 @@ class Eye::Config
   end
 
   def delete_group(name)
-    applications.each do |app_name, app_cfg|
+    applications.each do |_app_name, app_cfg|
       (app_cfg[:groups] || {}).delete(name)
     end
   end
 
   def delete_process(name)
-    applications.each do |app_name, app_cfg|
-      (app_cfg[:groups] || {}).each do |gr_name, gr_cfg|
+    applications.each do |_app_name, app_cfg|
+      (app_cfg[:groups] || {}).each do |_gr_name, gr_cfg|
         (gr_cfg[:processes] || {}).delete(name)
       end
     end

@@ -15,10 +15,21 @@ module Eye::Dsl::Validation
 
     attr_accessor :validates, :should_bes, :defaults, :variants
 
-    def validates; @validates ||= {}; end
-    def should_bes; @should_bes ||= []; end
-    def defaults; @defaults ||= {}; end
-    def variants; @variants ||= {}; end
+    def validates
+      @validates ||= {}
+    end
+
+    def should_bes
+      @should_bes ||= []
+    end
+
+    def defaults
+      @defaults ||= {}
+    end
+
+    def variants
+      @variants ||= {}
+    end
 
     def param(param, types = [], should_be = false, default = nil, variants = nil)
       param = param.to_sym
@@ -80,7 +91,7 @@ module Eye::Dsl::Validation
         next if types.blank?
 
         types = Array(types)
-        good = types.any?{|type| value.is_a?(type) }
+        good = types.any? { |type| value.is_a?(type) }
         raise Error, "#{self.name} bad param :#{param} value #{value.inspect}, type #{types.inspect}" unless good
       end
 

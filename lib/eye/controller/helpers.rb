@@ -16,7 +16,7 @@ module Eye::Controller::Helpers
   end
 
   def cache_str
-    all_processes.map{ |p| "#{p.full_name}=#{p.state}" } * "\n"
+    all_processes.map { |p| "#{p.full_name}=#{p.state}" } * "\n"
   end
 
   def process_by_name(name)

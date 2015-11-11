@@ -45,7 +45,7 @@ class Eye::SystemResources
     end
 
     def deep_children(pid)
-      Array(pid_or_children(pid)).flatten.sort_by { |pid| -pid }
+      Array(pid_or_children(pid)).flatten.sort_by(&:-@)
     end
 
     def pid_or_children(pid)
@@ -99,13 +99,15 @@ class Eye::SystemResources
     def proc_mem(pid)
       @memory[pid] ||= Eye::Sigar.proc_mem(pid) if pid
 
-    rescue ArgumentError # when incorrect PID
+    rescue ArgumentError
+      # when incorrect PID, just skip
     end
 
     def proc_cpu(pid)
       @cpu[pid] ||= Eye::Sigar.proc_cpu(pid) if pid
 
-    rescue ArgumentError # when incorrect PID
+    rescue ArgumentError
+      # when incorrect PID, just skip
     end
 
     def children(pid)

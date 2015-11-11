@@ -11,7 +11,7 @@ private
 
     started_at = Time.now
 
-    @processes.each do | process |
+    @processes.each do |process|
       if process.skip_group_action?(command)
         @chain_processes_current = @chain_processes_current.to_i + 1
         next
@@ -54,7 +54,7 @@ private
 
   def chain_status
     if @config[:chain]
-      [:start, :restart].map{|c| @config[:chain][c].try(:[], :grace) }
+      [:start, :restart].map { |c| @config[:chain][c].try(:[], :grace) }
     end
   end
 
@@ -67,7 +67,7 @@ private
   DEFAULT_CHAIN = 0.2
 
   def chain_options(command)
-    command = :start if command == :monitor # hack for monitor command, work as start
+    command = :start if command == :monitor # HACK: for monitor command, work as start
 
     if @config[:chain] && @config[:chain][command]
       type = @config[:chain][command].try :[], :type
@@ -76,10 +76,10 @@ private
       grace = @config[:chain][command].try :[], :grace
       grace = grace ? (grace.to_f rescue DEFAULT_CHAIN) : DEFAULT_CHAIN
 
-      {:type => type, :grace => grace}
+      { :type => type, :grace => grace }
     else
       # default chain case
-      {:type => :async, :grace => DEFAULT_CHAIN}
+      { :type => :async, :grace => DEFAULT_CHAIN }
     end
   end
 

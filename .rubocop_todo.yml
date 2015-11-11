@@ -1,0 +1,100 @@
+Style/CaseIndentation:
+  Enabled: false
+  IndentOneStep: true
+  IndentWhenRelativeTo: end
+
+Style/GuardClause:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Exclude:
+    - 'lib/eye/checker/http.rb'
+    - 'lib/eye/checker/socket.rb'
+    - 'lib/eye/cli/server.rb'
+    - 'lib/eye/dsl/opts.rb'
+    - 'lib/eye/process/commands.rb'
+    - 'lib/eye/process/monitor.rb'
+    - 'lib/eye/process/scheduler.rb'
+    - 'lib/eye/trigger/flapping.rb'
+    - 'spec/process/start_spec.rb'
+    - 'spec/spec_helper.rb'
+
+Style/MultilineBlockChain:
+  Exclude:
+    - 'lib/eye/trigger/check_dependency.rb'
+
+Style/Next:
+  Exclude:
+    - 'examples/processes/sample.rb'
+    - 'lib/eye/config.rb'
+    - 'lib/eye/controller/send_command.rb'
+    - 'spec/example/sample.rb'
+
+Style/PercentLiteralDelimiters:
+  Enabled: false
+  PreferredDelimiters:
+    '%w': '[]'
+    '%r': '||'
+    '%': '{}'
+
+Style/RaiseArgs:
+  Enabled: false
+  EnforcedStyle: exploded
+
+Style/RedundantSelf:
+  Enabled: false
+
+Style/Semicolon:
+  Exclude:
+    - 'examples/processes/em.rb'
+    - 'lib/eye/controller/load.rb'
+    - 'lib/eye/utils.rb'
+
+Style/UnlessElse:
+  Exclude:
+    - 'lib/eye/dsl/opts.rb'
+    - 'lib/eye/process/monitor.rb'
+
+Metrics/MethodLength:
+  Max: 45
+
+Metrics/ModuleLength:
+  Max: 232
+
+Metrics/PerceivedComplexity:
+  Max: 29
+
+Metrics/LineLength:
+  Max: 642
+
+Metrics/CyclomaticComplexity:
+  Max: 26
+
+Metrics/ClassLength:
+  Max: 183
+
+Metrics/BlockNesting:
+  Max: 5
+
+Metrics/AbcSize:
+  Max: 83
+
+Lint/RescueException:
+  Exclude:
+    - 'lib/eye/checker/socket.rb'
+    - 'lib/eye/controller/load.rb'
+    - 'lib/eye/logger.rb'
+
+Style/HashSyntax:
+  Enabled: false
+
+Style/PerlBackrefs:
+  Exclude:
+    - 'lib/eye/checker.rb'
+    - 'lib/eye/checker/socket.rb'
+    - 'lib/eye/trigger.rb'
+
+Style/GlobalVars:
+  Exclude:
+    - 'examples/processes/sample.rb'
+    - 'lib/eye/dsl/process_opts.rb'

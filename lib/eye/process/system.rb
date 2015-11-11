@@ -75,7 +75,7 @@ module Eye::Process::System
     res[:result] == :ok
   end
 
-  def wait_for_condition(timeout, step = 0.1, &block)
+  def wait_for_condition(timeout, step = 0.1, &_block)
     res = nil
     sumtime = 0
 
@@ -90,7 +90,7 @@ module Eye::Process::System
   end
 
   def execute(cmd, cfg = {})
-    defer { Eye::System::execute cmd, cfg }.tap do |res|
+    defer { Eye::System.execute cmd, cfg }.tap do |res|
       notify(:debug, "Bad exit status of command #{cmd.inspect}(#{res[:exitstatus].inspect})") if res[:exitstatus] != 0
     end
   end
@@ -99,7 +99,7 @@ module Eye::Process::System
     Eye::System.daemonize(cmd, cfg)
   end
 
-  def execute_sync(cmd, opts = {:timeout => 1.second})
+  def execute_sync(cmd, opts = { :timeout => 1.second })
     execute(cmd, self.config.merge(opts)).tap do |res|
       info "execute_sync `#{cmd}` with res: #{res}"
     end

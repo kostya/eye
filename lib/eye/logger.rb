@@ -9,7 +9,7 @@ class Eye::Logger
     def initialize(*args)
       super
 
-      self.formatter = Proc.new do |s, d, p, m|
+      self.formatter = proc do |s, d, _p, m|
         "#{d.strftime(FORMAT)} #{s.ljust(5)} -- #{m}\n"
       end
     end
@@ -17,7 +17,7 @@ class Eye::Logger
 
   module ObjectExt
     def logger_tag
-      [Class, Module].include?(self.class) ? to_s : "<#{self.class.to_s}>"
+      [Class, Module].include?(self.class) ? to_s : "<#{self.class}>"
     end
 
     def logger_sub_tag

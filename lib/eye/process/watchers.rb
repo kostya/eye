@@ -32,7 +32,7 @@ module Eye::Process::Watchers
   end
 
   def remove_watchers
-    @watchers.each{|_, h| h[:timer].cancel }
+    @watchers.each { |_, h| h[:timer].cancel }
     @watchers = {}
   end
 
@@ -48,11 +48,11 @@ private
       block.call(subject)
     end
 
-    @watchers[type] ||= {:timer => timer, :subject => subject}
+    @watchers[type] ||= { :timer => timer, :subject => subject }
   end
 
   def start_checkers
-    self[:checks].each{|name, cfg| start_checker(name, cfg) }
+    self[:checks].each { |name, cfg| start_checker(name, cfg) }
   end
 
   def start_checker(name, cfg)

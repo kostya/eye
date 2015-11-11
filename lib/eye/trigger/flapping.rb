@@ -30,7 +30,7 @@ private
 
   def good?
     down_count = 0
-    states = process.states_history.states_for_period( within, @last_at ) do |s|
+    process.states_history.states_for_period(within, @last_at) do |s|
       down_count += 1 if s[:state] == :down
     end
 

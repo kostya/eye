@@ -9,9 +9,9 @@ class Eye::Trigger::StopChildren < Eye::Trigger
   # default on stopped, crashed
   param_default :event, [:stopped, :crashed]
 
-  def check(trans)
+  def check(_trans)
     debug { 'stopping children' }
-    process.children.pmap { |pid, c| c.stop }
+    process.children.pmap { |_pid, c| c.stop }
   end
 
 end

@@ -11,12 +11,12 @@ class Eye::Utils::CelluloidChain
   end
 
   def add(method_name, *args)
-    @calls << {:method_name => method_name, :args => args}
+    @calls << { :method_name => method_name, :args => args }
     ensure_process
   end
 
   def add_wo_dups(method_name, *args)
-    h = {:method_name => method_name, :args => args}
+    h = { :method_name => method_name, :args => args }
     if @calls[-1] != h
       @calls << h
       ensure_process
@@ -24,7 +24,7 @@ class Eye::Utils::CelluloidChain
   end
 
   def add_wo_dups_current(method_name, *args)
-    h = {:method_name => method_name, :args => args}
+    h = { :method_name => method_name, :args => args }
     if !@calls.include?(h) && @call != h
       @calls << h
       ensure_process
@@ -36,14 +36,14 @@ class Eye::Utils::CelluloidChain
   end
 
   def names_list
-    list.map{|el| el[:method_name].to_sym }
+    list.map { |el| el[:method_name].to_sym }
   end
 
   def clear
     @calls = []
   end
 
-  alias :clear_pending_list :clear
+  alias_method :clear_pending_list, :clear
 
   # need, because of https://github.com/celluloid/celluloid/issues/22
   def inspect

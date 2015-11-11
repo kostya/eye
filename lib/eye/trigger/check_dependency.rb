@@ -15,9 +15,9 @@ private
     processes = Eye::Utils::AliveArray.new(processes)
 
     act = case to
-      when :down, :restarting; :restart
-      when :stopping; :stop
-      when :unmonitored; :unmonitor
+      when :down, :restarting then :restart
+      when :stopping then :stop
+      when :unmonitored then :unmonitor
     end
 
     if act

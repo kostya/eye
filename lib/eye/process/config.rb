@@ -23,7 +23,7 @@ module Eye::Process::Config
     :clear_pid => true, # by default clear pid on stop
 
     :auto_update_pidfile_grace => 30.seconds,
-    :revert_fuckup_pidfile_grace => 120.seconds,
+    :revert_fuckup_pidfile_grace => 120.seconds
   }
 
   def prepare_config(new_config)
@@ -36,7 +36,7 @@ module Eye::Process::Config
     # check speedy flapping by default
     if h[:triggers].blank? || !h[:triggers][:flapping]
       h[:triggers] ||= {}
-      h[:triggers][:flapping] = {:type => :flapping, :times => 10, :within => 10.seconds}
+      h[:triggers][:flapping] = { :type => :flapping, :times => 10, :within => 10.seconds }
     end
 
     h[:stdout] = Eye::System.normalized_file(h[:stdout], h[:working_dir]) if h[:stdout]

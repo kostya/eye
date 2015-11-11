@@ -1,0 +1,42 @@
+inherit_from:
+  - .rubocop_todo.yml
+  - .rubocop_wontfix.yml
+
+AllCops:
+  Include:
+    - '**/*.eye'
+  Exclude:
+    - 'spec/**/*'
+    - 'lib/eye/utils/mini_active_support.rb'
+
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact
+
+Style/EmptyLinesAroundClassBody:
+  Enabled: false
+
+Style/EmptyLinesAroundModuleBody:
+  # EnforcedStyle: empty_lines
+  Enabled: false
+
+Style/RegexpLiteral:
+  EnforcedStyle: percent_r
+  Exclude:
+    - 'examples/**/*'
+
+Style/AccessModifierIndentation:
+  EnforcedStyle: outdent
+
+Lint/EndAlignment:
+  AlignWith: variable
+
+Style/IndentHash:
+  EnforcedStyle: consistent
+
+Style/Lambda:
+  Exclude:
+    - 'examples/**/*'
+
+Style/BlockDelimiters:
+  Exclude:
+    - 'examples/**/*'

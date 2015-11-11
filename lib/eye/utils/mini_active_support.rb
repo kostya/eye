@@ -31,9 +31,9 @@ class String
     word = self.dup
     word.gsub!('::', '/')
     word.gsub!(/(?:([A-Za-z\d])|^)((?=a)b)(?=\b|[^a-z])/) { "#{$1}#{$1 && '_'}#{$2.downcase}" }
-    word.gsub!(/([A-Z\d]+)([A-Z][a-z])/,'\1_\2')
-    word.gsub!(/([a-z\d])([A-Z])/,'\1_\2')
-    word.tr!("-", "_")
+    word.gsub!(/([A-Z\d]+)([A-Z][a-z])/, '\1_\2')
+    word.gsub!(/([a-z\d])([A-Z])/, '\1_\2')
+    word.tr!('-', '_')
     word.downcase!
     word
   end
@@ -53,32 +53,32 @@ class Numeric
   def percents
     self
   end
-  alias :percent :percents
+  alias_method :percent, :percents
 
   def seconds
     self
   end
-  alias :second :seconds
+  alias_method :second, :seconds
 
   def minutes
     self * 60
   end
-  alias :minute :minutes
+  alias_method :minute, :minutes
 
   def hours
     self * 3600
   end
-  alias :hour :hours
+  alias_method :hour, :hours
 
   def days
-    self * 86400
+    self * 86_400
   end
-  alias :day :days
+  alias_method :day, :days
 
   def weeks
-    self * 86400 * 7
+    self * 86_400 * 7
   end
-  alias :week :weeks
+  alias_method :week, :weeks
 
   def ago
     ::Time.now - self
@@ -87,25 +87,25 @@ class Numeric
   def bytes
     self
   end
-  alias :byte :bytes
+  alias_method :byte, :bytes
 
   def kilobytes
     self * 1024
   end
-  alias :kilobyte :kilobytes
+  alias_method :kilobyte, :kilobytes
 
   def megabytes
     self * 1024 * 1024
   end
-  alias :megabyte :megabytes
+  alias_method :megabyte, :megabytes
 
   def gigabytes
     self * 1024 * 1024 * 1024
   end
-  alias :gigabyte :gigabytes
+  alias_method :gigabyte, :gigabytes
 
   def terabytes
     self * 1024 * 1024 * 1024 * 1024
   end
-  alias :terabyte :terabytes
+  alias_method :terabyte, :terabytes
 end

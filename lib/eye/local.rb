@@ -28,7 +28,7 @@ module Eye::Local
 
     def home
       h = ENV['EYE_HOME'] || ENV['HOME']
-      raise "HOME undefined, should be HOME or EYE_HOME environment" unless h
+      raise 'HOME undefined, should be HOME or EYE_HOME environment' unless h
       h
     end
 

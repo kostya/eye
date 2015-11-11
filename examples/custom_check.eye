@@ -16,7 +16,7 @@ Eye.app :bla do
   process :a do
     start_command "ruby -e 'sleep 10; $0 = %{HAHA}.downcase; sleep'"
     daemonize true
-    pid_file "/tmp/1.pid"
+    pid_file '/tmp/1.pid'
     check :my_check, every: 1.second, fires: -> { send_signal(:TERM) }
   end
 end

@@ -8,7 +8,7 @@ class Eye::Notify
   autoload :Jabber,   'eye/notify/jabber'
   autoload :Slack,    'eye/notify/slack'
 
-  TYPES = {:mail => 'Mail', :jabber => 'Jabber', :slack => 'Slack'}
+  TYPES = { :mail => 'Mail', :jabber => 'Jabber', :slack => 'Slack' }
 
   def self.get_class(type)
     klass = eval("Eye::Notify::#{TYPES[type]}") rescue nil
@@ -42,7 +42,7 @@ class Eye::Notify
     end
 
     if needed_hash.is_a?(Array)
-      needed_hash.each{|nh| create_proc[nh] }
+      needed_hash.each { |nh| create_proc[nh] }
     else
       create_proc[needed_hash]
     end
@@ -66,7 +66,7 @@ class Eye::Notify
 
   def async_notify
     async.notify
-    after(TIMEOUT){ terminate }
+    after(TIMEOUT) { terminate }
   end
 
   def notify

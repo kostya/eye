@@ -4,7 +4,7 @@ class Eye::Trigger::Transition < Eye::Trigger
 
   param :do, [Proc, Symbol]
 
-  def check(trans)
+  def check(_trans)
     exec_proc :do
   end
 

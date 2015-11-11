@@ -1,15 +1,15 @@
 RUBY = 'ruby'
 BUNDLE = 'bundle'
 
-Eye.load("process_thin.rb")
+Eye.load('process_thin.rb')
 
 Eye.config do
-  logger "/tmp/eye.log"
+  logger '/tmp/eye.log'
 end
 
 Eye.app 'thin-farm' do
   working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
-  env "RAILS_ENV" => "production"
+  env 'RAILS_ENV' => 'production'
 
   # more about stop_on_delete: https://github.com/kostya/eye/wiki/About-stop_on_delete-=-true
   stop_on_delete true
@@ -26,5 +26,4 @@ Eye.app 'thin-farm' do
       thin self, port
     end
   end
-
 end

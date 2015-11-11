@@ -21,46 +21,46 @@ class Eye::Checker::Http < Eye::Checker::Defer
     @uri = URI.parse(url)
     @proxy_uri = URI.parse(proxy_url) if proxy_url
     @kind = case kind
-              when Fixnum then Net::HTTPResponse::CODE_TO_OBJ[kind.to_s]
-              when String, Symbol then Net.const_get("HTTP#{kind.to_s.camelize}") rescue Net::HTTPSuccess
-              else Net::HTTPSuccess
-            end
+      when Fixnum then Net::HTTPResponse::CODE_TO_OBJ[kind.to_s]
+      when String, Symbol then Net.const_get("HTTP#{kind.to_s.camelize}") rescue Net::HTTPSuccess
+      else Net::HTTPSuccess
+    end
     @open_timeout = (open_timeout || 3).to_f
     @read_timeout = (read_timeout || timeout || 15).to_f
   end
 
   def get_value
-    res = session.start{ |http| http.get(@uri.request_uri) }
-    {:result => res}
+    res = session.start { |http| http.get(@uri.request_uri) }
+    { :result => res }
 
   rescue Timeout::Error => ex
     debug { ex.inspect }
 
     if defined?(Net::OpenTimeout) # for ruby 2.0
       mes = ex.is_a?(Net::OpenTimeout) ? "OpenTimeout<#{@open_timeout}>" : "ReadTimeout<#{@read_timeout}>"
-      {:exception => mes}
+      { :exception => mes }
     else
-      {:exception => "Timeout<#{@open_timeout},#{@read_timeout}>"}
+      { :exception => "Timeout<#{@open_timeout},#{@read_timeout}>" }
     end
 
   rescue => ex
-    {:exception => "Error<#{ex.message}>"}
+    { :exception => "Error<#{ex.message}>" }
   end
 
   def good?(value)
     return false unless value[:result]
 
-    unless value[:result].kind_of?(@kind)
+    unless value[:result].is_a?(@kind)
       return false
     end
 
     if pattern
       matched = if pattern.is_a?(Regexp)
-        pattern === value[:result].body
+        !!value[:result].body.match(pattern)
       else
         value[:result].body.include?(pattern.to_s)
       end
-      value[:notice] = "missing '#{pattern.to_s}'" unless matched
+      value[:notice] = "missing '#{pattern}'" unless matched
       matched
     else
       true

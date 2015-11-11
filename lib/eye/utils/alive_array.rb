@@ -3,18 +3,18 @@ class Eye::Utils::AliveArray
   include Enumerable
 
   def_delegators :@arr, :[], :<<, :clear, :delete, :size, :empty?, :push,
-                        :flatten, :present?, :uniq!, :select!
+                 :flatten, :present?, :uniq!, :select!
 
   def initialize(arr = [])
     @arr = arr
   end
 
   def each(&block)
-    @arr.each{|elem| elem && elem.alive? && block[elem] }
+    @arr.each { |elem| elem && elem.alive? && block[elem] }
   end
 
   def to_a
-    map{|x| x }
+    map { |x| x }
   end
 
   def full_size

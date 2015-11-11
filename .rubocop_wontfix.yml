@@ -1,0 +1,50 @@
+Lint/LiteralInInterpolation:
+  Exclude:
+    - 'lib/eye/notify/jabber.rb'
+    - 'lib/eye/notify/slack.rb'
+    - 'lib/eye/process/commands.rb'
+
+Lint/HandleExceptions:
+  Exclude:
+    - 'lib/eye/cli.rb'
+    - 'lib/eye/server.rb'
+    - 'lib/eye/system_resources.rb'
+
+Style/RescueModifier:
+  Enabled: false
+
+Style/SignalException:
+  Enabled: false
+
+Style/SpecialGlobalVars:
+  Enabled: false
+
+Style/AccessorMethodName:
+  Enabled: false
+
+Lint/AssignmentInCondition:
+  Enabled: false
+
+Lint/Void:
+  Exclude:
+    - Rakefile
+    - bin/loader_eye
+    - lib/eye/controller.rb
+
+Lint/Eval:
+  Enabled: false
+
+Style/ElseAlignment:
+  Exclude:
+    - 'lib/eye/checker.rb'
+    - 'lib/eye/checker/http.rb'
+    - 'lib/eye/cli.rb'
+    - 'lib/eye/controller/load.rb'
+    - 'lib/eye/dsl/pure_opts.rb'
+    - 'lib/eye/system.rb'
+
+Style/DoubleNegation:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false

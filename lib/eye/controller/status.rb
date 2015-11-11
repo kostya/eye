@@ -2,17 +2,17 @@ module Eye::Controller::Status
 
   def debug_data(*args)
     h = args.extract_options!
-    actors = Celluloid::Actor.all.map{|actor| actor.wrapped_object.class.to_s }.group_by{|a| a}.map{|k,v| [k, v.size]}.sort_by{ |a| a[1] }.reverse
+    actors = Celluloid::Actor.all.map { |actor| actor.wrapped_object.class.to_s }.group_by { |a| a }.map { |k, v| [k, v.size] }.sort_by { |a| a[1] }.reverse
 
     res = {
       :about => Eye::ABOUT,
       :resources => Eye::SystemResources.resources($$),
       :ruby => RUBY_DESCRIPTION,
-      :gems => %w|Celluloid Celluloid::IO StateMachine NIO Timers Sigar|.map{|c| gem_version(c) },
+      :gems => %w|Celluloid Celluloid::IO StateMachine NIO Timers Sigar|.map { |c| gem_version(c) },
       :logger => Eye::Logger.args.present? ? [Eye::Logger.dev.to_s, *Eye::Logger.args] : Eye::Logger.dev.to_s,
       :dir => Eye::Local.dir,
-      :pid_path => Eye::Local::pid_path,
-      :sock_path => Eye::Local::socket_path,
+      :pid_path => Eye::Local.pid_path,
+      :sock_path => Eye::Local.socket_path,
       :actors => actors
     }
 
@@ -23,17 +23,17 @@ module Eye::Controller::Status
 
   def info_data(*args)
     h = args.extract_options!
-    {:subtree => info_objects(*args).map{|a| a.status_data(h) } }
+    { :subtree => info_objects(*args).map { |a| a.status_data(h) } }
   end
 
   def short_data(*args)
-    {:subtree => info_objects(*args).select{ |o| o.class == Eye::Application }.map{|a| a.status_data_short } }
+    { :subtree => info_objects(*args).select { |o| o.class == Eye::Application }.map(&:status_data_short) }
   end
 
   def history_data(*args)
     res = {}
     history_objects(*args).each do |process|
-      res[process.full_name] = process.schedule_history.reject{|c| c[:state] == :check_crash }
+      res[process.full_name] = process.schedule_history.reject { |c| c[:state] == :check_crash }
     end
     res
   end
@@ -43,7 +43,7 @@ private
   def info_objects(*args)
     res = []
     return @applications if args.empty?
-    matched_objects(*args){|obj| res << obj }
+    matched_objects(*args) { |obj| res << obj }
     res
   end
 

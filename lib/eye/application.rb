@@ -26,7 +26,7 @@ class Eye::Application
   end
 
   def status_data(opts = {})
-    h = { name: @name, type: :application, subtree: @groups.map{|gr| gr.status_data(opts) }}
+    h = { name: @name, type: :application, subtree: @groups.map { |gr| gr.status_data(opts) } }
     h[:debug] = debug_data if debug
     h
   end
@@ -52,13 +52,13 @@ class Eye::Application
 
   def sub_object?(obj)
     res = @groups.include?(obj)
-    res = @groups.any?{|gr| gr.sub_object?(obj)} if !res
+    res = @groups.any? { |gr| gr.sub_object?(obj) } unless res
     res
   end
 
   def processes
     out = []
-    @groups.each{|gr| out += gr.processes.to_a }
+    @groups.each { |gr| out += gr.processes.to_a }
     Eye::Utils::AliveArray.new(out)
   end
 

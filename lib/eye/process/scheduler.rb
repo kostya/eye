@@ -13,7 +13,7 @@ module Eye::Process::Scheduler
         return
       end
 
-      reason = if args.present? && args[-1].kind_of?(Eye::Reason)
+      reason = if args.present? && args[-1].is_a?(Eye::Reason)
         args.pop
       end
 
@@ -22,11 +22,11 @@ module Eye::Process::Scheduler
       if reason.class == Eye::Reason
         # for auto reasons
         # skip already running commands and all in chain
-        scheduler.add_wo_dups_current(:scheduled_action, command, {:args => args, :reason => reason, :block => block})
+        scheduler.add_wo_dups_current(:scheduled_action, command, :args => args, :reason => reason, :block => block)
       else
         # for manual, or without reason
         # skip only for last in chain
-        scheduler.add_wo_dups(:scheduled_action, command, {:args => args, :reason => reason, :block => block})
+        scheduler.add_wo_dups(:scheduled_action, command, :args => args, :reason => reason, :block => block)
       end
     end
   end
@@ -41,7 +41,7 @@ module Eye::Process::Scheduler
 
   def scheduled_action(command, h = {})
     reason = h[:reason]
-    info "=> #{command} #{h[:args].present? ? "#{h[:args]*',' }" : nil} #{reason ? "(reason: #{reason})" : nil}"
+    info "=> #{command} #{h[:args].present? ? "#{h[:args] * ','}" : nil} #{reason ? "(reason: #{reason})" : nil}"
 
     @current_scheduled_command = command
     @last_scheduled_command = command
@@ -59,14 +59,14 @@ module Eye::Process::Scheduler
     end
   end
 
-  def execute_proc(*args, &block)
+  def execute_proc(*_args, &block)
     self.instance_exec(&block)
   rescue Object => ex
     log_ex(ex)
   end
 
   def scheduler_actions_list
-    scheduler.list.map{|c| c[:args].first rescue nil }.compact
+    scheduler.list.map { |c| c[:args].first rescue nil }.compact
   end
 
   def scheduler_clear_pending_list

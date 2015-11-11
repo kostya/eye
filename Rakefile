@@ -1,6 +1,6 @@
 #!/usr/bin/env rake
 
-require "bundler/gem_tasks"
+require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
 require 'coveralls/rake/task'
 
@@ -8,14 +8,14 @@ Coveralls::RakeTask.new
 
 task :default => :split_test
 
-desc "run parallel tests"
+desc 'run parallel tests'
 task :pspec do
   dirname = File.expand_path(File.dirname(__FILE__))
   cmd = "bundle exec parallel_rspec -n #{ENV['N'] || 10} --runtime-log '#{dirname}/spec/weights.txt' #{dirname}/spec"
   abort unless system(cmd)
 end
 
-desc "run parallel split tests"
+desc 'run parallel split tests'
 task :split_test do
   dirname = File.expand_path(File.dirname(__FILE__))
   ENV['PARALLEL_SPLIT_TEST_PROCESSES'] = (ENV['N'] || 10).to_s
@@ -39,7 +39,7 @@ task :env do
   Eye::Process
 end
 
-desc "graph"
+desc 'graph'
 task :graph => :env do
-  StateMachine::Machine.draw("Eye::Process")
+  StateMachine::Machine.draw('Eye::Process')
 end

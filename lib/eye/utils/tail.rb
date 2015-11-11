@@ -13,7 +13,7 @@ class Eye::Utils::Tail < Array
     self
   end
 
-  def << (el)
+  def <<(el)
     push(el)
   end
 

@@ -7,7 +7,7 @@ module Eye::Utils
 
   def self.deep_clone(value)
     case
-      when value.is_a?(Array) then value.map{|v| deep_clone(v) }
+      when value.is_a?(Array) then value.map { |v| deep_clone(v) }
       when value.is_a?(Hash) then value.each_with_object({}) { |(k, v), r| r[deep_clone(k)] = deep_clone(v) }
       else value
     end
@@ -47,7 +47,7 @@ module Eye::Utils
     env_vars = content.split("\n")
     h = {}
     env_vars.each do |e|
-      e = e.gsub(/#.+$/, '').strip
+      e = e.gsub(%r[#.+$], '').strip
       next unless e.include?('=')
       k, v = e.split('=', 2)
       h[k] = v

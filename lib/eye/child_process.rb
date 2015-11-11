@@ -33,7 +33,7 @@ class Eye::ChildProcess
     @parent = parent
     @config = prepare_config(config)
     @name = "child-#{pid}"
-    @full_name = [logger_prefix, @name] * ':'
+    @full_name = [logger_prefix, @name].join(':')
 
     @watchers = {}
 

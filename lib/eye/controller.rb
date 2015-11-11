@@ -34,7 +34,7 @@ class Eye::Controller
     @applications = []
     @current_config = Eye::Config.new
 
-    Celluloid::logger = Eye::Logger.new('celluloid')
+    Celluloid.logger = Eye::Logger.new('celluloid')
 
     info "starting #{Eye::ABOUT} <#{$$}>"
   end

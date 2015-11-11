@@ -4,39 +4,38 @@ require 'eye/loader'
 require 'optparse'
 require 'eye'
 
-options = {:debug => false}
+options = { :debug => false }
 
 OptionParser.new do |opts|
-  opts.on( '-h', '--help', 'Display this screen' ) do
+  opts.on('-h', '--help', 'Display this screen') do
     puts opts
     exit
   end
 
-  opts.on( '-c', '--config CONFIG', 'load with config' ) do |config_path|
+  opts.on('-c', '--config CONFIG', 'load with config') do |config_path|
     options[:config] = config_path
   end
 
-  opts.on( '-s', '--socket SOCKET', 'start listen on socket' ) do |socket_path|
+  opts.on('-s', '--socket SOCKET', 'start listen on socket') do |socket_path|
     options[:socket_path] = socket_path
   end
 
-  opts.on( '-l', '--logger LOGGER', 'custom logger' ) do |logger|
+  opts.on('-l', '--logger LOGGER', 'custom logger') do |logger|
     options[:logger] = logger
   end
 
-  opts.on( '-dr', '--dir DIR', 'Dir for local runner' ) do |dir|
+  opts.on('-dr', '--dir DIR', 'Dir for local runner') do |dir|
     Eye::Local.dir = dir
     Eye::Local.local_runner = true
   end
 
-  opts.on( '-st', '--stop_all', 'Stop all on exit' ) do |stop_all|
+  opts.on('-st', '--stop_all', 'Stop all on exit') do |_stop_all|
     options[:stop_all] = true
   end
 
-  opts.on( '-d', '--debug', 'debug info to logger' ) do
+  opts.on('-d', '--debug', 'debug info to logger') do
     options[:debug] = true
   end
-
 end.parse!
 
 Eye::Local.ensure_eye_dir
@@ -61,8 +60,8 @@ Eye::Control.set_proc_line
 
 server.async.run
 
-trap("USR1") { Eye::Logger.reopen }
-trap("USR2") { GC.start }
+trap('USR1') { Eye::Logger.reopen }
+trap('USR2') { GC.start }
 
 at_exit { Eye::Control.command(:stop_all) } if options[:stop_all]
 

@@ -4,7 +4,7 @@ class Eye::Process::StatesHistory < Eye::Utils::Tail
   end
 
   def states
-    self.map{|c| c[:state] }
+    self.map { |c| c[:state] }
   end
 
   def states_for_period(period, from_time = nil, &block)

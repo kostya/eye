@@ -41,7 +41,7 @@ class Eye::Notify::Mail < Eye::Notify
     h << "To: <#{contact}>"
     h << "Subject: #{message_subject}"
     h << "Date: #{msg_at.httpdate}"
-    h << "Message-Id: <#{rand(1000000000).to_s(36)}.#{$$}.#{contact}>"
+    h << "Message-Id: <#{rand(1_000_000_000).to_s(36)}.#{$$}.#{contact}>"
     "#{h * "\n"}\n#{message_body}"
   end
 

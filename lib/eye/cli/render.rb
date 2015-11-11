@@ -1,9 +1,10 @@
 module Eye::Cli::Render
 private
+
   def render_status(data)
     return [1, "unexpected server response #{data.inspect}"] unless data.is_a?(Hash)
     data = data[:subtree]
-    return [1, "match #{data.size} objects (#{data.map{|d| d[:name]}}), but expected only 1 process"] if data.size != 1
+    return [1, "match #{data.size} objects (#{data.map { |d| d[:name] }}), but expected only 1 process"] if data.size != 1
     process = data[0]
     return [1, "unknown status for :#{process[:type]}=#{process[:name]}"] unless process[:type] == :process
 
@@ -24,7 +25,7 @@ private
     return nil if !data || data.empty?
 
     if data.is_a?(Array)
-      data.map{|el| make_str(el, level) }.compact * "\n"
+      data.map { |el| make_str(el, level) }.compact * "\n"
     else
       str = nil
 
@@ -86,7 +87,7 @@ private
   def render_debug_info(data)
     error!("unexpected server response #{data.inspect}") unless data.is_a?(Hash)
 
-    s = ""
+    s = ''
 
     if config_yaml = data.delete(:config_yaml)
       s << config_yaml
@@ -122,7 +123,7 @@ private
     res = "\033[1m#{name}\033[0m\n"
     history = history.reverse
 
-    history.chunk{|h| [h[:state], h[:reason].to_s] }.each do |_, hist|
+    history.chunk { |h| [h[:state], h[:reason].to_s] }.each do |_, hist|
       if hist.size >= 3
         res << detail_process_info_string(hist[0])
         res << detail_process_info_string(:state => "... #{hist.size - 2} times", :reason => '...')

@@ -8,8 +8,8 @@ class Eye::Notify::Slack < Eye::Notify
   # end
 
   param :webhook_url, String, true
-  param :channel,     String, nil, "#default"
-  param :username,    String, nil, "eye"
+  param :channel,     String, nil, '#default'
+  param :username,    String, nil, 'eye'
 
   param :icon, String
 

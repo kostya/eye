@@ -3,12 +3,12 @@
 PREFIX = ENV['PRE'] || ENV['EYE_V'] || 1
 
 Eye.app :stress_test do
-  working_dir "/tmp"
+  working_dir '/tmp'
 
   100.times do |i|
     process "sleep-#{i}" do
       pid_file "sleep-#{PREFIX}-#{i}.pid"
-      start_command "sleep 120"
+      start_command 'sleep 120'
       daemonize true
 
       checks :cpu, :every => 5.seconds, :below => 10, :times => 5

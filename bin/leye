@@ -6,7 +6,7 @@ require 'eye'
 #  which looking for Eyefile
 #  like foreman
 
-while true
+loop do
   if ARGV[0] == '--eyefile'
     ARGV.shift
     ENV['EYE_FILE'] = File.expand_path(ARGV.shift.to_s)

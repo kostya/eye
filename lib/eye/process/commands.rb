@@ -123,7 +123,7 @@ private
         delay = stop_signals.shift
         signal = stop_signals.shift
 
-        if wait_for_condition(delay.to_f, 0.3){ !process_really_running? }
+        if wait_for_condition(delay.to_f, 0.3) { !process_really_running? }
           info 'has terminated'
           break
         end
@@ -183,21 +183,21 @@ private
         error "daemonize failed with #{res[:error].inspect}"
       end
 
-      return {:error => res[:error].inspect}
+      return { :error => res[:error].inspect }
     end
 
     self.pid = res[:pid]
 
     unless self.pid
       error 'no pid was returned'
-      return {:error => :empty_pid}
+      return { :error => :empty_pid }
     end
 
     sleep_grace(:start_grace)
 
     unless process_really_running?
       error "process <#{self.pid}> not found, it may have crashed (#{check_logs_str})"
-      return {:error => :not_really_running}
+      return { :error => :not_really_running }
     end
 
     # if we using leaf child stratedy, pid should be used as last child process
@@ -212,7 +212,7 @@ private
     end
 
     if control_pid? && !failsafe_save_pid
-      return {:error => :cant_write_pid}
+      return { :error => :cant_write_pid }
     end
 
     res
@@ -232,7 +232,7 @@ private
         error "execution failed with #{res[:error].inspect}"
       end
 
-      return {:error => res[:error].inspect}
+      return { :error => res[:error].inspect }
     end
 
     sleep_grace(:start_grace)
@@ -289,7 +289,7 @@ private
       while signals.present?
         delay = signals.shift
         signal = signals.shift
-        if wait_for_condition(delay.to_f, 0.3){ !process_really_running? }
+        if wait_for_condition(delay.to_f, 0.3) { !process_really_running? }
           info 'has terminated'
           break
         end

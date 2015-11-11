@@ -1,20 +1,19 @@
 class Eye::Dsl::Opts < Eye::Dsl::PureOpts
 
-  STR_OPTIONS = [ :pid_file, :working_dir, :stdout, :stderr, :stdall, :stdin, :start_command,
-    :stop_command, :restart_command, :uid, :gid ]
+  STR_OPTIONS = [:pid_file, :working_dir, :stdout, :stderr, :stdall, :stdin, :start_command,
+                 :stop_command, :restart_command, :uid, :gid]
   create_options_methods(STR_OPTIONS, String)
 
-  BOOL_OPTIONS = [ :daemonize, :keep_alive, :auto_start, :stop_on_delete, :clear_pid, :preserve_fds, :use_leaf_child, :clear_env, :check_identity ]
+  BOOL_OPTIONS = [:daemonize, :keep_alive, :auto_start, :stop_on_delete, :clear_pid, :preserve_fds, :use_leaf_child, :clear_env, :check_identity]
   create_options_methods(BOOL_OPTIONS, [TrueClass, FalseClass])
 
-  INTERVAL_OPTIONS = [ :check_alive_period, :start_timeout, :restart_timeout, :stop_timeout, :start_grace,
-    :restart_grace, :stop_grace, :children_update_period, :restore_in,
-    :auto_update_pidfile_grace, :revert_fuckup_pidfile_grace, :check_identity_period, :check_identity_grace ]
+  INTERVAL_OPTIONS = [:check_alive_period, :start_timeout, :restart_timeout, :stop_timeout, :start_grace,
+                      :restart_grace, :stop_grace, :children_update_period, :restore_in,
+                      :auto_update_pidfile_grace, :revert_fuckup_pidfile_grace, :check_identity_period, :check_identity_grace]
   create_options_methods(INTERVAL_OPTIONS, [Fixnum, Float])
 
   create_options_methods([:environment], Hash)
   create_options_methods([:umask], Fixnum)
-
 
   def initialize(name = nil, parent = nil)
     super(name, parent)
@@ -22,7 +21,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     @config[:application] = parent.name if parent.is_a?(Eye::Dsl::ApplicationOpts) && parent.name != '__default__'
     @config[:group] = parent.name if parent.is_a?(Eye::Dsl::GroupOpts)
 
-    # hack for full name
+    # HACK: for full name
     @full_name = parent.full_name if @name == '__default__' && parent.respond_to?(:full_name)
   end
 
@@ -62,10 +61,10 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     @config[:triggers].try :delete, nac[:name]
   end
 
-  alias check checks
-  alias nocheck nochecks
-  alias trigger triggers
-  alias notrigger notriggers
+  alias_method :check, :checks
+  alias_method :nocheck, :nochecks
+  alias_method :trigger, :triggers
+  alias_method :notrigger, :notriggers
 
   def command(cmd, arg)
     @config[:user_commands] ||= {}
@@ -95,12 +94,12 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   end
 
   def set_stop_command(cmd)
-    raise Eye::Dsl::Error, "cannot use both stop_signals and stop_command" if @config[:stop_signals]
+    raise Eye::Dsl::Error, 'cannot use both stop_signals and stop_command' if @config[:stop_signals]
     super
   end
 
   def stop_signals(*args)
-    raise Eye::Dsl::Error, "cannot use both stop_signals and stop_command" if @config[:stop_command]
+    raise Eye::Dsl::Error, 'cannot use both stop_signals and stop_command' if @config[:stop_command]
 
     if args.count == 0
       return @config[:stop_signals]
@@ -121,8 +120,8 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     @config[:environment].merge!(value)
   end
 
-  alias dir working_dir
-  alias env environment
+  alias_method :dir, :working_dir
+  alias_method :env, :environment
 
   def set_stdall(value)
     super
@@ -166,7 +165,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
       host = Eye::Local.host
 
       if glob.is_a?(Array)
-        on_server = !!glob.any?{|elem| elem == host}
+        on_server = !!glob.any? { |elem| elem == host }
       elsif glob.is_a?(Regexp)
         on_server = !!host.match(glob)
       elsif glob.is_a?(String) || glob.is_a?(Symbol)
@@ -183,7 +182,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
 
   def load_env(filename = '~/.env', raise_when_no_file = true)
     fnames = [File.expand_path(filename, @config[:working_dir]),
-      File.expand_path(filename)].uniq
+              File.expand_path(filename)].uniq
     filenames = fnames.select { |f| File.exist?(f) }
 
     if filenames.size < 1
@@ -213,7 +212,7 @@ private
 
   def validate_signals(signals = nil)
     return unless signals
-    raise Eye::Dsl::Error, "signals should be Array" unless signals.is_a?(Array)
+    raise Eye::Dsl::Error, 'signals should be Array' unless signals.is_a?(Array)
     s = signals.clone
     while s.present?
       sig = s.shift

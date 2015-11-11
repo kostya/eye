@@ -39,7 +39,7 @@ private
   def show_load_message(res, opts = {})
     if res[:error]
       say res[:message], :red
-      res[:backtrace].to_a.each{|line| say line, :red }
+      res[:backtrace].to_a.each { |line| say line, :red }
     else
       unless res[:empty]
         say(opts[:syntax] ? 'Config ok!' : 'Config loaded!', :green)

@@ -37,14 +37,14 @@ class Eye::Checker::Socket < Eye::Checker::Defer
 
   def get_value
     sock = begin
-      Timeout::timeout(@open_timeout){ open_socket }
+      Timeout.timeout(@open_timeout) { open_socket }
     rescue Timeout::Error
       return { :exception => "OpenTimeout<#{@open_timeout}>" }
     end
 
     if send_data
       begin
-        Timeout::timeout(@read_timeout) do
+        Timeout.timeout(@read_timeout) do
           _write_data(sock, send_data)
           result = _read_data(sock)
 
@@ -69,7 +69,7 @@ class Eye::Checker::Socket < Eye::Checker::Defer
   end
 
   def good?(value)
-    return false if !value[:result]
+    return false unless value[:result]
 
     if expect_data
       if expect_data.is_a?(Proc)
@@ -94,11 +94,11 @@ class Eye::Checker::Socket < Eye::Checker::Defer
       return true if value[:result].to_s == expect_data.to_s
 
       warn "#{expect_data} not matched (#{value[:result].truncate(30)}) answer"
-      value[:notice] = "missing '#{expect_data.to_s}'"
+      value[:notice] = "missing '#{expect_data}'"
       return false
     end
 
-    return true
+    true
   end
 
   def human_value(value)

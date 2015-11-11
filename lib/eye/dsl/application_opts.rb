@@ -30,10 +30,10 @@ class Eye::Dsl::ApplicationOpts < Eye::Dsl::Opts
 
   def process(name, &block)
     res = nil
-    group('__default__'){ res = process(name.to_s, &block) }
+    group('__default__') { res = process(name.to_s, &block) }
     res
   end
 
-  alias xgroup nop
-  alias xprocess nop
+  alias_method :xgroup, :nop
+  alias_method :xprocess, :nop
 end
