@@ -67,6 +67,7 @@ module Eye::Dsl::Validation
         if self.variants[param]
           if value && !value.is_a?(Proc)
             if value.is_a?(Array)
+              value = value.reject { |v| v.is_a?(Proc) }
               if (value - self.variants[param]).present?
                 raise Error, "#{value.inspect} should be within #{self.variants[param].inspect}"
               end

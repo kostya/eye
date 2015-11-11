@@ -216,6 +216,19 @@ describe "Eye::Dsl checks" do
     Eye::Dsl.parse_apps(conf).should == {"bla" => {:name=>"bla", :groups=>{"__default__"=>{:name=>"__default__", :application=>"bla", :processes=>{"1"=>{:name=>"1", :application=>"bla", :group=>"__default__", :pid_file=>"2.pid", :checks=>{:memory=>{:fires=>:stop, :below=>10, :type=>:memory}}}}}}}}
   end
 
+  it "checker with fires" do
+    conf = <<-E
+      Eye.application("bla") do |app|
+        app.process("1") do
+          pid_file "2.pid"
+
+          checks :memory, :fires => [:stop, ->{}], :below => 10
+        end
+      end
+    E
+    Eye::Dsl.parse_apps(conf) # should not raise
+  end
+
   it "checker with bad fires" do
     conf = <<-E
       Eye.application("bla") do |app|

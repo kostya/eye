@@ -60,7 +60,7 @@ module Eye::Process::Scheduler
   end
 
   def execute_proc(*args, &block)
-    self.instance_eval(&block)
+    self.instance_exec(&block)
   end
 
   def scheduler_actions_list

@@ -203,4 +203,73 @@ describe "Custom checks" do
 
   end
 
+  describe "custom fires" do
+    it "should execute proc on fires" do
+      conf = <<-D
+        class TouchFile < Eye::Checker::Custom
+          param :file, [String], true
+
+          def get_value
+            !File.exist?(file)
+          end
+        end
+
+        Eye.application("bla") do
+          working_dir "#{C.sample_dir}"
+          process("1") do
+            pid_file "#{C.p1_pid}"
+            start_command "sleep 30"
+            daemonize true
+
+            check :touch_file, :every => 1.seconds, :file => "#{C.tmp_file}", :fires => -> { send_command(:stop) }
+          end
+        end
+     D
+      @c.load_content(conf)
+      @process = @c.process_by_name("1")
+      @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
+
+      sleep 2
+      File.open(C.tmp_file, 'w')
+      sleep 3
+      @process.state_name.should == :unmonitored
+      @process.schedule_history.states.last.should == :stop
+    end
+
+    it "should execute proc on fires" do
+      conf = <<-D
+        class TouchFile < Eye::Checker::Custom
+          param :file, [String], true
+
+          def get_value
+            !File.exist?(file)
+          end
+        end
+
+        Eye.application("bla") do
+          working_dir "#{C.sample_dir}"
+          process("1") do
+            pid_file "#{C.p1_pid}"
+            start_command "sleep 30"
+            daemonize true
+
+            check :touch_file, :every => 1.seconds, :file => "#{C.tmp_file}",
+              :fires => [:stop, -> { mock_action(1) }]
+          end
+        end
+     D
+      @c.load_content(conf)
+      @process = @c.process_by_name("1")
+      @process.wait_for_condition(3, 0.3) { @process.state_name == :up }
+
+      mock(@process).mock_action(1)
+      sleep 2
+      File.open(C.tmp_file, 'w')
+      sleep 3
+      @process.state_name.should == :unmonitored
+      @process.schedule_history.states.last.should == :execute_proc
+    end
+
+  end
+
 end
