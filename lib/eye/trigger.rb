@@ -36,7 +36,7 @@ class Eye::Trigger
   def self.create(process, options = {})
     get_class(options[:type]).new(process, options)
 
-  rescue Exception, Timeout::Error => ex
+  rescue Object => ex
     log_ex(ex)
     nil
   end
@@ -72,7 +72,7 @@ class Eye::Trigger
 
     check(transition) if filter_transition(transition)
 
-  rescue Exception, Timeout::Error => ex
+  rescue Object => ex
     if ex.class == Eye::Process::StateError
       raise ex
     else

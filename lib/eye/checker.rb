@@ -50,7 +50,7 @@ class Eye::Checker
   def self.create(pid, options = {}, process = nil)
     get_class(options[:type]).new(pid, options, process)
 
-  rescue Exception, Timeout::Error => ex
+  rescue Object => ex
     log_ex(ex)
     nil
   end
@@ -126,7 +126,7 @@ class Eye::Checker
     info "#{last_human_values} => #{result ? 'OK' : 'Fail'}"
     result
 
-  rescue Exception, Timeout::Error => ex
+  rescue Object => ex
     log_ex(ex)
   end
 

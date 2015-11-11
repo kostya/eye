@@ -75,7 +75,7 @@ class Eye::Checker::Socket < Eye::Checker::Defer
       if expect_data.is_a?(Proc)
         match = begin
           !!expect_data[value[:result]]
-        rescue Timeout::Error, Exception => ex
+        rescue Object => ex
           mes = "proc match failed with '#{ex.message}'"
           error(mes)
           value[:notice] = mes

@@ -47,7 +47,7 @@ class Eye::Notify
       create_proc[needed_hash]
     end
 
-  rescue Exception, Timeout::Error => ex
+  rescue Object => ex
     log_ex(ex)
   end
 
