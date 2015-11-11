@@ -204,5 +204,14 @@ describe "Scheduler" do
       sleep 0.1
       @process.test3.should == [1, 2]
     end
+
+    it "not crashing on exception" do
+      @process.schedule(:execute_proc) do
+        1 + "bla"
+      end
+
+      sleep 0.1
+      @process.alive?.should be_true
+    end
   end
 end

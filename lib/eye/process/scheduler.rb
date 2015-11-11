@@ -61,6 +61,8 @@ module Eye::Process::Scheduler
 
   def execute_proc(*args, &block)
     self.instance_exec(&block)
+  rescue Object => ex
+    log_ex(ex)
   end
 
   def scheduler_actions_list
