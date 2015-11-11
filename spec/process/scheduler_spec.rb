@@ -194,4 +194,15 @@ describe "Scheduler" do
       @process.test3.should == [7]
     end
   end
+
+  describe "schedule block" do
+    it "schedule block" do
+      @process.schedule(:execute_proc) do
+        @test3 = [1, 2]
+      end
+
+      sleep 0.1
+      @process.test3.should == [1, 2]
+    end
+  end
 end

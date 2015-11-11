@@ -10,21 +10,21 @@ class Eye::Utils::CelluloidChain
     @target_class = @target.class
   end
 
-  def add(method_name, *args, &block)
-    @calls << {:method_name => method_name, :args => args, :block => block}
+  def add(method_name, *args)
+    @calls << {:method_name => method_name, :args => args}
     ensure_process
   end
 
-  def add_wo_dups(method_name, *args, &block)
-    h = {:method_name => method_name, :args => args, :block => block}
+  def add_wo_dups(method_name, *args)
+    h = {:method_name => method_name, :args => args}
     if @calls[-1] != h
       @calls << h
       ensure_process
     end
   end
 
-  def add_wo_dups_current(method_name, *args, &block)
-    h = {:method_name => method_name, :args => args, :block => block}
+  def add_wo_dups_current(method_name, *args)
+    h = {:method_name => method_name, :args => args}
     if !@calls.include?(h) && @call != h
       @calls << h
       ensure_process
@@ -64,7 +64,7 @@ private
   def process
     while @call = @calls.shift
       @running = true
-      @target.send(@call[:method_name], *@call[:args], &@call[:block]) if @target.alive?
+      @target.send(@call[:method_name], *@call[:args]) if @target.alive?
     end
     @running = false
   end

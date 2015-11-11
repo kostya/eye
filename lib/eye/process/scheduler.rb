@@ -22,11 +22,11 @@ module Eye::Process::Scheduler
       if reason.class == Eye::Reason
         # for auto reasons
         # skip already running commands and all in chain
-        scheduler.add_wo_dups_current(:scheduled_action, command, {:args => args, :reason => reason}, &block)
+        scheduler.add_wo_dups_current(:scheduled_action, command, {:args => args, :reason => reason, :block => block})
       else
         # for manual, or without reason
         # skip only for last in chain
-        scheduler.add_wo_dups(:scheduled_action, command, {:args => args, :reason => reason}, &block)
+        scheduler.add_wo_dups(:scheduled_action, command, {:args => args, :reason => reason, :block => block})
       end
     end
   end
@@ -39,7 +39,7 @@ module Eye::Process::Scheduler
     end
   end
 
-  def scheduled_action(command, h = {}, &block)
+  def scheduled_action(command, h = {})
     reason = h.delete(:reason)
     info "=> #{command} #{h[:args].present? ? "#{h[:args]*',' }" : nil} #{reason ? "(reason: #{reason})" : nil}"
 
@@ -48,7 +48,7 @@ module Eye::Process::Scheduler
     @last_scheduled_reason = reason
     @last_scheduled_at = Time.now
 
-    send(command, *h[:args], &block)
+    send(command, *h[:args], &h[:block])
     @current_scheduled_command = nil
     info "<= #{command}"
 
@@ -57,6 +57,10 @@ module Eye::Process::Scheduler
     if parent = self.try(:parent)
       parent.schedule_history.push("#{command}_child", reason, @last_scheduled_at.to_i)
     end
+  end
+
+  def execute_proc(*args, &block)
+    self.instance_eval(&block)
   end
 
   def scheduler_actions_list
@@ -69,6 +73,7 @@ module Eye::Process::Scheduler
 
   def self.included(base)
     base.finalizer :remove_scheduler
+    base.execute_block_on_receiver :schedule
   end
 
   attr_accessor :current_scheduled_command
