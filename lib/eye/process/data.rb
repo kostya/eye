@@ -34,13 +34,14 @@ module Eye::Process::Data
   end
 
   def self_status_data(opts)
-    h = { name: name, state: state,
+    h = { name: name,
+          state: state,
           type: (self.class == Eye::ChildProcess ? :child_process : :process),
           resources: Eye::SystemResources.resources(pid) }
 
     if @states_history
-      h.merge!( state_changed_at: @states_history.last_state_changed_at.to_i,
-                state_reason: @states_history.last_reason.to_s )
+      h[:state_changed_at] = @states_history.last_state_changed_at.to_i
+      h[:state_reason] = @states_history.last_reason.to_s
     end
 
     h[:debug] = debug_data if opts[:debug]
