@@ -8,18 +8,18 @@ class Eye::Trigger
   autoload :CheckDependency, 'eye/trigger/check_dependency'
   autoload :StartingGuard, 'eye/trigger/starting_guard'
 
-  TYPES = { :flapping => 'Flapping', :transition => 'Transition', :stop_children => 'StopChildren',
-            :wait_dependency => 'WaitDependency', :check_dependency => 'CheckDependency', :starting_guard => 'StartingGuard' }
+  TYPES = { flapping: 'Flapping', transition: 'Transition', stop_children: 'StopChildren',
+            wait_dependency: 'WaitDependency', check_dependency: 'CheckDependency', starting_guard: 'StartingGuard' }
 
   attr_reader :message, :options, :process
 
   def self.name_and_class(type)
     type = type.to_sym
-    return { :name => type, :type => type } if TYPES[type]
+    return { name: type, type: type } if TYPES[type]
 
     if type =~ %r[\A(.*?)_?[0-9]+\z]
       ctype = $1.to_sym
-      return { :name => type, :type => ctype } if TYPES[ctype]
+      return { name: type, type: ctype } if TYPES[ctype]
     end
   end
 

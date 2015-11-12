@@ -99,7 +99,7 @@ private
     if self[:stop_command]
       cmd = prepare_command(self[:stop_command])
       info "executing: `#{cmd}` with stop_timeout: #{self[:stop_timeout].to_f}s and stop_grace: #{self[:stop_grace].to_f}s"
-      res = execute(cmd, config.merge(:timeout => self[:stop_timeout]))
+      res = execute(cmd, config.merge(timeout: self[:stop_timeout]))
 
       if res[:error]
 
@@ -157,7 +157,7 @@ private
     cmd = prepare_command(self[:restart_command])
     info "executing: `#{cmd}` with restart_timeout: #{self[:restart_timeout].to_f}s and restart_grace: #{self[:restart_grace].to_f}s"
 
-    res = execute(cmd, config.merge(:timeout => self[:restart_timeout]))
+    res = execute(cmd, config.merge(timeout: self[:restart_timeout]))
 
     if res[:error]
 
@@ -183,21 +183,21 @@ private
         error "daemonize failed with #{res[:error].inspect}"
       end
 
-      return { :error => res[:error].inspect }
+      return { error: res[:error].inspect }
     end
 
     self.pid = res[:pid]
 
     unless self.pid
       error 'no pid was returned'
-      return { :error => :empty_pid }
+      return { error: :empty_pid }
     end
 
     sleep_grace(:start_grace)
 
     unless process_really_running?
       error "process <#{self.pid}> not found, it may have crashed (#{check_logs_str})"
-      return { :error => :not_really_running }
+      return { error: :not_really_running }
     end
 
     # if we using leaf child stratedy, pid should be used as last child process
@@ -212,7 +212,7 @@ private
     end
 
     if control_pid? && !failsafe_save_pid
-      return { :error => :cant_write_pid }
+      return { error: :cant_write_pid }
     end
 
     res
@@ -220,7 +220,7 @@ private
 
   def execute_process
     info "executing: `#{self[:start_command]}` with start_timeout: #{config[:start_timeout].to_f}s, start_grace: #{self[:start_grace].to_f}s, env: '#{environment_string}' (in #{self[:working_dir]})"
-    res = execute(self[:start_command], config.merge(:timeout => config[:start_timeout]))
+    res = execute(self[:start_command], config.merge(timeout: config[:start_timeout]))
 
     if res[:error]
 
@@ -232,20 +232,20 @@ private
         error "execution failed with #{res[:error].inspect}"
       end
 
-      return { :error => res[:error].inspect }
+      return { error: res[:error].inspect }
     end
 
     sleep_grace(:start_grace)
 
     case load_external_pid_file
       when :ok
-        res.merge(:pid => self.pid)
+        res.merge(pid: self.pid)
       when :no_pid_file
         error "exit status #{res[:exitstatus]}, pid_file (#{self[:pid_file_ex]}) did not appear within the start_grace period (#{self[:start_grace].to_f}s); check your start_command, or tune the start_grace value (eye expect process to create pid_file in self-daemonization mode)"
-        { :error => :pid_not_found }
+        { error: :pid_not_found }
       when :not_running
         error "exit status #{res[:exitstatus]}, process <#{@last_loaded_pid}> (from #{self[:pid_file_ex]}) was not found; ensure that the pid_file is being updated correctly (#{check_logs_str})"
-        { :error => :not_really_running }
+        { error: :not_really_running }
     end
   end
 
@@ -279,7 +279,7 @@ private
     # cmd is string, or array of signals
     if cmd.is_a?(String)
       cmd = prepare_command(cmd)
-      res = execute(cmd, config.merge(:timeout => 120))
+      res = execute(cmd, config.merge(timeout: 120))
       error "cmd #{cmd} error #{res.inspect}" if res[:error]
     elsif cmd.is_a?(Array)
       signals = cmd.clone

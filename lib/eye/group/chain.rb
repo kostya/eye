@@ -76,10 +76,10 @@ private
       grace = @config[:chain][command].try :[], :grace
       grace = grace ? (grace.to_f rescue DEFAULT_CHAIN) : DEFAULT_CHAIN
 
-      { :type => type, :grace => grace }
+      { type: type, grace: grace }
     else
       # default chain case
-      { :type => :async, :grace => DEFAULT_CHAIN }
+      { type: :async, grace: DEFAULT_CHAIN }
     end
   end
 

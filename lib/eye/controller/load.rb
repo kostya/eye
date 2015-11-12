@@ -36,7 +36,7 @@ private
   BT_REGX = %r[/lib/eye/|lib/celluloid|internal:prelude|logger.rb:|active_support/core_ext|shellwords.rb|kernel/bootstrap].freeze
 
   def catch_load_error(filename = nil, &_block)
-    { :error => false, :config => yield }
+    { error: false, config: yield }
 
   rescue Eye::Dsl::Error, Exception, NoMethodError => ex
     raise if ex.class.to_s.include?('RR') # skip RR exceptions
@@ -48,7 +48,7 @@ private
     bt = bt.reject { |line| line.to_s =~ BT_REGX } unless ENV['EYE_FULL_BACKTRACE']
     error bt.join("\n")
 
-    res = { :error => true, :message => ex.message }
+    res = { error: true, message: ex.message }
     res[:backtrace] = bt if bt.present?
     res
   end

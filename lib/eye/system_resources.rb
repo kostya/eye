@@ -62,11 +62,10 @@ class Eye::SystemResources
     end
 
     def resources(pid)
-      { :memory => memory(pid),
-        :cpu => cpu(pid),
-        :start_time => start_time(pid),
-        :pid => pid
-      }
+      { memory: memory(pid),
+        cpu: cpu(pid),
+        start_time: start_time(pid),
+        pid: pid }
     end
 
     def cache

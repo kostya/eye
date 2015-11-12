@@ -31,20 +31,20 @@ class Eye::Checker::Http < Eye::Checker::Defer
 
   def get_value
     res = session.start { |http| http.get(@uri.request_uri) }
-    { :result => res }
+    { result: res }
 
   rescue Timeout::Error => ex
     debug { ex.inspect }
 
     if defined?(Net::OpenTimeout) # for ruby 2.0
       mes = ex.is_a?(Net::OpenTimeout) ? "OpenTimeout<#{@open_timeout}>" : "ReadTimeout<#{@read_timeout}>"
-      { :exception => mes }
+      { exception: mes }
     else
-      { :exception => "Timeout<#{@open_timeout},#{@read_timeout}>" }
+      { exception: "Timeout<#{@open_timeout},#{@read_timeout}>" }
     end
 
   rescue => ex
-    { :exception => "Error<#{ex.message}>" }
+    { exception: "Error<#{ex.message}>" }
   end
 
   def good?(value)

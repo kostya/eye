@@ -36,15 +36,15 @@ private
     objs = find_objects(*args)
     res = objs.map(&:full_name)
     objs.each { |obj| block[obj] } if block
-    { :result => res }
+    { result: res }
 
   rescue Error => ex
     log_ex(ex)
-    { :error => ex.message }
+    { error: ex.message }
 
   rescue Celluloid::DeadActorError => ex
     log_ex(ex)
-    { :error => "'#{ex.message}', try again!" }
+    { error: "'#{ex.message}', try again!" }
   end
 
   def remove_object_from_tree(obj)

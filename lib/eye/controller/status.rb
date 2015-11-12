@@ -5,15 +5,15 @@ module Eye::Controller::Status
     actors = Celluloid::Actor.all.map { |actor| actor.wrapped_object.class.to_s }.group_by { |a| a }.map { |k, v| [k, v.size] }.sort_by { |a| a[1] }.reverse
 
     res = {
-      :about => Eye::ABOUT,
-      :resources => Eye::SystemResources.resources($$),
-      :ruby => RUBY_DESCRIPTION,
-      :gems => %w|Celluloid Celluloid::IO StateMachine NIO Timers Sigar|.map { |c| gem_version(c) },
-      :logger => Eye::Logger.args.present? ? [Eye::Logger.dev.to_s, *Eye::Logger.args] : Eye::Logger.dev.to_s,
-      :dir => Eye::Local.dir,
-      :pid_path => Eye::Local.pid_path,
-      :sock_path => Eye::Local.socket_path,
-      :actors => actors
+      about: Eye::ABOUT,
+      resources: Eye::SystemResources.resources($$),
+      ruby: RUBY_DESCRIPTION,
+      gems: %w|Celluloid Celluloid::IO StateMachine NIO Timers Sigar|.map { |c| gem_version(c) },
+      logger: Eye::Logger.args.present? ? [Eye::Logger.dev.to_s, *Eye::Logger.args] : Eye::Logger.dev.to_s,
+      dir: Eye::Local.dir,
+      pid_path: Eye::Local.pid_path,
+      sock_path: Eye::Local.socket_path,
+      actors: actors
     }
 
     res[:config_yaml] = YAML.dump(current_config.to_h) if h[:config].present?
@@ -23,11 +23,11 @@ module Eye::Controller::Status
 
   def info_data(*args)
     h = args.extract_options!
-    { :subtree => info_objects(*args).map { |a| a.status_data(h) } }
+    { subtree: info_objects(*args).map { |a| a.status_data(h) } }
   end
 
   def short_data(*args)
-    { :subtree => info_objects(*args).select { |o| o.class == Eye::Application }.map(&:status_data_short) }
+    { subtree: info_objects(*args).select { |o| o.class == Eye::Application }.map(&:status_data_short) }
   end
 
   def history_data(*args)

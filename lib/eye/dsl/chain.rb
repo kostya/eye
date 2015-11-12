@@ -5,7 +5,7 @@ module Eye::Dsl::Chain
 
     acts.each do |act|
       @config[:chain] ||= {}
-      @config[:chain][act] = opts.merge(:action => act)
+      @config[:chain][act] = opts.merge(action: act)
     end
   end
 

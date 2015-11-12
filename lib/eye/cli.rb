@@ -13,8 +13,8 @@ class Eye::Cli < Thor
   include Eye::Cli::Render
 
   desc 'info [MASK]', 'processes info'
-  method_option :json, :type => :boolean, :aliases => '-j'
-  method_option :procline, :type => :boolean, :aliases => '-p'
+  method_option :json, type: :boolean, aliases: '-j'
+  method_option :procline, type: :boolean, aliases: '-p'
   def info(mask = nil)
     h = {}
     h[:procline] = true if options[:procline]
@@ -41,10 +41,10 @@ class Eye::Cli < Thor
   end
 
   desc 'xinfo', 'eye-deamon info (-c show current config)'
-  method_option :config, :type => :boolean, :aliases => '-c'
-  method_option :json, :type => :boolean, :aliases => '-j'
+  method_option :config, type: :boolean, aliases: '-c'
+  method_option :json, type: :boolean, aliases: '-j'
   def xinfo
-    res = cmd(:debug_data, :config => options[:config])
+    res = cmd(:debug_data, config: options[:config])
     if options[:json]
       say_json(res)
     else
@@ -54,7 +54,7 @@ class Eye::Cli < Thor
   end
 
   desc 'oinfo', 'onelined info'
-  method_option :json, :type => :boolean, :aliases => '-j'
+  method_option :json, type: :boolean, aliases: '-j'
   def oinfo(mask = nil)
     res = cmd(:short_data, *Array(mask))
     if options[:json]
@@ -66,7 +66,7 @@ class Eye::Cli < Thor
   end
 
   desc 'history [MASK,...]', 'processes history'
-  method_option :json, :type => :boolean, :aliases => '-j'
+  method_option :json, type: :boolean, aliases: '-j'
   def history(*masks)
     res = cmd(:history_data, *masks)
     if !masks.empty? && res && res.empty?
@@ -81,7 +81,7 @@ class Eye::Cli < Thor
   end
 
   desc 'load [CONF, ...]', 'load config (run eye-daemon if not) (-f foreground load)'
-  method_option :foreground, :type => :boolean, :aliases => '-f'
+  method_option :foreground, type: :boolean, aliases: '-f'
   def load(*configs)
     configs.map! { |c| File.expand_path(c) }
 
@@ -101,8 +101,8 @@ class Eye::Cli < Thor
   end
 
   desc 'quit', 'eye-daemon quit'
-  method_option :stop_all, :type => :boolean, :aliases => '-s'
-  method_option :timeout, :type => :string, :aliases => '-t', :default => '600'
+  method_option :stop_all, type: :boolean, aliases: '-s'
+  method_option :timeout, type: :string, aliases: '-t', default: '600'
   def quit
     if options[:stop_all]
       Eye::Local.client_timeout = options[:timeout].to_i
@@ -156,31 +156,31 @@ class Eye::Cli < Thor
   end
 
   desc 'check CONF', 'check config file syntax'
-  method_option :host, :type => :string, :aliases => '-h'
-  method_option :verbose, :type => :boolean, :aliases => '-v'
+  method_option :host, type: :string, aliases: '-h'
+  method_option :verbose, type: :boolean, aliases: '-v'
   def check(conf)
     conf = File.expand_path(conf) if conf && !conf.empty?
 
     Eye::Local.host = options[:host] if options[:host]
     Eye::Dsl.verbose = options[:verbose]
 
-    say_load_result Eye::Controller.new.check(conf), :syntax => true
+    say_load_result Eye::Controller.new.check(conf), syntax: true
   end
 
   desc 'explain CONF', 'explain config tree'
-  method_option :host, :type => :string, :aliases => '-h'
-  method_option :verbose, :type => :boolean, :aliases => '-v'
+  method_option :host, type: :string, aliases: '-h'
+  method_option :verbose, type: :boolean, aliases: '-v'
   def explain(conf)
     conf = File.expand_path(conf) if conf && !conf.empty?
 
     Eye::Local.host = options[:host] if options[:host]
     Eye::Dsl.verbose = options[:verbose]
 
-    say_load_result Eye::Controller.new.explain(conf), :print_config => true, :syntax => true
+    say_load_result Eye::Controller.new.explain(conf), print_config: true, syntax: true
   end
 
   desc 'watch [MASK]', 'interactive processes info'
-  method_option :procline, :type => :boolean, :aliases => '-p'
+  method_option :procline, type: :boolean, aliases: '-p'
   def watch(*args)
     error!('You should install watch utility') if `which watch`.empty?
 

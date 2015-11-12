@@ -44,3 +44,7 @@ Style/BlockDelimiters:
 Style/CaseIndentation:
   IndentOneStep: true
   IndentWhenRelativeTo: end
+
+Style/HashSyntax:
+  Exclude:
+    - 'lib/eye/process/states.rb'

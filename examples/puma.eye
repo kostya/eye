@@ -9,7 +9,7 @@ end
 Eye.application :puma do
   env 'RAILS_ENV' => RAILS_ENV
   working_dir ROOT
-  trigger :flapping, :times => 10, :within => 1.minute
+  trigger :flapping, times: 10, within: 1.minute
 
   process :puma do
     daemonize true
@@ -24,7 +24,7 @@ Eye.application :puma do
     # (maybe enought to puma soft restart)
     restart_grace 10.seconds
 
-    check :cpu, :every => 30, :below => 80, :times => 3
-    check :memory, :every => 30, :below => 70.megabytes, :times => [3, 5]
+    check :cpu, every: 30, below: 80, times: 3
+    check :memory, every: 30, below: 70.megabytes, times: [3, 5]
   end
 end

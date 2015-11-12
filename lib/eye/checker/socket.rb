@@ -39,7 +39,7 @@ class Eye::Checker::Socket < Eye::Checker::Defer
     sock = begin
       Timeout.timeout(@open_timeout) { open_socket }
     rescue Timeout::Error
-      return { :exception => "OpenTimeout<#{@open_timeout}>" }
+      return { exception: "OpenTimeout<#{@open_timeout}>" }
     end
 
     if send_data
@@ -48,21 +48,21 @@ class Eye::Checker::Socket < Eye::Checker::Defer
           _write_data(sock, send_data)
           result = _read_data(sock)
 
-          { :result => result }
+          { result: result }
         end
       rescue Timeout::Error
         if protocol == :raw
-          return { :result => @buffer }
+          return { result: @buffer }
         else
-          return { :exception => "ReadTimeout<#{@read_timeout}>" }
+          return { exception: "ReadTimeout<#{@read_timeout}>" }
         end
       end
     else
-      { :result => :listen }
+      { result: :listen }
     end
 
   rescue Exception => e
-    { :exception => "Error<#{e.message}>" }
+    { exception: "Error<#{e.message}>" }
 
   ensure
     sock.close if sock

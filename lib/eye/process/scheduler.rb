@@ -22,11 +22,11 @@ module Eye::Process::Scheduler
       if reason.class == Eye::Reason
         # for auto reasons
         # skip already running commands and all in chain
-        scheduler.add_wo_dups_current(:scheduled_action, command, :args => args, :reason => reason, :block => block)
+        scheduler.add_wo_dups_current(:scheduled_action, command, args: args, reason: reason, block: block)
       else
         # for manual, or without reason
         # skip only for last in chain
-        scheduler.add_wo_dups(:scheduled_action, command, :args => args, :reason => reason, :block => block)
+        scheduler.add_wo_dups(:scheduled_action, command, args: args, reason: reason, block: block)
       end
     end
   end

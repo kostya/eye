@@ -8,7 +8,7 @@ class Eye::Notify
   autoload :Jabber,   'eye/notify/jabber'
   autoload :Slack,    'eye/notify/slack'
 
-  TYPES = { :mail => 'Mail', :jabber => 'Jabber', :slack => 'Slack' }
+  TYPES = { mail: 'Mail', jabber: 'Jabber', slack: 'Slack' }
 
   def self.get_class(type)
     klass = eval("Eye::Notify::#{TYPES[type]}") rescue nil
@@ -35,7 +35,7 @@ class Eye::Notify
 
     create_proc = lambda do |nh|
       type = nh[:type]
-      config = (settings[type] || {}).merge(nh[:opts] || {}).merge(:contact => nh[:contact])
+      config = (settings[type] || {}).merge(nh[:opts] || {}).merge(contact: nh[:contact])
       klass = get_class(type)
       notify = klass.new(config, message_h)
       notify.async_notify if notify

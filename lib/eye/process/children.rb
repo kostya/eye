@@ -31,7 +31,7 @@ module Eye::Process::Children
 
     if new_children.present?
       new_children.each do |child_pid|
-        cfg = self[:monitor_children].try :update, :notify => self[:notify]
+        cfg = self[:monitor_children].try :update, notify: self[:notify]
         self.children[child_pid] = Eye::ChildProcess.new(child_pid, cfg, logger.prefix, current_actor)
       end
     end
@@ -40,7 +40,7 @@ module Eye::Process::Children
       removed_children.each { |child_pid| remove_child(child_pid) }
     end
 
-    h = { :new => new_children.size, :removed => removed_children.size, :exists => exist_children.size }
+    h = { new: new_children.size, removed: removed_children.size, exists: exist_children.size }
     debug { "children info: #{h.inspect}" }
 
     @updating_children = false

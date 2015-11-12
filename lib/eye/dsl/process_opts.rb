@@ -17,11 +17,11 @@ class Eye::Dsl::ProcessOpts < Eye::Dsl::Opts
 
   def depend_on(names, opts = {})
     names = Array(names).map(&:to_s)
-    trigger("wait_dependency_#{unique_num}", { :names => names }.merge(opts))
+    trigger("wait_dependency_#{unique_num}", { names: names }.merge(opts))
     nm = @config[:name]
     names.each do |name|
       parent.process(name) do
-        trigger("check_dependency_#{unique_num}", :names => [nm])
+        trigger("check_dependency_#{unique_num}", names: [nm])
       end
     end
 

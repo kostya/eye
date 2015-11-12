@@ -48,7 +48,7 @@ private
       block.call(subject)
     end
 
-    @watchers[type] ||= { :timer => timer, :subject => subject }
+    @watchers[type] ||= { timer: timer, subject: subject }
   end
 
   def start_checkers

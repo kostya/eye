@@ -49,7 +49,7 @@ class Eye::Dsl::ConfigOpts
 
   def enable_saver(save_log)
     Eye.application '__default__' do
-      trigger :saver, :log_name => save_log
+      trigger :saver, log_name: save_log
     end
   end
 end

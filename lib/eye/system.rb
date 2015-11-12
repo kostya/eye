@@ -14,9 +14,9 @@ module Eye::System
         false
       end
 
-      { :result => res }
+      { result: res }
     rescue => ex
-      { :error => ex }
+      { error: ex }
     end
 
     # Check that pid really exits
@@ -39,13 +39,13 @@ module Eye::System
 
       if pid
         ::Process.kill(code, pid)
-        { :result => :ok }
+        { result: :ok }
       else
-        { :error => Exception.new('no_pid') }
+        { error: Exception.new('no_pid') }
       end
 
     rescue => ex
-      { :error => ex }
+      { error: ex }
     end
 
     # Daemonize cmd, and detach
@@ -57,10 +57,10 @@ module Eye::System
     def daemonize(cmd, cfg = {})
       pid = ::Process.spawn(prepare_env(cfg), *Shellwords.shellwords(cmd), spawn_options(cfg))
 
-      { :pid => pid, :exitstatus => 0 }
+      { pid: pid, exitstatus: 0 }
 
     rescue Errno::ENOENT, Errno::EACCES => ex
-      { :error => ex }
+      { error: ex }
 
     ensure
       Process.detach(pid) if pid
@@ -82,17 +82,17 @@ module Eye::System
         status = st.exitstatus || st.termsig
       end
 
-      { :pid => pid, :exitstatus => status }
+      { pid: pid, exitstatus: status }
 
     rescue Timeout::Error => ex
       if pid
         warn "[#{cfg[:name]}] sending :KILL signal to <#{pid}> due to timeout (#{timeout}s)"
         send_signal(pid, 9)
       end
-      { :error => ex }
+      { error: ex }
 
     rescue Errno::ENOENT, Errno::EACCES => ex
-      { :error => ex }
+      { error: ex }
 
     ensure
       Process.detach(pid) if pid

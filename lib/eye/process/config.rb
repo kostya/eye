@@ -1,29 +1,29 @@
 module Eye::Process::Config
 
   DEFAULTS = {
-    :keep_alive => true, # restart when crashed
-    :check_alive_period => 5.seconds,
+    keep_alive: true, # restart when crashed
+    check_alive_period: 5.seconds,
 
-    :check_identity => true,
-    :check_identity_period => 60.seconds,
-    :check_identity_grace => 60.seconds,
+    check_identity: true,
+    check_identity_period: 60.seconds,
+    check_identity_grace: 60.seconds,
 
-    :start_timeout => 15.seconds,
-    :stop_timeout => 10.seconds,
-    :restart_timeout => 10.seconds,
+    start_timeout: 15.seconds,
+    stop_timeout: 10.seconds,
+    restart_timeout: 10.seconds,
 
-    :start_grace => 2.5.seconds,
-    :stop_grace => 0.5.seconds,
-    :restart_grace => 1.second,
+    start_grace: 2.5.seconds,
+    stop_grace: 0.5.seconds,
+    restart_grace: 1.second,
 
-    :daemonize => false,
-    :auto_start => true, # auto start on monitor action
+    daemonize: false,
+    auto_start: true, # auto start on monitor action
 
-    :children_update_period => 30.seconds,
-    :clear_pid => true, # by default clear pid on stop
+    children_update_period: 30.seconds,
+    clear_pid: true, # by default clear pid on stop
 
-    :auto_update_pidfile_grace => 30.seconds,
-    :revert_fuckup_pidfile_grace => 120.seconds
+    auto_update_pidfile_grace: 30.seconds,
+    revert_fuckup_pidfile_grace: 120.seconds
   }
 
   def prepare_config(new_config)
@@ -36,7 +36,7 @@ module Eye::Process::Config
     # check speedy flapping by default
     if h[:triggers].blank? || !h[:triggers][:flapping]
       h[:triggers] ||= {}
-      h[:triggers][:flapping] = { :type => :flapping, :times => 10, :within => 10.seconds }
+      h[:triggers][:flapping] = { type: :flapping, times: 10, within: 10.seconds }
     end
 
     h[:stdout] = Eye::System.normalized_file(h[:stdout], h[:working_dir]) if h[:stdout]

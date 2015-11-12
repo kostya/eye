@@ -99,7 +99,7 @@ module Eye::Process::System
     Eye::System.daemonize(cmd, cfg)
   end
 
-  def execute_sync(cmd, opts = { :timeout => 1.second })
+  def execute_sync(cmd, opts = { timeout: 1.second })
     execute(cmd, self.config.merge(opts)).tap do |res|
       info "execute_sync `#{cmd}` with res: #{res}"
     end

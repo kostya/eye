@@ -11,8 +11,8 @@ Eye.app :stress_test do
       start_command 'sleep 120'
       daemonize true
 
-      checks :cpu, :every => 5.seconds, :below => 10, :times => 5
-      checks :memory, :every => 6.seconds, :below => 50.megabytes, :times => 5
+      checks :cpu, every: 5.seconds, below: 10, times: 5
+      checks :memory, every: 6.seconds, below: 50.megabytes, times: 5
     end
   end
 end

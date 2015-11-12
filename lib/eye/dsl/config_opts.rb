@@ -24,7 +24,7 @@ class Eye::Dsl::ConfigOpts < Eye::Dsl::PureOpts
     create_options_methods([type], Hash)
 
     define_method("set_#{type}") do |value|
-      value = value.merge(:type => type)
+      value = value.merge(type: type)
       super(value)
       Eye::Notify.validate!(value)
     end
@@ -37,7 +37,7 @@ class Eye::Dsl::ConfigOpts < Eye::Dsl::PureOpts
     raise Eye::Dsl::Error, 'contact should be a String' unless contact.is_a?(String)
 
     notify_hash = @config[contact_type] || (@parent && @parent.config[contact_type]) || Eye.parsed_config.settings[contact_type] || {}
-    validate_hash = notify_hash.merge(contact_opts).merge(:type => contact_type)
+    validate_hash = notify_hash.merge(contact_opts).merge(type: contact_type)
 
     Eye::Notify.validate!(validate_hash)
 

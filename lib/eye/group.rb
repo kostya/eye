@@ -78,7 +78,7 @@ class Eye::Group
   end
 
   def debug_data
-    { :queue => scheduler_actions_list, :chain => chain_status }
+    { queue: scheduler_actions_list, chain: chain_status }
   end
 
   def send_command(command, *args)
