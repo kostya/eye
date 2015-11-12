@@ -31,8 +31,12 @@ class Eye::Dsl::ProcessOpts < Eye::Dsl::Opts
 private
 
   def unique_num
-    $unique_num ||= 0
-    $unique_num += 1
+    self.class.unique_num ||= 0
+    self.class.unique_num += 1
+  end
+
+  class << self
+    attr_accessor :unique_num
   end
 
 end

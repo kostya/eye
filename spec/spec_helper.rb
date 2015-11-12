@@ -75,7 +75,7 @@ RSpec.configure do |config|
     @log = C.base[:stdout]
     FileUtils.rm(@log) rescue nil
     @pids = []
-    $unique_num = 0
+    Eye::Dsl::ProcessOpts.unique_num = 0
 
     stub(Eye::Local).dir { C.sample_dir }
 

@@ -114,8 +114,8 @@ end
 
 trap('USR2') do
   puts 'USR2 start memory leak'
-  $ar = []
-  300_000.times { |i| $ar << "memory leak #{i}" * 10 }
+  ar = []
+  300_000.times { |i| ar << "memory leak #{i}" * 10 }
 end
 
 loop do

@@ -85,8 +85,3 @@ Style/PerlBackrefs:
     - 'lib/eye/checker.rb'
     - 'lib/eye/checker/socket.rb'
     - 'lib/eye/trigger.rb'
-
-Style/GlobalVars:
-  Exclude:
-    - 'examples/processes/sample.rb'
-    - 'lib/eye/dsl/process_opts.rb'
