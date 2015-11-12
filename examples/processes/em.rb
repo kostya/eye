@@ -5,7 +5,9 @@ def answer(data)
   case data
     when 'ping' then "pong\n"
     when 'bad' then "what\n"
-    when 'timeout' then sleep 5; "ok\n"
+    when 'timeout' then
+      sleep 5
+      "ok\n"
     when 'exception' then raise 'haha'
     when 'quit' then EM.stop
     when 'big' then 'a' * 10_000_000

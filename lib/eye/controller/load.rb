@@ -150,7 +150,10 @@ private
     end
 
     # now, need to clear @old_groups, and @old_processes
-    @old_groups.each { |_, group| group.clear; group.send_command(:delete) }
+    @old_groups.each do |_, group|
+      group.clear
+      group.send_command(:delete)
+    end
     @old_processes.each { |_, process| process.send_command(:delete) if process.alive? }
 
     # schedule monitoring for new groups, processes

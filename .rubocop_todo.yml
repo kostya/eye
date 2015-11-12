@@ -17,12 +17,6 @@ Style/IfUnlessModifier:
 Style/RedundantSelf:
   Enabled: false
 
-Style/Semicolon:
-  Exclude:
-    - 'examples/processes/em.rb'
-    - 'lib/eye/controller/load.rb'
-    - 'lib/eye/utils.rb'
-
 Metrics/MethodLength:
   Max: 45
 
