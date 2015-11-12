@@ -68,7 +68,7 @@ private
 
     say 'Eye started! ㋡', :green
 
-    if !configs.empty?
+    if configs.any?
       say_load_result cmd(:load, *configs)
     end
   end

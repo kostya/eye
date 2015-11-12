@@ -41,10 +41,8 @@ private
       say res[:message], :red
       res[:backtrace].to_a.each{|line| say line, :red }
     else
-      if opts[:syntax]
-        say 'Config ok!', :green if !res[:empty]
-      else
-        say 'Config loaded!', :green if !res[:empty]
+      unless res[:empty]
+        say(opts[:syntax] ? 'Config ok!' : 'Config loaded!', :green)
       end
 
       if opts[:print_config]
