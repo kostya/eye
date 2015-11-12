@@ -172,10 +172,7 @@ private
   end
 
   def daemonize_process
-    time_before = Time.now
     res = daemonize(self[:start_command], config)
-    start_time = Time.now - time_before
-
     info "daemonizing: `#{self[:start_command]}` with start_grace: #{self[:start_grace].to_f}s, env: '#{environment_string}', <#{res[:pid]}> (in #{self[:working_dir]})"
 
     if res[:error]
@@ -223,10 +220,7 @@ private
 
   def execute_process
     info "executing: `#{self[:start_command]}` with start_timeout: #{config[:start_timeout].to_f}s, start_grace: #{self[:start_grace].to_f}s, env: '#{environment_string}' (in #{self[:working_dir]})"
-    time_before = Time.now
-
     res = execute(self[:start_command], config.merge(:timeout => config[:start_timeout]))
-    start_time = Time.now - time_before
 
     if res[:error]
 
