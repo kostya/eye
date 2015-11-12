@@ -16,7 +16,8 @@ private
         warn "load_external_pid_file: process <#{self.pid}> from pid_file failed check_identity"
         :bad_identity
       else
-        info "load_external_pid_file: process <#{self.pid}> from pid_file found and running (identity: #{res}) (#{Eye::SystemResources.args(self.pid)})"
+        args = Eye::SystemResources.args(self.pid)
+        info "load_external_pid_file: process <#{self.pid}> from pid_file found and running (identity: #{res}) (#{args})"
         :ok
       end
     else

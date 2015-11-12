@@ -58,3 +58,6 @@ Style/PercentLiteralDelimiters:
     '%w': '[]'
     '%r': '[]'
     '%': '{}'
+
+Metrics/LineLength:
+  Max: 142

@@ -31,7 +31,9 @@ module Eye::Process::Config
     h[:pid_file_ex] = Eye::System.normalized_file(h[:pid_file], h[:working_dir]) if h[:pid_file]
     h[:checks] = {} if h[:checks].blank?
     h[:triggers] = {} if h[:triggers].blank?
-    h[:children_update_period] = h[:monitor_children][:children_update_period] if h[:monitor_children] && h[:monitor_children][:children_update_period]
+    if upd = h.try(:[], :monitor_children).try(:[], :children_update_period)
+      h[:children_update_period] = upd
+    end
 
     # check speedy flapping by default
     if h[:triggers].blank? || !h[:triggers][:flapping]

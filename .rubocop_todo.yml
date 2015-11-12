@@ -21,13 +21,10 @@ Metrics/MethodLength:
   Max: 45
 
 Metrics/ModuleLength:
-  Max: 232
+  Max: 234
 
 Metrics/PerceivedComplexity:
   Max: 29
-
-Metrics/LineLength:
-  Max: 642
 
 Metrics/CyclomaticComplexity:
   Max: 26

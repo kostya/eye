@@ -104,7 +104,12 @@ class Eye::Dsl::PureOpts
   def self.with_parsed_file(file_name)
     saved_parsed_filename = Eye.parsed_filename
 
-    real_filename = Eye.parsed_filename && File.symlink?(Eye.parsed_filename) ? File.readlink(Eye.parsed_filename) : Eye.parsed_filename
+    real_filename = if Eye.parsed_filename && File.symlink?(Eye.parsed_filename)
+      File.readlink(Eye.parsed_filename)
+    else
+      Eye.parsed_filename
+    end
+
     dirname = File.dirname(real_filename) rescue nil
     path = File.expand_path(file_name, dirname)
 
