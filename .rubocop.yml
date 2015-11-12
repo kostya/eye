@@ -51,3 +51,10 @@ Style/HashSyntax:
 
 Style/RaiseArgs:
   EnforcedStyle: exploded
+
+Style/PercentLiteralDelimiters:
+  Enabled: true
+  PreferredDelimiters:
+    '%w': '[]'
+    '%r': '[]'
+    '%': '{}'

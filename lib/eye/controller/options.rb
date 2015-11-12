@@ -2,7 +2,7 @@ module Eye::Controller::Options
 
   def set_opt_logger(logger_args)
     # do not apply logger, if in stdout state
-    unless %w{stdout stderr}.include?(Eye::Logger.dev)
+    unless %w[stdout stderr].include?(Eye::Logger.dev)
       Eye::Logger.link_logger(*logger_args)
     end
   end

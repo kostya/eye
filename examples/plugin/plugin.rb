@@ -21,7 +21,7 @@ class Reactor
   end
 
   def execute_command(cmd)
-    Eye::Control.command(cmd, 'all') if %w{restart start stop}.include?(cmd)
+    Eye::Control.command(cmd, 'all') if %w[restart start stop].include?(cmd)
   end
 end
 

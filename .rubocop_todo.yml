@@ -14,13 +14,6 @@ Style/IfUnlessModifier:
     - 'spec/process/start_spec.rb'
     - 'spec/spec_helper.rb'
 
-Style/PercentLiteralDelimiters:
-  Enabled: false
-  PreferredDelimiters:
-    '%w': '[]'
-    '%r': '||'
-    '%': '{}'
-
 Style/RedundantSelf:
   Enabled: false
 
