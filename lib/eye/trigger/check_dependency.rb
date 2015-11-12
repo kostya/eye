@@ -10,7 +10,9 @@ private
   def check_dependency(to)
     processes = names.map do |name|
       Eye::Control.find_nearest_process(name, process.group_name_pure, process.app_name)
-    end.compact.select { |p| p.state_name != :unmonitored }
+    end
+
+    processes = processes.compact.select { |p| p.state_name != :unmonitored }
     return if processes.empty?
     processes = Eye::Utils::AliveArray.new(processes)
 

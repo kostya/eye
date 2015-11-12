@@ -14,17 +14,6 @@ Style/IfUnlessModifier:
     - 'spec/process/start_spec.rb'
     - 'spec/spec_helper.rb'
 
-Style/MultilineBlockChain:
-  Exclude:
-    - 'lib/eye/trigger/check_dependency.rb'
-
-Style/Next:
-  Exclude:
-    - 'examples/processes/sample.rb'
-    - 'lib/eye/config.rb'
-    - 'lib/eye/controller/send_command.rb'
-    - 'spec/example/sample.rb'
-
 Style/PercentLiteralDelimiters:
   Enabled: false
   PreferredDelimiters:

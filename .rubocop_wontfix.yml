@@ -48,3 +48,9 @@ Style/DoubleNegation:
 
 Style/Documentation:
   Enabled: false
+
+Style/Next:
+  Exclude:
+    - 'examples/processes/sample.rb'
+    - 'lib/eye/config.rb'
+    - 'lib/eye/controller/send_command.rb'
