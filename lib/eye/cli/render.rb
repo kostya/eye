@@ -72,7 +72,12 @@ private
 
   def resources_str(r)
     return '' if !r || r.empty?
-    memory, cpu, start_time, pid = r[:memory], r[:cpu], r[:start_time], r[:pid]
+
+    memory = r[:memory]
+    cpu = r[:cpu]
+    start_time = r[:start_time]
+    pid = r[:pid]
+
     return '' unless memory && cpu && start_time
 
     "#{Eye::Utils.human_time(start_time)}, #{cpu.to_i}%, #{memory / 1024 / 1024}Mb, <#{pid}>"
