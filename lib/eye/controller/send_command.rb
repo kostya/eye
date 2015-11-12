@@ -117,7 +117,8 @@ private
       res = final
 
       # try to remove objects with different applications
-      apps, objs = Eye::Utils::AliveArray.new, Eye::Utils::AliveArray.new
+      apps = Eye::Utils::AliveArray.new
+      objs = Eye::Utils::AliveArray.new
       res.each do |obj|
         if obj.is_a?(Eye::Application)
           apps << obj

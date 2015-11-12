@@ -139,7 +139,8 @@ private
 
     app = Eye::Application.new(app_name, app_config)
     @applications << app
-    @added_groups, @added_processes = [], []
+    @added_groups = []
+    @added_processes = []
 
     new_groups = app_config.delete(:groups) || {}
     new_groups.each do |group_name, group_cfg|
