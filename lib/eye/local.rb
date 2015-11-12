@@ -85,7 +85,8 @@ module Eye::Local
       until !File.directory?(current) || current == previous
         filename = File.join(current, 'Eyefile')
         return filename if File.file?(filename)
-        current, previous = File.expand_path('..', current), current
+        previous = current
+        current = File.expand_path('..', current)
       end
     end
 
