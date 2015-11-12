@@ -18,7 +18,7 @@ private
     processes = Eye::Utils::AliveArray.new(processes)
 
     processes.each do |p|
-      if p.state_name != :up && (should_start == nil || should_start)
+      if p.state_name != :up && (should_start != false)
         p.schedule :start, Eye::Reason.new(:start_dependency)
       end
     end
