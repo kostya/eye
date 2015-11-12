@@ -59,6 +59,6 @@ class Eye::Trigger::StartingGuard < Eye::Trigger
     retry_msg = new_time ? ", retry at '#{Eye::Utils.human_time2(new_time.to_i)}'" : ''
     process.switch :unmonitoring, Eye::Reason::StartingGuard.new("starting_guard, failed condition#{retry_msg}")
 
-    raise Eye::Process::StateError.new('starting_guard, refused to start')
+    raise Eye::Process::StateError, 'starting_guard, refused to start'
   end
 end

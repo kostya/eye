@@ -48,3 +48,6 @@ Style/CaseIndentation:
 Style/HashSyntax:
   Exclude:
     - 'lib/eye/process/states.rb'
+
+Style/RaiseArgs:
+  EnforcedStyle: exploded

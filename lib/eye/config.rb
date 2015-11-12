@@ -69,7 +69,7 @@ class Eye::Config
     end
 
     # just to be sure ENV was not removed
-    ENV[''] rescue raise Eye::Dsl::Error.new("ENV is not a hash '#{ENV.inspect}'")
+    ENV[''] rescue raise Eye::Dsl::Error, "ENV is not a hash '#{ENV.inspect}'"
   end
 
   def transform!

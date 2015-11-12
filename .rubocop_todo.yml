@@ -32,10 +32,6 @@ Style/PercentLiteralDelimiters:
     '%r': '||'
     '%': '{}'
 
-Style/RaiseArgs:
-  Enabled: false
-  EnforcedStyle: exploded
-
 Style/RedundantSelf:
   Enabled: false
 

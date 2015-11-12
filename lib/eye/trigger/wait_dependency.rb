@@ -42,7 +42,7 @@ private
         process.schedule_in retry_after, :start, Eye::Reason.new(:wait_dependency)
       end
 
-      raise Eye::Process::StateError.new('stop transition because dependency is not up')
+      raise Eye::Process::StateError, 'stop transition because dependency is not up'
     end
   end
 
