@@ -59,9 +59,3 @@ Lint/RescueException:
     - 'lib/eye/checker/socket.rb'
     - 'lib/eye/controller/load.rb'
     - 'lib/eye/logger.rb'
-
-Style/PerlBackrefs:
-  Exclude:
-    - 'lib/eye/checker.rb'
-    - 'lib/eye/checker/socket.rb'
-    - 'lib/eye/trigger.rb'

@@ -33,7 +33,7 @@ class Eye::Checker
     return { name: type, type: type } if TYPES[type]
 
     if type =~ %r[\A(.*?)_?[0-9]+\z]
-      ctype = $1.to_sym
+      ctype = Regexp.last_match(1).to_sym
       return { name: type, type: ctype } if TYPES[ctype]
     end
   end

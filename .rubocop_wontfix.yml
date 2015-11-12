@@ -34,15 +34,6 @@ Lint/Void:
 Lint/Eval:
   Enabled: false
 
-Style/ElseAlignment:
-  Exclude:
-    - 'lib/eye/checker.rb'
-    - 'lib/eye/checker/http.rb'
-    - 'lib/eye/cli.rb'
-    - 'lib/eye/controller/load.rb'
-    - 'lib/eye/dsl/pure_opts.rb'
-    - 'lib/eye/system.rb'
-
 Style/DoubleNegation:
   Enabled: false
 

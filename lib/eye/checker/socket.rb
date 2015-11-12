@@ -27,11 +27,11 @@ class Eye::Checker::Socket < Eye::Checker::Defer
 
     if addr =~ %r[\Atcp://(.*?):(.*?)\z]
       @socket_family = :tcp
-      @socket_addr = $1
-      @socket_port = $2.to_i
+      @socket_addr = Regexp.last_match(1)
+      @socket_port = Regexp.last_match(2).to_i
     elsif addr =~ %r[\Aunix:(.*)\z]
       @socket_family = :unix
-      @socket_path = $1
+      @socket_path = Regexp.last_match(1)
     end
   end
 
