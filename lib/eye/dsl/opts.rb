@@ -186,11 +186,11 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
     filenames = fnames.select { |f| File.exist?(f) }
 
     if filenames.size < 1
-      unless raise_when_no_file
+      if raise_when_no_file
+        raise Eye::Dsl::Error, "load_env not found in #{fnames}"
+      else
         warn "load_env not found file: '#{filenames.first}'"
         return
-      else
-        raise Eye::Dsl::Error, "load_env not found in #{fnames}"
       end
     end
     raise Eye::Dsl::Error, "load_env conflict filenames: #{filenames}" if filenames.size > 1

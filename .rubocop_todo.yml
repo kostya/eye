@@ -41,11 +41,6 @@ Style/Semicolon:
     - 'lib/eye/controller/load.rb'
     - 'lib/eye/utils.rb'
 
-Style/UnlessElse:
-  Exclude:
-    - 'lib/eye/dsl/opts.rb'
-    - 'lib/eye/process/monitor.rb'
-
 Metrics/MethodLength:
   Max: 45
 
