@@ -8,7 +8,7 @@ module Eye::Utils
   def self.deep_clone(value)
     case
       when value.is_a?(Array) then value.map{|v| deep_clone(v) }
-      when value.is_a?(Hash) then value.inject({}){|r, (k, v)| r[ deep_clone(k) ] = deep_clone(v); r }
+      when value.is_a?(Hash) then value.each_with_object({}) { |(k, v), r| r[deep_clone(k)] = deep_clone(v) }
       else value
     end
   end
