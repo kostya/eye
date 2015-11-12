@@ -1,11 +1,7 @@
 module Eye::Process::Trigger
 
   def add_triggers
-    if self[:triggers]
-      self[:triggers].each do |_type, cfg|
-        add_trigger(cfg)
-      end
-    end
+    (self[:triggers] || {}).each { |_type, cfg| add_trigger(cfg) }
   end
 
   def remove_triggers

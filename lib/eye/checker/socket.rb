@@ -42,23 +42,21 @@ class Eye::Checker::Socket < Eye::Checker::Defer
       return { exception: "OpenTimeout<#{@open_timeout}>" }
     end
 
-    if send_data
-      begin
-        Timeout.timeout(@read_timeout) do
-          _write_data(sock, send_data)
-          result = _read_data(sock)
+    return { result: :listen } unless send_data
 
-          { result: result }
-        end
-      rescue Timeout::Error
-        if protocol == :raw
-          return { result: @buffer }
-        else
-          return { exception: "ReadTimeout<#{@read_timeout}>" }
-        end
+    begin
+      Timeout.timeout(@read_timeout) do
+        _write_data(sock, send_data)
+        result = _read_data(sock)
+
+        { result: result }
       end
-    else
-      { result: :listen }
+    rescue Timeout::Error
+      if protocol == :raw
+        return { result: @buffer }
+      else
+        return { exception: "ReadTimeout<#{@read_timeout}>" }
+      end
     end
 
   rescue Exception => e
@@ -71,34 +69,33 @@ class Eye::Checker::Socket < Eye::Checker::Defer
   def good?(value)
     return false unless value[:result]
 
-    if expect_data
-      if expect_data.is_a?(Proc)
-        match = begin
-          !!expect_data[value[:result]]
-        rescue Object => ex
-          mes = "proc match failed with '#{ex.message}'"
-          error(mes)
-          value[:notice] = mes
-          return false
-        end
+    return true unless expect_data
 
-        unless match
-          warn "proc #{expect_data} not matched (#{value[:result].truncate(30)}) answer"
-          value[:notice] = 'missing proc validation'
-        end
-
-        return match
+    if expect_data.is_a?(Proc)
+      match = begin
+        !!expect_data[value[:result]]
+      rescue Object => ex
+        mes = "proc match failed with '#{ex.message}'"
+        error(mes)
+        value[:notice] = mes
+        return false
       end
 
-      return true if expect_data.is_a?(Regexp) && expect_data.match(value[:result])
-      return true if value[:result].to_s == expect_data.to_s
+      unless match
+        warn "proc #{expect_data} not matched (#{value[:result].truncate(30)}) answer"
+        value[:notice] = 'missing proc validation'
+      end
 
-      warn "#{expect_data} not matched (#{value[:result].truncate(30)}) answer"
-      value[:notice] = "missing '#{expect_data}'"
-      return false
+      return match
     end
 
-    true
+    return true if expect_data.is_a?(Regexp) && expect_data.match(value[:result])
+    return true if value[:result].to_s == expect_data.to_s
+
+    warn "#{expect_data} not matched (#{value[:result].truncate(30)}) answer"
+    value[:notice] = "missing '#{expect_data}'"
+
+    false
   end
 
   def human_value(value)

@@ -28,18 +28,17 @@ private
   end
 
   def check_alive
-    if up?
+    return unless up?
 
-      # check that process runned
-      if process_really_running?
-        check_pid_file
-      else
-        warn "check_alive: process <#{self.pid}> not found"
-        notify :info, 'crashed!'
-        clear_pid_file(true) if control_pid?
+    # check that process runned
+    if process_really_running?
+      check_pid_file
+    else
+      warn "check_alive: process <#{self.pid}> not found"
+      notify :info, 'crashed!'
+      clear_pid_file(true) if control_pid?
 
-        switch :crashed, Eye::Reason.new(:crashed)
-      end
+      switch :crashed, Eye::Reason.new(:crashed)
     end
   end
 
@@ -92,21 +91,22 @@ private
   end
 
   def check_crash
-    if down?
-      if self[:keep_alive]
-        warn 'check crashed: process is down'
+    unless down?
+      debug { 'check crashed: skipped, process is not in down' }
+      return
+    end
 
-        if self[:restore_in]
-          schedule_in self[:restore_in].to_f, :restore, Eye::Reason.new(:crashed)
-        else
-          schedule :restore, Eye::Reason.new(:crashed)
-        end
+    if self[:keep_alive]
+      warn 'check crashed: process is down'
+
+      if self[:restore_in]
+        schedule_in self[:restore_in].to_f, :restore, Eye::Reason.new(:crashed)
       else
-        warn 'check crashed: process without keep_alive'
-        schedule :unmonitor, Eye::Reason.new(:crashed)
+        schedule :restore, Eye::Reason.new(:crashed)
       end
     else
-      debug { 'check crashed: skipped, process is not in down' }
+      warn 'check crashed: process without keep_alive'
+      schedule :unmonitor, Eye::Reason.new(:crashed)
     end
   end
 

@@ -2,32 +2,32 @@ module Eye::Process::Scheduler
 
   # ex: schedule :update_config, config, "reason: update_config"
   def schedule(command, *args, &block)
-    if scheduler.alive?
-      if scheduler_freeze?
-        warn ":#{command} ignoring to schedule, because scheduler is freeze"
-        return
-      end
+    return unless scheduler.alive?
 
-      unless self.respond_to?(command, true)
-        warn ":#{command} scheduling is unsupported"
-        return
-      end
+    if scheduler_freeze?
+      warn ":#{command} ignoring to schedule, because scheduler is freeze"
+      return
+    end
 
-      reason = if args.present? && args[-1].is_a?(Eye::Reason)
-        args.pop
-      end
+    unless self.respond_to?(command, true)
+      warn ":#{command} scheduling is unsupported"
+      return
+    end
 
-      info "schedule :#{command} #{reason ? "(reason: #{reason})" : nil}"
+    reason = if args.present? && args[-1].is_a?(Eye::Reason)
+      args.pop
+    end
 
-      if reason.class == Eye::Reason
-        # for auto reasons
-        # skip already running commands and all in chain
-        scheduler.add_wo_dups_current(:scheduled_action, command, args: args, reason: reason, block: block)
-      else
-        # for manual, or without reason
-        # skip only for last in chain
-        scheduler.add_wo_dups(:scheduled_action, command, args: args, reason: reason, block: block)
-      end
+    info "schedule :#{command} #{reason ? "(reason: #{reason})" : nil}"
+
+    if reason.class == Eye::Reason
+      # for auto reasons
+      # skip already running commands and all in chain
+      scheduler.add_wo_dups_current(:scheduled_action, command, args: args, reason: reason, block: block)
+    else
+      # for manual, or without reason
+      # skip only for last in chain
+      scheduler.add_wo_dups(:scheduled_action, command, args: args, reason: reason, block: block)
     end
   end
 
