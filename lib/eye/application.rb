@@ -21,9 +21,8 @@ class Eye::Application
     @groups << group
   end
 
-  # sort processes in name order
   def resort_groups
-    @groups = @groups.sort { |a, b| a.hidden ? 1 : (b.hidden ? -1 : (a.name <=> b.name)) }
+    @groups.sort! # used group method <=> to compare
   end
 
   def status_data(opts = {})

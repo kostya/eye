@@ -145,6 +145,19 @@ class Eye::Group
     @processes.include?(obj)
   end
 
+  # to sort groups
+  def <=>(other)
+    if hidden
+      1
+    else
+      if other.hidden
+        -1
+      else
+        name <=> other.name
+      end
+    end
+  end
+
 private
 
   def async_schedule(command, *args)
