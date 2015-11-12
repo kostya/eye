@@ -97,10 +97,10 @@ private
         s << "#{"#{k}:".ljust(10)} "
 
         case k
-        when :resources
-          s << resources_str(v)
-        else
-          s << "#{v}"
+          when :resources
+            s << resources_str(v)
+          else
+            s << "#{v}"
         end
 
         s << "\n"

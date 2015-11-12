@@ -131,28 +131,28 @@ private
 
   def _write_data(socket, data)
     case protocol
-    when :em_object
-      data = Marshal.dump(data)
-      socket.write([data.bytesize, data].pack('Na*'))
-    else
-      socket.write(data.to_s)
+      when :em_object
+        data = Marshal.dump(data)
+        socket.write([data.bytesize, data].pack('Na*'))
+      else
+        socket.write(data.to_s)
     end
   end
 
   def _read_data(socket)
     case protocol
-    when :em_object
-      content = ''
-      msg_size = socket.recv(4).unpack('N')[0] rescue 0
-      content << socket.recv(msg_size - content.length) while content.length < msg_size
-      if content.present?
-        Marshal.load(content) rescue 'corrupted_marshal'
-      end
-    when :raw
-      @buffer = ''
-      loop { @buffer << socket.recv(1) }
-    else
-      socket.readline.chop
+      when :em_object
+        content = ''
+        msg_size = socket.recv(4).unpack('N')[0] rescue 0
+        content << socket.recv(msg_size - content.length) while content.length < msg_size
+        if content.present?
+          Marshal.load(content) rescue 'corrupted_marshal'
+        end
+      when :raw
+        @buffer = ''
+        loop { @buffer << socket.recv(1) }
+      else
+        socket.readline.chop
     end
   end
 

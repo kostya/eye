@@ -40,3 +40,7 @@ Style/Lambda:
 Style/BlockDelimiters:
   Exclude:
     - 'examples/**/*'
+
+Style/CaseIndentation:
+  IndentOneStep: true
+  IndentWhenRelativeTo: end

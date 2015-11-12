@@ -135,12 +135,12 @@ private
 
   def compare_state(state_name, condition)
     case condition
-    when Symbol
-      state_name == condition
-    when Array
-      condition.include?(state_name)
-    else
-      true
+      when Symbol
+        state_name == condition
+      when Array
+        condition.include?(state_name)
+      else
+        true
     end
   end
 
