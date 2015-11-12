@@ -23,17 +23,11 @@ Metrics/MethodLength:
 Metrics/ModuleLength:
   Max: 234
 
-Metrics/PerceivedComplexity:
-  Max: 29
-
 Metrics/CyclomaticComplexity:
   Max: 26
 
 Metrics/ClassLength:
   Max: 183
-
-Metrics/BlockNesting:
-  Max: 5
 
 Metrics/AbcSize:
   Max: 83

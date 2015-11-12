@@ -61,3 +61,13 @@ Style/PercentLiteralDelimiters:
 
 Metrics/LineLength:
   Max: 142
+
+Metrics/PerceivedComplexity:
+  Max: 15
+  Exclude:
+    - 'lib/eye/cli/render.rb'
+
+Metrics/BlockNesting:
+  Max: 3
+  Exclude:
+    - 'lib/eye/trigger/starting_guard.rb'

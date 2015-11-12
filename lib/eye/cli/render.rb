@@ -32,33 +32,7 @@ private
       if data[:name]
         return make_str(data[:subtree], level) if data[:name] == '__default__'
 
-        off = level * 2
-        off_str = ' ' * off
-
-        short_state = ((data[:type] == :application || data[:type] == :group) && data[:states])
-        is_text = data[:state] || data[:states]
-
-        name = (data[:type] == :application && !is_text) ? "\033[1m#{data[:name]}\033[0m" : data[:name].to_s
-        off_len = 35
-        str = off_str + (name + ' ').ljust(off_len - off, is_text ? '.' : ' ')
-
-        if short_state
-          str += ' ' + data[:states].map { |k, v| "#{k}:#{v}" }.join(', ')
-        elsif data[:state]
-          str += ' ' + data[:state].to_s
-          if data[:resources] && data[:state].to_sym == :up
-            str += '  (' + resources_str(data[:resources])
-            str += ", <#{data[:procline]}>" if data[:procline]
-            str += ')'
-          end
-          str += " (#{data[:state_reason]} at #{Eye::Utils.human_time2(data[:state_changed_at])})" if data[:state_reason] && data[:state] == 'unmonitored'
-        elsif data[:current_command]
-          chain_progress = if data[:chain_progress]
-            " #{data[:chain_progress][0]} of #{data[:chain_progress][1]}" rescue ''
-          end
-          str += " \e[1;33m[#{data[:current_command]}#{chain_progress}]\033[0m"
-          str += " (#{data[:chain_commands] * ', '})" if data[:chain_commands]
-        end
+        str = render_element(data, level)
       end
 
       if data[:subtree].nil?
@@ -69,19 +43,6 @@ private
         [str, make_str(data[:subtree], level + 1)].compact * "\n"
       end
     end
-  end
-
-  def resources_str(r)
-    return '' if !r || r.empty?
-
-    memory = r[:memory]
-    cpu = r[:cpu]
-    start_time = r[:start_time]
-    pid = r[:pid]
-
-    return '' unless memory && cpu && start_time
-
-    "#{Eye::Utils.human_time(start_time)}, #{cpu.to_i}%, #{memory / 1024 / 1024}Mb, <#{pid}>"
   end
 
   def render_debug_info(data)
@@ -142,6 +103,55 @@ private
     state = h[:state].to_s.ljust(14)
     at = h[:at] ? Eye::Utils.human_time2(h[:at]) : '.' * 12
     "#{at} - #{state} (#{h[:reason]})\n"
+  end
+
+private
+
+  def render_element(data, level)
+    off = level * 2
+    off_str = ' ' * off
+
+    short_state = (data[:type] == :application || data[:type] == :group) && data[:states]
+    is_text = data[:state] || data[:states]
+
+    name = (data[:type] == :application && !is_text) ? "\033[1m#{data[:name]}\033[0m" : data[:name].to_s
+    off_len = 35
+    str = off_str + (name + ' ').ljust(off_len - off, is_text ? '.' : ' ')
+
+    if short_state
+      str += ' ' + data[:states].map { |k, v| "#{k}:#{v}" }.join(', ')
+    elsif data[:state]
+      str += ' ' + data[:state].to_s
+      if data[:resources] && data[:state].to_sym == :up
+        str += '  (' + resources_str(data[:resources])
+        str += ", <#{data[:procline]}>" if data[:procline]
+        str += ')'
+      end
+      if data[:state_reason] && data[:state] == 'unmonitored'
+        str += " (#{data[:state_reason]} at #{Eye::Utils.human_time2(data[:state_changed_at])})"
+      end
+    elsif data[:current_command]
+      chain_progress = if data[:chain_progress]
+        " #{data[:chain_progress][0]} of #{data[:chain_progress][1]}" rescue ''
+      end
+      str += " \e[1;33m[#{data[:current_command]}#{chain_progress}]\033[0m"
+      str += " (#{data[:chain_commands] * ', '})" if data[:chain_commands]
+    end
+
+    str
+  end
+
+  def resources_str(r)
+    return '' if !r || r.empty?
+
+    memory = r[:memory]
+    cpu = r[:cpu]
+    start_time = r[:start_time]
+    pid = r[:pid]
+
+    return '' unless memory && cpu && start_time
+
+    "#{Eye::Utils.human_time(start_time)}, #{cpu.to_i}%, #{memory / 1024 / 1024}Mb, <#{pid}>"
   end
 
 end
