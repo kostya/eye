@@ -11,8 +11,4 @@ module Eye::Controller::Options
     Eye::Logger.log_level = level
   end
 
-  def set_opt_http(opts = {})
-    warn 'Warning, set http options not in reel-eye gem' if opts.present?
-  end
-
 end
