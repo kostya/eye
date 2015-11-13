@@ -88,7 +88,7 @@ class Eye::ChildProcess
   end
 
   def signal(sig)
-    send_signal(sig) if self.pid
+    send_signal(sig) if pid
   end
 
   def status_data(opts = {})

@@ -7,10 +7,10 @@ module Eye::Dsl::Validation
 
   module ClassMethods
     def inherited(subclass)
-      subclass.validates = self.validates.clone
-      subclass.should_bes = self.should_bes.clone
-      subclass.defaults = self.defaults.clone
-      subclass.variants = self.variants.clone
+      subclass.validates = validates.clone
+      subclass.should_bes = should_bes.clone
+      subclass.defaults = defaults.clone
+      subclass.variants = variants.clone
     end
 
     attr_accessor :validates, :should_bes, :defaults, :variants
@@ -34,8 +34,8 @@ module Eye::Dsl::Validation
     def param(param, types = [], should_be = false, default = nil, variants = nil)
       param = param.to_sym
 
-      self.validates[param] = types
-      self.should_bes << param if should_be
+      validates[param] = types
+      should_bes << param if should_be
       param_default(param, default)
       self.variants[param] = variants
 
@@ -66,33 +66,35 @@ module Eye::Dsl::Validation
     end
 
     def validate(options = {})
-      options.each do |param, value|
-        param = param.to_sym
-        types = validates[param]
-        if !types && param != :type
-          raise Error, "#{self.name} unknown param :#{param} value #{value.inspect}"
-        end
-
-        if self.variants[param] && value && !value.is_a?(Proc)
-          if value.is_a?(Array)
-            value = value.reject { |v| v.is_a?(Proc) }
-            if (value - self.variants[param]).present?
-              raise Error, "#{value.inspect} should be within #{self.variants[param].inspect}"
-            end
-          elsif !self.variants[param].include?(value)
-            raise Error, "#{value.inspect} should be within #{self.variants[param].inspect}"
-          end
-        end
-
-        next if types.blank?
-
-        types = Array(types)
-        good = types.any? { |type| value.is_a?(type) }
-        raise Error, "#{self.name} bad param :#{param} value #{value.inspect}, type #{types.inspect}" unless good
-      end
+      options.each { |param, value| validate_param(param, value) }
 
       should_bes.each do |param|
-        raise Error, "#{self.name} for param :#{param} value should be" unless options[param.to_sym] || defaults[param.to_sym]
+        raise Error, "#{name} for param :#{param} value should be" unless options[param.to_sym] || defaults[param.to_sym]
+      end
+    end
+
+    def validate_param(param, value)
+      param = param.to_sym
+      types = validates[param]
+      if !types && param != :type
+        raise Error, "#{name} unknown param :#{param} value #{value.inspect}"
+      end
+
+      if variants[param] && value && !value.is_a?(Proc)
+        if value.is_a?(Array)
+          value = value.reject { |v| v.is_a?(Proc) }
+          if (value - variants[param]).present?
+            raise Error, "#{value.inspect} should be within #{variants[param].inspect}"
+          end
+        elsif !variants[param].include?(value)
+          raise Error, "#{value.inspect} should be within #{variants[param].inspect}"
+        end
+      end
+
+      if types.present?
+        types = Array(types)
+        good = types.any? { |type| value.is_a?(type) }
+        raise Error, "#{name} bad param :#{param} value #{value.inspect}, type #{types.inspect}" unless good
       end
     end
   end

@@ -11,15 +11,15 @@ module Eye::Process::Notify
     # logging it
     error "NOTIFY: #{msg}" if ilevel(level) > ilevel(:info)
 
-    # send notifies
-    if self[:notify].present?
-      message = { message: msg, name: name,
-                  full_name: full_name, pid: pid, host: Eye::Local.host, level: level,
-                  at: Time.now }
+    return if self[:notify].blank?
 
-      self[:notify].each do |contact, not_level|
-        Eye::Notify.notify(contact, message) if ilevel(level) >= ilevel(not_level)
-      end
+    # send notifies
+    message = { message: msg, name: name,
+                full_name: full_name, pid: pid, host: Eye::Local.host, level: level,
+                at: Time.now }
+
+    self[:notify].each do |contact, not_level|
+      Eye::Notify.notify(contact, message) if ilevel(level) >= ilevel(not_level)
     end
   end
 

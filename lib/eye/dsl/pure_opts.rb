@@ -37,7 +37,7 @@ class Eye::Dsl::PureOpts
       end
     end
 
-    self.send :include, m
+    send :include, m
   end
 
   attr_reader :name, :full_name
@@ -76,7 +76,7 @@ class Eye::Dsl::PureOpts
   end
 
   def with_condition(cond = true, &block)
-    self.instance_eval(&block) if cond && block
+    instance_eval(&block) if cond && block
   end
 
   def use(proc, *args)
@@ -84,7 +84,7 @@ class Eye::Dsl::PureOpts
       self.class.with_parsed_file(proc) do |path|
         if File.exist?(path)
           Eye::Dsl.debug { "=> load #{path}" }
-          self.instance_eval(File.read(path))
+          instance_eval(File.read(path))
           Eye::Dsl.debug { "<= load #{path}" }
         end
       end
@@ -95,7 +95,7 @@ class Eye::Dsl::PureOpts
         proc
       end
 
-      self.instance_eval(&ie)
+      instance_eval(&ie)
     end
   end
 

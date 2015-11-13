@@ -102,9 +102,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   def stop_signals(*args)
     raise Eye::Dsl::Error, 'cannot use both stop_signals and stop_command' if @config[:stop_command]
 
-    if args.count == 0
-      return @config[:stop_signals]
-    end
+    return @config[:stop_signals] if args.count == 0
 
     signals = Array(args).flatten
     validate_signals(signals)
@@ -150,7 +148,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   end
 
   def scoped(&block)
-    h = self.class.new(self.name, self)
+    h = self.class.new(name, self)
     h.instance_eval(&block)
     Eye::Utils.deep_merge!(config, h.config, [:groups, :processes])
   end

@@ -102,7 +102,6 @@ private
       res = execute(cmd, config.merge(timeout: self[:stop_timeout]))
 
       if res[:error]
-
         if res[:error].class == Timeout::Error
           error "stop_command failed with #{res[:error].inspect}; try tuning the stop_timeout value"
         else
@@ -115,7 +114,6 @@ private
     elsif self[:stop_signals]
       info "executing stop_signals #{self[:stop_signals].inspect}"
       stop_signals = self[:stop_signals].clone
-
       signal = stop_signals.shift
       send_signal(signal)
 
@@ -136,7 +134,6 @@ private
     else # default command
       debug { "executing: `kill -TERM #{self.pid}` with stop_grace: #{self[:stop_grace].to_f}s" }
       send_signal(:TERM)
-
       sleep_grace(:stop_grace)
 
       # if process not die here, by default we force kill it

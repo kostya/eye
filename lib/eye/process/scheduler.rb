@@ -14,9 +14,7 @@ module Eye::Process::Scheduler
       return
     end
 
-    reason = if args.present? && args[-1].is_a?(Eye::Reason)
-      args.pop
-    end
+    reason = args.pop if args.present? && args[-1].is_a?(Eye::Reason)
 
     info "schedule :#{command} #{reason ? "(reason: #{reason})" : nil}"
 

@@ -44,7 +44,7 @@ private
       # sync command, with waiting
       # this is very hackety, because call method of the process without its scheduler
       # need to provide some scheduler future
-      process.last_scheduled_reason = self.last_scheduled_reason
+      process.last_scheduled_reason = last_scheduled_reason
       process.send(command, *args)
     else
       # async command

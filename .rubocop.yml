@@ -1,5 +1,4 @@
 inherit_from:
-  - .rubocop_todo.yml
   - .rubocop_wontfix.yml
 
 AllCops:
@@ -53,7 +52,6 @@ Style/RaiseArgs:
   EnforcedStyle: exploded
 
 Style/PercentLiteralDelimiters:
-  Enabled: true
   PreferredDelimiters:
     '%w': '[]'
     '%r': '[]'
@@ -71,3 +69,37 @@ Metrics/BlockNesting:
   Max: 3
   Exclude:
     - 'lib/eye/trigger/starting_guard.rb'
+
+Metrics/MethodLength:
+  Max: 45
+
+Metrics/CyclomaticComplexity:
+  Max: 19
+
+Metrics/ClassLength:
+  Max: 200
+
+Metrics/ModuleLength:
+  Max: 200
+  Exclude:
+    - 'lib/eye/process/commands.rb'
+
+Metrics/AbcSize:
+  Max: 60
+
+Lint/RescueException:
+  Exclude:
+    - 'lib/eye/checker/socket.rb'
+    - 'lib/eye/controller/load.rb'
+    - 'lib/eye/logger.rb'
+
+Style/RedundantSelf:
+  Exclude:
+    - 'lib//eye/process/**/*' # self.pid is nicer
+
+Style/GuardClause:
+  Enabled: true
+  MinBodyLength: 10
+
+Style/IfUnlessModifier:
+  MaxLineLength: 50

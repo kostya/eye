@@ -74,7 +74,7 @@ class Eye::Logger
         @inner_logger = dev
       end
 
-      @inner_logger.level = self.log_level || Logger::INFO
+      @inner_logger.level = log_level || Logger::INFO
 
     rescue Exception
       @inner_logger = nil
@@ -88,7 +88,7 @@ class Eye::Logger
 
     def log_level=(level)
       @log_level = level
-      @inner_logger.level = self.log_level if @inner_logger
+      @inner_logger.level = log_level if @inner_logger
     end
 
     def inner_logger

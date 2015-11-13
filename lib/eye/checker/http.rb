@@ -49,10 +49,7 @@ class Eye::Checker::Http < Eye::Checker::Defer
 
   def good?(value)
     return false unless value[:result]
-
-    unless value[:result].is_a?(@kind)
-      return false
-    end
+    return false unless value[:result].is_a?(@kind)
 
     if pattern
       matched = if pattern.is_a?(Regexp)

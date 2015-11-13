@@ -76,9 +76,7 @@ private
   def ensure_stop_previous_server
     Eye::Local.ensure_eye_dir
     pid = File.read(Eye::Local.pid_path).to_i rescue nil
-    if pid
-      Process.kill(9, pid) rescue nil
-    end
+    Process.kill(9, pid) rescue nil if pid
     File.delete(Eye::Local.pid_path) rescue nil
     true
   end
