@@ -29,7 +29,7 @@ OptionParser.new do |opts|
     Eye::Local.local_runner = true
   end
 
-  opts.on('-st', '--stop_all', 'Stop all on exit') do |_stop_all|
+  opts.on('-a', '--stop_all', 'Stop all on exit') do
     options[:stop_all] = true
   end
 
@@ -65,4 +65,7 @@ trap('USR2') { GC.start }
 
 at_exit { Eye::Control.command(:stop_all) } if options[:stop_all]
 
-sleep
+begin
+  sleep
+rescue Interrupt
+end

@@ -27,15 +27,11 @@ private
     ensure_loader_path
     Eye::Local.ensure_eye_dir
 
-    if server_started?
-      _cmd(:quit) && sleep(1) # stop previous server
-    end
-
     args = []
     args += ['--config', conf] if conf
     args += ['--logger', 'stdout']
+    args += ['--stop_all']
     if Eye::Local.local_runner
-      args += ['--stop_all']
       args += ['--dir', Eye::Local.dir]
       args += ['--config', Eye::Local.eyefile] unless conf
     end
