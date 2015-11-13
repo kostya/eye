@@ -1,6 +1,3 @@
-inherit_from:
-  - .rubocop_wontfix.yml
-
 AllCops:
   Include:
     - '**/*.eye'
@@ -106,3 +103,42 @@ Style/IfUnlessModifier:
 
 Style/Documentation:
   Enabled: false
+
+Style/DoubleNegation:
+  Enabled: false
+
+Lint/Eval:
+  Enabled: false
+
+Lint/Void:
+  Exclude:
+    - Rakefile
+    - bin/loader_eye
+    - lib/eye/controller.rb
+
+Lint/AssignmentInCondition:
+  Enabled: false
+
+Style/AccessorMethodName:
+  Enabled: false
+
+Style/SpecialGlobalVars:
+  Enabled: false
+
+Style/RescueModifier:
+  Enabled: false
+
+Style/SignalException:
+  EnforcedStyle: only_raise
+
+Lint/HandleExceptions:
+  Exclude:
+    - 'lib/eye/cli.rb'
+    - 'lib/eye/server.rb'
+    - 'lib/eye/system_resources.rb'
+
+Lint/LiteralInInterpolation:
+  Exclude:
+    - 'lib/eye/notify/jabber.rb'
+    - 'lib/eye/notify/slack.rb'
+    - 'lib/eye/process/commands.rb'
