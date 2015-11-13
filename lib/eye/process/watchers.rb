@@ -56,17 +56,14 @@ private
   end
 
   def start_checker(name, cfg)
+    # cfg: {:type => :memory, :every => 5.seconds, :below => 100.megabytes, :times => [3, 5]}
     subject = Eye::Checker.create(pid, cfg, current_actor)
-
-    # ex: {:type => :memory, :every => 5.seconds, :below => 100.megabytes, :times => [3,5]}
     add_watcher("check_#{name}".to_sym, subject.every, subject, &method(:watcher_tick).to_proc) if subject
   end
 
   def watcher_tick(subject)
-    unless subject.check
-      return unless up?
-      subject.fire
-    end
+    # double up? test needed because state can changed while subject.check
+    subject.fire if up? && !subject.check && up?
   end
 
 end
