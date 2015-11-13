@@ -1,4 +1,5 @@
 module Eye::Cli::Commands
+
 private
 
   def client

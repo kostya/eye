@@ -1,6 +1,7 @@
 require 'celluloid'
 
 class Eye::Notify
+
   include Celluloid
   include Eye::Dsl::Validation
 
@@ -102,10 +103,12 @@ class Eye::Notify
   end
 
   class Custom < Eye::Notify
+
     def self.inherited(base)
       super
       register(base)
     end
+
   end
 
   %w[at host message name full_name pid level].each do |name|
@@ -113,4 +116,5 @@ class Eye::Notify
       @message_h[name.to_sym]
     end
   end
+
 end

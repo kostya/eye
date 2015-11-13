@@ -61,4 +61,5 @@ class Eye::Trigger::StartingGuard < Eye::Trigger
 
     raise Eye::Process::StateError, 'starting_guard, refused to start'
   end
+
 end

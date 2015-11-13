@@ -99,4 +99,5 @@ private
       Net::HTTP.new(@uri.host, @uri.port)
     end
   end
+
 end

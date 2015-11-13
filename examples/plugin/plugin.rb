@@ -1,4 +1,5 @@
 class Reactor
+
   include Celluloid
 
   def initialize(interval, filename)
@@ -23,9 +24,11 @@ class Reactor
   def execute_command(cmd)
     Eye::Control.command(cmd, 'all') if %w[restart start stop].include?(cmd)
   end
+
 end
 
 class Saver < Eye::Trigger::Custom
+
   param :log_name, String, true
 
   def check(trans)
@@ -35,6 +38,7 @@ class Saver < Eye::Trigger::Custom
   def tlogger
     @tlogger ||= Logger.new(log_name)
   end
+
 end
 
 def reactor
@@ -43,6 +47,7 @@ end
 
 # Extend config options, add enable_reactor
 class Eye::Dsl::ConfigOpts
+
   def enable_reactor(*args)
     @config[:reactor] = args
   end
@@ -52,12 +57,15 @@ class Eye::Dsl::ConfigOpts
       trigger :saver, log_name: save_log
     end
   end
+
 end
 
 # extend controller to execute method, and config loads
 class Eye::Controller
+
   def set_opt_reactor(args)
     reactor.terminate if reactor
     Celluloid::Actor[:reactor] = Reactor.supervise(*args)
   end
+
 end

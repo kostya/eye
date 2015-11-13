@@ -1,6 +1,7 @@
 require 'celluloid'
 
 class Eye::ChildProcess
+
   include Celluloid
 
   # needs: kill_process
@@ -98,4 +99,5 @@ class Eye::ChildProcess
   def prepare_command(command) # override
     super.gsub('{PARENT_PID}', @parent.pid.to_s)
   end
+
 end

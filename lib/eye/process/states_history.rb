@@ -1,4 +1,5 @@
 class Eye::Process::StatesHistory < Eye::Utils::Tail
+
   def push(state, reason = nil, tm = Time.now)
     super(state: state, at: tm.to_i, reason: reason)
   end
@@ -29,4 +30,5 @@ class Eye::Process::StatesHistory < Eye::Utils::Tail
   def last_state_changed_at
     Time.at(last[:at])
   end
+
 end

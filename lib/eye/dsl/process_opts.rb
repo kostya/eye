@@ -36,7 +36,9 @@ private
   end
 
   class << self
+
     attr_accessor :unique_num
+
   end
 
 end

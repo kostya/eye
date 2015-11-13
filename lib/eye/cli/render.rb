@@ -1,4 +1,5 @@
 module Eye::Cli::Render
+
 private
 
   def render_status(data)

@@ -1,4 +1,5 @@
 class Eye::Checker
+
   include Eye::Dsl::Validation
 
   autoload :Memory,     'eye/checker/memory'
@@ -203,9 +204,11 @@ class Eye::Checker
   end
 
   class Defer < Eye::Checker
+
     def get_value_safe
       Celluloid::Future.new { get_value }.value
     end
+
   end
 
   def self.register(base)
@@ -219,27 +222,34 @@ class Eye::Checker
   end
 
   class CustomCell < Eye::Checker
+
     def self.inherited(base)
       super
       register(base)
     end
+
   end
 
   class Custom < Defer
+
     def self.inherited(base)
       super
       register(base)
     end
+
   end
 
   class CustomDefer < Defer
+
     def self.inherited(base)
       super
       register(base)
     end
+
   end
 
   class Measure < Eye::Checker
+
     param :below, [Fixnum, Float]
     param :above, [Fixnum, Float]
 
@@ -260,5 +270,7 @@ class Eye::Checker
         '-'
       end
     end
+
   end
+
 end

@@ -1,6 +1,7 @@
 require 'celluloid'
 
 class Eye::Process
+
   include Celluloid
 
   autoload :Config,           'eye/process/config'
@@ -77,6 +78,7 @@ class Eye::Process
 
   # validate
   extend Eye::Process::Validate
+
 end
 
 # include state_machine states

@@ -18,6 +18,7 @@ class Eye::Dsl
   class Error < Exception; end
 
   class << self
+
     attr_accessor :verbose
 
     def debug(msg = '')
@@ -46,7 +47,9 @@ class Eye::Dsl
     def check_name(name)
       raise Error, "':' is not allowed in name '#{name}'" if name.to_s.include?(':')
     end
+
   end
+
 end
 
 # extend here global module

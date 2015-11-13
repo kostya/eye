@@ -2,6 +2,7 @@ require 'socket'
 require 'timeout'
 
 class Eye::Client
+
   attr_reader :socket_path
 
   def initialize(socket_path)

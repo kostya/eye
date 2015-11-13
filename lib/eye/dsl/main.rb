@@ -1,4 +1,5 @@
 module Eye::Dsl::Main
+
   attr_accessor :parsed_config, :parsed_filename, :parsed_default_app
 
   def application(name, &block)

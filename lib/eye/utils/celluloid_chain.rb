@@ -1,6 +1,7 @@
 require 'celluloid'
 
 class Eye::Utils::CelluloidChain
+
   include Celluloid
 
   def initialize(target)
@@ -68,4 +69,5 @@ private
     end
     @running = false
   end
+
 end

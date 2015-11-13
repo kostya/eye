@@ -3,6 +3,7 @@
 #   send TERM signal
 
 class MyCheck < Eye::Checker::Custom
+
   def get_value
     Eye::SystemResources.args(@pid)
   end
@@ -10,6 +11,7 @@ class MyCheck < Eye::Checker::Custom
   def good?(value)
     !(value =~ /haha/)
   end
+
 end
 
 Eye.app :bla do

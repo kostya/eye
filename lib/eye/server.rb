@@ -2,6 +2,7 @@ require 'celluloid/io'
 require 'celluloid/current'
 
 class Eye::Server
+
   include Celluloid::IO
 
   attr_reader :socket_path, :server

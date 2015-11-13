@@ -177,4 +177,5 @@ private
     str = Regexp.escape(mask).gsub('\*', '.*?')
     %r[\A#{str}\z]
   end
+
 end

@@ -35,4 +35,5 @@ class Eye::Notify::Slack < Eye::Notify
     payload << "> #{msg_message}"
     payload
   end
+
 end

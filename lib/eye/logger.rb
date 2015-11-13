@@ -1,9 +1,11 @@
 require 'logger'
 
 class Eye::Logger
+
   attr_accessor :prefix, :subprefix
 
   class InnerLogger < Logger
+
     FORMAT = '%d.%m.%Y %H:%M:%S'
 
     def initialize(*args)
@@ -13,9 +15,11 @@ class Eye::Logger
         "#{d.strftime(FORMAT)} #{s.ljust(5)} -- #{m}\n"
       end
     end
+
   end
 
   module ObjectExt
+
     def logger_tag
       [Class, Module].include?(self.class) ? to_s : "<#{self.class}>"
     end
@@ -38,6 +42,7 @@ class Eye::Logger
       error "#{ex.message} #{ex.backtrace}"
       # notify here?
     end
+
   end
 
   Logger::Severity.constants.each do |level|
@@ -57,6 +62,7 @@ class Eye::Logger
   end
 
   class << self
+
     attr_reader :dev, :log_level, :args
 
     def link_logger(dev, *args)
@@ -94,6 +100,7 @@ class Eye::Logger
     def inner_logger
       @inner_logger ||= InnerLogger.new(nil)
     end
+
   end
 
 private

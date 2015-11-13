@@ -15,6 +15,7 @@ def answer(data)
 end
 
 class Echo < EM::Connection
+
   def post_init
     puts '-- someone connected to the echo server!'
   end
@@ -27,9 +28,11 @@ class Echo < EM::Connection
   def unbind
     puts '-- someone disconnected from the echo server!'
   end
+
 end
 
 class EchoObj < EM::Connection
+
   include EM::P::ObjectProtocol
 
   def post_init
@@ -44,6 +47,7 @@ class EchoObj < EM::Connection
   def unbind
     puts '-- someone disconnected from the echo server!'
   end
+
 end
 
 trap 'QUIT' do

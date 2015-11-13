@@ -1,6 +1,7 @@
 # send notify when many times crashed process, finally resolved
 
 class Eye::Trigger::FixCrash < Eye::Trigger::Custom
+
   param :times, Fixnum, nil, 1
   param_default :to, :up
 
@@ -15,6 +16,7 @@ class Eye::Trigger::FixCrash < Eye::Trigger::Custom
       process.notify(:info, 'yahho, process up')
     end
   end
+
 end
 
 Eye.app :custom_trigger do

@@ -1,4 +1,5 @@
 module Eye::Dsl::Validation
+
   def self.included(base)
     base.extend(ClassMethods)
   end
@@ -6,6 +7,7 @@ module Eye::Dsl::Validation
   class Error < Exception; end
 
   module ClassMethods
+
     def inherited(subclass)
       subclass.validates = validates.clone
       subclass.should_bes = should_bes.clone
@@ -97,6 +99,7 @@ module Eye::Dsl::Validation
         raise Error, "#{name} bad param :#{param} value #{value.inspect}, type #{types.inspect}" unless good
       end
     end
+
   end
 
 end

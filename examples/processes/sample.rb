@@ -50,6 +50,7 @@ end
 optparse.parse!
 
 module Sample
+
   def puts(mes = '')
     tm = Time.now
     STDOUT.puts "#{tm} (#{tm.to_f}) - #{mes}"
@@ -83,6 +84,7 @@ module Sample
     STDERR.reopen '/dev/null', 'a'
     0
   end
+
 end
 
 extend Sample

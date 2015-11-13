@@ -2,6 +2,7 @@ require 'state_machine'
 require 'state_machine/version'
 
 class Eye::Process
+
   class StateError < Exception; end
 
   # do transition

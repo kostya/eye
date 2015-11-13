@@ -1,4 +1,5 @@
 class Eye::Trigger::WaitDependency < Eye::Trigger
+
   param :names, [Array], true
   param :wait_timeout, [Numeric], nil, 15.seconds
   param :retry_after, [Numeric], nil, 1.minute

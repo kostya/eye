@@ -4,6 +4,7 @@ gem 'thor'
 require 'thor'
 
 class Eye::Cli < Thor
+
   autoload :Server,     'eye/cli/server'
   autoload :Commands,   'eye/cli/commands'
   autoload :Render,     'eye/cli/render'
@@ -231,4 +232,5 @@ private
   def self.exit_on_failure?
     true
   end
+
 end

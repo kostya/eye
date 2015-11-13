@@ -1,6 +1,7 @@
 require 'celluloid'
 
 class Eye::Group
+
   include Celluloid
 
   autoload :Chain, 'eye/group/chain'

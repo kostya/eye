@@ -3,7 +3,9 @@ require 'etc'
 require 'timeout'
 
 module Eye::System
+
   class << self
+
     # Check that pid really exits
     # very fast
     # return result hash
@@ -133,6 +135,7 @@ module Eye::System
 
       env
     end
+
   end
 
 end

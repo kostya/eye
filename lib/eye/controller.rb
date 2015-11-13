@@ -12,6 +12,7 @@ Eye::Sigar
 Eye::SystemResources
 
 class Eye::Controller
+
   include Celluloid
 
   autoload :Load,           'eye/controller/load'

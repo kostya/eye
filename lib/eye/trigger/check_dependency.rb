@@ -1,4 +1,5 @@
 class Eye::Trigger::CheckDependency < Eye::Trigger
+
   param :names, [Array], true, 5
 
   def check(transition)

@@ -1,7 +1,9 @@
 require 'fileutils'
 
 module Eye::Local
+
   class << self
+
     def dir
       @dir ||= begin
         if root?
@@ -91,5 +93,7 @@ module Eye::Local
     end
 
     attr_accessor :local_runner
+
   end
+
 end

@@ -1,4 +1,5 @@
 class Eye::Trigger
+
   include Eye::Dsl::Validation
 
   autoload :Flapping,   'eye/trigger/flapping'
@@ -125,10 +126,12 @@ class Eye::Trigger
   end
 
   class Custom < Eye::Trigger
+
     def self.inherited(base)
       super
       register(base)
     end
+
   end
 
 private

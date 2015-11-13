@@ -24,4 +24,5 @@ private
   def ctx_params
     @ctx_params ||= OpenSSL::SSL::SSLContext.new.tap { |c| c.set_params(ctx) }
   end
+
 end

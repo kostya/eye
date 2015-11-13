@@ -71,9 +71,11 @@ class Eye::SystemResources
     def cache
       Celluloid::Actor[:system_resources_cache]
     end
+
   end
 
   class Cache
+
     include Celluloid
 
     attr_reader :expire
@@ -116,8 +118,10 @@ class Eye::SystemResources
         []
       end
     end
+
   end
 
   # Setup global sigar singleton here
   Cache.supervise(as: :system_resources_cache)
+
 end

@@ -9,11 +9,12 @@ Style/ClassAndModuleChildren:
   EnforcedStyle: compact
 
 Style/EmptyLinesAroundClassBody:
-  Enabled: false
+  EnforcedStyle: empty_lines
 
 Style/EmptyLinesAroundModuleBody:
-  # EnforcedStyle: empty_lines
-  Enabled: false
+  EnforcedStyle: empty_lines
+  Exclude:
+    - 'lib/eye.rb'
 
 Style/RegexpLiteral:
   EnforcedStyle: percent_r
@@ -84,6 +85,12 @@ Metrics/ModuleLength:
 Metrics/AbcSize:
   Max: 60
 
+Style/GuardClause:
+  MinBodyLength: 10
+
+Style/IfUnlessModifier:
+  MaxLineLength: 50
+
 Lint/RescueException:
   Exclude:
     - 'lib/eye/checker/socket.rb'
@@ -92,14 +99,10 @@ Lint/RescueException:
 
 Style/RedundantSelf:
   Exclude:
-    - 'lib//eye/process/**/*' # self.pid is nicer
+    - 'lib/eye/process/**/*' # self.pid is nicer
 
-Style/GuardClause:
-  Enabled: true
-  MinBodyLength: 10
-
-Style/IfUnlessModifier:
-  MaxLineLength: 50
+Style/SignalException:
+  EnforcedStyle: only_raise
 
 Style/Documentation:
   Enabled: false
@@ -127,9 +130,6 @@ Style/SpecialGlobalVars:
 
 Style/RescueModifier:
   Enabled: false
-
-Style/SignalException:
-  EnforcedStyle: only_raise
 
 Lint/HandleExceptions:
   Exclude:

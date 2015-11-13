@@ -13,11 +13,14 @@ class Eye::Reason
   end
 
   class User < Eye::Reason
+
     def to_s
       "#{super} by user"
     end
+
   end
 
   class Flapping < Eye::Reason; end
   class StartingGuard < Eye::Reason; end
+
 end

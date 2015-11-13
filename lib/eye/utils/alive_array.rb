@@ -1,4 +1,5 @@
 class Eye::Utils::AliveArray
+
   extend Forwardable
   include Enumerable
 
