@@ -118,24 +118,25 @@ trap('USR2') do
   300_000.times { |i| ar << "memory leak #{i}" * 10 }
 end
 
+def check_watch_file(options)
+  return unless options[:watch_file] && File.exist?(options[:watch_file])
+
+  puts 'watch file finded'
+  File.unlink(options[:watch_file])
+
+  if options[:watch_file_delay]
+    puts 'watch_file delay start'
+    sleep options[:watch_file_delay].to_f
+    puts 'watch_file delay end'
+  end
+
+  true
+end
+
 loop do
   sleep 0.1
   puts 'tick'
-
-  if options[:watch_file]
-    if File.exist?(options[:watch_file])
-      puts 'watch file finded'
-      File.unlink(options[:watch_file])
-
-      if options[:watch_file_delay]
-        puts 'watch_file delay start'
-        sleep options[:watch_file_delay].to_f
-        puts 'watch_file delay end'
-      end
-
-      break
-    end
-  end
+  break if check_watch_file(options)
 end
 
 puts 'exit'

@@ -79,19 +79,19 @@ class Eye::Config
     all_processes.each do |process|
       out = process[:stdout] && process[:stdout].start_with?(':syslog')
       err = process[:stderr] && process[:stderr].start_with?(':syslog')
-      if err || out
-        redir = err ? '2>&1' : ''
-        process[:stdout] = nil if out
-        process[:stderr] = nil if err
+      next unless err || out
 
-        escaped_start_command = process[:start_command].to_s.gsub(%{"}, %{\\"})
+      redir = err ? '2>&1' : ''
+      process[:stdout] = nil if out
+      process[:stderr] = nil if err
 
-        names = [process[:application], process[:group] == '__default__' ? nil : process[:group], process[:name]].compact
-        logger = "logger -t \"#{names.join(':')}\""
+      escaped_start_command = process[:start_command].to_s.gsub(%{"}, %{\\"})
 
-        process[:start_command] = %{sh -c "#{escaped_start_command} #{redir} | #{logger}"}
-        process[:use_leaf_child] = true if process[:daemonize]
-      end
+      names = [process[:application], process[:group] == '__default__' ? nil : process[:group], process[:name]].compact
+      logger = "logger -t \"#{names.join(':')}\""
+
+      process[:start_command] = %{sh -c "#{escaped_start_command} #{redir} | #{logger}"}
+      process[:use_leaf_child] = true if process[:daemonize]
     end
   end
 

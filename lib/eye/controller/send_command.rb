@@ -155,14 +155,11 @@ private
         gr.processes.each do |p|
           res << p if p.name =~ r || p.full_name =~ r
 
-          # child matching
-          if p.children.present?
-            children = p.children.values
-            res += children.select do |ch|
-              name = ch.name rescue ''
-              full_name = ch.full_name rescue ''
-              name =~ r || full_name =~ r
-            end
+          # children matching
+          p.children.each_value do |child|
+            name = ch.name rescue ''
+            full_name = ch.full_name rescue ''
+            res << child if name =~ r || full_name =~ r
           end
         end
       end

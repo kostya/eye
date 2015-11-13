@@ -103,3 +103,6 @@ Style/GuardClause:
 
 Style/IfUnlessModifier:
   MaxLineLength: 50
+
+Style/Documentation:
+  Enabled: false
