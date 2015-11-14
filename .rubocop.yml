@@ -132,10 +132,7 @@ Style/RescueModifier:
   Enabled: false
 
 Lint/HandleExceptions:
-  Exclude:
-    - 'lib/eye/cli.rb'
-    - 'lib/eye/server.rb'
-    - 'lib/eye/system_resources.rb'
+  Enabled: false
 
 Lint/LiteralInInterpolation:
   Exclude:
