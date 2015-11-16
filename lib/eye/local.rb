@@ -74,7 +74,7 @@ module Eye::Local
     end
 
     def eyefile
-      @eyefile ||= find_eyefile('.')
+      @eyefile ||= find_eyefile(ENV['EYE_HOME'] || '.')
     end
 
     def find_eyefile(start_from_dir)
