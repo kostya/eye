@@ -19,7 +19,7 @@ loop do
 end
 
 unless Eye::Local.eyefile
-  puts "\033[31mNot found Eyefile (in #{File.expand_path('.')})\033[0m"
+  puts "\033[31mNot found Eyefile (in #{File.expand_path(ENV['EYE_HOME'] || '.')})\033[0m"
   exit 1
 end
 
