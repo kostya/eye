@@ -5,7 +5,7 @@ module Eye::Controller::Helpers
     str = 'l' + str if Eye::Local.local_runner
     str += " [#{@applications.map(&:name) * ', '}]" if @applications.present?
     str += " (v #{ENV['EYE_V']})" if ENV['EYE_V']
-    str += " (in #{Eye::Local.dir})"
+    str += " (in #{Eye::Local.home})"
     $0 = str
   end
 

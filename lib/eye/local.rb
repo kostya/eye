@@ -14,10 +14,6 @@ module Eye::Local
       end
     end
 
-    def for_dir
-      dir.sub('/.eye', '')
-    end
-
     attr_writer :dir, :client_timeout, :host
 
     def global_eyeconfig
