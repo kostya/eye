@@ -49,7 +49,7 @@ private
     args += ['--dir', Eye::Local.dir] if Eye::Local.local_runner
 
     chdir = if Eye::Local.local_runner
-      Eye::Local.dir
+      Eye::Local.home
     else
       '/'
     end
