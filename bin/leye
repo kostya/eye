@@ -24,7 +24,7 @@ unless Eye::Local.eyefile
 end
 
 unless ENV.key?('EYE_HOME')
-  Eye::Local.dir = File.join(File.dirname(Eye::Local.eyefile), '.eye')
+  ENV['EYE_HOME'] = File.dirname(Eye::Local.eyefile)
 end
 
 Eye::Local.local_runner = true
