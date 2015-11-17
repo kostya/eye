@@ -193,7 +193,7 @@ describe "Process Controller" do
     it "should ok up process" do
       @process.state_name.should == :up
       File.exist?(C.tmp_file).should == true
-      args = Eye::Sigar.proc_args(@process.pid).join(' ')
+      args = Eye::SystemResources.args(@process.pid)
       args.should start_with('ruby')
       args.should_not include('sh')
     end
