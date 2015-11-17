@@ -63,7 +63,7 @@ describe "Eye::SystemResources" do
     it "complex leaf_child" do
       pid = Process.spawn(*Shellwords.shellwords('sh -c "sleep 10 | logger"'))
       x = Eye::SystemResources.leaf_child($$)
-      args = Eye::Sigar.proc_args(x).join ' '
+      args = Eye::SystemResources.args(x)
       args.should_not include('sh')
       args.should_not include('logger')
       args.should start_with('sleep')
@@ -75,7 +75,7 @@ describe "Eye::SystemResources" do
       Process.detach(pid)
       sleep 0.5
       x = Eye::SystemResources.leaf_child($$)
-      args = Eye::Sigar.proc_args(x).join ' '
+      args = Eye::SystemResources.args(x)
       args.should == 'sleep 15'
     end
   end
