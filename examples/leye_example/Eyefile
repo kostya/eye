@@ -1,0 +1,10 @@
+
+Eye.application :test_leye do
+  5.times do |i|
+    process "test-#{i}" do
+      start_command "sleep 200"
+      daemonize!
+      pid_file "#{i}.pid"
+    end
+  end
+end

@@ -19,12 +19,12 @@ loop do
 end
 
 unless Eye::Local.eyefile
-  puts "\033[31mNot found Eyefile (in #{File.expand_path('.')})\033[0m"
+  puts "\033[31mNot found Eyefile (in #{File.expand_path(ENV['EYE_HOME'] || '.')})\033[0m"
   exit 1
 end
 
 unless ENV.key?('EYE_HOME')
-  Eye::Local.dir = File.join(File.dirname(Eye::Local.eyefile), '.eye')
+  ENV['EYE_HOME'] = File.dirname(Eye::Local.eyefile)
 end
 
 Eye::Local.local_runner = true

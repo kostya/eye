@@ -49,7 +49,7 @@ private
     args += ['--dir', Eye::Local.dir] if Eye::Local.local_runner
 
     chdir = if Eye::Local.local_runner
-      Eye::Local.dir
+      Eye::Local.home
     else
       '/'
     end
@@ -69,7 +69,7 @@ private
     configs.unshift(Eye::Local.eyeconfig) if File.exist?(Eye::Local.eyeconfig)
     configs << Eye::Local.eyefile if Eye::Local.local_runner
 
-    say "Eye started! ㋡ (#{Eye::Local.for_dir})", :green
+    say "Eye started! ㋡ (#{Eye::Local.home})", :green
 
     if configs.any?
       say_load_result cmd(:load, *configs)

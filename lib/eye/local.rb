@@ -14,10 +14,6 @@ module Eye::Local
       end
     end
 
-    def for_dir
-      dir.sub('/.eye', '')
-    end
-
     attr_writer :dir, :client_timeout, :host
 
     def global_eyeconfig
@@ -78,7 +74,7 @@ module Eye::Local
     end
 
     def eyefile
-      @eyefile ||= find_eyefile('.')
+      @eyefile ||= find_eyefile(ENV['EYE_HOME'] || '.')
     end
 
     def find_eyefile(start_from_dir)
