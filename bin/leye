@@ -18,6 +18,11 @@ loop do
   end
 end
 
+if ENV['EYE_HOME'] && !File.directory?(File.expand_path(ENV['EYE_HOME']))
+  puts "\033[31mEYE_HOME is not directory (#{File.expand_path(ENV['EYE_HOME'])})\033[0m"
+  exit 1
+end
+
 unless Eye::Local.eyefile || ENV['EYE_HOME']
   puts "\033[31mNot found Eyefile (in #{File.expand_path(ENV['EYE_HOME'] || '.')})\033[0m"
   exit 1
