@@ -33,7 +33,9 @@ private
     args += ['--stop_all']
     if Eye::Local.local_runner
       args += ['--dir', Eye::Local.dir]
-      args += ['--config', Eye::Local.eyefile] unless conf
+      if !conf && Eye::Local.eyefile
+        args += ['--config', Eye::Local.eyefile]
+      end
     end
 
     Process.exec(ruby_path, loader_path, *args)
@@ -67,7 +69,7 @@ private
 
     configs.unshift(Eye::Local.global_eyeconfig) if File.exist?(Eye::Local.global_eyeconfig)
     configs.unshift(Eye::Local.eyeconfig) if File.exist?(Eye::Local.eyeconfig)
-    configs << Eye::Local.eyefile if Eye::Local.local_runner
+    configs << Eye::Local.eyefile if Eye::Local.local_runner && Eye::Local.eyefile
 
     say "Eye started! ㋡ (#{Eye::Local.home})", :green
 

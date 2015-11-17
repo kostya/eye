@@ -18,7 +18,7 @@ loop do
   end
 end
 
-unless Eye::Local.eyefile
+unless Eye::Local.eyefile || ENV['EYE_HOME']
   puts "\033[31mNot found Eyefile (in #{File.expand_path(ENV['EYE_HOME'] || '.')})\033[0m"
   exit 1
 end
