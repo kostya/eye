@@ -7,14 +7,12 @@ class Eye::SystemResources
 
     def memory(pid)
       if mem = cache.proc_mem(pid)
-        mem.resident
+        mem * 1024
       end
     end
 
     def cpu(pid)
-      if cpu = cache.proc_cpu(pid)
-        cpu.percent * 100
-      end
+      cache.proc_cpu(pid)
     end
 
     def children(parent_pid)
@@ -22,23 +20,21 @@ class Eye::SystemResources
     end
 
     def start_time(pid) # unixtime
-      if cpu = cache.proc_cpu(pid)
-        cpu.start_time.to_i / 1000
+      if st = cache.proc_start_time(pid)
+        Time.parse(st).to_i
       end
     end
 
     # total cpu usage in seconds
-    def cputime(pid)
-      if cpu = cache.proc_cpu(pid)
-        cpu.total.to_f / 1000
-      end
+    def cputime(_pid)
+      0
     end
 
     # last child in a children tree
     def leaf_child(pid)
       if dc = deep_children(pid)
         dc.detect do |child|
-          args = Eye::Sigar.proc_args(child)[0] rescue ''
+          args = ''
           !args.start_with?('logger') && child != pid
         end
       end
@@ -57,8 +53,8 @@ class Eye::SystemResources
       end
     end
 
-    def args(pid)
-      Eye::Sigar.proc_args(pid).join(' ').strip rescue '-'
+    def args(_pid)
+      '-'
     end
 
     def resources(pid)
@@ -92,31 +88,34 @@ class Eye::SystemResources
     end
 
     def clear
-      @memory = {}
-      @cpu = {}
-      @ppids = {}
+      @ps_aux = nil
     end
 
     def proc_mem(pid)
-      @memory[pid] ||= Eye::Sigar.proc_mem(pid) if pid
-
-    rescue ArgumentError
-      # when incorrect PID, just skip
+      ps_aux[pid].try :[], :rss
     end
 
     def proc_cpu(pid)
-      @cpu[pid] ||= Eye::Sigar.proc_cpu(pid) if pid
-
-    rescue ArgumentError
-      # when incorrect PID, just skip
+      ps_aux[pid].try :[], :cpu
     end
 
-    def children(pid)
-      if pid
-        @ppids[pid] ||= Eye::Sigar.proc_list("State.Ppid.eq=#{pid}")
-      else
-        []
+    def proc_start_time(pid)
+      ps_aux[pid].try :[], :start_time
+    end
+
+    def children(parent_pid)
+      parent_pid = parent_pid.to_i
+
+      childs = []
+      ps_aux.each do |pid, h|
+        childs << pid if h[:ppid] == parent_pid
       end
+
+      childs
+    end
+
+    def ps_aux
+      @ps_aux ||= defer { Eye::System.ps_aux }
     end
 
   end

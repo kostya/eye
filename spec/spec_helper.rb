@@ -1,6 +1,6 @@
 require 'rubygems'
 require "bundler/setup"
-Eye::Sigar
+# Eye::Sigar
 
 require 'celluloid/current'
 Bundler.require :default

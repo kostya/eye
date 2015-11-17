@@ -79,25 +79,4 @@ describe "Eye::SystemResources" do
       args.should == 'sleep 15'
     end
   end
-
-  it "should cache and update when interval" do
-    Eye::SystemResources.cache.setup_expire(1)
-
-    stub(Eye::Sigar).proc_mem { OpenStruct.new(:resident => 1240000) }
-
-    x1 = Eye::SystemResources.memory($$)
-    x2 = Eye::SystemResources.memory($$)
-    x1.should == x2
-
-    stub(Eye::Sigar).proc_mem { OpenStruct.new(:resident => 1230000) }
-
-    sleep 0.5
-    x3 = Eye::SystemResources.memory($$)
-    x1.should == x3
-
-    sleep 0.8
-    x4 = Eye::SystemResources.memory($$)
-    x1.should_not == x4 # first value is new
-  end
-
 end

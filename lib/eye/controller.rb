@@ -8,7 +8,6 @@ require_relative 'utils/mini_active_support'
 Object.send(:include, Eye::Logger::ObjectExt)
 
 # needs to preload
-Eye::Sigar
 Eye::SystemResources
 
 class Eye::Controller

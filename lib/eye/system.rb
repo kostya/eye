@@ -140,6 +140,26 @@ module Eye::System
       env
     end
 
+    PS_AUX_CMD = if RUBY_PLATFORM.include?('darwin')
+      'ps axo pid,ppid,pcpu,rss,start'
+    else
+      'ps axo pid,ppid,pcpu,rss,start_time'
+    end
+
+    # get table
+    # {pid => {:rss =>, :cpu =>, :ppid => , :start_time => }}
+    # slow
+    def ps_aux
+      str = Process.send('`', PS_AUX_CMD).force_encoding('binary')
+      h = {}
+      str.each_line do |line|
+        chunk = line.strip.split(%r[\s+])
+        h[chunk[0].to_i] = { ppid: chunk[1].to_i, cpu: chunk[2].to_i,
+                             rss: chunk[3].to_i, start_time: chunk[4] }
+      end
+      h
+    end
+
   end
 
 end
