@@ -39,7 +39,7 @@ module Eye::Local
     end
 
     def ensure_eye_dir
-      FileUtils.mkdir_p(dir)
+      FileUtils.mkdir_p(dir) unless ENV['EYE_SOCK'] && ENV['EYE_PID']
     end
 
     def socket_path
