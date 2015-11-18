@@ -13,7 +13,7 @@ describe "Flapping retry" do
   it "flapping than wait for interval and try again" do
     @process = process(@c.merge(:triggers => C.flapping(:times => 2, :within => 3,
       :retry_in => 5.seconds)))
-    @process.async.start
+    @process.schedule :start
 
     sleep 18
 
@@ -48,7 +48,7 @@ describe "Flapping retry" do
   it "flapping retry 1 times with retry_times = 1" do
     @process = process(@c.merge(:triggers => C.flapping(:times => 2, :within => 3,
       :retry_in => 5.seconds, :retry_times => 1)))
-    @process.async.start
+    @process.schedule :start
 
     sleep 18
 
@@ -83,7 +83,7 @@ describe "Flapping retry" do
   it "flapping than manually doing something, should not retry" do
     @process = process(@c.merge(:triggers => C.flapping(:times => 2, :within => 3,
       :retry_in => 5.seconds)))
-    @process.async.start
+    @process.schedule :start
 
     sleep 6
     @process.send_command :unmonitor
@@ -113,7 +113,7 @@ describe "Flapping retry" do
 
   it "without retry_in" do
     @process = process(@c.merge(:triggers => C.flapping(:times => 2, :within => 3)))
-    @process.async.start
+    @process.schedule :start
 
     sleep 10
 
@@ -138,7 +138,7 @@ describe "Flapping retry" do
     it "reretry_in" do
       @process = process(@c.merge(:triggers => C.flapping(:times => 2, :within => 2.second,
         :retry_in => 2.seconds, :retry_times => 1, :reretry_in => 3.seconds)))
-      @process.async.start
+      @process.schedule :start
 
       sleep 25
       reasons = @process.schedule_history.map { |h| h[:reason].to_s }
@@ -148,7 +148,7 @@ describe "Flapping retry" do
     it "reretry_in, reretry_times" do
       @process = process(@c.merge(:triggers => C.flapping(:times => 2, :within => 2.second,
         :retry_in => 2.seconds, :retry_times => 1, :reretry_in => 3.seconds, :reretry_times => 1)))
-      @process.async.start
+      @process.schedule :start
 
       sleep 25
       reasons = @process.schedule_history.map { |h| h[:reason].to_s }

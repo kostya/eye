@@ -32,7 +32,7 @@ describe "Flapping" do
 
   it "process flapping" do
     @process = process(@c.merge(:start_command => @c[:start_command] + " -r"))
-    @process.async.start
+    @process.schedule :start
 
     stub(@process).notify(:info, anything)
     mock(@process).notify(:error, anything)
@@ -90,7 +90,7 @@ describe "Flapping" do
 
   it "flapping not happens" do
     @process = process(@c)
-    @process.async.start
+    @process.schedule :start
 
     proxy(@process).schedule(:restore, anything)
     proxy(@process).schedule(:check_crash, anything)

@@ -104,7 +104,7 @@ describe "Eye::Process::System" do
     it "blocking execute should not block process actor mailbox #{cfg[:name]}" do
       @process = Eye::Process.new(cfg.merge(:start_command => "sleep 5", :start_timeout => 10.seconds))
       should_spend(1) do
-        @process.async.start
+        @process.schedule :start
         sleep 1
 
         # here mailbox should anwser without blocks
