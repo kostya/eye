@@ -1,6 +1,6 @@
 require 'rubygems'
 require "bundler/setup"
-require 'celluloid/current'
+require 'celluloid'
 Bundler.require :default
 
 if ENV['COV']

@@ -1,4 +1,4 @@
-require 'celluloid/current'
+require 'celluloid/autostart'
 require 'celluloid/io'
 
 class Eye::Server

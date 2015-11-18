@@ -1,4 +1,4 @@
-require 'celluloid/current'
+require 'celluloid'
 
 class Eye::SystemResources
 
@@ -122,6 +122,6 @@ class Eye::SystemResources
   end
 
   # Setup global sigar singleton here
-  Cache.supervise(as: :system_resources_cache)
+  Cache.supervise_as(:system_resources_cache)
 
 end

@@ -1,4 +1,4 @@
-require 'celluloid/current'
+require 'celluloid'
 require 'yaml'
 
 require_relative 'utils/pmap'
