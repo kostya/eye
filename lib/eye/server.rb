@@ -1,5 +1,5 @@
-require 'celluloid/io'
 require 'celluloid/current'
+require 'celluloid/io'
 
 class Eye::Server
 
