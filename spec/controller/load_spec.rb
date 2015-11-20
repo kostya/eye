@@ -22,6 +22,12 @@ describe "Eye::Controller::Load" do
     cfg.settings.should == {}
   end
 
+  it "benchmark" do
+    100.times do
+      subject.load(fixture("dsl/load.eye"))
+    end
+  end
+
   it "blank" do
     subject.load.should == {}
   end
