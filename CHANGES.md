@@ -1,6 +1,10 @@
-0.8.pre
+0.8
 -------
-* Update Celluloid to 0.17.0
+* info, xinfo, oinfo, history now support -j flag, to output json
+* leye: many fixes (--eyehome, --eyefile)
+* add flapping reretry_in (#152)
+* add check_identity of processes, avoid many bugs with wrong pid_files, or auto changed pids (#62)
+* update Celluloid to 0.17
 
 0.7
 -------
@@ -17,7 +21,7 @@
 * some fixes in flapping
 * add proxy_url to http check
 * process with children, shows children history now
-* Update Celluloid to 0.16.0
+* update Celluloid to 0.16
 
 0.6.4
 -----
