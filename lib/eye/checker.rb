@@ -98,7 +98,7 @@ class Eye::Checker
 
   def check
     if initial_grace
-      if (Time.now - @initialized_at < initial_grace)
+      if Time.now - @initialized_at < initial_grace
         debug { 'skipped initial grace' }
         return true
       else
