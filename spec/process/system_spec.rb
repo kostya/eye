@@ -75,7 +75,7 @@ describe "Eye::Process::System" do
     @process.process_really_running?.should == true
 
     @process.pid = nil
-    @process.process_really_running?.should == false
+    @process.process_really_running?.should == nil
 
     @process.pid = -123434
     @process.process_really_running?.should == false

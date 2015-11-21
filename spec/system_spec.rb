@@ -6,7 +6,7 @@ describe "Eye::System" do
     Eye::System.pid_alive?($$).should == true
     Eye::System.pid_alive?(123456).should == false
     Eye::System.pid_alive?(-122).should == false
-    Eye::System.pid_alive?(nil).should == false
+    Eye::System.pid_alive?(nil).should == nil
   end
 
   it "check_pid_alive" do

@@ -25,8 +25,12 @@ module Eye::System
     # very fast
     # return true/false
     def pid_alive?(pid)
-      res = check_pid_alive(pid)
-      !!res[:result]
+      if pid
+        ::Process.kill(0, pid)
+        true
+      end
+    rescue
+      false
     end
 
     # Send signal to process (uses for kill)
