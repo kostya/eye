@@ -37,7 +37,9 @@ class Eye::Dsl
 
       Eye.parsed_config.transform!
       Eye.parsed_config.validate!
-      Eye.parsed_config
+      parsed_config = Eye.parsed_config
+      Eye.parsed_config = nil # remove object for better GC
+      parsed_config
     end
 
     def parse_apps(*args)

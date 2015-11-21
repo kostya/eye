@@ -154,8 +154,7 @@ describe "Eye::Controller::Load" do
   end
 
   it "check syntax" do
-    subject.load(fixture("dsl/load2.eye")).should_be_ok
-    subject.command(:check, fixture("dsl/load4.eye")).only_value.should include(:error => true, :message => "duplicate pid_files: {\"/tmp/app3-e1.pid\"=>2}")
+    subject.command(:check, fixture("dsl/load_dup_ex_names3.eye")).only_value.should include(:error => true)
   end
 
   it "check explain" do
