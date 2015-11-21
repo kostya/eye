@@ -34,7 +34,7 @@ describe "Process with use_leaf_child" do
     `ps ax | grep #{C.p6_word} | grep -v grep`.should be_blank
 
     # parent_pid also should die by itself
-    Eye::System.pid_alive?(@process.pid).should == false
+    Eye::System.pid_alive?(@process.pid).should == nil
     Eye::System.pid_alive?(@process.parent_pid).should == false
   end
 end
