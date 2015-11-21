@@ -97,11 +97,13 @@ class Eye::Checker
   end
 
   def check
-    if initial_grace && (Time.now - @initialized_at < initial_grace)
-      debug { 'skipped initial grace' }
-      return true
-    else
-      @options[:initial_grace] = nil
+    if initial_grace
+      if (Time.now - @initialized_at < initial_grace)
+        debug { 'skipped initial grace' }
+        return true
+      else
+        @options[:initial_grace] = nil
+      end
     end
 
     @value = get_value_safe
@@ -124,7 +126,7 @@ class Eye::Checker
       end
     end
 
-    info "#{last_human_values} => #{result ? 'OK' : 'Fail'}"
+    info { "#{last_human_values} => #{result ? 'OK' : 'Fail'}" }
     result
 
   rescue Object => ex
