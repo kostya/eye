@@ -233,7 +233,9 @@ describe "Process Start" do
     @process = process(C.p2.merge(:daemonize => true, :pid_file => C.p2_pid, :start_grace => 10.seconds,
       :environment => {"FAILSAFE_PID_FILE" => C.just_pid}))
     @process.start.should == {:error => :not_really_running}
-    @process.pid.should == nil
+    sleep 0.5
+    @process.pid.should_not == nil
+    @process.state_name.should == :up
 
     # to ensure kill this process
     sleep 1

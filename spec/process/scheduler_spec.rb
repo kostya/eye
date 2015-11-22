@@ -19,7 +19,25 @@ class Eye::Process
     @test3 = args
   end
 
-  public :scheduler
+  attr_reader :m
+
+  def a(tm = 0.1)
+    @m ||= []
+    @m << :a
+    sleep tm
+  end
+
+  def b(tm = 0.1)
+    @m ||= []
+    @m << :b
+    sleep tm
+  end
+
+  def c(tm = 0.1)
+    @m ||= []
+    @m << :c
+    sleep tm
+  end
 
 end
 
@@ -94,40 +112,31 @@ describe "Scheduler" do
   end
 
   it "should terminate when actor die" do
-    scheduler = @process.scheduler
     @process.alive?.should == true
-    scheduler.alive?.should == true
     @process.terminate
     @process.alive?.should == false
-    scheduler.alive?.should == false
   end
 
   it "should terminate even with tasks" do
-    scheduler = @process.scheduler
     @process.schedule :scheduler_test1, 1
     @process.schedule :scheduler_test1, 1
     @process.schedule :scheduler_test1, 1
 
     @process.terminate
-    scheduler.alive?.should == false
   end
 
   it "when scheduling terminate of the parent actor" do
-    scheduler = @process.scheduler
     @process.schedule :terminate
     @process.schedule(:scheduler_test1, 1) rescue nil
 
     sleep 0.4
     @process.alive?.should == false
-    scheduler.alive?.should == false
   end
 
   it "schedule unexisted method should not raise and break anything" do
-    scheduler = @process.scheduler
     @process.schedule :hahhaha
     sleep 0.2
     @process.alive?.should == true
-    scheduler.alive?.should == true
   end
 
   describe "reasons" do
@@ -212,6 +221,77 @@ describe "Scheduler" do
 
       sleep 0.1
       @process.alive?.should be_true
+    end
+  end
+
+  describe "Calls test" do
+    before :each do
+      @t = @process
+    end
+
+    it "should chain" do
+      @t.scheduler_add :a, 0.5
+      @t.scheduler_add :b, 0.3
+      @t.scheduler_add :c, 0.1
+
+      sleep 1
+
+      @t.m.should == [:a, :b, :c]
+    end
+
+    it "should chain2" do
+      @t.scheduler_add :c, 0.1
+      sleep 0.2
+
+      @t.scheduler_add :a, 0.5
+      @t.scheduler_add :b, 0.3
+
+      sleep 1
+
+      @t.m.should == [:c, :a, :b]
+    end
+
+    it "should remove dups" do
+      @t.scheduler_add :a
+      @t.scheduler_add :b
+      @t.scheduler_add :b
+      @t.scheduler_add :c
+      @t.scheduler_add_wo_dups :c
+
+      sleep 1
+      @t.m.should == [:a, :b, :b, :c]
+    end
+
+    it "should remove dups" do
+      @t.scheduler_add_wo_dups :a
+      @t.scheduler_add_wo_dups :b
+      @t.scheduler_add_wo_dups :b
+      @t.scheduler_add_wo_dups :c
+      @t.scheduler_add_wo_dups :c
+      @t.scheduler_add_wo_dups :a
+      @t.scheduler_add_wo_dups :c
+      @t.scheduler_add_wo_dups :c
+
+      sleep 2
+      @t.m.should == [:a, :b, :c, :a, :c]
+    end
+
+    it "should remove dups and current" do
+      @t.scheduler_add_wo_dups_current :a, 0.6
+      sleep 0.3
+      @t.scheduler_add_wo_dups_current :a, 0.6
+      @t.scheduler_add_wo_dups_current :b
+
+      sleep 0.4
+      @t.m.should == [:a, :b]
+    end
+
+    it "#clear_pending_list" do
+      10.times{ @t.scheduler_add :a }
+      sleep 0.5
+      @t.scheduler_clear_pending_list
+      sleep 0.5
+      @t.m.size.should <= 6
     end
   end
 end

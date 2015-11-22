@@ -2,8 +2,6 @@ module Eye::Process::Scheduler
 
   # ex: schedule :update_config, config, "reason: update_config"
   def schedule(command, *args, &block)
-    return unless scheduler.alive?
-
     if scheduler_freeze?
       warn ":#{command} ignoring to schedule, because scheduler is freeze"
       return
@@ -21,11 +19,11 @@ module Eye::Process::Scheduler
     if reason.class == Eye::Reason
       # for auto reasons
       # skip already running commands and all in chain
-      scheduler.add_wo_dups_current(:scheduled_action, command, args: args, reason: reason, block: block)
+      scheduler_add_wo_dups_current(:scheduled_action, command, args: args, reason: reason, block: block)
     else
       # for manual, or without reason
       # skip only for last in chain
-      scheduler.add_wo_dups(:scheduled_action, command, args: args, reason: reason, block: block)
+      scheduler_add_wo_dups(:scheduled_action, command, args: args, reason: reason, block: block)
     end
   end
 
@@ -64,15 +62,14 @@ module Eye::Process::Scheduler
   end
 
   def scheduler_actions_list
-    scheduler.list.map { |c| c[:args].first rescue nil }.compact
+    scheduler_calls.map { |c| c[:args].first rescue nil }.compact
   end
 
   def scheduler_clear_pending_list
-    scheduler.clear_pending_list
+    scheduler_calls.clear
   end
 
   def self.included(base)
-    base.finalizer :remove_scheduler
     base.execute_block_on_receiver :schedule
   end
 
@@ -95,14 +92,47 @@ module Eye::Process::Scheduler
     @scheduler_freeze
   end
 
-private
+  # ================================================
+  # Scheduler methods
 
-  def remove_scheduler
-    @scheduler.terminate if @scheduler && @scheduler.alive?
+  def scheduler_add(method_name, *args)
+    scheduler_calls << { method_name: method_name, args: args }
+    ensure_scheduler_process
   end
 
-  def scheduler
-    @scheduler ||= Eye::Utils::CelluloidChain.new(current_actor)
+  def scheduler_add_wo_dups(method_name, *args)
+    h = { method_name: method_name, args: args }
+    if scheduler_calls[-1] != h
+      scheduler_calls << h
+      ensure_scheduler_process
+    end
+  end
+
+  def scheduler_add_wo_dups_current(method_name, *args)
+    h = { method_name: method_name, args: args }
+    if !scheduler_calls.include?(h) && @scheduler_call != h
+      scheduler_calls << h
+      ensure_scheduler_process
+    end
+  end
+
+  def scheduler_calls
+    @scheduler_calls ||= []
+  end
+
+  def ensure_scheduler_process
+    unless @scheduler_running
+      @scheduler_running = true
+      async.process_scheduler
+    end
+  end
+
+  def process_scheduler
+    while @scheduler_call = scheduler_calls.shift
+      @scheduler_running = true
+      self.send(@scheduler_call[:method_name], *@scheduler_call[:args])
+    end
+    @scheduler_running = false
   end
 
 end
