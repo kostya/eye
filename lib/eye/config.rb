@@ -32,39 +32,40 @@ class Eye::Config
 
   # raise an error if config wrong
   def validate!(validate_apps = [])
-    all_processes = processes
-
     # Check blank pid_files
-    no_pid_file = all_processes.select { |c| c[:pid_file].blank? }
-    if no_pid_file.present?
+    no_pid_file = []
+    each_process { |c| no_pid_file << c if c[:pid_file].blank? }
+    if no_pid_file.any?
       raise Eye::Dsl::Error, "blank pid_file for: #{no_pid_file.map { |c| c[:name] } * ', '}"
     end
 
     # Check duplicates of the full pid_file
 
-    dupl_pids = all_processes.each_with_object(Hash.new(0)) do |o, h|
+    dupl_pids = Hash.new(0)
+    each_process do |o|
       ex_pid_file = Eye::System.normalized_file(o[:pid_file], o[:working_dir])
-      h[ex_pid_file] += 1
+      dupl_pids[ex_pid_file] += 1
     end
     dupl_pids = dupl_pids.select { |_, v| v > 1 }
 
-    if dupl_pids.present?
+    if dupl_pids.any?
       raise Eye::Dsl::Error, "duplicate pid_files: #{dupl_pids.inspect}"
     end
 
     # Check duplicates of the full_name
-    dupl_names = all_processes.each_with_object(Hash.new(0)) do |o, h|
+    dupl_names = Hash.new(0)
+    each_process do |o|
       full_name = "#{o[:application]}:#{o[:group]}:#{o[:name]}"
-      h[full_name] += 1
+      dupl_names[full_name] += 1
     end
     dupl_names = dupl_names.select { |_, v| v > 1 }
 
-    if dupl_names.present?
+    if dupl_names.any?
       raise Eye::Dsl::Error, "duplicate names: #{dupl_names.inspect}"
     end
 
     # validate processes with their own validate
-    all_processes.each do |process_cfg|
+    each_process do |process_cfg|
       Eye::Process.validate process_cfg, validate_apps.include?(process_cfg[:application])
     end
 
@@ -73,10 +74,8 @@ class Eye::Config
   end
 
   def transform!
-    all_processes = processes
-
     # transform syslog option
-    all_processes.each do |process|
+    each_process do |process|
       out = process[:stdout] && process[:stdout].start_with?(':syslog')
       err = process[:stderr] && process[:stderr].start_with?(':syslog')
       next unless err || out
@@ -95,8 +94,12 @@ class Eye::Config
     end
   end
 
-  def processes
-    applications.values.map { |e| (e[:groups] || {}).values.map { |c| (c[:processes] || {}).values } }.flatten
+  def each_process(&block)
+    applications.each_value do |app_cfg|
+      (app_cfg[:groups] || {}).each_value do |gr_cfg|
+        (gr_cfg[:processes] || {}).each_value(&block)
+      end
+    end
   end
 
   def application_names
