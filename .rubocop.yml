@@ -83,7 +83,7 @@ Metrics/ModuleLength:
     - 'lib/eye/process/commands.rb'
 
 Metrics/AbcSize:
-  Max: 60
+  Max: 65
 
 Style/GuardClause:
   MinBodyLength: 10

@@ -16,9 +16,11 @@ class Eye::Cli < Thor
   desc 'info [MASK]', 'processes info'
   method_option :json, type: :boolean, aliases: '-j'
   method_option :procline, type: :boolean, aliases: '-p'
+  method_option :debug, type: :boolean, aliases: '-d'
   def info(mask = nil)
     h = {}
     h[:procline] = true if options[:procline]
+    h[:debug] = true if options[:debug]
 
     res = cmd(:info_data, *Array(mask), h)
     if mask && res[:subtree] && res[:subtree].empty?

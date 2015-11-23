@@ -131,6 +131,9 @@ private
       if data[:state_reason] && data[:state] == 'unmonitored'
         str += " (#{data[:state_reason]} at #{Eye::Utils.human_time2(data[:state_changed_at])})"
       end
+      if debug = data[:debug]
+        str += " (#{debug.inspect})"
+      end
     elsif data[:current_command]
       chain_progress = if data[:chain_progress]
         " #{data[:chain_progress][0]} of #{data[:chain_progress][1]}" rescue ''

@@ -52,7 +52,15 @@ module Eye::Process::Data
   end
 
   def debug_data
-    { queue: scheduler_actions_list, watchers: @watchers.keys }
+    { queue: scheduler_actions_list, watchers: @watchers.keys, timers: timers_data }
+  end
+
+  def timers_data
+    if actor = Thread.current[:celluloid_actor]
+      actor.timers.timers.map(&:interval)
+    end
+  rescue
+    []
   end
 
   def sub_object?(obj)
