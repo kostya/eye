@@ -33,9 +33,9 @@ class Eye::Process
     sleep tm
   end
 
-  def c(tm = 0.1)
+  def cu(tm = 0.1)
     @m ||= []
-    @m << :c
+    @m << :cu
     sleep tm
   end
 
@@ -232,15 +232,15 @@ describe "Scheduler" do
     it "should chain" do
       @t.scheduler_add :a, 0.5
       @t.scheduler_add :b, 0.3
-      @t.scheduler_add :c, 0.1
+      @t.scheduler_add :cu, 0.1
 
       sleep 1
 
-      @t.m.should == [:a, :b, :c]
+      @t.m.should == [:a, :b, :cu]
     end
 
     it "should chain2" do
-      @t.scheduler_add :c, 0.1
+      @t.scheduler_add :cu, 0.1
       sleep 0.2
 
       @t.scheduler_add :a, 0.5
@@ -248,32 +248,32 @@ describe "Scheduler" do
 
       sleep 1
 
-      @t.m.should == [:c, :a, :b]
+      @t.m.should == [:cu, :a, :b]
     end
 
     it "should remove dups" do
       @t.scheduler_add :a
       @t.scheduler_add :b
       @t.scheduler_add :b
-      @t.scheduler_add :c
-      @t.scheduler_add_wo_dups :c
+      @t.scheduler_add :cu
+      @t.scheduler_add_wo_dups :cu
 
       sleep 1
-      @t.m.should == [:a, :b, :b, :c]
+      @t.m.should == [:a, :b, :b, :cu]
     end
 
     it "should remove dups" do
       @t.scheduler_add_wo_dups :a
       @t.scheduler_add_wo_dups :b
       @t.scheduler_add_wo_dups :b
-      @t.scheduler_add_wo_dups :c
-      @t.scheduler_add_wo_dups :c
+      @t.scheduler_add_wo_dups :cu
+      @t.scheduler_add_wo_dups :cu
       @t.scheduler_add_wo_dups :a
-      @t.scheduler_add_wo_dups :c
-      @t.scheduler_add_wo_dups :c
+      @t.scheduler_add_wo_dups :cu
+      @t.scheduler_add_wo_dups :cu
 
       sleep 2
-      @t.m.should == [:a, :b, :c, :a, :c]
+      @t.m.should == [:a, :b, :cu, :a, :cu]
     end
 
     it "should remove dups and current" do
