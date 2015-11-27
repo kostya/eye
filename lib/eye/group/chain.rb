@@ -49,12 +49,15 @@ private
 
     if type == :sync
       # sync command, with waiting
-      # this is very hackety, because call method of the process without its scheduler
-      # need to provide some scheduler future
 
-      # TODO: remove hack here
-      # process.last_scheduled_reason = last_scheduled_reason
-      process.send(call[:command], *call[:args])
+      begin
+        signal = Celluloid::Condition.new
+        process.send_call(call.merge(signal: signal))
+        signal.wait((call[:signal_timeout] || 600).to_f)
+      rescue Celluloid::ConditionError => ex
+        log_ex(ex)
+      end
+
     else
       # async command
       process.send_call(call)
