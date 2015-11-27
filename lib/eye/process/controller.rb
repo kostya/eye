@@ -61,8 +61,4 @@ module Eye::Process::Controller
     end
   end
 
-  def freeze
-    self.scheduler_freeze = true
-  end
-
 end

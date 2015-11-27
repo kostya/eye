@@ -211,18 +211,16 @@ describe "Scheduler" do
 
   describe "when scheduler_freeze not accept new commands" do
     it "should schedule to future" do
-      @process.schedule(:scheduler_test3, 1, 2, 3)
+      @process.schedule(:command => :scheduler_test3, :args => [1, 2, 3], :freeze => true)
       sleep 0.01
       @process.test3.should == [1, 2, 3]
 
-      @process.scheduler_freeze = true
-      @process.schedule(:scheduler_test3, 5)
-      @process.schedule(:scheduler_test3, 6)
+      @process.schedule(:command => :scheduler_test3, :args => [5])
+      @process.schedule(:command => :scheduler_test3, :args => [6])
       sleep 0.1
       @process.test3.should == [1, 2, 3]
 
-      @process.scheduler_freeze = false
-      @process.schedule(:scheduler_test3, 7)
+      @process.schedule(:command => :scheduler_test3, :args => [7], :freeze => false)
       sleep 0.1
       @process.test3.should == [7]
     end

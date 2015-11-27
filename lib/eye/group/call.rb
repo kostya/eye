@@ -58,11 +58,6 @@ module Eye::Group::Call
     @chain_breaker = true
   end
 
-  # TODO: remove
-  def freeze
-    fast_call command: :freeze
-  end
-
 private
 
   def fast_call(call)

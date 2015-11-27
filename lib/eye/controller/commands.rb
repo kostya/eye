@@ -78,8 +78,7 @@ private
     # TODO: rewrite with signal
     exclusive do
       apply(%w[all], command: :break_chain)
-      apply(%w[all], command: :stop)
-      apply(%w[all], command: :freeze)
+      apply(%w[all], command: :stop, freeze: true)
     end
 
     # wait until all processes goes to unmonitored

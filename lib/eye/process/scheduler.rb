@@ -45,7 +45,9 @@ module Eye::Process::Scheduler
     call[:at] ||= Time.now.to_i
     command = call[:command]
 
-    if self.scheduler_freeze
+    @scheduler_freeze = false if call[:freeze] == false
+
+    if @scheduler_freeze
       warn ":#{command} ignoring to schedule, because scheduler is freezed"
       return
     end
@@ -61,6 +63,8 @@ module Eye::Process::Scheduler
     else
       info "not scheduled: #{command}"
     end
+
+    @scheduler_freeze = true if call[:freeze] == true
   end
 
   def scheduler_consume(call)
@@ -90,8 +94,6 @@ module Eye::Process::Scheduler
     # TODO: add filter here
     true
   end
-
-  attr_accessor :scheduler_freeze
 
   def scheduler_calls
     @scheduler_calls ||= []
