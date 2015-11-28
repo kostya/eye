@@ -42,12 +42,12 @@ describe "Custom checks" do
     end
 
     it "should not restart" do
-      dont_allow(@process).schedule(:restart)
+      dont_allow(@process).schedule(:command => :restart)
       sleep 4
     end
 
     it "should restart" do
-      proxy(@process).schedule(:restart, is_a(Eye::Reason))
+      proxy(@process).schedule(:command => :restart)
       sleep 6
     end
   end
@@ -221,7 +221,7 @@ describe "Custom checks" do
             start_command "sleep 30"
             daemonize true
 
-            check :touch_file, :every => 1.seconds, :file => "#{C.tmp_file}", :fires => -> { send_command(:stop) }
+            check :touch_file, :every => 1.seconds, :file => "#{C.tmp_file}", :fires => -> { schedule(:stop) }
           end
         end
      D
@@ -233,7 +233,7 @@ describe "Custom checks" do
       File.open(C.tmp_file, 'w')
       sleep 3
       @process.state_name.should == :unmonitored
-      @process.schedule_history.states.last.should == :stop
+      @process.scheduler_history.states.last.should == :stop
     end
 
     it "should execute proc on fires" do
@@ -267,7 +267,7 @@ describe "Custom checks" do
       File.open(C.tmp_file, 'w')
       sleep 3
       @process.state_name.should == :unmonitored
-      @process.schedule_history.states.last.should == :execute_proc
+      @process.scheduler_history.states.last.should == :instance_exec
     end
 
   end

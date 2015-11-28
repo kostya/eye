@@ -94,7 +94,7 @@ describe "check pid identity" do
 
     # here process should mark as crash, and restart again
     @process.states_history.states.should == [:unmonitored, :starting, :up, :down, :starting, :up]
-    @process.schedule_history.states.should == [:check_crash, :restore]
+    @process.scheduler_history.states.should == [:check_crash, :restore]
 
     @process.state_name.should == :up
     @process.pid.should_not == old_pid

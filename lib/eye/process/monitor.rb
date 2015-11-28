@@ -39,7 +39,7 @@ private
       notify :info, 'crashed!'
       clear_pid_file(true) if control_pid?
 
-      switch :crashed, Eye::Reason.new(:crashed)
+      switch :crashed, reason: :crashed
     end
   end
 
@@ -83,7 +83,7 @@ private
   def check_identity
     if compare_identity == :fail
       notify :info, 'crashed by identity!'
-      switch :crashed, Eye::Reason.new(:crashed_by_identity)
+      switch :crashed, reason: :crashed_by_identity
       clear_pid_file if self[:clear_pid]
       false
     else
@@ -101,13 +101,13 @@ private
       warn 'check crashed: process is down'
 
       if self[:restore_in]
-        schedule_in self[:restore_in].to_f, :restore, Eye::Reason.new(:crashed)
+        schedule in: self[:restore_in].to_f, command: :restore, reason: :crashed
       else
-        schedule :restore, Eye::Reason.new(:crashed)
+        schedule command: :restore, reason: :crashed
       end
     else
       warn 'check crashed: process without keep_alive'
-      schedule :unmonitor, Eye::Reason.new(:crashed)
+      schedule command: :unmonitor, reason: :crashed
     end
   end
 

@@ -50,7 +50,7 @@ describe "Trigger StartingGuard" do
       @process.state_name.should_not == :up
       sleep 5.5
       @process.state_name.should_not == :up
-      @process.schedule_history.states.count(:conditional_start).should > 15
+      @process.scheduler_history.states.count(:conditional_start).should > 15
     end
   end
 
@@ -101,7 +101,7 @@ describe "Trigger StartingGuard" do
     it "should be up" do
       sleep 3
       @process.state_name.should_not == :up
-      @process.send_command('unmonitor')
+      @process.send_call(:command => 'unmonitor')
       @process.states_history.states.should == [:unmonitored, :starting, :unmonitored, :starting, :unmonitored, :starting, :unmonitored, :unmonitored]
       sleep 3
       @process.state_name.should == :unmonitored

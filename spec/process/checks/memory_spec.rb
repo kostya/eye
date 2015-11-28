@@ -32,7 +32,7 @@ describe "Process Memory check" do
 
       stub(Eye::SystemResources).memory(@process.pid){ 50.megabytes }
       mock(@process).notify(:warn, anything)
-      mock(@process).schedule(:restart, anything)
+      mock(@process).schedule(:command => :restart)
 
       sleep 1
     end
@@ -46,7 +46,7 @@ describe "Process Memory check" do
 
       stub(Eye::SystemResources).memory(@process.pid){ 50.megabytes }
       mock(@process).notify(:warn, anything)
-      mock(@process).schedule(:stop, anything)
+      mock(@process).schedule(:command => :stop)
 
       sleep 1
     end
@@ -60,8 +60,8 @@ describe "Process Memory check" do
 
       stub(Eye::SystemResources).memory(@process.pid){ 50.megabytes }
       mock(@process).notify(:warn, anything)
-      mock(@process).schedule(:stop, anything)
-      mock(@process).schedule(:start, anything)
+      mock(@process).schedule(:command => :stop)
+      mock(@process).schedule(:command => :start)
 
       sleep 1
     end
@@ -73,7 +73,7 @@ describe "Process Memory check" do
       sleep 3
 
       stub(Eye::SystemResources).memory(@process.pid){ 25.megabytes }
-      dont_allow(@process).schedule(:restart)
+      dont_allow(@process).schedule(:command => :restart)
 
       sleep 1
     end
@@ -91,7 +91,7 @@ describe "Process Memory check" do
       sleep 3
 
       stub(Eye::SystemResources).memory(@process.pid){ 50.megabytes }
-      mock(@process).schedule(:restart, anything)
+      mock(@process).schedule(:command => :restart)
 
       sleep 6
     end
@@ -103,7 +103,7 @@ describe "Process Memory check" do
       sleep 3
 
       stub(Eye::SystemResources).memory(@process.pid){ 25.megabytes }
-      dont_allow(@process).schedule(:restart)
+      dont_allow(@process).schedule(:command => :restart)
 
       sleep 6
     end
@@ -121,7 +121,7 @@ describe "Process Memory check" do
       sleep 5
 
       stub(Eye::SystemResources).memory(@process.pid){ 50.megabytes }
-      mock(@process).schedule(:restart, anything)
+      mock(@process).schedule(:command => :restart)
 
       sleep 6
     end
@@ -133,7 +133,7 @@ describe "Process Memory check" do
       sleep 5
 
       stub(Eye::SystemResources).memory(@process.pid){ 25.megabytes }
-      dont_allow(@process).schedule(:restart)
+      dont_allow(@process).schedule(:command => :restart)
 
       sleep 6
     end

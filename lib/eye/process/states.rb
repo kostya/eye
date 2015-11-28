@@ -6,8 +6,8 @@ class Eye::Process
   class StateError < Exception; end
 
   # do transition
-  def switch(name, reason = nil)
-    @state_reason = reason || last_scheduled_reason
+  def switch(name, call = {})
+    @state_call = @last_scheduled_call ? @last_scheduled_call.merge(call) : call
     self.send("#{name}!")
   end
 
@@ -71,7 +71,7 @@ class Eye::Process
 
   def on_crashed
     self.pid = nil
-    schedule :check_crash, Eye::Reason.new(:crashed)
+    schedule command: :check_crash, reason: :crashed
   end
 
   def on_unmonitored
@@ -79,9 +79,10 @@ class Eye::Process
   end
 
   def log_transition(transition)
-    if transition.to_name != transition.from_name || @state_reason.is_a?(Eye::Reason::User)
-      @states_history.push transition.to_name, @state_reason
-      info "switch :#{transition.event} [:#{transition.from_name} => :#{transition.to_name}] #{"(reason: #{@state_reason})" if @state_reason}"
+    if transition.to_name != transition.from_name || @state_call[:by] == :user
+      reason_str = reason_from_call(@state_call)
+      @states_history.push transition.to_name, reason_str
+      info "switch :#{transition.event} [:#{transition.from_name} => :#{transition.to_name}] #{reason_str}"
     end
   end
 

@@ -28,7 +28,7 @@ describe "Flapping retry" do
     # затем перейти в unmonitored с причиной flapping
     flapp1 = h.shift
     flapp1[:state].should == :unmonitored
-    flapp1[:reason].to_s.should == 'flapping'
+    flapp1[:reason].to_s.should == 'unmonitor by flapping'
 
     # затем снова попыться подняться два раза
     h.shift(6)
@@ -36,7 +36,7 @@ describe "Flapping retry" do
     # и снова перейти в unmonitored с причиной flapping
     flapp2 = h.shift
     flapp2[:state].should == :unmonitored
-    flapp2[:reason].to_s.should == 'flapping'
+    flapp2[:reason].to_s.should == 'unmonitor by flapping'
 
     # интервал между переходами во flapping должен быть больше 8 сек
     (flapp2[:at] - flapp1[:at]).should > 5.seconds
@@ -63,7 +63,7 @@ describe "Flapping retry" do
     # затем перейти в unmonitored с причиной flapping
     flapp1 = h.shift
     flapp1[:state].should == :unmonitored
-    flapp1[:reason].to_s.should == 'flapping'
+    flapp1[:reason].to_s.should == 'unmonitor by flapping'
 
     # затем снова попыться подняться два раза
     h.shift(6)
@@ -71,7 +71,7 @@ describe "Flapping retry" do
     # и снова перейти в unmonitored с причиной flapping
     flapp2 = h.shift
     flapp2[:state].should == :unmonitored
-    flapp2[:reason].to_s.should == 'flapping'
+    flapp2[:reason].to_s.should == 'unmonitor by flapping'
 
     # интервал между переходами во flapping должен быть больше 8 сек
     (flapp2[:at] - flapp1[:at]).should > 5.seconds
@@ -86,7 +86,7 @@ describe "Flapping retry" do
     @process.schedule :start
 
     sleep 6
-    @process.send_command :unmonitor
+    @process.send_call :command => :unmonitor
     sleep 9
 
     h = @process.states_history
@@ -100,7 +100,7 @@ describe "Flapping retry" do
     # затем перейти в unmonitored с причиной flapping
     flapp1 = h.shift
     flapp1[:state].should == :unmonitored
-    flapp1[:reason].to_s.should == 'flapping'
+    flapp1[:reason].to_s.should == 'unmonitor by flapping'
 
     # затем его руками переводят в unmonitored
     unm = h.shift
@@ -128,7 +128,7 @@ describe "Flapping retry" do
     # затем перейти в unmonitored с причиной flapping
     flapp1 = h.shift
     flapp1[:state].should == :unmonitored
-    flapp1[:reason].to_s.should == 'flapping'
+    flapp1[:reason].to_s.should == 'unmonitor by flapping'
 
     # все финал
     h.should be_blank
@@ -141,7 +141,7 @@ describe "Flapping retry" do
       @process.schedule :start
 
       sleep 25
-      reasons = @process.schedule_history.map { |h| h[:reason].to_s }
+      reasons = @process.scheduler_history.map { |h| h[:reason].to_s }
       reasons.count { |r| r == "retry start after flapping" }.should >= 2
       reasons.count { |r| r == "reretry start after flapping" }.should >= 2
     end
@@ -151,7 +151,7 @@ describe "Flapping retry" do
       @process.schedule :start
 
       sleep 25
-      reasons = @process.schedule_history.map { |h| h[:reason].to_s }
+      reasons = @process.scheduler_history.map { |h| h[:reason].to_s }
       reasons.count { |r| r == "retry start after flapping" }.should == 2
       reasons.count { |r| r == "reretry start after flapping" }.should == 1
     end

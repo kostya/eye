@@ -107,7 +107,7 @@ describe "Eye::Controller::Load" do
     p = subject.process_by_name('e1')
     p[:daemonize].should == false
 
-    proxy(p).schedule :update_config, is_a(Hash), is_a(Eye::Reason)
+    proxy(p).schedule command: :update_config, args: is_a(Array)
     dont_allow(p).schedule :monitor
 
     p.logger.prefix.should == 'app3:e1'
@@ -425,11 +425,11 @@ describe "Eye::Controller::Load" do
       gr1 = subject.group_by_name 'gr1'
       gr_ = subject.group_by_name '__default__'
 
-      p0.schedule_history.states.should == [:monitor]
-      p1.schedule_history.states.should == [:monitor]
-      p2.schedule_history.states.should == [:monitor]
-      gr1.schedule_history.states.should == [:monitor]
-      gr_.schedule_history.states.should == [:monitor]
+      p0.scheduler_history.states.should == [:monitor]
+      p1.scheduler_history.states.should == [:monitor]
+      p2.scheduler_history.states.should == [:monitor]
+      gr1.scheduler_history.states.should == [:monitor]
+      gr_.scheduler_history.states.should == [:monitor]
 
       subject.load(fixture("dsl/load_int2.eye")).should_be_ok
       sleep 0.5
@@ -442,14 +442,14 @@ describe "Eye::Controller::Load" do
       p5 = subject.process_by_name 'p5'
       gr2 = subject.group_by_name 'gr2'
 
-      p2.schedule_history.states.should == [:monitor, :update_config]
-      gr1.schedule_history.states.should == [:monitor, :update_config]
-      gr_.schedule_history.states.should == [:monitor, :update_config]
+      p2.scheduler_history.states.should == [:monitor, :update_config]
+      gr1.scheduler_history.states.should == [:monitor, :update_config]
+      gr_.scheduler_history.states.should == [:monitor, :update_config]
 
-      p01.schedule_history.states.should == [:monitor]
-      p4.schedule_history.states.should == [:monitor]
-      p5.schedule_history.states.should == [:monitor]
-      gr2.schedule_history.states.should == [:monitor]
+      p01.scheduler_history.states.should == [:monitor]
+      p4.scheduler_history.states.should == [:monitor]
+      p5.scheduler_history.states.should == [:monitor]
+      gr2.scheduler_history.states.should == [:monitor]
     end
   end
 

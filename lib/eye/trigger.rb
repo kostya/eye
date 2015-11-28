@@ -65,9 +65,9 @@ class Eye::Trigger
     "trigger(#{@options[:type]})"
   end
 
-  def notify(transition, reason)
+  def notify(transition, state_call)
     debug { "check (:#{transition.event}) :#{transition.from} => :#{transition.to}" }
-    @reason = reason
+    @state_call = state_call
     @transition = transition
 
     check(transition) if filter_transition(transition)

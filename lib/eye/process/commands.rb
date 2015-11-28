@@ -7,7 +7,7 @@ module Eye::Process::Commands
 
     unless self[:start_command]
       warn 'no :start_command found, unmonitoring'
-      switch :unmonitoring, Eye::Reason.new(:no_start_command)
+      switch :unmonitoring, reason: 'no_start_command'
       return :no_start_command
     end
 
@@ -48,7 +48,7 @@ module Eye::Process::Commands
     if process_really_running?
       warn "process <#{self.pid}> was not stopped; try checking your command/signals or tuning the stop_timeout/stop_grace values"
 
-      switch :unmonitoring, Eye::Reason.new(:'not stopped (soft command)')
+      switch :unmonitoring, reason: 'not stopped (soft command)'
       nil
 
     else

@@ -46,7 +46,7 @@ module Eye::Process::Data
 
     h[:debug] = debug_data if opts[:debug]
     h[:procline] = Eye::SystemResources.args(self.pid) if opts[:procline]
-    h[:current_command] = current_scheduled_command if current_scheduled_command
+    h[:current_command] = scheduler_current_command if scheduler_current_command
 
     h
   end

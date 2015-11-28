@@ -38,12 +38,9 @@ class Eye::Application
   def debug_data
   end
 
-  def send_command(command, *args)
-    info "send_command #{command}"
-
-    @groups.each do |group|
-      group.send_command(command, *args)
-    end
+  def send_call(call)
+    info "call: #{call}"
+    @groups.each { |group| group.send_call(call) }
   end
 
   def alive?

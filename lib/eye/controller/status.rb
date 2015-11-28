@@ -35,7 +35,7 @@ module Eye::Controller::Status
   def history_data(*args)
     res = {}
     history_objects(*args).each do |process|
-      res[process.full_name] = process.schedule_history.reject { |c| c[:state] == :check_crash }
+      res[process.full_name] = process.scheduler_history.reject { |c| c[:state] == :check_crash }
     end
     res
   end

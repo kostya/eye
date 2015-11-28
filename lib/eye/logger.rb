@@ -39,7 +39,7 @@ class Eye::Logger
     end
 
     def log_ex(ex)
-      error "#{ex.message} #{ex.backtrace}"
+      error "Exception: #{ex.message} #{ex.backtrace}"
       # notify here?
     end
 

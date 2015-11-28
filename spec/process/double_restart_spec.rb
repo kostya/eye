@@ -7,8 +7,8 @@ describe Eye::Process do
 
   it "should not double restarts if auto restart" do
     pending
-    @process.schedule :restart, Eye::Reason.new("bounded memory")
-    @process.schedule :restart, Eye::Reason.new("bounded cpu")
+    @process.schedule :command => :restart, :reason => "bounded memory"
+    @process.schedule :command => :restart, :reason => "bounded cpu"
 
     sleep 3
 
@@ -16,8 +16,8 @@ describe Eye::Process do
   end
 
   it "should double restart if second is by hands" do
-    @process.schedule :restart, Eye::Reason.new("bounded memory")
-    @process.send_command(:restart)
+    @process.schedule :command => :restart, :reason => "bounded memory"
+    @process.send_call(:command => :restart)
 
     sleep 3
 

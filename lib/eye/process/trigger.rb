@@ -9,7 +9,7 @@ module Eye::Process::Trigger
   end
 
   def check_triggers(transition)
-    self.triggers.each { |trigger| trigger.notify(transition, state_reason) }
+    self.triggers.each { |trigger| trigger.notify(transition, @state_call) }
   end
 
   # conditional start, used in triggers, to start only from unmonitored state, and only if special reason
@@ -19,9 +19,10 @@ module Eye::Process::Trigger
       return
     end
 
-    previous_reason = state_reason
-    if last_scheduled_reason && previous_reason && last_scheduled_reason.class != previous_reason.class
-      warn "skip, last_scheduled_reason(#{last_scheduled_reason.inspect}) != previous_reason(#{previous_reason})"
+    state_by = @state_call.try(:[], :by)
+    current_by = @scheduled_call.try(:[], :by)
+    if state_by && current_by && state_by != current_by
+      warn "skip, state_by(#{state_by}) != current_by(#{current_by})"
       return
     end
 

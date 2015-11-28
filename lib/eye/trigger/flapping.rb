@@ -44,18 +44,20 @@ private
     debug { 'flapping recognized!!!' }
 
     process.notify :error, 'flapping!'
-    process.schedule :unmonitor, Eye::Reason::Flapping.new(:flapping)
+    process.schedule command: :unmonitor, by: :flapping
 
     return unless retry_in
     if !retry_times || (retry_times && @retry_times < retry_times)
       @retry_times += 1
-      process.schedule_in(retry_in.to_f, :conditional_start, Eye::Reason::Flapping.new('retry start after flapping'))
+      process.schedule(in: retry_in.to_f, command: :conditional_start,
+                       by: :flapping, reason: 'retry start after flapping')
     else
       if reretry_in
         if !reretry_times || (reretry_times && @reretry_times < reretry_times)
           @retry_times = 0
           @reretry_times += 1
-          process.schedule_in(reretry_in.to_f, :conditional_start, Eye::Reason::Flapping.new('reretry start after flapping'))
+          process.schedule(in: reretry_in.to_f, command: :conditional_start,
+                           by: :flapping, reason: 'reretry start after flapping')
         end
       end
     end

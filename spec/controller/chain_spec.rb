@@ -17,7 +17,7 @@ describe "Intergration chains" do
   it "restart group with chain sync" do
     @samples.config[:chain] = C.restart_sync
 
-    @controller.send_command(:restart, "samples")
+    @controller.command(:restart, 'samples')
     sleep 15 # while they restarting
 
     @processes.map{|c| c.state_name}.uniq.should == [:up]
@@ -33,7 +33,7 @@ describe "Intergration chains" do
   end
 
   it "restart group with chain async" do
-    @controller.send_command(:restart, "samples")
+    @controller.command(:restart, 'samples')
     sleep 15 # while they restarting
 
     @processes.map{|c| c.state_name}.uniq.should == [:up]
@@ -51,15 +51,15 @@ describe "Intergration chains" do
   it "process have skip_group_action, skip that action" do
     stub(@p2).skip_group_action?(:restart) { true }
 
-    @controller.send_command(:restart, "samples")
+    @controller.command(:restart, 'samples')
     sleep 9
 
-    @p1.schedule_history.states.should == [:monitor, :restart]
-    @p2.schedule_history.states.should == [:monitor]
+    @p1.scheduler_history.states.should == [:monitor, :restart]
+    @p2.scheduler_history.states.should == [:monitor]
   end
 
   it "if processes dead in chain restart, nothing raised" do
-    @controller.send_command(:restart, "samples")
+    @controller.command(:restart, 'samples')
     sleep 3
 
     @pids += @controller.all_processes.map(&:pid) # to ensure kill this processes after spec
@@ -74,25 +74,25 @@ describe "Intergration chains" do
   end
 
   it "chain breaker breaks current chain and all pending requests" do
-    @controller.send_command(:restart, "samples")
-    @controller.send_command(:stop, "samples")
+    @controller.command(:restart, 'samples')
+    @controller.command(:stop, 'samples')
     sleep 0.5
 
-    @samples.current_scheduled_command.should == :restart
-    @samples.scheduler_actions_list.should == [:stop]
+    @samples.scheduler_current_command.should == :restart
+    @samples.scheduler_commands_list.should == [:stop]
 
-    @controller.command(:break_chain, "samples")
+    @controller.command(:break_chain, 'samples')
     sleep 3
-    @samples.current_scheduled_command.should == :restart
+    @samples.scheduler_current_command.should == :restart
     sleep 2
-    @samples.current_scheduled_command.should == nil
-    @samples.scheduler_actions_list.should == []
+    @samples.scheduler_current_command.should == nil
+    @samples.scheduler_commands_list.should == []
 
     sleep 1
 
     # only first process should be restarted
-    @p1.last_scheduled_command.should == :restart
-    @p2.last_scheduled_command.should == :monitor
+    @p1.scheduler_last_command.should == :restart
+    @p2.scheduler_last_command.should == :monitor
   end
 
 end

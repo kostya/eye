@@ -20,7 +20,7 @@ private
 
     processes.each do |p|
       if p.state_name != :up && (should_start != false)
-        p.schedule :start, Eye::Reason.new(:start_dependency)
+        p.schedule command: :start, reason: 'start_dependency'
       end
     end
 
@@ -40,7 +40,7 @@ private
       process.switch :unmonitoring
 
       if retry_after
-        process.schedule_in retry_after, :start, Eye::Reason.new(:wait_dependency)
+        process.schedule in: retry_after, command: :start, reason: 'wait_dependency'
       end
 
       raise Eye::Process::StateError, 'stop transition because dependency is not up'

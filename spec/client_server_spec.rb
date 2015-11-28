@@ -13,8 +13,8 @@ describe "Eye::Client, Eye::Server" do
   end
 
   it "client command, should send to controller" do
-    mock(Eye::Control).command('restart', 'samples'){ :command_sent }
-    mock(Eye::Control).command('stop'){ :command_sent2 }
+    mock(Eye::Control).command('restart', 'samples', {}){ :command_sent }
+    mock(Eye::Control).command('stop', {}){ :command_sent2 }
     @server.async.run
     sleep 0.1
 
@@ -23,7 +23,7 @@ describe "Eye::Client, Eye::Server" do
   end
 
   it "another spec works too" do
-    mock(Eye::Control).command('stop'){ :command_sent2 }
+    mock(Eye::Control).command('stop', {}){ :command_sent2 }
     @server.async.run
     sleep 0.1
 
@@ -31,7 +31,7 @@ describe "Eye::Client, Eye::Server" do
   end
 
   it "if server already listen should recreate" do
-    mock(Eye::Control).command('stop'){ :command_sent2 }
+    mock(Eye::Control).command('stop', {}){ :command_sent2 }
     @server.async.run
     sleep 0.1
     @server2 = Eye::Server.new(@socket_path)

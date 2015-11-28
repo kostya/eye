@@ -12,7 +12,7 @@ describe "StopOnDelete behaviour" do
   end
 
   it "delete process => stop process" do
-    @controller.send_command(:delete, "sample1")
+    @controller.command(:delete, "sample1")
     sleep 7 # while
 
     @controller.all_processes.map(&:name).sort.should == %w{forking sample2}
@@ -27,7 +27,7 @@ describe "StopOnDelete behaviour" do
   end
 
   it "delete application => stop group proceses" do
-    @controller.send_command(:delete, "samples").should == {:result => ["int:samples"]}
+    @controller.command(:delete, "samples").should == {:result => ["int:samples"]}
     sleep 7 # while
 
     @controller.all_processes.should == [@p3]
@@ -46,7 +46,7 @@ describe "StopOnDelete behaviour" do
   end
 
   it "delete application => stop all proceses" do
-    @controller.send_command(:delete, "int")
+    @controller.command(:delete, "int")
     sleep 8 # while
 
     @controller.all_processes.should == []

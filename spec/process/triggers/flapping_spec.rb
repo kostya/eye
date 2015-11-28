@@ -92,8 +92,8 @@ describe "Flapping" do
     @process = process(@c)
     @process.schedule :start
 
-    proxy(@process).schedule(:restore, anything)
-    proxy(@process).schedule(:check_crash, anything)
+    proxy(@process).schedule(:command => :restore)
+    proxy(@process).schedule(:command => :check_crash)
     dont_allow(@process).schedule(:unmonitor)
 
     sleep 2

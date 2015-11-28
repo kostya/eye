@@ -25,7 +25,7 @@ private
 
     if act
       processes.each do |p|
-        p.schedule act, Eye::Reason.new(:"#{act} dependecies")
+        p.schedule command: act, reason: "#{act} dependecies"
       end
     end
   end

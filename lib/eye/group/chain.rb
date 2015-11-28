@@ -2,7 +2,14 @@ module Eye::Group::Chain
 
 private
 
-  def chain_schedule(type, grace, command, *args)
+  def chained_call(call)
+    type, grace = chain_options(call[:command])
+    chain_schedule(type, grace, call)
+  end
+
+  def chain_schedule(type, grace, call)
+    command = call[:command]
+    args = call[:args]
     info "starting #{type} with #{grace}s chain #{command} #{args}"
 
     @chain_processes_count = @processes.size
@@ -17,7 +24,7 @@ private
         next
       end
 
-      chain_schedule_process(process, type, command, *args)
+      chain_schedule_process(process, type, call)
 
       @chain_processes_current = @chain_processes_current.to_i + 1
 
@@ -37,18 +44,20 @@ private
     @chain_processes_current = nil
   end
 
-  def chain_schedule_process(process, type, command, *args)
-    debug { "chain_schedule_process #{process.name} #{type} #{command}" }
+  def chain_schedule_process(process, type, call)
+    debug { "chain_schedule_process #{process.name} #{type} #{call[:command]}" }
 
     if type == :sync
       # sync command, with waiting
       # this is very hackety, because call method of the process without its scheduler
       # need to provide some scheduler future
-      process.last_scheduled_reason = last_scheduled_reason
-      process.send(command, *args)
+
+      # TODO: remove hack here
+      # process.last_scheduled_reason = last_scheduled_reason
+      process.send(call[:command], *call[:args])
     else
       # async command
-      process.send_command(command, *args)
+      process.send_call(call)
     end
   end
 
@@ -56,11 +65,6 @@ private
     if @config[:chain]
       [:start, :restart].map { |c| @config[:chain][c].try(:[], :grace) }
     end
-  end
-
-  def chain_command(command, *args)
-    chain_opts = chain_options(command)
-    chain_schedule(chain_opts[:type], chain_opts[:grace], command, *args)
   end
 
   # with such delay will chained processes by default
@@ -74,12 +78,12 @@ private
       type = [:async, :sync].include?(type) ? type : :async
 
       grace = @config[:chain][command].try :[], :grace
-      grace = grace ? (grace.to_f rescue DEFAULT_CHAIN) : DEFAULT_CHAIN
+      grace = (grace || DEFAULT_CHAIN).to_f rescue DEFAULT_CHAIN
 
-      { type: type, grace: grace }
+      [type, grace]
     else
       # default chain case
-      { type: :async, grace: DEFAULT_CHAIN }
+      [:async, DEFAULT_CHAIN]
     end
   end
 

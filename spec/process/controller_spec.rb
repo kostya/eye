@@ -127,7 +127,7 @@ describe "Process Controller" do
   describe "process cant start, crash each time" do
     before :each do
       @process = process(C.p2.merge(:start_command => C.p2[:start_command] + " -r" ))
-      @process.send_command :start
+      @process.send_call :command => :start
     end
 
     it "we send command to stop it" do
@@ -135,7 +135,7 @@ describe "Process Controller" do
       sleep 10
 
       # now send stop command
-      @process.send_command :stop
+      @process.send_call :command => :stop
       sleep 7
 
       # process should be stopped here
@@ -147,7 +147,7 @@ describe "Process Controller" do
       sleep 10
 
       # now send stop command
-      @process.send_command :unmonitor
+      @process.send_call :command => :unmonitor
       sleep 7
 
       # process should be stopped here

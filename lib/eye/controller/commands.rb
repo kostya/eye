@@ -5,6 +5,7 @@ module Eye::Controller::Commands
 
   # Main method, answer for the client command
   def command(cmd, *args)
+    opts = args.extract_options!
     msg = "command: #{cmd} #{args * ', '}"
 
     log_str = "=> #{msg}"
@@ -14,14 +15,16 @@ module Eye::Controller::Commands
     cmd = cmd.to_sym
 
     res = case cmd
+
+      # scheduled command
       when :start, :stop, :restart, :unmonitor, :monitor, :break_chain
-        send_command(cmd, *args)
+        apply(args, command: cmd, signal: opts[:signal])
       when :delete
-        exclusive { send_command(cmd, *args) }
-      when :signal
-        signal(*args)
-      when :user_command
-        user_command(*args)
+        exclusive { apply(args, command: cmd, signal: opts[:signal]) }
+      when :signal, :user_command
+        apply(args[1..-1], command: cmd, args: args[0...1], signal: opts[:signal])
+
+      # inline command
       when :load
         exclusive { load(*args) }
       when :quit
@@ -72,10 +75,11 @@ private
 
   # stop all processes and wait
   def stop_all(timeout = nil)
+    # TODO: rewrite with signal
     exclusive do
-      send_command :break_chain, 'all'
-      send_command :stop, 'all'
-      send_command :freeze, 'all'
+      apply(%w[all], command: :break_chain)
+      apply(%w[all], command: :stop)
+      apply(%w[all], command: :freeze)
     end
 
     # wait until all processes goes to unmonitored

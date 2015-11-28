@@ -31,7 +31,7 @@ class Eye::Server
       return
     end
 
-    response = command(cmd, *args)
+    response = Eye::Control.command(cmd, *args, {})
     socket.write(Marshal.dump(response))
 
   rescue Errno::EPIPE
@@ -40,10 +40,6 @@ class Eye::Server
 
   ensure
     socket.close
-  end
-
-  def command(cmd, *args)
-    Eye::Control.command(cmd, *args)
   end
 
   def unlink_socket_file

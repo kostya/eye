@@ -32,7 +32,7 @@ describe "Process Cpu check" do
       sleep 3
 
       stub(Eye::SystemResources).cpu(@process.pid){ 20 }
-      mock(@process).schedule(:restart, anything)
+      mock(@process).schedule(:command => :restart)
 
       sleep 1
     end
@@ -45,7 +45,7 @@ describe "Process Cpu check" do
       sleep 3
 
       stub(Eye::SystemResources).cpu(@process.pid){ 7 }
-      dont_allow(@process).schedule(:restart)
+      dont_allow(@process).schedule(:command => :restart)
 
       sleep 1
     end
@@ -63,7 +63,7 @@ describe "Process Cpu check" do
       sleep 3
 
       stub(Eye::SystemResources).cpu(@process.pid){ 15 }
-      mock(@process).schedule(:restart, anything)
+      mock(@process).schedule(:command => :restart)
 
       sleep 6
     end
@@ -75,7 +75,7 @@ describe "Process Cpu check" do
       sleep 3
 
       stub(Eye::SystemResources).cpu(@process.pid){ 7 }
-      dont_allow(@process).schedule(:restart)
+      dont_allow(@process).schedule(:command => :restart)
 
       sleep 6
     end
@@ -93,7 +93,7 @@ describe "Process Cpu check" do
       sleep 5
 
       stub(Eye::SystemResources).cpu(@process.pid){ 15 }
-      mock(@process).schedule(:restart, anything)
+      mock(@process).schedule(:command => :restart)
 
       sleep 6
     end
@@ -105,7 +105,7 @@ describe "Process Cpu check" do
       sleep 5
 
       stub(Eye::SystemResources).cpu(@process.pid){ 7 }
-      dont_allow(@process).schedule(:restart)
+      dont_allow(@process).schedule(:command => :restart)
 
       sleep 6
     end

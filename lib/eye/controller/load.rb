@@ -150,9 +150,11 @@ private
     # now, need to clear @old_groups, and @old_processes
     @old_groups.each do |_, group|
       group.clear
-      group.send_command(:delete)
+      group.send_call(command: :delete, reason: 'load by user')
     end
-    @old_processes.each { |_, process| process.send_command(:delete) if process.alive? }
+    @old_processes.each do |_, process|
+      process.send_call(command: :delete, reason: 'load by user') if process.alive?
+    end
 
     # schedule monitoring for new groups, processes
     added_fully_groups = []
@@ -163,8 +165,8 @@ private
       end
     end
 
-    added_fully_groups.each { |group| group.send_command :monitor }
-    @added_processes.each { |process| process.send_command :monitor }
+    added_fully_groups.each { |group| group.send_call command: :monitor, reason: 'load by user' }
+    @added_processes.each { |process| process.send_call command: :monitor, reason: 'load by user' }
 
     # remove links to prevent memory leaks
     @old_groups = nil
@@ -181,7 +183,7 @@ private
     group = if @old_groups[group_name]
       debug { "updating group: #{group_name}" }
       group = @old_groups.delete(group_name)
-      group.schedule :update_config, group_config, Eye::Reason::User.new(:'load config')
+      group.send_call command: :update_config, args: [group_config], reason: 'load by user'
       group.clear
       group
     else
@@ -208,7 +210,7 @@ private
     if @old_processes[key]
       debug { "updating process: #{name}" }
       process = @old_processes.delete(key)
-      process.schedule :update_config, process_cfg, Eye::Reason::User.new(:'load config')
+      process.send_call command: :update_config, args: [process_cfg], reason: 'load by user'
       process
     else
       debug { "creating process: #{name}" }

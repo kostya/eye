@@ -193,11 +193,11 @@ class Eye::Checker
     process.notify :warn, "Bounded #{check_name}: #{last_human_values} send to #{actions}"
 
     actions.each do |action|
-      reason = Eye::Reason.new("bounded #{check_name}")
+      reason = "bounded #{check_name}"
       if action.is_a?(Proc)
-        process.schedule :execute_proc, reason, &action
+        process.schedule command: :instance_exec, reason: reason, block: action
       else
-        process.schedule action, reason
+        process.schedule command: action, reason: reason
       end
     end
   end

@@ -1,34 +1,30 @@
-module Eye::Controller::SendCommand
+module Eye::Controller::Apply
 
-  def send_command(command, *args)
-    matched_objects(*args) do |obj|
-      if command.to_sym == :delete
+  def apply(masks, call)
+    res = matched_objects(*masks) do |obj|
+      if call[:command].to_sym == :delete
         remove_object_from_tree(obj)
-
         set_proc_line
       end
-
-      obj.send_command(command)
     end
+
+    objs = res.delete(:objects)
+    async.apply_to_objects(objs, call) if objs
+    res
   end
 
   def match(*args)
     matched_objects(*args)
   end
 
-  def signal(signal, *args)
-    matched_objects(*args) do |obj|
-      obj.send_command :signal, signal || 0
-    end
-  end
-
-  def user_command(cmd, *args)
-    matched_objects(*args) do |obj|
-      obj.send_command :user_command, cmd
-    end
-  end
-
 private
+
+  def apply_to_objects(objs, call)
+    # TODO: if signal, create multiple signals?
+    objs.each do |obj|
+      obj.send_call(call)
+    end
+  end
 
   class Error < Exception; end
 
@@ -36,7 +32,7 @@ private
     objs = find_objects(*args)
     res = objs.map(&:full_name)
     objs.each { |obj| block[obj] } if block
-    { result: res }
+    { result: res, objects: objs }
 
   rescue Error => ex
     { error: ex.message }
@@ -68,6 +64,7 @@ private
   # find object to action, restart ... (app, group or process)
   # nil if not found
   def find_objects(*args)
+    # TODO, why h? for what?
     h = args.extract_options!
     obj_strs = args
 

@@ -83,7 +83,7 @@ describe "Eye::Controller" do
 
   it "should delete all apps" do
     subject.load(fixture("dsl/load.eye")).should_be_ok
-    subject.send_command(:delete, 'all')
+    subject.apply(%w{all}, :command => :delete)
     subject.applications.should be_empty
   end
 
@@ -100,13 +100,18 @@ describe "Eye::Controller" do
   end
 
   describe "command" do
-    it "should send_command" do
-      mock(subject).send_command(:restart, 'samples')
+    it "should apply" do
+      mock(subject).apply(%w{samples}, :command => :restart, :signal=>nil)
       subject.command('restart', 'samples')
     end
 
-    it "should send_command" do
-      mock(subject).send_command(:restart)
+    it "should apply" do
+      mock(subject).apply(%w{samples blah}, :command => :restart, :signal=>nil)
+      subject.command(:restart, 'samples', 'blah')
+    end
+
+    it "should apply" do
+      mock(subject).apply([], :command => :restart, :signal=>nil)
       subject.command(:restart)
     end
 

@@ -52,7 +52,7 @@ config = File.expand_path(config) if config && !config.empty?
 Eye::Control # preload
 
 if config
-  res = server.command('load', config)
+  res = Eye::Control.command('load', config)
   exit(1) if res.values.any? { |r| r[:error] }
 end
 

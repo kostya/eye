@@ -16,7 +16,7 @@ describe "Intergration restart" do
   end
 
   it "restart process group samples" do
-    @controller.send_command(:restart, "samples")
+    @controller.command(:restart, "samples")
     sleep 11 # while they restarting
 
     @processes.map{|c| c.state_name}.uniq.should == [:up]
@@ -26,7 +26,7 @@ describe "Intergration restart" do
   end
 
   it "restart process" do
-    @controller.send_command(:restart, "sample1")
+    @controller.command(:restart, "sample1")
     sleep 10 # while they restarting
 
     @processes.map{|c| c.state_name}.uniq.should == [:up]
@@ -35,8 +35,19 @@ describe "Intergration restart" do
     @p3.pid.should == @old_pid3
   end
 
+  it "restart process with signal" do
+    should_spend(3, 0.2) do
+      c = Celluloid::Condition.new
+      @controller.command(:restart, "sample1", :signal => c)
+      c.wait
+    end
+
+    @processes.map{|c| c.state_name}.uniq.should == [:up]
+    @p1.pid.should_not == @old_pid1
+  end
+
   it "restart process forking" do
-    @controller.send_command(:restart, "forking")
+    @controller.command(:restart, "forking")
     sleep 11 # while they restarting
 
     @processes.map{|c| c.state_name}.uniq.should == [:up]
@@ -44,8 +55,8 @@ describe "Intergration restart" do
     @p2.pid.should == @old_pid2
     @p3.pid.should_not == @old_pid3
 
-    @p1.last_scheduled_reason.to_s.should == 'monitor by user'
-    @p3.last_scheduled_reason.to_s.should == 'restart by user'
+    @p1.scheduler_last_reason.should == 'monitor by user'
+    @p3.scheduler_last_reason.should == 'restart by user'
   end
 
   it "restart forking named child" do
@@ -54,7 +65,7 @@ describe "Intergration restart" do
     @children.size.should == 3
     dead_pid = @children.sample
 
-    @controller.send_command(:restart, "child-#{dead_pid}").should == {:result => ["int:forking:child-#{dead_pid}"]}
+    @controller.command(:restart, "child-#{dead_pid}").should == {:result => ["int:forking:child-#{dead_pid}"]}
     sleep 11 # while it
 
     new_children = @p3.children.keys
@@ -64,11 +75,11 @@ describe "Intergration restart" do
       new_children.should include(pid)
     end
 
-    @p3.schedule_history.states.should include("restart_child")
+    @p3.scheduler_history.states.should include("restart_child")
   end
 
   it "restart missing" do
-    @controller.send_command(:restart, "blabla").should == {:result => []}
+    @controller.command(:restart, "blabla").should == {:result => []}
     sleep 1
     @processes.map{|c| c.state_name}.uniq.should == [:up]
     @p1.pid.should == @old_pid1

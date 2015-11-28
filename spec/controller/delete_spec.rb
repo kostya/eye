@@ -12,7 +12,7 @@ describe "Intergration Delete" do
   end
 
   it "delete group not monitoring anymore" do
-    @controller.send_command(:delete, "samples").should == {:result => ["int:samples"]}
+    @controller.command(:delete, "samples").should == {:result => ["int:samples"]}
     sleep 7 # while
 
     @controller.all_processes.should == [@p3]
@@ -32,7 +32,7 @@ describe "Intergration Delete" do
   end
 
   it "delete process not monitoring anymore" do
-    @controller.send_command(:delete, "sample1")
+    @controller.command(:delete, "sample1")
     sleep 7 # while
 
     @controller.all_processes.map(&:name).sort.should == %w{forking sample2}
@@ -53,7 +53,7 @@ describe "Intergration Delete" do
     @p3.wait_for_condition(15, 0.3) { @p3.children.size == 3 }
     @pids += @p3.children.keys
 
-    @controller.send_command(:delete, "int")
+    @controller.command(:delete, "int")
     sleep 7 # while
 
     @controller.all_processes.should == []
@@ -76,7 +76,7 @@ describe "Intergration Delete" do
   end
 
   it "delete by mask" do
-    @controller.send_command(:delete, "sam*").should == {:result => ["int:samples"]}
+    @controller.command(:delete, "sam*").should == {:result => ["int:samples"]}
     sleep 7 # while
 
     @controller.all_processes.should == [@p3]

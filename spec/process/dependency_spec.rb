@@ -48,7 +48,7 @@ describe "dependency" do
     end
 
     it "start :a" do
-      @process_a.send_command :start
+      @process_a.send_call :command => :start
       sleep 4
 
       @process_a.state_name.should == :up
@@ -57,12 +57,12 @@ describe "dependency" do
       @process_a.states_history.states.should == [:unmonitored, :starting, :up]
       @process_b.states_history.states.should == [:unmonitored]
 
-      @process_a.schedule_history.states.should == [:monitor, :unmonitor, :start]
-      @process_b.schedule_history.states.should == [:monitor, :unmonitor]
+      @process_a.scheduler_history.states.should == [:monitor, :unmonitor, :start]
+      @process_b.scheduler_history.states.should == [:monitor, :unmonitor]
     end
 
     it "start :b" do
-      @process_b.send_command :start
+      @process_b.send_call :command => :start
       sleep 4.5
 
       @process_a.state_name.should == :up
@@ -71,13 +71,13 @@ describe "dependency" do
       @process_a.states_history.states.should == [:unmonitored, :starting, :up]
       @process_b.states_history.states.should == [:unmonitored, :starting, :up]
 
-      @process_a.schedule_history.states.should == [:monitor, :unmonitor, :start]
-      @process_b.schedule_history.states.should == [:monitor, :unmonitor, :start]
+      @process_a.scheduler_history.states.should == [:monitor, :unmonitor, :start]
+      @process_b.scheduler_history.states.should == [:monitor, :unmonitor, :start]
     end
 
     it "start :b, and :a not started (crashed)" do
       @process_a.config[:start_command] = "asdfasdf asf "
-      @process_b.send_command :start
+      @process_b.send_call :command => :start
 
       dont_allow(@process_b).daemonize_process
       sleep 7
@@ -92,7 +92,7 @@ describe "dependency" do
       @process_a.config[:start_command] = "asdfasdf asf "
       @process_a.config[:start_grace] = 1.seconds
       @process_b.config[:triggers].detect{|k, v| k.to_s =~ /wait_dep/}[1][:retry_after] = 2.seconds
-      @process_b.send_command :start
+      @process_b.send_call :command => :start
       sleep 6
       @process_a.state_name.should == :unmonitored
       @process_b.state_name.should == :unmonitored
@@ -109,7 +109,7 @@ describe "dependency" do
     it "start :b, and :a started after big timeout (> wait_timeout)" do
       @process_a.config[:start_grace] = 6.seconds
       @process_b.config[:triggers].detect{|k, v| k.to_s =~ /wait_dep/}[1][:retry_after] = 2.seconds
-      @process_b.send_command :start
+      @process_b.send_call :command => :start
       sleep 10
 
       @process_a.state_name.should == :up
@@ -118,15 +118,15 @@ describe "dependency" do
       @process_a.states_history.states.should == [:unmonitored, :starting, :up]
       @process_b.states_history.states.should == [:unmonitored, :starting, :unmonitored, :starting, :up]
 
-      @process_a.schedule_history.states.should == [:monitor, :unmonitor, :start]
-      @process_b.schedule_history.states.should == [:monitor, :unmonitor, :start, :start]
+      @process_a.scheduler_history.states.should == [:monitor, :unmonitor, :start]
+      @process_b.scheduler_history.states.should == [:monitor, :unmonitor, :start, :start]
     end
 
     it "start :b and should_start = false" do
       @process_b.config[:triggers].detect{|k, v| k.to_s =~ /wait_dep/}[1][:should_start] = false
       @process_b.config[:triggers].detect{|k, v| k.to_s =~ /wait_dep/}[1][:retry_after] = 2.seconds
 
-      @process_b.send_command :start
+      @process_b.send_call :command => :start
       sleep 4
 
       @process_a.state_name.should == :unmonitored
@@ -143,8 +143,8 @@ describe "dependency" do
       @process_a.states_history.states.should == [:unmonitored, :starting, :up]
       @process_b.states_history.states.should == [:unmonitored, :starting, :unmonitored, :starting, :up]
 
-      @process_a.schedule_history.states.should == [:monitor, :unmonitor]
-      @process_b.schedule_history.states.should == [:monitor, :unmonitor, :start, :start]
+      @process_a.scheduler_history.states.should == [:monitor, :unmonitor]
+      @process_b.scheduler_history.states.should == [:monitor, :unmonitor, :start, :start]
     end
   end
 
@@ -205,8 +205,8 @@ describe "dependency" do
       @process_a.states_history.states.should == [:unmonitored, :starting, :up, :down, :starting, :up]
       @process_b.states_history.states.should == [:unmonitored, :starting, :up, :restarting, :stopping, :down, :starting, :up]
 
-      @process_a.schedule_history.states[0,4].should == [:monitor, :start, :check_crash, :restore]
-      @process_b.schedule_history.states.should == [:monitor, :restart]
+      @process_a.scheduler_history.states[0,4].should == [:monitor, :start, :check_crash, :restore]
+      @process_b.scheduler_history.states.should == [:monitor, :restart]
     end
 
     it "crashed :b, should only restore :b" do
@@ -226,8 +226,8 @@ describe "dependency" do
       @process_a.states_history.states.should == [:unmonitored, :starting, :up]
       @process_b.states_history.states.should == [:unmonitored, :starting, :up, :down, :starting, :up]
 
-      @process_a.schedule_history.states.should == [:monitor, :start]
-      @process_b.schedule_history.states.should == [:monitor, :check_crash, :restore]
+      @process_a.scheduler_history.states.should == [:monitor, :start]
+      @process_b.scheduler_history.states.should == [:monitor, :check_crash, :restore]
     end
 
     it "stop :a, should stop :b" do
@@ -243,8 +243,8 @@ describe "dependency" do
       @process_a.states_history.states.should == [:unmonitored, :starting, :up, :stopping, :down, :unmonitored]
       @process_b.states_history.states.should == [:unmonitored, :starting, :up, :stopping, :down, :unmonitored]
 
-      @process_a.schedule_history.states.should == [:monitor, :start]
-      @process_b.schedule_history.states.should == [:monitor, :stop]
+      @process_a.scheduler_history.states.should == [:monitor, :start]
+      @process_b.scheduler_history.states.should == [:monitor, :stop]
     end
 
     it "stop :b" do
@@ -260,8 +260,8 @@ describe "dependency" do
       @process_a.states_history.states.should == [:unmonitored, :starting, :up]
       @process_b.states_history.states.should == [:unmonitored, :starting, :up, :stopping, :down, :unmonitored]
 
-      @process_a.schedule_history.states.should == [:monitor, :start]
-      @process_b.schedule_history.states.should == [:monitor]
+      @process_a.scheduler_history.states.should == [:monitor, :start]
+      @process_b.scheduler_history.states.should == [:monitor]
     end
 
     it "unmonitor :a, should unmonitor :b" do
@@ -277,8 +277,8 @@ describe "dependency" do
       @process_a.states_history.states.should == [:unmonitored, :starting, :up, :unmonitored]
       @process_b.states_history.states.should == [:unmonitored, :starting, :up, :unmonitored]
 
-      @process_a.schedule_history.states.should == [:monitor, :start]
-      @process_b.schedule_history.states.should == [:monitor, :unmonitor]
+      @process_a.scheduler_history.states.should == [:monitor, :start]
+      @process_b.scheduler_history.states.should == [:monitor, :unmonitor]
     end
 
     it "unmonitor :b" do
@@ -294,8 +294,8 @@ describe "dependency" do
       @process_a.states_history.states.should == [:unmonitored, :starting, :up]
       @process_b.states_history.states.should == [:unmonitored, :starting, :up, :unmonitored]
 
-      @process_a.schedule_history.states.should == [:monitor, :start]
-      @process_b.schedule_history.states.should == [:monitor]
+      @process_a.scheduler_history.states.should == [:monitor, :start]
+      @process_b.scheduler_history.states.should == [:monitor]
     end
 
     it "restart :a, should restart :b" do
@@ -311,8 +311,8 @@ describe "dependency" do
       @process_a.states_history.states.should == [:unmonitored, :starting, :up, :restarting, :stopping, :down, :starting, :down, :starting, :up]
       @process_b.states_history.states.should == [:unmonitored, :starting, :up, :restarting, :stopping, :down, :starting, :up]
 
-      @process_a.schedule_history.states.should == [:monitor, :start, :start, :check_crash, :restore]
-      @process_b.schedule_history.states.should == [:monitor, :restart]
+      @process_a.scheduler_history.states.should == [:monitor, :start, :start, :check_crash, :restore]
+      @process_b.scheduler_history.states.should == [:monitor, :restart]
     end
 
     it "restart :b" do
@@ -328,12 +328,12 @@ describe "dependency" do
       @process_a.states_history.states.should == [:unmonitored, :starting, :up]
       @process_b.states_history.states.should == [:unmonitored, :starting, :up, :restarting, :stopping, :down, :starting, :up]
 
-      @process_a.schedule_history.states.should == [:monitor, :start]
-      @process_b.schedule_history.states.should == [:monitor]
+      @process_a.scheduler_history.states.should == [:monitor, :start]
+      @process_b.scheduler_history.states.should == [:monitor]
     end
 
     it "restart send to group" do
-      @c.send_command :restart, 'app'
+      @c.command :restart, 'app'
       sleep 3.5
 
       @process_a.state_name.should == :up
@@ -345,12 +345,12 @@ describe "dependency" do
       @process_a.states_history.states.should == [:unmonitored, :starting, :up, :restarting, :stopping, :down, :starting, :up]
       @process_b.states_history.states.should == [:unmonitored, :starting, :up, :restarting, :stopping, :down, :starting, :up]
 
-      @process_a.schedule_history.states.should == [:monitor, :start, :restart, :start]
-      @process_b.schedule_history.states.should == [:monitor, :restart]
+      @process_a.scheduler_history.states.should == [:monitor, :start, :restart, :start]
+      @process_b.scheduler_history.states.should == [:monitor, :restart]
     end
 
     it ":a was deleted, should successfully restart :b" do
-      @c.send_command :delete, 'a'
+      @c.command :delete, 'a'
 
       @process_b.restart
       sleep 1
@@ -358,11 +358,11 @@ describe "dependency" do
       @process_b.state_name.should == :up
       Eye::System.pid_alive?(@pid_b).should == false
       @process_b.states_history.states.should == [:unmonitored, :starting, :up, :restarting, :stopping, :down, :starting, :up]
-      @process_b.schedule_history.states.should == [:monitor]
+      @process_b.scheduler_history.states.should == [:monitor]
     end
 
     it ":b was deleted, should successfully restart :a" do
-      @c.send_command :delete, 'b'
+      @c.command :delete, 'b'
 
       @process_a.restart
       sleep 1
@@ -370,11 +370,11 @@ describe "dependency" do
       @process_a.state_name.should == :up
       Eye::System.pid_alive?(@pid_a).should == false
       @process_a.states_history.states.should == [:unmonitored, :starting, :up, :restarting, :stopping, :down, :starting, :up]
-      @process_a.schedule_history.states.should == [:monitor, :start]
+      @process_a.scheduler_history.states.should == [:monitor, :start]
     end
 
     it ":b was unmonitored, should successfully restart :a, and not restart :b" do
-      @c.send_command :unmonitor, 'b'
+      @c.command :unmonitor, 'b'
       sleep 0.2
 
       @process_a.restart
@@ -384,23 +384,23 @@ describe "dependency" do
       @process_b.state_name.should == :unmonitored
       Eye::System.pid_alive?(@pid_a).should == false
       @process_a.states_history.states.should == [:unmonitored, :starting, :up, :restarting, :stopping, :down, :starting, :up]
-      @process_a.schedule_history.states.should == [:monitor, :start]
-      @process_b.schedule_history.states.should == [:monitor, :unmonitor]
+      @process_a.scheduler_history.states.should == [:monitor, :start]
+      @process_b.scheduler_history.states.should == [:monitor, :unmonitor]
     end
 
     it ":b was unmonitored, when restart group, should restart a and b" do
-      @c.send_command :unmonitor, 'b'
+      @c.command :unmonitor, 'b'
       sleep 0.2
 
-      @c.send_command :restart, 'app'
+      @c.command :restart, 'app'
       sleep 2.5
 
       @process_a.state_name.should == :up
       @process_b.state_name.should == :up
       Eye::System.pid_alive?(@pid_a).should == false
       @process_a.states_history.states.should == [:unmonitored, :starting, :up, :restarting, :stopping, :down, :starting, :up]
-      @process_a.schedule_history.states.should == [:monitor, :start, :restart, :start]
-      @process_b.schedule_history.states.should == [:monitor, :unmonitor, :restart]
+      @process_a.scheduler_history.states.should == [:monitor, :start, :restart, :start]
+      @process_b.scheduler_history.states.should == [:monitor, :unmonitor, :restart]
     end
   end
 end

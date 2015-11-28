@@ -50,11 +50,11 @@ describe "Scheduler" do
     @process.test1.should == nil
     @process.schedule :scheduler_test1, 1
     sleep 0.1
-    @process.current_scheduled_command.should == :scheduler_test1
+    @process.scheduler_current_command.should == :scheduler_test1
     @process.test1.should == nil
     sleep 0.4
     @process.test1.should == 1
-    @process.current_scheduled_command.should == nil
+    @process.scheduler_current_command.should == nil
   end
 
   it "should one after another" do
@@ -93,7 +93,7 @@ describe "Scheduler" do
     @process.test2.should == [1, 2]
   end
 
-  it "should not scheduler duplicates" do
+  xit "should not scheduler duplicates" do
     @process.schedule :scheduler_test1, 1
     @process.schedule :scheduler_test1, 1
     @process.schedule :scheduler_test1, 1
@@ -143,31 +143,31 @@ describe "Scheduler" do
     it "1 param without reason" do
       @process.schedule :scheduler_test3, 1
       sleep 0.1
-      @process.last_scheduled_command.should == :scheduler_test3
-      @process.last_scheduled_reason.should == nil
+      @process.scheduler_last_command.should == :scheduler_test3
+      @process.scheduler_last_reason.should == nil
       @process.test3.should == [1]
     end
 
     it "1 param with reason" do
-      @process.schedule :scheduler_test3, 1, Eye::Reason.new("reason")
+      @process.schedule command: :scheduler_test3, args: [1], reason: "reason"
       sleep 0.1
-      @process.last_scheduled_command.should == :scheduler_test3
-      @process.last_scheduled_reason.to_s.should == 'reason'
+      @process.scheduler_last_command.should == :scheduler_test3
+      @process.scheduler_last_reason.should == 'reason'
       @process.test3.should == [1]
     end
 
     it "many params with reason" do
-      @process.schedule :scheduler_test3, 1, :bla, 3, Eye::Reason.new("reason")
+      @process.schedule command: :scheduler_test3, args: [1, :bla, 3], reason: "reason"
       sleep 0.1
-      @process.last_scheduled_command.should == :scheduler_test3
-      @process.last_scheduled_reason.to_s.should == 'reason'
+      @process.scheduler_last_command.should == :scheduler_test3
+      @process.scheduler_last_reason.should == 'reason'
       @process.test3.should == [1, :bla, 3]
     end
 
     it "save history" do
-      @process.schedule :scheduler_test3, 1, :bla, 3, Eye::Reason.new("reason")
+      @process.schedule command: :scheduler_test3, args: [1, :bla, 3], reason: "reason"
       sleep 0.1
-      h = @process.schedule_history
+      h = @process.scheduler_history
       h.size.should == 1
       h = h[0]
       h[:state].should == :scheduler_test3
@@ -175,9 +175,33 @@ describe "Scheduler" do
     end
   end
 
+  describe "signals" do
+    it "work" do
+      should_spend(0.3) do
+        c1 = Celluloid::Condition.new
+        @process.schedule command: :scheduler_test1, args: [1], reason: "reason", signal: c1
+        c1.wait
+      end
+      @process.test1.should == 1
+    end
+
+    it "work with combinations" do
+      should_spend(0.9) do
+        c1 = Celluloid::Condition.new
+        c2 = Celluloid::Condition.new
+        @process.schedule command: :scheduler_test1, args: [1], reason: "reason", signal: c1
+        @process.schedule command: :scheduler_test2, args: [1, 2], reason: "reason", signal: c2
+        c1.wait
+        c2.wait
+      end
+      @process.test1.should == 1
+      @process.test2.should == [1, 2]
+    end
+  end
+
   describe "schedule_in" do
     it "should schedule to future" do
-      @process.schedule_in(1.second, :scheduler_test3, 1, 2, 3)
+      @process.schedule(in: 1.second, command: :scheduler_test3, args: [1, 2, 3])
       sleep 0.5
       @process.test3.should == nil
       sleep 0.7
@@ -191,13 +215,13 @@ describe "Scheduler" do
       sleep 0.01
       @process.test3.should == [1, 2, 3]
 
-      @process.scheduler_freeze
+      @process.scheduler_freeze = true
       @process.schedule(:scheduler_test3, 5)
       @process.schedule(:scheduler_test3, 6)
       sleep 0.1
       @process.test3.should == [1, 2, 3]
 
-      @process.scheduler_unfreeze
+      @process.scheduler_freeze = false
       @process.schedule(:scheduler_test3, 7)
       sleep 0.1
       @process.test3.should == [7]
@@ -206,18 +230,13 @@ describe "Scheduler" do
 
   describe "schedule block" do
     it "schedule block" do
-      @process.schedule(:execute_proc) do
-        @test3 = [1, 2]
-      end
-
+      @process.schedule(command: :instance_exec, block: -> { @test3 = [1, 2] })
       sleep 0.1
       @process.test3.should == [1, 2]
     end
 
     it "not crashing on exception" do
-      @process.schedule(:execute_proc) do
-        1 + "bla"
-      end
+      @process.schedule(:instance_exec, block: -> { 1 + "bla" })
       sleep 0.1
       @process.alive?.should be_true
     end
@@ -229,9 +248,9 @@ describe "Scheduler" do
     end
 
     it "should chain" do
-      @t.scheduler_add :a, 0.5
-      @t.scheduler_add :b, 0.3
-      @t.scheduler_add :cu, 0.1
+      @t.scheduler_add command: :a, args: [0.5]
+      @t.scheduler_add command: :b, args: [0.3]
+      @t.scheduler_add command: :cu, args: [0.1]
 
       sleep 1
 
@@ -239,18 +258,18 @@ describe "Scheduler" do
     end
 
     it "should chain2" do
-      @t.scheduler_add :cu, 0.1
+      @t.scheduler_add command: :cu, args: [0.1]
       sleep 0.2
 
-      @t.scheduler_add :a, 0.5
-      @t.scheduler_add :b, 0.3
+      @t.scheduler_add command: :a, args: [0.5]
+      @t.scheduler_add command: :b, args: [0.3]
 
       sleep 1
 
       @t.m.should == [:cu, :a, :b]
     end
 
-    it "should remove dups" do
+    xit "should remove dups" do
       @t.scheduler_add :a
       @t.scheduler_add :b
       @t.scheduler_add :b
@@ -261,7 +280,7 @@ describe "Scheduler" do
       @t.m.should == [:a, :b, :b, :cu]
     end
 
-    it "should remove dups" do
+    xit "should remove dups" do
       @t.scheduler_add_wo_dups :a
       @t.scheduler_add_wo_dups :b
       @t.scheduler_add_wo_dups :b
@@ -275,7 +294,7 @@ describe "Scheduler" do
       @t.m.should == [:a, :b, :cu, :a, :cu]
     end
 
-    it "should remove dups and current" do
+    xit "should remove dups and current" do
       @t.scheduler_add_wo_dups_current :a, 0.6
       sleep 0.3
       @t.scheduler_add_wo_dups_current :a, 0.6
@@ -286,7 +305,7 @@ describe "Scheduler" do
     end
 
     it "#clear_pending_list" do
-      10.times{ @t.scheduler_add :a }
+      10.times{ @t.scheduler_add command: :a }
       sleep 0.5
       @t.scheduler_clear_pending_list
       sleep 0.5

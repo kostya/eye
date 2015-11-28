@@ -26,7 +26,7 @@ describe "Intergration" do
   end
 
   it "stop group" do
-    @controller.send_command(:stop, "samples")
+    @controller.command(:stop, "samples")
     sleep 7 # while they stopping
 
     @p1.state_name.should == :unmonitored
@@ -43,7 +43,7 @@ describe "Intergration" do
   end
 
   it "stop process" do
-    @controller.send_command(:stop, "sample1")
+    @controller.command(:stop, "sample1")
     sleep 7 # while they stopping
 
     @p1.state_name.should == :unmonitored
@@ -56,7 +56,7 @@ describe "Intergration" do
   end
 
   it "unmonitor process" do
-    @controller.send_command(:unmonitor, "sample1").should == {:result => ["int:samples:sample1"]}
+    @controller.command(:unmonitor, "sample1").should == {:result => ["int:samples:sample1"]}
     sleep 7 # while they stopping
 
     @p1.state_name.should == :unmonitored
@@ -73,11 +73,11 @@ describe "Intergration" do
     mock(@p2).signal('usr2')
     mock(@p3).signal('usr2')
 
-    @controller.signal('usr2', "int").should == {:result => ["int"]}
+    @controller.command(:signal, 'usr2', "int").should == {:result => ["int"]}
     sleep 3 # while they gettings
 
-    @p1.last_scheduled_command.should == :signal
-    @p1.last_scheduled_reason.to_s.should == 'signal by user'
+    @p1.scheduler_last_command.should == :signal
+    @p1.scheduler_last_reason.should == 'signal by user'
 
     mock(@p1).signal('usr1')
     @controller.command(:signal, 'usr1', 'sample1')

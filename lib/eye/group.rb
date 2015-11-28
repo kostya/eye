@@ -4,10 +4,14 @@ class Eye::Group
 
   include Celluloid
 
-  autoload :Chain, 'eye/group/chain'
+  autoload :Call,     'eye/group/call'
+  autoload :Chain,    'eye/group/chain'
+  autoload :Data,     'eye/group/data'
 
   include Eye::Process::Scheduler
+  include Eye::Group::Call
   include Eye::Group::Chain
+  include Eye::Group::Data
 
   attr_reader :processes, :name, :hidden, :config
 
@@ -31,11 +35,6 @@ class Eye::Group
     @full_name ||= "#{app_name}:#{@name}"
   end
 
-  def update_config(cfg)
-    @config = cfg
-    @full_name = nil
-  end
-
   def add_process(process)
     @processes << process
   end
@@ -43,99 +42,6 @@ class Eye::Group
   # sort processes in name order
   def resort_processes
     @processes = @processes.sort_by(&:name)
-  end
-
-  def status_data(opts = {})
-    plist = @processes.map { |p| p.status_data(opts) }
-
-    h = { name: name, type: :group, subtree: plist }
-
-    h[:debug] = debug_data if opts[:debug]
-
-    # show current chain
-    if current_scheduled_command
-      h.update(current_command: current_scheduled_command)
-
-      if (chain_commands = scheduler_actions_list) && chain_commands.present?
-        h.update(chain_commands: chain_commands)
-      end
-
-      if @chain_processes_current && @chain_processes_count
-        h.update(chain_progress: [@chain_processes_current, @chain_processes_count])
-      end
-    end
-
-    h
-  end
-
-  def status_data_short
-    h = {}
-    @processes.each do |p|
-      state = p.state
-      h[state] ||= 0
-      h[state] += 1
-    end
-    { name: (@name == '__default__' ? 'default' : @name), type: :group, states: h }
-  end
-
-  def debug_data
-    { queue: scheduler_actions_list, chain: chain_status }
-  end
-
-  def send_command(command, *args)
-    info "send_command: #{command}"
-
-    case command
-      when :delete
-        delete(*args)
-      when :break_chain
-        break_chain(*args)
-      else
-        schedule command, *args, Eye::Reason::User.new(command)
-    end
-  end
-
-  def start
-    chain_command :start
-  end
-
-  def stop
-    async_schedule :stop
-  end
-
-  def restart
-    chain_command :restart
-  end
-
-  def delete
-    async_schedule :delete
-    terminate
-  end
-
-  def monitor
-    chain_command :monitor
-  end
-
-  def unmonitor
-    async_schedule :unmonitor
-  end
-
-  def signal(sig)
-    async_schedule :signal, sig
-  end
-
-  def user_command(cmd)
-    async_schedule :user_command, cmd
-  end
-
-  def break_chain
-    info 'break chain'
-    scheduler_clear_pending_list
-    @chain_breaker = true
-  end
-
-  def freeze
-    async_schedule :freeze
   end
 
   def clear
@@ -156,16 +62,6 @@ class Eye::Group
       else
         name <=> other.name
       end
-    end
-  end
-
-private
-
-  def async_schedule(command, *args)
-    info "send to all processes #{command} #{args.present? ? args * ',' : nil}"
-
-    @processes.each do |process|
-      process.send_command(command, *args) unless process.skip_group_action?(command)
     end
   end
 

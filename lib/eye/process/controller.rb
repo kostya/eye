@@ -1,8 +1,7 @@
 module Eye::Process::Controller
 
-  def send_command(command, *args)
-    schedule command, *args, Eye::Reason::User.new(command)
-  end
+  # scheduled actions
+  # :update_config, :start, :stop, :restart, :unmonitor, :monitor, :break_chain, :delete, :signal, :user_command
 
   def start
     if load_external_pid_file == :ok
@@ -30,7 +29,7 @@ module Eye::Process::Controller
       if load_external_pid_file == :ok
         switch :already_running
       else
-        schedule :unmonitor, Eye::Reason.new(:'not found')
+        schedule command: :unmonitor, reason: 'not found'
       end
     end
   end
@@ -63,7 +62,7 @@ module Eye::Process::Controller
   end
 
   def freeze
-    scheduler_freeze
+    self.scheduler_freeze = true
   end
 
 end

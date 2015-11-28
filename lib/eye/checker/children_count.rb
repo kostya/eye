@@ -25,7 +25,7 @@ private
     info "killing pids: #{pids.inspect} for strategy: #{strategy}"
     pids.each do |pid|
       if child = process.children[pid]
-        child.schedule :stop, Eye::Reason.new("bounded #{check_name}")
+        child.schedule command: :stop, reason: "bounded #{check_name}"
       end
     end
   end

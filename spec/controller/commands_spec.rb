@@ -68,7 +68,7 @@ describe "comamnd spec" do
     subject.command(:quit)
   end
 
-  describe "send_command" do
+  describe "apply" do
     it "command load" do
       res = subject.command(:load, fixture("dsl/load.eye"))
       res.class.should == Hash
@@ -76,24 +76,24 @@ describe "comamnd spec" do
 
     it "nothing" do
       subject.load(fixture("dsl/load.eye")).should_be_ok
-      subject.send_command(:start, "2341234").should == {:result => []}
+      subject.apply(["2341234"], :command => :start).should == {:result => []}
     end
 
     it "unknown" do
       subject.load(fixture("dsl/load.eye")).should_be_ok
-      subject.send_command(:st33art, "2341234").should == {:result=>[]}
+      subject.apply(["2341234"], :command => :st33art).should == {:result=>[]}
     end
 
     [:start, :stop, :restart, :unmonitor].each do |cmd|
-      it "should send_command #{cmd}" do
+      it "should user_schedule #{cmd}" do
         sleep 0.3
         any_instance_of(Eye::Process) do |p|
-          dont_allow(p).send_command(cmd)
+          dont_allow(p).user_schedule(:command => cmd)
         end
 
-        mock(@p1).send_command(cmd)
+        mock(@p1).user_schedule(:command => cmd)
 
-        subject.send_command cmd, "p1", :some_flag => true
+        subject.apply %w{p1}, :command => cmd, :some_flag => true
       end
     end
 
@@ -101,12 +101,12 @@ describe "comamnd spec" do
       sleep 0.5
       cmd = :unmonitor
 
-      subject.send_command cmd, "gr1"
+      subject.apply %w{gr1}, :command => cmd
       sleep 0.5
 
-      @p1.schedule_history.states.should == [:monitor, :unmonitor]
-      @p2.schedule_history.states.should == [:monitor, :unmonitor]
-      @p3.schedule_history.states.should == [:monitor]
+      @p1.scheduler_history.states.should == [:monitor, :unmonitor]
+      @p2.scheduler_history.states.should == [:monitor, :unmonitor]
+      @p3.scheduler_history.states.should == [:monitor]
     end
 
     it "stop group with skip_group_action for @p2" do
@@ -115,25 +115,30 @@ describe "comamnd spec" do
 
       stub(@p2).skip_group_action?(:stop) { true }
 
-      subject.send_command cmd, "gr1"
+      subject.apply %w{gr1}, :command => cmd
       sleep 0.5
 
-      @p1.schedule_history.states.should == [:monitor, :stop]
-      @p2.schedule_history.states.should == [:monitor]
-      @p3.schedule_history.states.should == [:monitor]
+      @p1.scheduler_history.states.should == [:monitor, :stop]
+      @p2.scheduler_history.states.should == [:monitor]
+      @p3.scheduler_history.states.should == [:monitor]
     end
 
     it "delete obj" do
       sleep 0.5
       any_instance_of(Eye::Process) do |p|
-        dont_allow(p).send_command(:delete)
+        dont_allow(p).send_call(:command => :delete)
       end
 
-      mock(@p1).send_command(:delete)
-      subject.send_command :delete, "p1"
+      mock(@p1).send_call(:command => :delete)
+      subject.apply %w{p1}, :command => :delete
 
       subject.all_processes.should_not include(@p1)
       subject.all_processes.should include(@p2)
+    end
+
+    it "user_command" do
+      mock(@p1).send_call(:command => :user_command, :args => %w{jopa})
+      subject.apply %w{p1}, :command => :user_command, :args => %w{jopa}
     end
   end
 
