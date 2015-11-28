@@ -305,7 +305,7 @@ describe "dependency multi" do
       @process_b.states_history.states.should == [:unmonitored, :starting, :up, :restarting, :stopping, :down, :starting, :up]
       @process_c.states_history.states.should == [:unmonitored, :starting, :up, :restarting, :stopping, :down, :starting, :up]
 
-      @process_a.scheduler_history.states.should == [:monitor, :start, :start, :restart, :start, :start]
+      @process_a.scheduler_history.states.should == [:monitor, :start, :restart, :start]
       @process_b.scheduler_history.states.should == [:monitor, :restart]
       @process_c.scheduler_history.states.should == [:monitor, :restart]
     end

@@ -61,7 +61,7 @@ module Eye::Process::Scheduler
       info "schedule :#{command} (#{reason_from_call(call)})"
       scheduler_add(call)
     else
-      info "not scheduled: #{command}"
+      info "not scheduled: #{command} (#{reason_from_call(call)})"
     end
 
     @scheduler_freeze = true if call[:freeze] == true
@@ -90,9 +90,16 @@ module Eye::Process::Scheduler
     info "<= #{call[:command]}"
   end
 
-  def filter_call(_call)
-    # TODO: add filter here
-    true
+  def filter_call(call)
+    # for auto reasons, compare call with current @scheduled_call
+    return false if call[:by] != :user && equal_action_call?(@scheduled_call, call)
+
+    # check any equal call in queue scheduler_calls
+    !scheduler_calls.any? { |c| equal_action_call?(c, call) }
+  end
+
+  def equal_action_call?(call1, call2)
+    call1 && call2 && (call1[:command] == call2[:command]) && (call1[:args] == call2[:args]) && (call1[:block] == call2[:block])
   end
 
   def scheduler_calls

@@ -6,7 +6,6 @@ describe Eye::Process do
   end
 
   it "should not double restarts if auto restart" do
-    pending
     @process.schedule :command => :restart, :reason => "bounded memory"
     @process.schedule :command => :restart, :reason => "bounded cpu"
 
@@ -23,4 +22,24 @@ describe Eye::Process do
 
     @process.states_history.count { |c| c[:state] == :restarting }.should == 2
   end
+
+  it "double restart by hands should pass both" do
+    @process.send_call(:command => :restart)
+    @process.send_call(:command => :restart)
+
+    sleep 3
+
+    @process.states_history.count { |c| c[:state] == :restarting }.should == 2
+  end
+
+  it "triple restart by hands should pass only 2" do
+    @process.send_call(:command => :restart)
+    @process.send_call(:command => :restart)
+    @process.send_call(:command => :restart)
+
+    sleep 6
+
+    @process.states_history.count { |c| c[:state] == :restarting }.should == 2
+  end
+
 end

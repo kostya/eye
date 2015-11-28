@@ -93,10 +93,19 @@ describe "Scheduler" do
     @process.test2.should == [1, 2]
   end
 
-  xit "should not scheduler duplicates" do
+  it "should not scheduler duplicates" do
     @process.schedule :scheduler_test1, 1
     @process.schedule :scheduler_test1, 1
     @process.schedule :scheduler_test1, 1
+
+    sleep 1
+    @process.test1_call.should == 1
+  end
+
+  it "should not scheduler duplicates for user schedules" do
+    @process.user_schedule :command => :scheduler_test1, :args => [1]
+    @process.user_schedule :command => :scheduler_test1, :args => [1]
+    @process.user_schedule :command => :scheduler_test1, :args => [1]
 
     sleep 1
     @process.test1_call.should == 2
@@ -265,41 +274,6 @@ describe "Scheduler" do
       sleep 1
 
       @t.m.should == [:cu, :a, :b]
-    end
-
-    xit "should remove dups" do
-      @t.scheduler_add :a
-      @t.scheduler_add :b
-      @t.scheduler_add :b
-      @t.scheduler_add :cu
-      @t.scheduler_add_wo_dups :cu
-
-      sleep 1
-      @t.m.should == [:a, :b, :b, :cu]
-    end
-
-    xit "should remove dups" do
-      @t.scheduler_add_wo_dups :a
-      @t.scheduler_add_wo_dups :b
-      @t.scheduler_add_wo_dups :b
-      @t.scheduler_add_wo_dups :cu
-      @t.scheduler_add_wo_dups :cu
-      @t.scheduler_add_wo_dups :a
-      @t.scheduler_add_wo_dups :cu
-      @t.scheduler_add_wo_dups :cu
-
-      sleep 2
-      @t.m.should == [:a, :b, :cu, :a, :cu]
-    end
-
-    xit "should remove dups and current" do
-      @t.scheduler_add_wo_dups_current :a, 0.6
-      sleep 0.3
-      @t.scheduler_add_wo_dups_current :a, 0.6
-      @t.scheduler_add_wo_dups_current :b
-
-      sleep 0.4
-      @t.m.should == [:a, :b]
     end
 
     it "#clear_pending_list" do
