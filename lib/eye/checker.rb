@@ -130,6 +130,7 @@ class Eye::Checker
     result
 
   rescue Object => ex
+    raise(ex) if ex.class == Celluloid::TaskTerminated
     log_ex(ex)
   end
 

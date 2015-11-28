@@ -39,7 +39,6 @@ private
     { result: res }
 
   rescue Error => ex
-    log_ex(ex)
     { error: ex.message }
 
   rescue Celluloid::DeadActorError => ex

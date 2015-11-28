@@ -6,7 +6,7 @@ describe "Eye::ChildProcess" do
     @pid = Eye::System.daemonize(C.p1[:start_command], C.p1)[:pid]
     Eye::System.pid_alive?(@pid).should == true
     sleep 0.5
-    @parent = OpenStruct.new(:pid => @parent)
+    @parent = OpenStruct.new(:pid => @parent, :scheduler_history => Eye::Process::StatesHistory.new(50))
   end
 
   it "some process was declared by my child" do

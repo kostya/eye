@@ -218,7 +218,6 @@ describe "Scheduler" do
       @process.schedule(:execute_proc) do
         1 + "bla"
       end
-
       sleep 0.1
       @process.alive?.should be_true
     end
