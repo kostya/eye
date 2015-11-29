@@ -9,14 +9,14 @@ module Eye::Group::Data
 
     # show current chain
     if scheduled_call = @scheduled_call
-      h.update(current_command: scheduled_call[:command])
+      h[:current_command] = scheduled_call[:command]
 
       if (chain_commands = scheduler_commands_list) && chain_commands.present?
-        h.update(chain_commands: chain_commands)
+        h[:chain_commands] = chain_commands
       end
 
       if @chain_processes_current && @chain_processes_count
-        h.update(chain_progress: [@chain_processes_current, @chain_processes_count])
+        h[:chain_progress] = [@chain_processes_current, @chain_processes_count]
       end
     end
 
