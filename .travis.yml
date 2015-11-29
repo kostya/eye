@@ -5,5 +5,5 @@ rvm:
   - "2.1.7"
   - "2.2.3"
 script:
-  - bundle exec rake N=16
+  - bundle exec rake N=15
   - bundle exec rubocop
