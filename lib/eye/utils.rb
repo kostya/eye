@@ -55,4 +55,13 @@ module Eye::Utils
     h
   end
 
+  def self.wait_signal(timeout = nil, &block)
+    signal = Celluloid::Condition.new
+    block.call(signal)
+    signal.wait((timeout || 600).to_f)
+    :ok
+  rescue Celluloid::ConditionError
+    :timeouted
+  end
+
 end

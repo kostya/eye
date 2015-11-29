@@ -49,13 +49,8 @@ private
 
     if type == :sync
       # sync command, with waiting
-
-      begin
-        signal = Celluloid::Condition.new
+      Eye::Utils.wait_signal(call[:signal_timeout]) do |signal|
         process.send_call(call.merge(signal: signal))
-        signal.wait((call[:signal_timeout] || 600).to_f)
-      rescue Celluloid::ConditionError => ex
-        log_ex(ex)
       end
 
     else
