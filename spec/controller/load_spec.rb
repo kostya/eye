@@ -72,6 +72,8 @@ describe "Eye::Controller::Load" do
 
     gr1 = subject.group_by_name 'gr1'
     gr1.full_name.should == 'app1:gr1'
+    subject.applications.detect{|c| c.name == 'app1'}.groups.should be_a(Eye::Utils::AliveArray)
+    subject.applications.detect{|c| c.name == 'app1'}.groups.detect{|g| g.name == 'gr1'}.processes.should be_a(Eye::Utils::AliveArray)
 
     g4 = subject.process_by_name('g4')
     g4[:application].should == 'app1'
