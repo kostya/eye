@@ -1,6 +1,10 @@
 module C
   extend self
 
+  def unique
+    process_id.to_s
+  end
+
   def working_dir
     sample_dir
   end

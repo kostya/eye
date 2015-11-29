@@ -4,6 +4,7 @@ module Eye::Utils
 
   autoload :Tail,           'eye/utils/tail'
   autoload :AliveArray,     'eye/utils/alive_array'
+  autoload :Syncer,         'eye/utils/syncer'
 
   def self.deep_clone(value)
     case
@@ -53,15 +54,6 @@ module Eye::Utils
       h[k] = v
     end
     h
-  end
-
-  def self.wait_signal(timeout = nil, &block)
-    signal = Celluloid::Condition.new
-    block.call(signal)
-    signal.wait((timeout || 600).to_f)
-    :ok
-  rescue Celluloid::ConditionError
-    :timeouted
   end
 
 end

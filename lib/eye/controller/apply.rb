@@ -20,9 +20,14 @@ module Eye::Controller::Apply
 private
 
   def apply_to_objects(objs, call)
-    # TODO: if signal, create multiple signals?
-    objs.each do |obj|
-      obj.send_call(call)
+    if syncer = call[:syncer]
+      syncer.wait_group do |syncer_group|
+        objs.each do |obj|
+          obj.send_call(call.merge(syncer: syncer_group.child))
+        end
+      end
+    else
+      objs.each { |obj| obj.send_call(call) }
     end
   end
 

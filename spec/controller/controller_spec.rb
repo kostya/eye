@@ -101,17 +101,17 @@ describe "Eye::Controller" do
 
   describe "command" do
     it "should apply" do
-      mock(subject).apply(%w{samples}, :command => :restart, :signal=>nil)
+      mock(subject).apply(%w{samples}, :command => :restart, :syncer=>nil)
       subject.command('restart', 'samples')
     end
 
     it "should apply" do
-      mock(subject).apply(%w{samples blah}, :command => :restart, :signal=>nil)
+      mock(subject).apply(%w{samples blah}, :command => :restart, :syncer=>nil)
       subject.command(:restart, 'samples', 'blah')
     end
 
     it "should apply" do
-      mock(subject).apply([], :command => :restart, :signal=>nil)
+      mock(subject).apply([], :command => :restart, :syncer=>nil)
       subject.command(:restart)
     end
 

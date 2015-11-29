@@ -40,7 +40,18 @@ class Eye::Application
 
   def send_call(call)
     info "call: #{call}"
-    @groups.each { |group| group.send_call(call) }
+
+    if syncer = call[:syncer]
+      syncer.wait_group do |syncer_group|
+        @groups.each do |group|
+          group.send_call(call.merge(syncer: syncer_group.child))
+        end
+      end
+    else
+      @groups.each do |group|
+        group.send_call(call)
+      end
+    end
   end
 
   def alive?

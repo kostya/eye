@@ -15,6 +15,12 @@ module Eye::Process::Scheduler
     user_schedule(call)
   end
 
+  def sync_call(call)
+    Eye::Utils::Syncer.with(call[:syncer_timeout]) do |syncer|
+      send_call(call.merge(syncer: syncer))
+    end
+  end
+
   def user_schedule(call)
     call[:by] ||= :user
     internal_schedule(call)
@@ -28,6 +34,12 @@ module Eye::Process::Scheduler
       internal_schedule(args[0])
     else
       internal_schedule(command: args[0], args: args[1..-1])
+    end
+  end
+
+  def sync_schedule(call)
+    Eye::Utils::Syncer.with(call[:syncer_timeout]) do |syncer|
+      schedule(call.merge(syncer: syncer))
     end
   end
 
@@ -49,11 +61,13 @@ module Eye::Process::Scheduler
 
     if @scheduler_freeze
       warn ":#{command} ignoring to schedule, because scheduler is freezed"
+      call[:syncer].try :done!
       return
     end
 
     unless self.respond_to?(command, true)
       warn ":#{command} scheduling is unsupported"
+      call[:syncer].try :done!
       return
     end
 
@@ -61,6 +75,7 @@ module Eye::Process::Scheduler
       info "schedule :#{command} (#{reason_from_call(call)})"
       scheduler_add(call)
     else
+      call[:syncer].try :done!
       info "not scheduled: #{command} (#{reason_from_call(call)})"
     end
 
@@ -84,8 +99,7 @@ module Eye::Process::Scheduler
     log_ex(ex)
 
   ensure
-    # signaling to waiter
-    call[:signal].try :signal
+    call[:syncer].try :done!
 
     info "<= #{call[:command]}"
   end

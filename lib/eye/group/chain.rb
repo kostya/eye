@@ -4,10 +4,17 @@ private
 
   def chained_call(call)
     type, grace = chain_options(call[:command])
-    chain_schedule(type, grace, call)
+
+    if syncer1 = call[:syncer] || syncer2 = @last_scheduled_call.try(:[], :syncer)
+      (syncer1 || syncer2).wait_group(false) do |syncer_group|
+        chain_schedule(type, grace, call, syncer_group)
+      end
+    else
+      chain_schedule(type, grace, call, nil)
+    end
   end
 
-  def chain_schedule(type, grace, call)
+  def chain_schedule(type, grace, call, syncer_group = nil)
     command = call[:command]
     args = call[:args]
     info "starting #{type} with #{grace}s chain #{command} #{args}"
@@ -24,7 +31,7 @@ private
         next
       end
 
-      chain_schedule_process(process, type, call)
+      chain_schedule_process(process, type, call, syncer_group)
 
       @chain_processes_current = @chain_processes_current.to_i + 1
 
@@ -44,18 +51,14 @@ private
     @chain_processes_current = nil
   end
 
-  def chain_schedule_process(process, type, call)
+  def chain_schedule_process(process, type, call, syncer_group)
     debug { "chain_schedule_process #{process.name} #{type} #{call[:command]}" }
 
     if type == :sync
-      # sync command, with waiting
-      Eye::Utils.wait_signal(call[:signal_timeout]) do |signal|
-        process.send_call(call.merge(signal: signal))
-      end
-
+      process.sync_call(call)
     else
-      # async command
-      process.send_call(call)
+      call2 = syncer_group ? call.merge(syncer: syncer_group.child) : call
+      process.send_call(call2)
     end
   end
 

@@ -184,27 +184,45 @@ describe "Scheduler" do
     end
   end
 
-  describe "signals" do
+  describe "syncer" do
     it "work" do
       should_spend(0.3) do
-        c1 = Celluloid::Condition.new
-        @process.schedule command: :scheduler_test1, args: [1], reason: "reason", signal: c1
-        c1.wait
+        @process.sync_schedule command: :scheduler_test1, args: [1], reason: "reason"
       end
       @process.test1.should == 1
     end
 
     it "work with combinations" do
       should_spend(0.9) do
-        c1 = Celluloid::Condition.new
-        c2 = Celluloid::Condition.new
-        @process.schedule command: :scheduler_test1, args: [1], reason: "reason", signal: c1
-        @process.schedule command: :scheduler_test2, args: [1, 2], reason: "reason", signal: c2
+        c1 = Eye::Utils::Syncer.new
+        c2 = Eye::Utils::Syncer.new
+        @process.schedule command: :scheduler_test1, args: [1], reason: "reason", syncer: c1
+        @process.schedule command: :scheduler_test2, args: [1, 2], reason: "reason", syncer: c2
         c1.wait
         c2.wait
       end
       @process.test1.should == 1
       @process.test2.should == [1, 2]
+    end
+
+    it "work with in" do
+      should_spend(0.8) do
+        @process.sync_schedule in: 0.5, command: :scheduler_test1, args: [1], reason: "reason"
+      end
+      @process.test1.should == 1
+    end
+
+    it "work with unknown command" do
+      should_spend(0) do
+        @process.sync_schedule command: :asdfasdfsdf
+      end
+    end
+
+    it "filtered call" do
+      @process.schedule command: :scheduler_test1, args: [1], reason: "reason"
+      should_spend(0) do
+        @process.sync_schedule command: :scheduler_test1, args: [1], reason: "reason"
+      end
     end
   end
 

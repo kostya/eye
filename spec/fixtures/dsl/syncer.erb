@@ -1,0 +1,55 @@
+Eye.app("int") do
+  working_dir File.join(File.dirname(__FILE__), %w{.. .. example})
+  stdall "shlak.log"
+
+  group "samples" do
+    process("sample1") do
+      pid_file "<%= C.p1_pid %>"
+      start_command "ruby sample.rb"
+      daemonize true
+    end
+
+    process("sample2") do
+      pid_file "<%= C.p2_pid %>"
+      start_command "ruby sample.rb -d --pid <%= C.p2_pid %> --log shlak.log"
+      checks :memory, :below => 300.megabytes
+    end
+  end
+
+  process("forking") do
+    env "PID_NAME" => "<%= C.p3_pid %>"
+    pid_file "<%= C.p3_pid %>"
+
+    start_command "ruby forking.rb start"
+    stop_command "ruby forking.rb stop"
+
+    monitor_children do
+      children_update_period 5.seconds
+      restart_command "kill -2 {PID}"
+    end
+  end
+
+  group :bla1 do
+    stop_on_delete true
+    chain :action => :restart, :grace => 0.5.seconds
+    5.times do |i|
+      process "bla1-sleep-#{i}" do
+        start_command "sleep 100"
+        daemonize!
+        pid_file "bla1-<%= C.unique %>-#{i}.pid"
+      end
+    end
+  end
+
+  group :bla2 do
+    chain :action => :restart, :grace => 0.5.seconds, :type => :sync
+    2.times do |i|
+      process "bla2-sleep-#{i}" do
+        start_command "sleep 100"
+        daemonize!
+        pid_file "bla2-<%= C.unique %>-#{i}.pid"
+      end
+    end
+  end
+
+end

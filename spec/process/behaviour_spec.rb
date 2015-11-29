@@ -5,18 +5,14 @@ describe "Behaviour" do
     @process = process C.p1
   end
 
-  describe "sync with signals" do
-    it "restart process with signal" do
+  describe "syncer" do
+    it "restart process" do
       should_spend(2.5, 0.3) do
-        c = Celluloid::Condition.new
-        @process.send_call(:command => :start, :signal => c)
-        c.wait
+        @process.sync_call(:command => :start)
       end
 
       should_spend(3.0, 0.3) do
-        c = Celluloid::Condition.new
-        @process.send_call(:command => :restart, :signal => c)
-        c.wait
+        @process.sync_call(:command => :restart)
       end
 
       @process.state_name.should == :up

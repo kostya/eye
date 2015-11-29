@@ -5,10 +5,10 @@ module Eye::Group::Call
     info "call: #{call[:method]}"
 
     case call[:command]
-      when :delete
-        delete
-      when :break_chain
-        break_chain
+      when :delete, :break_chain
+        @last_scheduled_call = call
+        send(call[:command])
+        call[:syncer].done! if call[:syncer]
       else
         user_schedule(call)
     end
@@ -65,8 +65,18 @@ private
     args = call[:args]
     info "send to all processes #{command} #{args.present? ? args * ',' : nil}"
 
-    @processes.each do |process|
-      process.send_call(call) unless process.skip_group_action?(command)
+    if syncer = (call[:syncer] || @last_scheduled_call.try(:[], :syncer))
+      syncer.wait_group(false) do |syncer_group|
+        @processes.each do |process|
+          unless process.skip_group_action?(command)
+            process.send_call(call.merge(syncer: syncer_group.child))
+          end
+        end
+      end
+    else
+      @processes.each do |process|
+        process.send_call(call) unless process.skip_group_action?(command)
+      end
     end
   end
 

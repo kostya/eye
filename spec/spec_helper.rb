@@ -22,6 +22,10 @@ end
 Eye::Controller
 Eye::Process
 
+silence_warnings do
+  Eye::Utils::Syncer.const_set(:DEFAULT_TIMEOUT, 45)
+end
+
 class Eye::Controller
   public :find_objects, :remove_object_from_tree, :matched_objects
   def load_erb(file); with_erb_file(file){|f| self.load(f) }; end
@@ -202,11 +206,15 @@ def start_controller
   @old_pid2 = @p2.pid
   @old_pid3 = @p3.pid
 
+  info '---------- controller started -------------'
+
   res
 end
 
 def stop_controller
   return unless @controller
+
+  info '---------- controller stopping -------------'
 
   @processes.pmap { |p| p.stop if p.alive? }
   @processes.each { |p| force_kill_process(p) if p.alive? }

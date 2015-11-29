@@ -18,11 +18,11 @@ module Eye::Controller::Commands
 
       # scheduled command
       when :start, :stop, :restart, :unmonitor, :monitor, :break_chain
-        apply(args, command: cmd, signal: opts[:signal])
+        apply(args, command: cmd, syncer: opts[:syncer])
       when :delete
-        exclusive { apply(args, command: cmd, signal: opts[:signal]) }
+        exclusive { apply(args, command: cmd, syncer: opts[:syncer]) }
       when :signal, :user_command
-        apply(args[1..-1], command: cmd, args: args[0...1], signal: opts[:signal])
+        apply(args[1..-1], command: cmd, args: args[0...1], syncer: opts[:syncer])
 
       # inline command
       when :load
@@ -75,7 +75,7 @@ private
 
   # stop all processes and wait
   def stop_all(timeout = nil)
-    # TODO: rewrite with signal
+    # TODO: rewrite with syncer
     exclusive do
       apply(%w[all], command: :break_chain)
       apply(%w[all], command: :stop, freeze: true)

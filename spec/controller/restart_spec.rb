@@ -35,17 +35,6 @@ describe "Intergration restart" do
     @p3.pid.should == @old_pid3
   end
 
-  it "restart process with signal" do
-    should_spend(3, 0.2) do
-      c = Celluloid::Condition.new
-      @controller.command(:restart, "sample1", :signal => c)
-      c.wait
-    end
-
-    @processes.map{|c| c.state_name}.uniq.should == [:up]
-    @p1.pid.should_not == @old_pid1
-  end
-
   it "restart process forking" do
     @controller.command(:restart, "forking")
     sleep 11 # while they restarting
