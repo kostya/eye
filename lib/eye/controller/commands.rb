@@ -75,19 +75,10 @@ private
 
   # stop all processes and wait
   def stop_all(timeout = nil)
-    # TODO: rewrite with syncer
-    exclusive do
-      apply(%w[all], command: :break_chain)
-      apply(%w[all], command: :stop, freeze: true)
-    end
+    apply(%w[all], command: :break_chain)
 
-    # wait until all processes goes to unmonitored
-    timeout ||= 100
-
-    all_processes.pmap do |p|
-      p.wait_for_condition(timeout, 0.3) do
-        p.state_name == :unmonitored
-      end
+    Eye::Utils::Syncer.with(timeout) do |syncer|
+      apply(%w[all], command: :stop, freeze: true, syncer: syncer)
     end
   end
 
