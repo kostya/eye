@@ -518,14 +518,14 @@ describe "Eye::Controller::Load" do
   end
 
   it "should update only changed apps" do
-    mock(subject).update_or_create_application('app1', is_a(Hash))
-    mock(subject).update_or_create_application('app2', is_a(Hash))
+    mock(subject).update_or_create_application('app1', is_a(Hash), is_a(Eye::Utils::Syncer::Group))
+    mock(subject).update_or_create_application('app2', is_a(Hash), is_a(Eye::Utils::Syncer::Group))
     subject.load(fixture('dsl/load.eye'))
 
-    mock(subject).update_or_create_application('app3', is_a(Hash))
+    mock(subject).update_or_create_application('app3', is_a(Hash), is_a(Eye::Utils::Syncer::Group))
     subject.load(fixture('dsl/load2.eye'))
 
-    mock(subject).update_or_create_application('app3', is_a(Hash))
+    mock(subject).update_or_create_application('app3', is_a(Hash), is_a(Eye::Utils::Syncer::Group))
     subject.load(fixture('dsl/load3.eye'))
   end
 
@@ -807,4 +807,13 @@ describe "Eye::Controller::Load" do
     end
 
   end
+
+  it "load with syncer" do
+    should_spend(0.6, 0.1) do
+      Eye::Utils::Syncer.with do |s|
+        subject.command('load', fixture("dsl/just_sleep.eye"), syncer: s)
+      end
+    end
+  end
+
 end

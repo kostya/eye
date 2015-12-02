@@ -26,7 +26,7 @@ module Eye::Controller::Commands
 
       # inline command
       when :load
-        exclusive { load(*args) }
+        exclusive { load(*args, syncer: opts[:syncer]) }
       when :quit
         quit
       when :stop_all

@@ -9,7 +9,7 @@ module Eye::Controller::Load
   end
 
   def load(*args)
-    args.extract_options!
+    opts = args.extract_options!
     obj_strs = args.flatten
     info "=> loading: #{obj_strs}"
 
@@ -18,7 +18,7 @@ module Eye::Controller::Load
     globbing(*obj_strs).each do |filename|
       res[filename] = catch_load_error(filename) do
         cfg = parse_config(filename)
-        load_config(filename, cfg)
+        load_config(filename, cfg, opts)
         nil
       end
     end
@@ -82,13 +82,15 @@ private
   end
 
   # !!! exclusive operation
-  def load_config(filename, config)
+  def load_config(filename, config, opts = {})
     info "loading: #{filename}"
     new_cfg = @current_config.merge(config)
     new_cfg.validate!(config.application_names)
 
     load_options(new_cfg.settings)
-    create_objects(new_cfg.applications, config.application_names)
+    Eye::Utils::Syncer.cast(opts[:syncer]).wait_group do |gr|
+      create_objects(new_cfg.applications, config.application_names, gr)
+    end
     @current_config = new_cfg
   end
 
@@ -103,18 +105,18 @@ private
   end
 
   # create objects as diff, from configs
-  def create_objects(apps_config, changed_apps = [])
+  def create_objects(apps_config, changed_apps = [], syncer_group)
     debug { 'creating objects' }
 
     apps_config.each do |app_name, app_cfg|
-      update_or_create_application(app_name, app_cfg.clone) if changed_apps.include?(app_name)
+      update_or_create_application(app_name, app_cfg.clone, syncer_group) if changed_apps.include?(app_name)
     end
 
     # sorting applications
     @applications.sort_by!(&:name)
   end
 
-  def update_or_create_application(app_name, app_config)
+  def update_or_create_application(app_name, app_config, syncer_group)
     @old_groups = {}
     @old_processes = {}
 
@@ -142,7 +144,7 @@ private
 
     new_groups = app_config.delete(:groups) || {}
     new_groups.each do |group_name, group_cfg|
-      group = update_or_create_group(group_name, group_cfg.clone)
+      group = update_or_create_group(group_name, group_cfg.clone, syncer_group)
       app.add_group(group)
       group.resort_processes
     end
@@ -150,10 +152,10 @@ private
     # now, need to clear @old_groups, and @old_processes
     @old_groups.each do |_, group|
       group.clear
-      group.send_call(command: :delete, reason: 'load by user')
+      group.send_call(command: :delete, reason: 'load by user', syncer: syncer_group.child)
     end
     @old_processes.each do |_, process|
-      process.send_call(command: :delete, reason: 'load by user') if process.alive?
+      process.send_call(command: :delete, reason: 'load by user', syncer: syncer_group.child) if process.alive?
     end
 
     # schedule monitoring for new groups, processes
@@ -165,8 +167,8 @@ private
       end
     end
 
-    added_fully_groups.each { |group| group.send_call command: :monitor, reason: 'load by user' }
-    @added_processes.each { |process| process.send_call command: :monitor, reason: 'load by user' }
+    added_fully_groups.each { |group| group.send_call command: :monitor, reason: 'load by user', syncer: syncer_group.child }
+    @added_processes.each { |process| process.send_call command: :monitor, reason: 'load by user', syncer: syncer_group.child }
 
     # remove links to prevent memory leaks
     @old_groups = nil
@@ -179,11 +181,11 @@ private
     app
   end
 
-  def update_or_create_group(group_name, group_config)
+  def update_or_create_group(group_name, group_config, syncer_group)
     group = if @old_groups[group_name]
       debug { "updating group: #{group_name}" }
       group = @old_groups.delete(group_name)
-      group.send_call command: :update_config, args: [group_config], reason: 'load by user'
+      group.send_call command: :update_config, args: [group_config], reason: 'load by user', syncer: syncer_group.child
       group.clear
       group
     else
@@ -195,14 +197,14 @@ private
 
     processes = group_config.delete(:processes) || {}
     processes.each do |process_name, process_cfg|
-      process = update_or_create_process(process_name, process_cfg.clone)
+      process = update_or_create_process(process_name, process_cfg.clone, syncer_group)
       group.add_process(process)
     end
 
     group
   end
 
-  def update_or_create_process(process_name, process_cfg)
+  def update_or_create_process(process_name, process_cfg, syncer_group)
     postfix = ':' + process_name
     name = process_cfg[:group] + postfix
     key = @old_processes[name] ? name : @old_processes.keys.detect { |n| n.end_with?(postfix) }
@@ -210,7 +212,7 @@ private
     if @old_processes[key]
       debug { "updating process: #{name}" }
       process = @old_processes.delete(key)
-      process.send_call command: :update_config, args: [process_cfg], reason: 'load by user'
+      process.send_call command: :update_config, args: [process_cfg], reason: 'load by user', syncer: syncer_group.child
       process
     else
       debug { "creating process: #{name}" }

@@ -28,7 +28,7 @@ end
 
 class Eye::Controller
   public :find_objects, :remove_object_from_tree, :matched_objects
-  def load_erb(file); with_erb_file(file){|f| self.load(f) }; end
+  def load_erb(file, *opts); with_erb_file(file){|f| self.load(f, *opts) }; end
   def load_content(cont); res = nil; with_temp_file(cont){|f| res = self.load(f) }; res; end
   def load_contents(*conts); res = nil; with_temp_file(cont){|f| res = self.load(f) }; res; end
 end
@@ -188,14 +188,6 @@ def start_controller
   res = yield
 
   @processes = @controller.all_processes
-
-  # wait for all processes to up
-  @processes.pmap do |p|
-    p.wait_for_condition(10, 0.3) do
-      p.state_name == :up
-    end
-  end
-
   @pids = @processes.map(&:pid)
 
   @p1 = @processes.detect{|c| c.name == 'sample1' }

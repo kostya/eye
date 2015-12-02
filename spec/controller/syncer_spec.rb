@@ -4,7 +4,9 @@ describe "Syncer" do
   
   before :each do
     start_controller do
-      @controller.load_erb(fixture("dsl/syncer.erb"))
+      Eye::Utils::Syncer.with do |s|
+        @controller.load_erb(fixture("dsl/syncer.erb"), syncer: s)
+      end
     end
   end
 
