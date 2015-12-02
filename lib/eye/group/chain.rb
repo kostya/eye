@@ -5,12 +5,9 @@ private
   def chained_call(call)
     type, grace = chain_options(call[:command])
 
-    if syncer1 = call[:syncer] || syncer2 = @last_scheduled_call.try(:[], :syncer)
-      (syncer1 || syncer2).wait_group(false) do |syncer_group|
-        chain_schedule(type, grace, call, syncer_group)
-      end
-    else
-      chain_schedule(type, grace, call, nil)
+    syncer = call[:syncer] || @last_scheduled_call.try(:[], :syncer)
+    Eye::Utils::Syncer.cast(syncer).wait_group(false) do |syncer_group|
+      chain_schedule(type, grace, call, syncer_group)
     end
   end
 
@@ -57,8 +54,7 @@ private
     if type == :sync
       process.sync_call(call)
     else
-      call2 = syncer_group ? call.merge(syncer: syncer_group.child) : call
-      process.send_call(call2)
+      process.send_call(call.merge(syncer: syncer_group.child))
     end
   end
 

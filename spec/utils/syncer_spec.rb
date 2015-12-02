@@ -131,4 +131,51 @@ describe "Syncer" do
     end
   end
 
+  describe "cast" do
+    describe "not fake" do
+      it "wait" do
+        s = Eye::Utils::Syncer.new(5)
+        Eye::Utils::Syncer.cast(s).should == s
+
+        should_spend(3) do
+          s = Eye::Utils::Syncer.cast(s)
+          @actor.async.group(3, s)
+          s.wait.should == :ok
+        end
+      end
+
+      it "group" do
+        s = Eye::Utils::Syncer.new(5)
+
+        should_spend(3) do
+          Eye::Utils::Syncer.cast(s).wait_group do |gr|
+            @actor.async.group(1, gr.child)
+            @actor.async.group(2, gr.child)
+            @actor.async.group(3, gr.child)
+          end.should == :ok
+        end
+      end
+    end
+
+    describe "fake" do
+      it "wait" do
+        should_spend(0) do
+          s = Eye::Utils::Syncer.cast(nil)
+          @actor.async.group(3, s)
+          s.wait.should == :ok
+        end
+      end
+
+      it "group" do
+        should_spend(0) do
+          Eye::Utils::Syncer.cast(nil).wait_group do |gr|
+            @actor.async.group(1, gr.child)
+            @actor.async.group(2, gr.child)
+            @actor.async.group(3, gr.child)
+          end.should == :ok
+        end
+      end
+    end
+  end
+
 end

@@ -14,20 +14,29 @@ class Eye::Utils::Syncer
 
   DEFAULT_TIMEOUT = 300 # 5.minutes
 
-  def initialize(timeout = nil)
+  def initialize(timeout = nil, fake = false)
     @timeout = (timeout || DEFAULT_TIMEOUT).to_f
     @future = Celluloid::Future.new
+    @fake = fake
   end
 
   def self.with(timeout = nil, &block)
     new(timeout).tap { |s| block.call(s) }.wait
   end
 
+  def self.cast(syncer = nil)
+    syncer || new(nil, true)
+  end
+
   def done!
+    return if @fake
+
     @future.signal(nil)
   end
 
   def wait(timeout = nil)
+    return :ok if @fake
+
     @future.value(timeout || @timeout)
     :ok
   rescue Celluloid::TimedOut
@@ -35,7 +44,7 @@ class Eye::Utils::Syncer
   end
 
   def group
-    Group.new(@timeout)
+    Group.new(@timeout, @fake)
   end
 
   def wait_group(signalling = true, &block)
@@ -51,16 +60,19 @@ class Eye::Utils::Syncer
 
     attr_reader :timeout
 
-    def initialize(timeout = nil)
+    def initialize(timeout = nil, fake = false)
       @timeout = (timeout || DEFAULT_TIMEOUT).to_f
       @group = []
+      @fake = fake
     end
 
     def child
-      Eye::Utils::Syncer.new(@timeout).tap { |s| @group << s }
+      Eye::Utils::Syncer.new(@timeout, @fake).tap { |s| @group << s }
     end
 
     def wait
+      return :ok if @fake
+
       @group.each do |s|
         t = Time.now
         res = s.wait(@timeout)

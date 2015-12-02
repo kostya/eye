@@ -65,17 +65,12 @@ private
     args = call[:args]
     info "send to all processes #{command} #{args.present? ? args * ',' : nil}"
 
-    if syncer = (call[:syncer] || @last_scheduled_call.try(:[], :syncer))
-      syncer.wait_group(false) do |syncer_group|
-        @processes.each do |process|
-          unless process.skip_group_action?(command)
-            process.send_call(call.merge(syncer: syncer_group.child))
-          end
-        end
-      end
-    else
+    syncer = Eye::Utils::Syncer.cast(call[:syncer] || @last_scheduled_call.try(:[], :syncer))
+    syncer.wait_group(false) do |syncer_group|
       @processes.each do |process|
-        process.send_call(call) unless process.skip_group_action?(command)
+        unless process.skip_group_action?(command)
+          process.send_call(call.merge(syncer: syncer_group.child))
+        end
       end
     end
   end

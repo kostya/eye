@@ -41,15 +41,9 @@ class Eye::Application
   def send_call(call)
     info "call: #{call}"
 
-    if syncer = call[:syncer]
-      syncer.wait_group do |syncer_group|
-        @groups.each do |group|
-          group.send_call(call.merge(syncer: syncer_group.child))
-        end
-      end
-    else
+    Eye::Utils::Syncer.cast(call[:syncer]).wait_group do |syncer_group|
       @groups.each do |group|
-        group.send_call(call)
+        group.send_call(call.merge(syncer: syncer_group.child))
       end
     end
   end

@@ -20,14 +20,10 @@ module Eye::Controller::Apply
 private
 
   def apply_to_objects(objs, call)
-    if syncer = call[:syncer]
-      syncer.wait_group do |syncer_group|
-        objs.each do |obj|
-          obj.send_call(call.merge(syncer: syncer_group.child))
-        end
+    Eye::Utils::Syncer.cast(call[:syncer]).wait_group do |syncer_group|
+      objs.each do |obj|
+        obj.send_call(call.merge(syncer: syncer_group.child))
       end
-    else
-      objs.each { |obj| obj.send_call(call) }
     end
   end
 
