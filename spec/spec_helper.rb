@@ -216,12 +216,10 @@ def stop_controller
 
   info '---------- controller stopping -------------'
 
-  @processes.pmap { |p| p.stop if p.alive? }
-  @processes.each { |p| force_kill_process(p) if p.alive? }
+  @controller.command :stop_all
 
-  # if processes was reloaded
+  # force kill if alive something
   processes = @controller.all_processes
-  processes.pmap { |p| p.stop if p.alive? }
   processes.each { |p| force_kill_process(p) if p.alive? }
 
   $logger.info "force_kill_pid: #{@pids}"
