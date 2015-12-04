@@ -170,7 +170,7 @@ private
 
   def daemonize_process
     res = daemonize(self[:start_command], config)
-    info "daemonizing: `#{self[:start_command]}` with start_grace: #{self[:start_grace].to_f}s, env: '#{environment_string}'}" \
+    info "daemonizing: `#{self[:start_command]}` with start_grace: #{self[:start_grace].to_f}s, env: '#{environment_string}'" \
       ", <#{res[:pid]}> (in #{self[:working_dir]})"
 
     if res[:error]
