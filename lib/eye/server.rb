@@ -25,10 +25,30 @@ class Eye::Server
     text = socket.read
 
     begin
-      cmd, *args = Marshal.load(text)
+      # TODO, remove in 1.0
+
+      payload = Marshal.load(text)
+      if payload.is_a?(Array)
+        cmd, *args = payload
+      else
+        raise "unknown payload #{payload.inspect}"
+      end
+
     rescue => ex
-      error "Failed to read from socket: #{ex.message}"
-      return
+      # new format
+      begin
+        pos = text.index("\n")
+        msg_size = text[0..pos].to_i
+        content = text[pos+1..-1]
+        content << socket.read(msg_size - content.length) while content.length < msg_size
+        payload = Marshal.load(content)
+        cmd = payload[:command]
+        args = payload[:args]
+
+      rescue => ex
+        error "Failed to read from socket: #{ex.message}"
+        return
+      end
     end
 
     response = Eye::Control.command(cmd, *args, {})

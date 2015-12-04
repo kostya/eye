@@ -10,11 +10,16 @@ class Eye::Client
   end
 
   def command(cmd, *args)
-    attempt_command(Marshal.dump([cmd, *args]))
+    payload = Marshal.dump(command: cmd, args: args)
+    payload = payload.length.to_s + "\n" + payload
+    timeout = Eye::Local.client_timeout
+    attempt_command(payload, timeout)
   end
 
-  def attempt_command(pack)
-    Timeout.timeout(Eye::Local.client_timeout) { send_request(pack) }
+private
+
+  def attempt_command(pack, timeout)
+    Timeout.timeout(timeout) { send_request(pack) }
   rescue Timeout::Error, EOFError
     :timeouted
   end
