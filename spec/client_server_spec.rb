@@ -17,14 +17,14 @@ describe "Eye::Client, Eye::Server" do
 
   it "client command, should send to controller" do
     mock(Eye::Control).command('restart', 'samples', {}){ :command_sent }
-    mock(Eye::Control).command('stop', {}){ :command_sent2 }
-    @client.command('restart', 'samples').should == :command_sent
-    @client.command('stop').should == :command_sent2
+    mock(Eye::Control).command(:stop, {}){ :command_sent2 }
+    @client.execute(command: 'restart', args: %w{samples}).should == :command_sent
+    @client.execute(command: :stop).should == :command_sent2
   end
 
   it "another spec works too" do
     mock(Eye::Control).command('stop', {}){ :command_sent2 }
-    @client.command('stop').should == :command_sent2
+    @client.execute(command: 'stop').should == :command_sent2
   end
 
   it "if server already listen should recreate" do
@@ -32,7 +32,7 @@ describe "Eye::Client, Eye::Server" do
     @server2 = Eye::Server.new(@socket_path)
     @server2.async.run
     sleep 0.1
-    @client.command('stop').should == :command_sent2
+    @client.execute(command: 'stop').should == :command_sent2
   end
 
   it "if error server should be alive" do
@@ -43,13 +43,13 @@ describe "Eye::Client, Eye::Server" do
   it "big message, to pass env variables in future" do
     a = "a" * 10000
     mock(Eye::Control).command('stop', a, {}){ :command_sent2 }
-    @client.command('stop', a).should == :command_sent2
+    @client.execute(command: 'stop', args: [a]).should == :command_sent2
   end
 
   it "big message, to answer" do
     a = "a" * 50000
     mock(Eye::Control).command('stop', {}){ a }
-    @client.command('stop').size.should == 50000
+    @client.execute(command: 'stop').size.should == 50000
   end
 
   # TODO, remove in 1.0

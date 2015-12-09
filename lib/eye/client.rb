@@ -9,17 +9,17 @@ class Eye::Client
     @socket_path = socket_path
   end
 
-  def command(cmd, *args)
-    payload = Marshal.dump(command: cmd, args: args)
+  def execute(h = {})
+    payload = Marshal.dump(h)
     payload = payload.length.to_s + "\n" + payload
-    timeout = Eye::Local.client_timeout
+    timeout = h[:timeout] || Eye::Local.client_timeout
     attempt_command(payload, timeout)
   end
 
 private
 
-  def attempt_command(pack, timeout)
-    Timeout.timeout(timeout) { send_request(pack) }
+  def attempt_command(payload, timeout)
+    Timeout.timeout(timeout) { send_request(payload) }
   rescue Timeout::Error, EOFError
     :timeouted
   end

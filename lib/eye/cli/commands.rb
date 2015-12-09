@@ -7,7 +7,7 @@ private
   end
 
   def _cmd(cmd, *args)
-    client.command(cmd, *args)
+    client.execute(command: cmd, args: args)
   rescue Errno::ECONNREFUSED, Errno::ENOENT
     :not_started
   end
