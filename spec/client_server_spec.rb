@@ -46,6 +46,12 @@ describe "Eye::Client, Eye::Server" do
     @client.command('stop', a).should == :command_sent2
   end
 
+  it "big message, to answer" do
+    a = "a" * 50000
+    mock(Eye::Control).command('stop', {}){ a }
+    @client.command('stop').size.should == 50000
+  end
+
   # TODO, remove in 1.0
   describe "old message format" do
     it "ok message" do
