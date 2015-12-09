@@ -34,12 +34,12 @@ class Eye::Server
         raise "unknown payload #{payload.inspect}"
       end
 
-    rescue => ex
+    rescue
       # new format
       begin
         pos = text.index("\n")
         msg_size = text[0..pos].to_i
-        content = text[pos+1..-1]
+        content = text[pos + 1..-1]
         content << socket.read(msg_size - content.length) while content.length < msg_size
         payload = Marshal.load(content)
         cmd = payload[:command]
