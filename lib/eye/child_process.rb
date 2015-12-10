@@ -25,18 +25,20 @@ class Eye::ChildProcess
   # scheduler
   include Eye::Process::Scheduler
 
-  attr_reader :pid, :name, :full_name, :config, :watchers, :parent
+  attr_reader :pid, :name, :full_name, :config, :watchers
 
   def initialize(pid, config = {}, logger_prefix = nil, parent = nil)
     raise 'Empty pid' unless pid
 
     @pid = pid
-    @parent = parent
     @config = prepare_config(config)
     @name = "child-#{pid}"
     @full_name = [logger_prefix, @name].join(':')
 
     @watchers = {}
+
+    @scheduler_history = parent.scheduler_history
+    @parent_pid = parent.pid
 
     debug { "start monitoring CHILD config: #{@config.inspect}" }
 
@@ -93,7 +95,7 @@ class Eye::ChildProcess
   end
 
   def prepare_command(command) # override
-    super.gsub('{PARENT_PID}', @parent.pid.to_s)
+    super.gsub('{PARENT_PID}', @parent_pid.to_s)
   end
 
 end

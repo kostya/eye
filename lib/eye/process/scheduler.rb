@@ -73,11 +73,8 @@ module Eye::Process::Scheduler
     info "=> #{call[:command]} #{args.present? ? "#{args * ','}" : nil} (#{reason_str})"
     send(call[:command], *args, &call[:block])
 
-    scheduler_history.push(call[:command], reason_str, call[:at])
-
-    if parent = self.try(:parent)
-      parent.scheduler_history.push("#{call[:command]}_child", reason_str, call[:at])
-    end
+    history_cmd = is_a?(Eye::ChildProcess) ? "#{call[:command]}_child" : call[:command]
+    scheduler_history.push(history_cmd, reason_str, call[:at])
 
   rescue Object => ex
     raise(ex) if ex.class == Celluloid::TaskTerminated
