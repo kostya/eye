@@ -46,6 +46,7 @@ module Eye::Process::Config
     h[:stdall] = Eye::System.normalized_file(h[:stdall], h[:working_dir]) if h[:stdall]
 
     h[:environment] = Eye::System.prepare_env(h)
+    h[:stop_signals] = [:TERM, 0.5, :KILL] unless h[:stop_command] || h[:stop_signals]
 
     h
   end

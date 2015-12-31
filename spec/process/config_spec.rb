@@ -35,6 +35,17 @@ describe "Eye::Process::Config" do
     @p[:clear_pid].should == true
   end
 
+  it "should set default stop_signals" do
+    @p = Eye::Process.new({:working_dir => "/tmp", :start_command => "a", :pid_file => '/tmp/1.pid'})
+    @p[:stop_signals].should == [:TERM, 0.5, :KILL]
+
+    @p = Eye::Process.new({:working_dir => "/tmp", :start_command => "a", :pid_file => '/tmp/1.pid', :stop_signals => [:KILL]})
+    @p[:stop_signals].should == [:KILL]
+
+    @p = Eye::Process.new({:working_dir => "/tmp", :start_command => "a", :pid_file => '/tmp/1.pid', :stop_command => "kill -9 {PID}"})
+    @p[:stop_signals].should == nil
+  end
+
   describe "control_pid?" do
     it "if daemonize than true" do
       @p = Eye::Process.new({:pid_file => '/tmp/1.pid', :daemonize => true})

@@ -121,7 +121,7 @@ private
         delay = stop_signals.shift
         signal = stop_signals.shift
 
-        if wait_for_condition(delay.to_f, 0.3) { !process_really_running? }
+        if wait_for_condition(delay.to_f, 0.1) { !process_really_running? }
           info 'has terminated'
           break
         end
@@ -129,19 +129,11 @@ private
         send_signal(signal) if signal
       end
 
-      sleep_grace(:stop_grace)
-
-    else # default command
-      debug { "executing: `kill -TERM #{self.pid}` with stop_grace: #{self[:stop_grace].to_f}s" }
-      send_signal(:TERM)
-      sleep_grace(:stop_grace)
-
-      # if process not die here, by default we force kill it
-      if process_really_running?
-        warn "process <#{self.pid}> did not die after TERM, sending KILL"
-        send_signal(:KILL)
-        sleep 0.1 # little grace
-      end
+      # little grace
+      sleep 0.1
+    else
+      # TODO, notify here?
+      error "stop_command or stop_signals should be"
     end
   end
 
