@@ -36,7 +36,7 @@ describe "Intergration restart" do
   end
 
   it "restart process with signal" do
-    should_spend(3, 0.2) do
+    should_spend(3, 0.3) do
       c = Celluloid::Condition.new
       @controller.command(:restart, "sample1", :signal => c)
       c.wait
