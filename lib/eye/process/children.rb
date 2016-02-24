@@ -48,7 +48,7 @@ module Eye::Process::Children
   end
 
   def remove_children
-    children.each_key { |child_pid| clear_child(child_pid) }
+    children.keys.each { |child_pid| clear_child(child_pid) }
   end
 
   def remove_child(child_pid)

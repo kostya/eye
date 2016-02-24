@@ -156,10 +156,12 @@ private
           res << p if p.name =~ r || p.full_name =~ r
 
           # children matching
-          p.children.each_value do |ch|
-            name = ch.name rescue ''
-            full_name = ch.full_name rescue ''
-            res << ch if name =~ r || full_name =~ r
+          if (ch = p.children) && (!ch.empty?)
+            ch.values.each do |ch|
+              name = ch.name rescue ''
+              full_name = ch.full_name rescue ''
+              res << ch if name =~ r || full_name =~ r
+            end
           end
         end
       end
