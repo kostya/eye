@@ -56,12 +56,10 @@ class Eye::Group
   def <=>(other)
     if hidden
       1
+    elsif other.hidden
+      -1
     else
-      if other.hidden
-        -1
-      else
-        name <=> other.name
-      end
+      name <=> other.name
     end
   end
 

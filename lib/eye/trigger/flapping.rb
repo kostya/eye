@@ -51,15 +51,11 @@ private
       @retry_times += 1
       process.schedule(in: retry_in.to_f, command: :conditional_start,
                        by: :flapping, reason: 'retry start after flapping')
-    else
-      if reretry_in
-        if !reretry_times || (reretry_times && @reretry_times < reretry_times)
-          @retry_times = 0
-          @reretry_times += 1
-          process.schedule(in: reretry_in.to_f, command: :conditional_start,
-                           by: :flapping, reason: 'reretry start after flapping')
-        end
-      end
+    elsif reretry_in && !reretry_times || (reretry_times && @reretry_times < reretry_times)
+      @retry_times = 0
+      @reretry_times += 1
+      process.schedule(in: reretry_in.to_f, command: :conditional_start,
+                       by: :flapping, reason: 'reretry start after flapping')
     end
   end
 

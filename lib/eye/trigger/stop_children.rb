@@ -11,7 +11,7 @@ class Eye::Trigger::StopChildren < Eye::Trigger
 
   def check(_trans)
     debug { 'stopping children' }
-    process.children.values.pmap &:stop
+    process.children.values.pmap(&:stop)
   end
 
 end
