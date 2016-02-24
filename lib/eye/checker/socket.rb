@@ -82,7 +82,7 @@ class Eye::Checker::Socket < Eye::Checker::Defer
       end
 
       unless match
-        warn "proc #{expect_data} not matched (#{value[:result].truncate(30)}) answer"
+        warn "proc #{expect_data} not matched (#{value[:result].to_s[0..30]}) answer"
         value[:notice] = 'missing proc validation'
       end
 
@@ -92,7 +92,7 @@ class Eye::Checker::Socket < Eye::Checker::Defer
     return true if expect_data.is_a?(Regexp) && expect_data.match(value[:result])
     return true if value[:result].to_s == expect_data.to_s
 
-    warn "#{expect_data} not matched (#{value[:result].truncate(30)}) answer"
+    warn "#{expect_data} not matched (#{value[:result].to_s[0..30]}) answer"
     value[:notice] = "missing '#{expect_data}'"
 
     false

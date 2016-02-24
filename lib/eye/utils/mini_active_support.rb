@@ -37,10 +37,6 @@ class String
     word.downcase!
     word
   end
-
-  def truncate(l)
-    self[0..l]
-  end
 end
 
 class Array
