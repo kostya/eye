@@ -19,7 +19,7 @@ class Eye::Checker
   TYPES = { memory: 'Memory', cpu: 'Cpu', http: 'Http',
             ctime: 'FileCTime', fsize: 'FileSize', file_touched: 'FileTouched',
             socket: 'Socket', nop: 'Nop', runtime: 'Runtime', cputime: 'Cputime',
-            children_count: 'ChildrenCount', children_memory: 'ChildrenMemory', ssl_socket: 'SslSocket' }.freeze
+            children_count: 'ChildrenCount', children_memory: 'ChildrenMemory', ssl_socket: 'SslSocket' }
 
   attr_accessor :value, :values, :options, :pid, :type, :check_count, :process
 

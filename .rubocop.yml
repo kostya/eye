@@ -13,6 +13,9 @@ Style/MutableConstant:
   Exclude:
     - 'lib/eye.rb'
     - 'examples/**/*'
+    - 'lib/eye/trigger.rb'
+    - 'lib/eye/checker.rb'
+    - 'lib/eye/notify.rb'
 
 Style/ClassAndModuleChildren:
   EnforcedStyle: compact

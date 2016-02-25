@@ -10,7 +10,7 @@ class Eye::Trigger
   autoload :StartingGuard, 'eye/trigger/starting_guard'
 
   TYPES = { flapping: 'Flapping', transition: 'Transition', stop_children: 'StopChildren',
-            wait_dependency: 'WaitDependency', check_dependency: 'CheckDependency', starting_guard: 'StartingGuard' }.freeze
+            wait_dependency: 'WaitDependency', check_dependency: 'CheckDependency', starting_guard: 'StartingGuard' }
 
   attr_reader :message, :options, :process
 
