@@ -5,6 +5,10 @@ AllCops:
     - 'spec/**/*'
     - 'lib/eye/utils/mini_active_support.rb'
 
+Performance/RedundantBlockCall:
+  Exclude:
+    - 'lib/eye/process/watchers.rb'
+
 Style/MutableConstant:
   Exclude:
     - 'lib/eye.rb'

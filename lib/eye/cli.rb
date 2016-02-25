@@ -205,6 +205,10 @@ class Eye::Cli < Thor
     send_command(:user_command, cmd, *args)
   end
 
+  def self.exit_on_failure?
+    true
+  end
+
 private
 
   def error!(msg)
@@ -229,10 +233,6 @@ private
   def say_json(obj)
     require 'json'
     say JSON.dump(obj)
-  end
-
-  def self.exit_on_failure?
-    true
   end
 
 end

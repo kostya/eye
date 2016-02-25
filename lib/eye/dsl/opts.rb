@@ -189,7 +189,7 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
       warn "load_env not found file: '#{filenames.first}'"
       return
     end
-    
+
     raise Eye::Dsl::Error, "load_env conflict filenames: #{filenames}" if filenames.size > 1
 
     info "load_env from '#{filenames.first}'"
