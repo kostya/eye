@@ -71,11 +71,8 @@ private
     return [] if obj_strs.blank?
 
     if obj_strs.size == 1 && (obj_strs[0].to_s.strip == 'all' || obj_strs[0].to_s.strip == '*')
-      if h[:application]
-        return @applications.select { |app| app.name == h[:application] }
-      else
-        return @applications.dup
-      end
+      return @applications.dup unless h[:application]
+      return @applications.select { |app| app.name == h[:application] }
     end
 
     res = Eye::Utils::AliveArray.new
@@ -123,7 +120,7 @@ private
         end
       end
 
-      return apps if apps.size > 0
+      return apps unless apps.empty?
 
       if objs.map(&:app_name).uniq.size > 1
         raise Error, "cannot match targets from different applications: #{res.map(&:full_name)}"

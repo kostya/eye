@@ -159,7 +159,7 @@ private
     # schedule monitoring for new groups, processes
     added_fully_groups = []
     @added_groups.each do |group|
-      if group.processes.size > 0 && (group.processes.pure - @added_processes).size == 0
+      if !group.processes.empty? && (group.processes.pure - @added_processes).empty?
         added_fully_groups << group
         @added_processes -= group.processes.pure
       end
@@ -211,13 +211,13 @@ private
       debug { "updating process: #{name}" }
       process = @old_processes.delete(key)
       process.send_call command: :update_config, args: [process_cfg], reason: 'load by user'
-      process
     else
       debug { "creating process: #{name}" }
       process = Eye::Process.new(process_cfg)
       @added_processes << process
-      process
     end
+
+    process
   end
 
 end

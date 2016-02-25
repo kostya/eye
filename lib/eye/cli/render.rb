@@ -106,8 +106,6 @@ private
     "#{at} - #{state} (#{h[:reason]})\n"
   end
 
-private
-
   def render_element(data, level)
     off = level * 2
     off_str = ' ' * off

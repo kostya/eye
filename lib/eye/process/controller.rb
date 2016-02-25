@@ -25,12 +25,10 @@ module Eye::Process::Controller
   def monitor
     if self[:auto_start]
       start
+    elsif load_external_pid_file == :ok
+      switch :already_running
     else
-      if load_external_pid_file == :ok
-        switch :already_running
-      else
-        schedule command: :unmonitor, reason: 'not found'
-      end
+      schedule command: :unmonitor, reason: 'not found'
     end
   end
 

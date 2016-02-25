@@ -155,10 +155,8 @@ private
 
     if msg = call[:reason]
       msg.to_s
-    else
-      if call[:by]
-        "#{call[:command]} by #{call[:by]}"
-      end
+    elsif call[:by]
+      "#{call[:command]} by #{call[:by]}"
     end
   end
 

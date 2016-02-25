@@ -5,6 +5,11 @@ AllCops:
     - 'spec/**/*'
     - 'lib/eye/utils/mini_active_support.rb'
 
+Style/MutableConstant:
+  Exclude:
+    - 'lib/eye.rb'
+    - 'examples/**/*'
+
 Style/ClassAndModuleChildren:
   EnforcedStyle: compact
 

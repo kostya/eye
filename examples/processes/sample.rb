@@ -6,7 +6,7 @@ require 'optparse'
 # OptionParser.
 options = {}
 
-optparse = OptionParser.new do|opts|
+optparse = OptionParser.new do |opts|
   # This displays the help screen, all programs are
   # assumed to have this option.
   opts.on('-h', '--help', 'Display this screen') do

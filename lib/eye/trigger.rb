@@ -73,11 +73,8 @@ class Eye::Trigger
     check(transition) if filter_transition(transition)
 
   rescue Object => ex
-    if ex.class == Eye::Process::StateError || ex.class == Celluloid::TaskTerminated
-      raise ex
-    else
-      log_ex(ex)
-    end
+    raise ex if ex.class == Eye::Process::StateError || ex.class == Celluloid::TaskTerminated
+    log_ex(ex)
   end
 
   param :to, [Symbol, Array]

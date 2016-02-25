@@ -52,11 +52,8 @@ class Eye::Checker::Socket < Eye::Checker::Defer
         { result: result }
       end
     rescue Timeout::Error
-      if protocol == :raw
-        return { result: @buffer }
-      else
-        return { exception: "ReadTimeout<#{@read_timeout}>" }
-      end
+      return { result: @buffer } if protocol == :raw
+      { exception: "ReadTimeout<#{@read_timeout}>" }
     end
 
   rescue Exception => e
@@ -103,14 +100,12 @@ class Eye::Checker::Socket < Eye::Checker::Defer
       '-'
     elsif value[:exception]
       value[:exception]
+    elsif value[:result] == :listen
+      'listen'
     else
-      if value[:result] == :listen
-        'listen'
-      else
-        res = "#{value[:result].to_s.size}b"
-        res += "<#{value[:notice]}>" if value[:notice]
-        res
-      end
+      res = "#{value[:result].to_s.size}b"
+      res += "<#{value[:notice]}>" if value[:notice]
+      res
     end
   end
 

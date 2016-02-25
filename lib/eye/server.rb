@@ -28,11 +28,8 @@ class Eye::Server
       # TODO, remove in 1.0
 
       payload = Marshal.load(text)
-      if payload.is_a?(Array)
-        cmd, *args = payload
-      else
-        raise "unknown payload #{payload.inspect}"
-      end
+      raise "unknown payload #{payload.inspect}" unless payload.is_a?(Array)
+      cmd, *args = payload
 
     rescue
       # new format
