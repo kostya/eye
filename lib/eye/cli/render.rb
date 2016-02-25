@@ -58,11 +58,11 @@ private
       data.each do |k, v|
         s << "#{"#{k}:".ljust(10)} "
 
-        case k
+        s << case k
           when :resources
-            s << resources_str(v)
+            resources_str(v)
           else
-            s << "#{v}"
+            v.to_s
         end
 
         s << "\n"

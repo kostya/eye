@@ -8,6 +8,6 @@ class Eye::Dsl::ChildProcessOpts < Eye::Dsl::Opts
   def triggers(*_args)
     raise Eye::Dsl::Error, 'triggers not allowed in monitor_children'
   end
-  alias_method :trigger, :triggers
+  alias trigger triggers
 
 end

@@ -26,8 +26,8 @@ module Eye::Utils
     a
   end
 
-  D1 = '%H:%M'
-  D2 = '%b%d'
+  D1 = '%H:%M'.freeze
+  D2 = '%b%d'.freeze
 
   def self.human_time(unix_time)
     time = Time.at(unix_time.to_i)
@@ -36,7 +36,7 @@ module Eye::Utils
     time.strftime((d1 == d2) ? D1 : D2)
   end
 
-  DF = '%d %b %H:%M'
+  DF = '%d %b %H:%M'.freeze
 
   def self.human_time2(unix_time)
     Time.at(unix_time.to_i).strftime(DF)

@@ -133,7 +133,7 @@ private
       sleep 0.1
     else
       # TODO, notify here?
-      error "stop_command or stop_signals should be"
+      error 'stop_command or stop_signals should be'
     end
   end
 

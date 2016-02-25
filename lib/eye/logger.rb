@@ -6,7 +6,7 @@ class Eye::Logger
 
   class InnerLogger < Logger
 
-    FORMAT = '%d.%m.%Y %H:%M:%S'
+    FORMAT = '%d.%m.%Y %H:%M:%S'.freeze
 
     def initialize(*args)
       super
@@ -73,8 +73,8 @@ class Eye::Logger
       if dev.nil?
         @inner_logger = InnerLogger.new(nil)
       elsif dev.is_a?(String)
-        @dev_fd = STDOUT if @dev.to_s.downcase == 'stdout'
-        @dev_fd = STDERR if @dev.to_s.downcase == 'stderr'
+        @dev_fd = STDOUT if @dev.to_s.casecmp('stdout').zero?
+        @dev_fd = STDERR if @dev.to_s.casecmp('stderr').zero?
         @inner_logger = InnerLogger.new(@dev_fd, *args)
       else
         @inner_logger = dev

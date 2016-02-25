@@ -24,7 +24,7 @@ module Eye::Process::Config
 
     auto_update_pidfile_grace: 30.seconds,
     revert_fuckup_pidfile_grace: 120.seconds
-  }
+  }.freeze
 
   def prepare_config(new_config)
     h = DEFAULTS.merge(new_config)

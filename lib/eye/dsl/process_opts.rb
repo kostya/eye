@@ -7,13 +7,13 @@ class Eye::Dsl::ProcessOpts < Eye::Dsl::Opts
     Eye::Utils.deep_merge!(@config[:monitor_children], opts.config)
   end
 
-  alias_method :xmonitor_children, :nop
+  alias xmonitor_children nop
 
   def application
     parent.try(:parent)
   end
-  alias_method :app, :application
-  alias_method :group, :parent
+  alias app application
+  alias group parent
 
   def depend_on(names, opts = {})
     names = Array(names).map(&:to_s)

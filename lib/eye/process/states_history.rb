@@ -13,7 +13,7 @@ class Eye::Process::StatesHistory < Eye::Utils::Tail
     tm = [tm, from_time].max if from_time
     tm = tm.to_f
     if block
-      self.each { |s| block.call(s) if s[:at] >= tm }
+      self.each { |s| yield(s) if s[:at] >= tm }
     else
       self.select { |s| s[:at] >= tm }.map { |c| c[:state] }
     end

@@ -43,7 +43,7 @@ module Eye::Dsl::Validation
 
       return if param == :do
 
-      define_method "#{param}" do
+      define_method param do
         value = @options[param]
         value.nil? ? self.class.defaults[param] : value
       end

@@ -34,7 +34,7 @@ class Eye::Dsl::ApplicationOpts < Eye::Dsl::Opts
     res
   end
 
-  alias_method :xgroup, :nop
-  alias_method :xprocess, :nop
+  alias xgroup nop
+  alias xprocess nop
 
 end

@@ -5,7 +5,7 @@ module Eye::Process::Notify
   # 2) checker bounded to restart process [:warn]
   # 3) flapping + switch to unmonitored [:error]
 
-  LEVELS = { debug: 0, info: 1, warn: 2, error: 3, fatal: 4 }
+  LEVELS = { debug: 0, info: 1, warn: 2, error: 3, fatal: 4 }.freeze
 
   def notify(level, msg)
     # logging it

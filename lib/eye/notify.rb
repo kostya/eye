@@ -9,7 +9,7 @@ class Eye::Notify
   autoload :Jabber,   'eye/notify/jabber'
   autoload :Slack,    'eye/notify/slack'
 
-  TYPES = { mail: 'Mail', jabber: 'Jabber', slack: 'Slack' }
+  TYPES = { mail: 'Mail', jabber: 'Jabber', slack: 'Slack' }.freeze
 
   def self.get_class(type)
     klass = eval("Eye::Notify::#{TYPES[type]}") rescue nil

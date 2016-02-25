@@ -1,7 +1,7 @@
 module Eye::Controller::Commands
 
   NOT_IMPORTANT_COMMANDS = [:info_data, :short_data, :debug_data, :history_data, :ping,
-                            :logger_dev, :match, :explain, :check]
+                            :logger_dev, :match, :explain, :check].freeze
 
   # Main method, answer for the client command
   def command(cmd, *args)

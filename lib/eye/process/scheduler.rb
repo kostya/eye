@@ -70,7 +70,7 @@ module Eye::Process::Scheduler
   def scheduler_consume(call)
     args = call[:args]
     reason_str = reason_from_call(call)
-    info "=> #{call[:command]} #{args.present? ? "#{args * ','}" : nil} (#{reason_str})"
+    info "=> #{call[:command]} #{args.present? ? args.join(',') : nil} (#{reason_str})"
     send(call[:command], *args, &call[:block])
 
     history_cmd = is_a?(Eye::ChildProcess) ? "#{call[:command]}_child" : call[:command]

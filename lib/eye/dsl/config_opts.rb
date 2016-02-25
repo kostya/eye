@@ -10,7 +10,7 @@ class Eye::Dsl::ConfigOpts < Eye::Dsl::PureOpts
       @config[:logger] = args
     end
   end
-  alias_method :logger=, :logger
+  alias logger= logger
 
   def syslog(name = 'eye', *args)
     require 'syslog/logger'
