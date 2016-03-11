@@ -43,7 +43,7 @@ class Eye::Cli < Thor
     exit(es)
   end
 
-  desc 'xinfo', 'eye-deamon info (-c show current config)'
+  desc 'xinfo', 'eye-daemon info (-c show current config)'
   method_option :config, type: :boolean, aliases: '-c'
   method_option :json, type: :boolean, aliases: '-j'
   def xinfo
