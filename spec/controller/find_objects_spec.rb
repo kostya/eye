@@ -158,6 +158,13 @@ describe "find_objects" do
       }.to raise_error(Eye::Controller::Error)
     end
 
+    it "should not raise if mask starts with *" do
+      objs = subject.find_objects("*gr1")
+      objs.map(&:full_name).sort.should == %w{app1:gr1 app2:gr1}
+      objs = subject.find_objects("*gr*")
+      objs.map(&:full_name).sort.should == ["app1:gr1", "app1:gr2", "app1:gr2and", "app2:gr1", "app5:gr7"]
+    end
+
     it "correct by app1:gr*" do
       objs = subject.find_objects("app1:gr*")
       objs.map(&:full_name).should == %w{app1:gr1 app1:gr2 app1:gr2and}
@@ -266,28 +273,20 @@ describe "find_objects" do
       objs.map(&:full_name).sort.should == %w{app2:koo}
     end
 
-    it "`*admin` should not match anything" do
-      expect {
-        objs = subject.find_objects("*admin")
-      }.to raise_error(Eye::Controller::Error)
+    it "`*admin` should match" do
+      subject.find_objects("*admin").size.should == 2
     end
 
-    it "`*zoo` should not match anything" do
-      expect {
-        objs = subject.find_objects("*zoo")
-      }.to raise_error(Eye::Controller::Error)
+    it "`*zoo` should match" do
+      subject.find_objects("*zoo").size.should == 2
     end
 
     it "`*e1` should not match anything" do
-      expect {
-        objs = subject.find_objects("*e1")
-      }.to raise_error(Eye::Controller::Error)
+      subject.find_objects("*e1").size.should == 2
     end
 
     it "`*:e1` should not match anything" do
-      expect {
-        objs = subject.find_objects("*:e1")
-      }.to raise_error(Eye::Controller::Error)
+      subject.find_objects("*:e1").size.should == 2
     end
 
     it "`*p1` should match app1" do
