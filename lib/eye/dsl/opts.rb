@@ -184,9 +184,9 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
               File.expand_path(filename)].uniq
     filenames = fnames.select { |f| File.exist?(f) }
 
-    if filenames.size < 1
+    if filenames.empty?
       raise Eye::Dsl::Error, "load_env not found in #{fnames}" if raise_when_no_file
-      warn "load_env not found file: '#{filenames.first}'"
+      warn "load_env not found file: '#{filename}'"
       return
     end
 
