@@ -1,6 +1,6 @@
 module Eye
   VERSION   = '0.9.dev'
-  ABOUT     = "Eye v#{VERSION} (c) 2012-2015 @kostya"
+  ABOUT     = "Eye v#{VERSION} (c) 2012-2016 @kostya"
   PROCLINE  = "eye monitoring v#{VERSION}"
 
   autoload :Process,        'eye/process'
