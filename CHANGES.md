@@ -1,3 +1,9 @@
+0.8.1
+-------
+* allow matching many apps when mask started with '*' (#169)
+* fix potential races in children iterations (#162)
+* remove method truncate (#163)
+
 0.8
 -------
 * info, xinfo, oinfo, history now support -j flag, to output json
