@@ -6,10 +6,12 @@ module Eye::Utils
   autoload :AliveArray,     'eye/utils/alive_array'
 
   def self.deep_clone(value)
-    case
-      when value.is_a?(Array) then value.map { |v| deep_clone(v) }
-      when value.is_a?(Hash) then value.each_with_object({}) { |(k, v), r| r[deep_clone(k)] = deep_clone(v) }
-      else value
+    if value.is_a?(Array)
+      value.map { |v| deep_clone(v) }
+    elsif value.is_a?(Hash)
+      value.each_with_object({}) { |(k, v), r| r[deep_clone(k)] = deep_clone(v) }
+    else
+      value
     end
   end
 
