@@ -27,7 +27,7 @@ Gem::Specification.new do |gem|
 
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rspec', '< 2.14'
-  gem.add_development_dependency 'rr'
+  gem.add_development_dependency 'rr', '1.1.2'
   gem.add_development_dependency 'ruby-graphviz'
   gem.add_development_dependency 'forking'
   gem.add_development_dependency 'fakeweb'
