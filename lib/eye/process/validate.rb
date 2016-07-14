@@ -3,7 +3,7 @@ require 'etc'
 
 module Eye::Process::Validate
 
-  class Error < Exception; end
+  class Error < RuntimeError; end
 
   def validate(config, localize = true)
     if (str = config[:start_command])

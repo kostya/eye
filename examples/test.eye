@@ -14,7 +14,7 @@ Eye.application 'test' do
   # uid "user_name" # run app as a user_name (optional) - available only on ruby >= 2.0
   # gid "group_name" # run app as a group_name (optional) - available only on ruby >= 2.0
 
-  working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
+  working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[processes]))
   stdall 'trash.log' # stdout,err logs for processes by default
   env 'APP_ENV' => 'production' # global env for each processes
   trigger :flapping, times: 10, within: 1.minute, retry_in: 10.minutes

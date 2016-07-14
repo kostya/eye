@@ -9,7 +9,7 @@ Eye.application 'rails_unicorn' do
   # unicorn requires to be `ruby` in path (for soft restart)
   env 'PATH' => "#{File.dirname(RUBY)}:#{ENV['PATH']}"
 
-  working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
+  working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[processes]))
 
   process('unicorn') do
     pid_file 'tmp/pids/unicorn.pid'

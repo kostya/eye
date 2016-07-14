@@ -15,7 +15,7 @@ class Eye::Dsl
   autoload :ConfigOpts,           'eye/dsl/config_opts'
   autoload :Validation,           'eye/dsl/validation'
 
-  class Error < Exception; end
+  class Error < RuntimeError; end
 
   class << self
 

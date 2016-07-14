@@ -8,7 +8,7 @@ Eye.config do
 end
 
 Eye.app 'thin-farm' do
-  working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
+  working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[processes]))
   env 'RAILS_ENV' => 'production'
 
   # more about stop_on_delete: https://github.com/kostya/eye/wiki/About-stop_on_delete-=-true

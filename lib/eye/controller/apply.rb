@@ -26,7 +26,7 @@ private
     end
   end
 
-  class Error < Exception; end
+  class Error < RuntimeError; end
 
   def matched_objects(*args, &block)
     objs = find_objects(*args)

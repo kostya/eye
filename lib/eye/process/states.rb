@@ -3,7 +3,7 @@ require 'state_machine/version'
 
 class Eye::Process
 
-  class StateError < Exception; end
+  class StateError < RuntimeError; end
 
   # do transition
   def switch(name, call = {})

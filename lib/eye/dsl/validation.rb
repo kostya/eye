@@ -4,7 +4,7 @@ module Eye::Dsl::Validation
     base.extend(ClassMethods)
   end
 
-  class Error < Exception; end
+  class Error < RuntimeError; end
 
   module ClassMethods
 

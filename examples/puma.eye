@@ -1,6 +1,6 @@
 BUNDLE = 'bundle'
 RAILS_ENV = 'production'
-ROOT = File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
+ROOT = File.expand_path(File.join(File.dirname(__FILE__), %w[processes]))
 
 Eye.config do
   logger "#{ROOT}/eye.log"
