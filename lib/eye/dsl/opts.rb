@@ -182,19 +182,16 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   def load_env(filename = '~/.env', raise_when_no_file = true)
     fnames = [File.expand_path(filename, @config[:working_dir]),
               File.expand_path(filename)].uniq
-    fnames.map! { |f| File.symlink?(f) ? File.readlink(f) : f }
-    filenames = fnames.select { |f| File.exist?(f) }
+    file = fnames.detect { |f| File.exist?(f) }
 
-    if filenames.empty?
+    unless file
       raise Eye::Dsl::Error, "load_env not found in #{fnames}" if raise_when_no_file
       warn "load_env not found file: '#{filename}'"
       return
     end
 
-    raise Eye::Dsl::Error, "load_env conflict filenames: #{filenames}" if filenames.size > 1
-
-    info "load_env from '#{filenames.first}'"
-    Eye::Utils.load_env(filenames.first).each { |k, v| env k => v }
+    info "load_env from '#{file}'"
+    Eye::Utils.load_env(file).each { |k, v| env k => v }
   end
 
   def skip_group_action(act, val = true)
