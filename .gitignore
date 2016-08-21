@@ -37,3 +37,4 @@ script
 /vendor/
 *.gz
 .eye
+.DS_Store
