@@ -14,7 +14,7 @@ class Eye::Checker::ChildrenCount < Eye::Checker::Measure
       super
     else
       pids = ordered_by_date_children_pids
-      pids = (strategy == :kill_old) ? pids[0...-below] : pids[below..-1]
+      pids = strategy == :kill_old ? pids[0...-below] : pids[below..-1]
       kill_pids(pids)
     end
   end

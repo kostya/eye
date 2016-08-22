@@ -9,7 +9,7 @@ module Eye::Process::Data
   end
 
   def group_name
-    (self[:group] == '__default__') ? nil : self[:group]
+    self[:group] == '__default__' ? nil : self[:group]
   end
 
   def group_name_pure

@@ -73,8 +73,8 @@ class Eye::Logger
       if dev.nil?
         @inner_logger = InnerLogger.new(nil)
       elsif dev.is_a?(String)
-        @dev_fd = STDOUT if @dev.to_s.casecmp('stdout').zero?
-        @dev_fd = STDERR if @dev.to_s.casecmp('stderr').zero?
+        @dev_fd = STDOUT if @dev.to_s.casecmp('stdout') == 0
+        @dev_fd = STDERR if @dev.to_s.casecmp('stderr') == 0
         @inner_logger = InnerLogger.new(@dev_fd, *args)
       else
         @inner_logger = dev

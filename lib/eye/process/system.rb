@@ -48,7 +48,7 @@ module Eye::Process::System
     if (id1 - st1).abs > self[:check_identity_grace]
       args = Eye::SystemResources.args(pid)
       msg = "pid_file: '#{Eye::Utils.human_time2(id)}', process: '#{Eye::Utils.human_time2(st)}' (#{args})"
-      res = (id1 < st1) ? :fail : :touched
+      res = id1 < st1 ? :fail : :touched
       warn "compare_identity: #{res}, #{msg}"
       res
     else

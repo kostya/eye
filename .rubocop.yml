@@ -9,6 +9,13 @@ Performance/RedundantBlockCall:
   Exclude:
     - 'lib/eye/process/watchers.rb'
 
+Style/NumericPredicate:
+  EnforcedStyle: comparison
+
+Style/TernaryParentheses:
+  Exclude:
+    - 'lib/eye/cli/render.rb'
+
 Style/MutableConstant:
   Exclude:
     - 'lib/eye.rb'
