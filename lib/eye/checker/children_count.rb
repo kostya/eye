@@ -32,7 +32,7 @@ private
 
   def ordered_by_date_children_pids
     children = process.children.values
-    children.sort_by { |ch| Eye::SystemResources.start_time(ch.pid).to_i }.map(&:pid)
+    children.sort_by { |ch| [Eye::SystemResources.start_time(ch.pid).to_i, ch.pid] }.map(&:pid)
   end
 
 end
