@@ -6,5 +6,5 @@ gem 'celluloid-io',  '~> 0.17.0'
 gem 'nio4r'
 gem 'timers'
 
-gem 'state_machine'
+gem 'state_machines'
 gem 'sigar', '~> 0.7.3'
