@@ -3,12 +3,12 @@ class Eye::Trigger::Flapping < Eye::Trigger
   # trigger :flapping, :times => 10, :within => 1.minute,
   #         :retry_in => 10.minutes, :retry_times => 15
 
-  param :times, [Fixnum], true, 5
-  param :within, [Float, Fixnum], true
-  param :retry_in, [Float, Fixnum]
-  param :retry_times, [Fixnum]
-  param :reretry_in, [Float, Fixnum]
-  param :reretry_times, [Fixnum]
+  param :times, [Integer], true, 5
+  param :within, [Float, Integer], true
+  param :retry_in, [Float, Integer]
+  param :retry_times, [Integer]
+  param :reretry_in, [Float, Integer]
+  param :reretry_times, [Integer]
 
   def initialize(*args)
     super

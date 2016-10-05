@@ -1,6 +1,6 @@
 class Eye::Dsl::ConfigOpts < Eye::Dsl::PureOpts
 
-  create_options_methods([:logger_level], Fixnum)
+  create_options_methods([:logger_level], Integer)
   create_options_methods([:http], Hash)
 
   def logger(*args)

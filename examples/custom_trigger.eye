@@ -2,7 +2,7 @@
 
 class Eye::Trigger::FixCrash < Eye::Trigger::Custom
 
-  param :times, Fixnum, nil, 1
+  param :times, Integer, nil, 1
   param_default :to, :up
 
   def check(_)

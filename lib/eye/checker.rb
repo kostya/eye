@@ -23,10 +23,10 @@ class Eye::Checker
 
   attr_accessor :value, :values, :options, :pid, :type, :check_count, :process
 
-  param :every, [Fixnum, Float], false, 5
-  param :times, [Fixnum, Array], nil, 1
+  param :every, [Integer, Float], false, 5
+  param :times, [Integer, Array], nil, 1
   param :fires, [Symbol, Array, Proc], nil, nil, [:stop, :restart, :unmonitor, :start, :delete, :nothing, :notify]
-  param :initial_grace, [Fixnum, Float]
+  param :initial_grace, [Integer, Float]
   param :skip_initial_fails, [TrueClass, FalseClass]
 
   def self.name_and_class(type)
@@ -253,8 +253,8 @@ class Eye::Checker
 
   class Measure < Eye::Checker
 
-    param :below, [Fixnum, Float]
-    param :above, [Fixnum, Float]
+    param :below, [Integer, Float]
+    param :above, [Integer, Float]
 
     def good?(value)
       return false if below && (value > below)

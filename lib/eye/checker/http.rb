@@ -8,10 +8,10 @@ class Eye::Checker::Http < Eye::Checker::Defer
   param :url,           String, true
   param :proxy_url,     String
   param :pattern,       [String, Regexp]
-  param :kind,          [String, Fixnum, Symbol]
-  param :timeout,       [Fixnum, Float]
-  param :open_timeout,  [Fixnum, Float]
-  param :read_timeout,  [Fixnum, Float]
+  param :kind,          [String, Integer, Symbol]
+  param :timeout,       [Integer, Float]
+  param :open_timeout,  [Integer, Float]
+  param :read_timeout,  [Integer, Float]
 
   attr_reader :uri
 
@@ -21,7 +21,7 @@ class Eye::Checker::Http < Eye::Checker::Defer
     @uri = URI.parse(url)
     @proxy_uri = URI.parse(proxy_url) if proxy_url
     @kind = case kind
-      when Fixnum then Net::HTTPResponse::CODE_TO_OBJ[kind.to_s]
+      when Integer then Net::HTTPResponse::CODE_TO_OBJ[kind.to_s]
       when String, Symbol then Net.const_get("HTTP#{kind.to_s.camelize}") rescue Net::HTTPSuccess
       else Net::HTTPSuccess
     end

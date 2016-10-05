@@ -11,10 +11,10 @@ class Eye::Dsl::Opts < Eye::Dsl::PureOpts
   INTERVAL_OPTIONS = [:check_alive_period, :start_timeout, :restart_timeout, :stop_timeout, :start_grace,
                       :restart_grace, :stop_grace, :children_update_period, :restore_in,
                       :auto_update_pidfile_grace, :revert_fuckup_pidfile_grace, :check_identity_period, :check_identity_grace].freeze
-  create_options_methods(INTERVAL_OPTIONS, [Fixnum, Float])
+  create_options_methods(INTERVAL_OPTIONS, [Integer, Float])
 
   create_options_methods([:environment], Hash)
-  create_options_methods([:umask], Fixnum)
+  create_options_methods([:umask], Integer)
 
   def initialize(name = nil, parent = nil)
     super(name, parent)
@@ -212,11 +212,11 @@ private
     while s.present?
       sig = s.shift
       timeout = s.shift
-      if sig && ![String, Symbol, Fixnum].include?(sig.class)
+      if sig && ![String, Symbol, Integer].include?(sig.class)
         raise Eye::Dsl::Error, "signal should be String, Symbol, Fixnum, not #{sig.inspect}"
       end
 
-      if timeout && ![Fixnum, Float].include?(timeout.class)
+      if timeout && ![Integer, Float].include?(timeout.class)
         raise Eye::Dsl::Error, "signal sleep should be Numeric, not #{timeout.inspect}"
       end
     end

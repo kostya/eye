@@ -8,7 +8,7 @@ class Eye::Notify::Jabber < Eye::Notify
   # end
 
   param :host, String, true
-  param :port, [String, Fixnum], true
+  param :port, [String, Integer], true
   param :user, String, true
   param :password, String
 

@@ -45,7 +45,7 @@ Eye.app :triggers do
     daemonize true
 
     app_name = app.name
-    trigger :transition, event: :restarting, do: ->{
+    trigger :transition, event: :restarting, do: -> {
       info 'send restarting to :a'
       Eye::Control.command('restart', "#{app_name}:a")
     }

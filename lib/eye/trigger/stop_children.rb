@@ -4,7 +4,7 @@ class Eye::Trigger::StopChildren < Eye::Trigger
   #
   # trigger :stop_children
 
-  param :timeout, [Fixnum, Float], nil, 60
+  param :timeout, [Integer, Float], nil, 60
 
   # default on stopped, crashed
   param_default :event, [:stopped, :crashed]

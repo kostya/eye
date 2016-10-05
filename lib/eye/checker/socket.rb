@@ -13,9 +13,9 @@ class Eye::Checker::Socket < Eye::Checker::Defer
   # :protocol      way of pack,unpack messages (default = socket default), example: :protocol => :em_object
 
   param :addr,          String, true
-  param :timeout,       [Fixnum, Float]
-  param :open_timeout,  [Fixnum, Float]
-  param :read_timeout,  [Fixnum, Float]
+  param :timeout,       [Integer, Float]
+  param :open_timeout,  [Integer, Float]
+  param :read_timeout,  [Integer, Float]
   param :send_data
   param :expect_data,   [String, Regexp, Proc]
   param :protocol,      [Symbol], nil, nil, [:default, :em_object, :raw]

@@ -6,10 +6,10 @@ class Eye::Trigger::StartingGuard < Eye::Trigger
   #
   # trigger :starting_guard, every: 10.seconds, should: ->{ `cat /tmp/bla` == "bla" }
 
-  param :every, [Float, Fixnum], false, 10
-  param :times, [Fixnum]
-  param :retry_in, [Float, Fixnum]
-  param :retry_times, [Fixnum]
+  param :every, [Float, Integer], false, 10
+  param :times, [Integer]
+  param :retry_in, [Float, Integer]
+  param :retry_times, [Integer]
   param :should, [Proc, Symbol]
 
   def initialize(*args)

@@ -8,7 +8,7 @@ class Eye::Notify::Mail < Eye::Notify
   # end
 
   param :host, String, true
-  param :port, [String, Fixnum], true
+  param :port, [String, Integer], true
 
   param :domain, String
   param :user, String
