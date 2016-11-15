@@ -1,3 +1,7 @@
+0.9.1
+-------
+* fix client protocol compatibility with old server
+
 0.9
 -------
 * replace old gem state_machine, to state_machines
