@@ -212,12 +212,12 @@ private
     while s.present?
       sig = s.shift
       timeout = s.shift
-      if sig && ![String, Symbol, Integer].include?(sig.class)
+      if sig && !([String, Symbol].include?(sig.class) || sig.is_a?(Integer))
         raise Eye::Dsl::Error, "signal should be String, Symbol, Fixnum, not #{sig.inspect}"
       end
 
-      if timeout && ![Integer, Float].include?(timeout.class)
-        raise Eye::Dsl::Error, "signal sleep should be Numeric, not #{timeout.inspect}"
+      if timeout && !timeout.is_a?(Numeric)
+        raise Eye::Dsl::Error, "signal sleep should be Numeric, not #{timeout.inspect} - #{timeout.class}"
       end
     end
   end
