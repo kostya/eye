@@ -40,12 +40,7 @@ require File.dirname(__FILE__) + '/spec_helper'
       @server.alive?.should == true
     end
 
-    if prot_type == :old
-      it "big message, to pass env variables in future" do
-        a = "a" * 10000
-        @client.execute(command: 'stop', args: [a]).should == :corrupted_data
-      end
-    else
+    if prot_type == :new
       it "big message, to pass env variables in future" do
         a = "a" * 10000
         mock(Eye::Control).command('stop', a, {}){ :command_sent2 }
