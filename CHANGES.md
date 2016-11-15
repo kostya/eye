@@ -1,3 +1,9 @@
+0.9
+-------
+* replace old gem state_machine, to state_machines
+* rewrite internal scheduler for chains
+* change client-server protocol (recommend to quit server and up after update gem)
+
 0.8.1
 -------
 * allow matching many apps when mask started with '*' (#169)
