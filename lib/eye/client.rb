@@ -5,13 +5,20 @@ class Eye::Client
 
   attr_reader :socket_path
 
-  def initialize(socket_path)
+  def initialize(socket_path, type = :old)
     @socket_path = socket_path
+    @type = type
   end
 
+  SIGN = 123_566_983
+
   def execute(h = {})
-    payload = Marshal.dump(h)
-    payload = payload.length.to_s + "\n" + payload
+    payload = if @type == :old
+      Marshal.dump([h[:command], *h[:args]]) # TODO: remove in 1.0
+    else
+      payload = Marshal.dump(h)
+      [SIGN, payload.length].pack('N*') + payload
+    end
     timeout = h[:timeout] || Eye::Local.client_timeout
     attempt_command(payload, timeout)
   end

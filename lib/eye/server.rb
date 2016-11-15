@@ -34,9 +34,10 @@ class Eye::Server
     rescue
       # new format
       begin
-        pos = text.index("\n")
-        msg_size = text[0..pos].to_i
-        content = text[pos + 1..-1]
+        sign, msg_size = text[0...8].unpack('N*')
+        raise "unknown protocol #{sign}" unless sign == Eye::Client::SIGN
+        msg_size = text[4...8].unpack('N')[0]
+        content = text[8..-1]
         content << socket.read(msg_size - content.length) while content.length < msg_size
         payload = Marshal.load(content)
         cmd = payload[:command]
