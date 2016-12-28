@@ -3,5 +3,7 @@ B=12=13
 # C=1
 #D
 E=55 # D=11
+F="stuff"
+G='more'
 
 a

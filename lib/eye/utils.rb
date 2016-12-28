@@ -52,7 +52,7 @@ module Eye::Utils
       e = e.gsub(%r[#.+$], '').strip
       next unless e.include?('=')
       k, v = e.split('=', 2)
-      h[k] = v
+      h[k] = v.gsub(%r/^["']+(.*)["']+$/, '\1')
     end
     h
   end
