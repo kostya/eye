@@ -1,7 +1,6 @@
 #!/usr/bin/env rake
 
 require 'bundler/gem_tasks'
-require 'rspec/core/rake_task'
 require 'coveralls/rake/task'
 
 Coveralls::RakeTask.new
@@ -21,10 +20,6 @@ task :split_test do
   ENV['PARALLEL_SPLIT_TEST_PROCESSES'] = (ENV['N'] || 10).to_s
   cmd = "bundle exec parallel_split_test #{dirname}/spec"
   abort unless system(cmd)
-end
-
-RSpec::Core::RakeTask.new(:spec) do |t|
-  t.verbose = false
 end
 
 task :remove_coverage do
