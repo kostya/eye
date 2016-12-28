@@ -57,8 +57,7 @@ class Eye::ChildProcess
     state == :up
   end
 
-  def start
-  end
+  def start; end
 
   def stop
     kill_process
@@ -72,14 +71,11 @@ class Eye::ChildProcess
     end
   end
 
-  def monitor
-  end
+  def monitor; end
 
-  def unmonitor
-  end
+  def unmonitor; end
 
-  def delete
-  end
+  def delete; end
 
   def destroy
     remove_watchers

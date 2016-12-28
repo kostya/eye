@@ -35,8 +35,7 @@ class Eye::Application
     { name: @name, type: :application, subtree: @groups.map(&:status_data_short) }
   end
 
-  def debug_data
-  end
+  def debug_data; end
 
   def send_call(call)
     info "call: #{call}"

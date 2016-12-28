@@ -24,8 +24,7 @@ class Eye::Logger
       [Class, Module].include?(self.class) ? to_s : "<#{self.class}>"
     end
 
-    def logger_sub_tag
-    end
+    def logger_sub_tag; end
 
     def logger
       @logger ||= Eye::Logger.new(logger_tag, logger_sub_tag)
