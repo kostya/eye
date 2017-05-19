@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 def chhttp(cfg = {})
-  Eye::Checker.create(nil, {:type => :http, :every => 5.seconds,
+  Eye::Checker.create(nil, {:type => :http, :method => "get", :every => 5.seconds,
         :times => 1, :url => "http://localhost:3000/", :kind => :success,
         :pattern => /OK/, :timeout => 2}.merge(cfg))
 end
@@ -108,19 +108,19 @@ describe "Eye::Checker::Http" do
 
   describe "validates" do
     it "ok" do
-      Eye::Checker.validate!({:type => :http, :every => 5.seconds,
+      Eye::Checker.validate!({:type => :http, :method => "get", :every => 5.seconds,
         :times => 1, :url => "http://localhost:3000/", :kind => :success,
         :pattern => /OK/, :timeout => 2})
     end
 
     it "without param url" do
-      expect{ Eye::Checker.validate!({:type => :http, :every => 5.seconds,
+      expect{ Eye::Checker.validate!({:type => :http, :method => "get", :every => 5.seconds,
         :times => 1, :kind => :success,
         :pattern => /OK/, :timeout => 2}) }.to raise_error(Eye::Dsl::Validation::Error)
     end
 
     it "bad param timeout" do
-      expect{ Eye::Checker.validate!({:type => :http, :every => 5.seconds,
+      expect{ Eye::Checker.validate!({:type => :http, :method => "get", :every => 5.seconds,
         :times => 1, :kind => :success, :url => "http://localhost:3000/",
         :pattern => /OK/, :timeout => :fix}) }.to raise_error(Eye::Dsl::Validation::Error)
     end
