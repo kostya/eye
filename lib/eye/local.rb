@@ -69,7 +69,7 @@ module Eye::Local
     def host
       @host ||= begin
         require 'socket'
-        Socket.gethostname
+        Socket.getfqdn
       end
     end
 
