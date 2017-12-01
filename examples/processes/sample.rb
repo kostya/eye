@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby
 require 'optparse'
 
 # This hash will hold all of the options
