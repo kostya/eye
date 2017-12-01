@@ -48,6 +48,7 @@ module Eye::Process::Children
   end
 
   def remove_children
+    # here should .keys (not each_key), as it copy array of keys
     children.keys.each { |child_pid| clear_child(child_pid) }
   end
 

@@ -13,7 +13,7 @@ private
       Eye::Control.find_nearest_process(name, process.group_name_pure, process.app_name)
     end
 
-    processes = processes.compact.select { |p| p.state_name != :unmonitored }
+    processes = processes.compact.reject { |p| p.state_name == :unmonitored }
     return if processes.empty?
     processes = Eye::Utils::AliveArray.new(processes)
 

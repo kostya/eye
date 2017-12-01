@@ -5,7 +5,7 @@ require 'coveralls/rake/task'
 
 Coveralls::RakeTask.new
 
-task :default => :split_test
+task default: :split_test
 
 desc 'run parallel tests'
 task :pspec do
@@ -35,6 +35,6 @@ task :env do
 end
 
 desc 'graph'
-task :graph => :env do
+task graph: :env do
   StateMachine::Machine.draw('Eye::Process')
 end

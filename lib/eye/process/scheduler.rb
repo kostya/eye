@@ -92,7 +92,7 @@ module Eye::Process::Scheduler
     return false if call[:by] != :user && equal_action_call?(@scheduled_call, call)
 
     # check any equal call in queue scheduler_calls
-    !scheduler_calls.any? { |c| equal_action_call?(c, call) }
+    scheduler_calls.none? { |c| equal_action_call?(c, call) }
   end
 
   def equal_action_call?(call1, call2)

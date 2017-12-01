@@ -160,12 +160,12 @@ private
       group.resort_processes
     end
 
-    diff.old_groups.each do |_, group|
+    diff.old_groups.each_value do |group|
       group.clear
       group.send_call(command: :delete, reason: 'load by user')
     end
 
-    diff.old_processes.each do |_, process|
+    diff.old_processes.each_value do |process|
       process.send_call(command: :delete, reason: 'load by user') if process.alive?
     end
 

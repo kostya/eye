@@ -161,3 +161,21 @@ Lint/LiteralInInterpolation:
     - 'lib/eye/notify/jabber.rb'
     - 'lib/eye/notify/slack.rb'
     - 'lib/eye/process/commands.rb'
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/SymbolArray:
+  Enabled: false
+
+Style/SafeNavigation:
+  Enabled: false
+
+Security/MarshalLoad:
+  Enabled: false
+
+Gemspec/OrderedDependencies:
+  Enabled: false
+
+Style/Dir:
+  Enabled: false

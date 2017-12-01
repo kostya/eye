@@ -48,7 +48,7 @@ class Eye::Application
 
   def sub_object?(obj)
     res = @groups.include?(obj)
-    res = @groups.any? { |gr| gr.sub_object?(obj) } unless res
+    res ||= @groups.any? { |gr| gr.sub_object?(obj) }
     res
   end
 

@@ -1,5 +1,4 @@
 class Reactor
-
   include Celluloid
 
   def initialize(interval, filename)

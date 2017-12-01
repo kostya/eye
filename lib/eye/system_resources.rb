@@ -21,7 +21,8 @@ class Eye::SystemResources
       cache.children(parent_pid)
     end
 
-    def start_time(pid) # unixtime
+    # unixtime
+    def start_time(pid)
       if cpu = cache.proc_cpu(pid)
         cpu.start_time.to_i / 1000
       end
