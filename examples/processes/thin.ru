@@ -5,8 +5,9 @@ class Test < Sinatra::Base
 
   get '/hello' do
     sleep 0.5
-    "Hello World!"
+    'Hello World!'
   end
+
 end
 
 run Test.new

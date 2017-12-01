@@ -24,7 +24,7 @@ end
 
 task :remove_coverage do
   require 'fileutils'
-  FileUtils.rm_rf(File.expand_path(File.join(File.dirname(__FILE__), %w{ coverage })))
+  FileUtils.rm_rf(File.expand_path(File.join(File.dirname(__FILE__), %w[coverage])))
 end
 
 task :env do

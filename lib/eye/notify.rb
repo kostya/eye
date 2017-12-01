@@ -47,7 +47,6 @@ class Eye::Notify
     else
       create_proc[needed_hash]
     end
-
   rescue Object => ex
     log_ex(ex)
   end
@@ -99,8 +98,7 @@ class Eye::Notify
     Eye::Dsl::ConfigOpts.add_notify(type)
   end
 
-  def self.requires
-  end
+  def self.requires; end
 
   class Custom < Eye::Notify
 

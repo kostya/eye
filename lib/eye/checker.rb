@@ -50,7 +50,6 @@ class Eye::Checker
 
   def self.create(pid, options = {}, process = nil)
     get_class(options[:type]).new(pid, options, process)
-
   rescue Object => ex
     log_ex(ex)
     nil
@@ -128,7 +127,6 @@ class Eye::Checker
 
     info { "#{last_human_values} => #{result ? 'OK' : 'Fail'}" }
     result
-
   rescue Object => ex
     raise(ex) if ex.class == Celluloid::TaskTerminated
     log_ex(ex)
@@ -221,8 +219,7 @@ class Eye::Checker
     Eye::Checker.const_set(name, base)
   end
 
-  def self.requires
-  end
+  def self.requires; end
 
   class CustomCell < Eye::Checker
 

@@ -90,7 +90,8 @@ class Eye::ChildProcess
     self_status_data(opts)
   end
 
-  def prepare_command(command) # override
+  # override
+  def prepare_command(command)
     super.gsub('{PARENT_PID}', @parent_pid.to_s)
   end
 
