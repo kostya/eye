@@ -85,7 +85,7 @@ private
     res = "\033[1m#{name}\033[0m\n"
     history = history.reverse
 
-    history.chunk { |h| [h[:state], h[:reason].to_s] }.each_value do |hist|
+    history.chunk { |h| [h[:state], h[:reason].to_s] }.each do |_, hist|
       if hist.size >= 3
         res << detail_process_info_string(hist[0])
         res << detail_process_info_string(state: "... #{hist.size - 2} times", reason: '...')
