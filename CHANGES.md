@@ -1,3 +1,7 @@
+0.9.4
+----
+* leye used EYE_HOME under root
+
 0.9.3
 -----
 * fix process hangs in status :starting, in some rare cases
