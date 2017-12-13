@@ -7,7 +7,11 @@ module Eye::Local
     def dir
       @dir ||= begin
         if root?
-          '/var/run/eye'
+          if (_home = ENV['EYE_HOME']) && !_home.empty?
+            File.expand_path(File.join(_home, '.eye'))
+          else
+            '/var/run/eye'
+          end
         else
           File.expand_path(File.join(home, '.eye'))
         end
