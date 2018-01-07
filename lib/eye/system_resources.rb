@@ -21,7 +21,7 @@ class Eye::SystemResources
 
     def start_time(pid) # unixtime
       if st = cache.proc_start_time(pid)
-        Time.parse(st).to_i
+        Time.parse(st).to_i rescue 0
       end
     end
 
