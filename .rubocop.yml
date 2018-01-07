@@ -27,10 +27,10 @@ Style/MutableConstant:
 Style/ClassAndModuleChildren:
   EnforcedStyle: compact
 
-Style/EmptyLinesAroundClassBody:
+Layout/EmptyLinesAroundClassBody:
   EnforcedStyle: empty_lines
 
-Style/EmptyLinesAroundModuleBody:
+Layout/EmptyLinesAroundModuleBody:
   EnforcedStyle: empty_lines
   Exclude:
     - 'lib/eye.rb'
@@ -40,13 +40,13 @@ Style/RegexpLiteral:
   Exclude:
     - 'examples/**/*'
 
-Style/AccessModifierIndentation:
+Layout/AccessModifierIndentation:
   EnforcedStyle: outdent
 
 Lint/EndAlignment:
-  AlignWith: variable
+  EnforcedStyleAlignWith: variable
 
-Style/IndentHash:
+Layout/IndentHash:
   EnforcedStyle: consistent
 
 Style/Lambda:
@@ -57,9 +57,9 @@ Style/BlockDelimiters:
   Exclude:
     - 'examples/**/*'
 
-Style/CaseIndentation:
+Layout/CaseIndentation:
   IndentOneStep: true
-  IndentWhenRelativeTo: end
+  EnforcedStyle: end
 
 Style/HashSyntax:
   Exclude:
@@ -132,7 +132,7 @@ Style/Documentation:
 Style/DoubleNegation:
   Enabled: false
 
-Lint/Eval:
+Security/Eval:
   Enabled: false
 
 Lint/Void:
@@ -144,7 +144,7 @@ Lint/Void:
 Lint/AssignmentInCondition:
   Enabled: false
 
-Style/AccessorMethodName:
+Naming/AccessorMethodName:
   Enabled: false
 
 Style/SpecialGlobalVars:
@@ -161,3 +161,21 @@ Lint/LiteralInInterpolation:
     - 'lib/eye/notify/jabber.rb'
     - 'lib/eye/notify/slack.rb'
     - 'lib/eye/process/commands.rb'
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/SymbolArray:
+  Enabled: false
+
+Style/SafeNavigation:
+  Enabled: false
+
+Security/MarshalLoad:
+  Enabled: false
+
+Gemspec/OrderedDependencies:
+  Enabled: false
+
+Style/Dir:
+  Enabled: false

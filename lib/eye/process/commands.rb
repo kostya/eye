@@ -229,7 +229,7 @@ private
 
     sleep_grace(:start_grace)
 
-    case load_external_pid_file
+    case load_res = load_external_pid_file
       when :ok
         res.merge(pid: self.pid)
       when :no_pid_file
@@ -241,6 +241,11 @@ private
         error "exit status #{res[:exitstatus]}, process <#{@last_loaded_pid}> (from #{self[:pid_file_ex]}) was not found; " \
           "ensure that the pid_file is being updated correctly (#{check_logs_str})"
         { error: :not_really_running }
+      else
+        # really strange case
+        error "exit status #{res[:exitstatus]}, process <#{@last_loaded_pid}> (from #{self[:pid_file_ex]}) #{load_res}; " \
+          "this is really strange case, like timestamp of server was updated, may be need to reload eye (#{check_logs_str})"
+        { error: load_res }
     end
   end
 

@@ -10,10 +10,10 @@ Little demo, shows general commands and how chain works:
 
 [![Eye](https://raw.github.com/kostya/stuff/master/eye/eye.png)](https://raw.github.com/kostya/stuff/master/eye/eye.gif)
 
-Recommended installation on the server (system wide):
+Installation:
 
-    $ sudo /usr/local/ruby/1.9.3/bin/gem install eye
-    $ sudo ln -sf /usr/local/ruby/1.9.3/bin/eye /usr/local/bin/eye
+    $ gem install sigar -- --with-cppflags="-fgnu89-inline"
+    $ gem install eye
 
 
 ###  Why?

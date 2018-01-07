@@ -1,6 +1,6 @@
 require 'rubygems'
 require "bundler/setup"
-# Eye::Sigar
+Bundler.setup
 
 require 'celluloid/current'
 Bundler.require :default
@@ -29,7 +29,7 @@ class Eye::Controller
   def load_contents(*conts); res = nil; with_temp_file(cont){|f| res = self.load(f) }; res; end
 end
 
-require 'rspec/mocks'
+# require 'rspec/mocks'
 require 'fakeweb'
 require 'ostruct'
 

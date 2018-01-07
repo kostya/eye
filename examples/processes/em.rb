@@ -39,7 +39,8 @@ class EchoObj < EM::Connection
     puts '-- someone connected to the echo server!'
   end
 
-  def receive_object(obj) # {:command => 'ping'}
+  # {:command => 'ping'}
+  def receive_object(obj)
     puts "receive #{obj.inspect}"
     send_object(answer(obj[:command]).chop)
   end

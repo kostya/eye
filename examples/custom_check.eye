@@ -9,7 +9,7 @@ class MyCheck < Eye::Checker::Custom
   end
 
   def good?(value)
-    !(value =~ /haha/)
+    value !~ /haha/
   end
 
 end

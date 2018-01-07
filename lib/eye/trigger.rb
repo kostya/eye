@@ -119,8 +119,7 @@ class Eye::Trigger
     Eye::Trigger.const_set(name, base)
   end
 
-  def self.requires
-  end
+  def self.requires; end
 
   class Custom < Eye::Trigger
 

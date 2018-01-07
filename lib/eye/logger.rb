@@ -6,7 +6,7 @@ class Eye::Logger
 
   class InnerLogger < Logger
 
-    FORMAT = '%d.%m.%Y %H:%M:%S'.freeze
+    FORMAT = '%Y.%m.%d %H:%M:%S'.freeze
 
     def initialize(*args)
       super

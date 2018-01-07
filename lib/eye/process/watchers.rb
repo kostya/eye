@@ -32,7 +32,7 @@ module Eye::Process::Watchers
   end
 
   def remove_watchers
-    @watchers.each { |_, h| h[:timer].cancel }
+    @watchers.each_value { |h| h[:timer].cancel }
     @watchers = {}
   end
 
