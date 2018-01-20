@@ -1,3 +1,7 @@
+0.10.0
+------
+* replace sigar gem with kostya-sigar, it fix some things (https://github.com/kostya/sigar)
+
 0.9.4
 ----
 * leye used EYE_HOME under root

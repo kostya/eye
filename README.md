@@ -12,7 +12,6 @@ Little demo, shows general commands and how chain works:
 
 Installation:
 
-    $ gem install sigar -- --with-cppflags="-fgnu89-inline"
     $ gem install eye
 
 

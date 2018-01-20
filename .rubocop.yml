@@ -110,9 +110,6 @@ Metrics/AbcSize:
 Style/GuardClause:
   MinBodyLength: 10
 
-Style/IfUnlessModifier:
-  MaxLineLength: 50
-
 Lint/RescueException:
   Exclude:
     - 'lib/eye/checker/socket.rb'
