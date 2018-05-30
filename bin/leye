@@ -28,9 +28,7 @@ unless Eye::Local.eyefile || ENV['EYE_HOME']
   exit 1
 end
 
-unless ENV.key?('EYE_HOME')
-  ENV['EYE_HOME'] = File.dirname(Eye::Local.eyefile)
-end
+ENV['EYE_HOME'] = File.dirname(Eye::Local.eyefile) unless ENV.key?('EYE_HOME')
 
 Eye::Local.local_runner = true
 Eye::Cli.start

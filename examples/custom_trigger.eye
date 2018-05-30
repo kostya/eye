@@ -5,16 +5,14 @@ class Eye::Trigger::FixCrash < Eye::Trigger::Custom
   param :times, Integer, nil, 1
   param_default :to, :up
 
-  def check(_)
+  def check(*)
     # process states here like this: [..., :starting, :down, :starting, :down, :starting, :up]
     states = process.states_history.states
 
     # states to compare with
     compare = [:starting, :down] * times + [:starting, :up]
 
-    if states[-compare.length..-1] == compare
-      process.notify(:info, 'yahho, process up')
-    end
+    process.notify(:info, 'yahho, process up') if states[-compare.length..-1] == compare
   end
 
 end
