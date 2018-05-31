@@ -1,11 +1,10 @@
-Eye.application "someapp" do
+Eye.application 'someapp' do
 end
 
-Eye.application "app" do
-  process("someprocess"){ pid_file "someprocess.pid" }
+Eye.application 'app' do
+  process('someprocess') { pid_file 'someprocess.pid' }
 end
 
-Eye.application "app2" do
-  process("app"){ pid_file "app.pid" }
+Eye.application 'app2' do
+  process('app') { pid_file 'app.pid' }
 end
-

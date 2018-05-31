@@ -1,6 +1,6 @@
 Eye.app :__default__ do
-env "C" => "D"
+  env 'C' => 'D'
 end
 
-        Eye.app :some do
-        end
+Eye.app :some do
+end

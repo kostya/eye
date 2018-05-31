@@ -1,3 +1,3 @@
 Eye.config do
- logger "/tmp/a.log"
+  logger '/tmp/a.log'
 end

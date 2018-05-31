@@ -1,2 +1,2 @@
-        Eye.app :some do
-        end
+Eye.app :some do
+end

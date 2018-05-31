@@ -1,1 +1,1 @@
-Eye.config{ http enable: false }
+Eye.config { http enable: false }

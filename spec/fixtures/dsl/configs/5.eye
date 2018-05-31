@@ -1,3 +1,3 @@
 Eye.config do
-  mail :host => "localhost", :port => 192
+  mail host: 'localhost', port: 192
 end

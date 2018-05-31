@@ -2,7 +2,6 @@ AllCops:
   Include:
     - '**/*.eye'
   Exclude:
-    - 'spec/**/*'
     - 'lib/eye/utils/mini_active_support.rb'
 
 Performance/RedundantBlockCall:

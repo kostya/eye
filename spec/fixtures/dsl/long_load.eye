@@ -1,5 +1,5 @@
-Eye.info "haha"
+Eye.info 'haha'
 
-Eye.application "long_load" do
+Eye.application 'long_load' do
   sleep 1
 end
