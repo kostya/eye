@@ -33,17 +33,19 @@ module Eye::Controller::Helpers
     return process_by_full_name(name) if name.include?(':')
 
     if app_name
-      app = application_by_name(app_name)
-      app.groups.each do |gr|
-        p = gr.processes.detect { |c| c.name == name }
-        return p if p
+      if app = application_by_name(app_name)
+        app.groups.each do |gr|
+          p = gr.processes.detect { |c| c.name == name }
+          return p if p
+        end
       end
     end
 
     if group_name
-      gr = group_by_name(group_name)
-      p = gr.processes.detect { |c| c.name == name }
-      return p if p
+      if gr = group_by_name(group_name)
+        p = gr.processes.detect { |c| c.name == name }
+        return p if p
+      end
     end
 
     process_by_name(name)
