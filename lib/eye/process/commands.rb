@@ -31,7 +31,11 @@ module Eye::Process::Commands
     result
 
   rescue StateMachines::InvalidTransition, Eye::Process::StateError => e
-    warn "wrong switch '#{e.message}'"
+    if e.class == Eye::Process::StateError
+      info("wrong switch '#{e.message}'")
+    else
+      warn("wrong switch '#{e.message}'")
+    end
 
     :state_error
   end
@@ -60,7 +64,11 @@ module Eye::Process::Commands
     end
 
   rescue StateMachines::InvalidTransition, Eye::Process::StateError => e
-    warn "wrong switch '#{e.message}'"
+    if e.class == Eye::Process::StateError
+      info("wrong switch '#{e.message}'")
+    else
+      warn("wrong switch '#{e.message}'")
+    end
     nil
   end
 
@@ -84,7 +92,11 @@ module Eye::Process::Commands
     true
 
   rescue StateMachines::InvalidTransition, Eye::Process::StateError => e
-    warn "wrong switch '#{e.message}'"
+    if e.class == Eye::Process::StateError
+      info("wrong switch '#{e.message}'")
+    else
+      warn("wrong switch '#{e.message}'")
+    end
     nil
   end
 
