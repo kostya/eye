@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
 
   gem.description   = gem.summary = \
     'Process monitoring tool. Inspired from Bluepill and God. Requires Ruby(MRI) >= 1.9.3-p194. Uses Celluloid and Celluloid::IO.'
-  gem.homepage      = 'http://github.com/kostya/eye'
+  gem.homepage      = 'https://github.com/kostya/eye'
 
   gem.files         = `git ls-files`.split($\).reject { |n| n =~ %r[png|gif\z] }.reject { |n| n =~ %r[^(test|spec|features)/] }
   gem.executables   = gem.files.grep(%r[^bin/]).map { |f| File.basename(f) }
